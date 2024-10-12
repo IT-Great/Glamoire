@@ -1,7 +1,325 @@
+// HANDLE AUTO FORMAT RUPIAH
+function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+    // Tambahkan titik setiap 3 digit
+    if (ribuan) {
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
+    }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? 'Rp. ' + rupiah : '');
+}
+
+document.getElementById('regular-price').addEventListener('input', function (e) {
+    this.value = formatRupiah(this.value);
+});
+
+
+
+
+
+// HANDLE UPLOAD VIDEO
+function readURLVideo(input) {
+    if (input.files && input.files[0]) {
+        var videoFile = input.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            var videoContent = `
+                <div class="upload__video-box">
+                    <video width="320" height="240" controls>
+                        <source src="${e.target.result}" type="${videoFile.type}">
+                        Your browser does not support the video tag.
+                    </video>
+                    <div class="upload__video-close" onclick="removeVideo(this)"></div>
+                </div>
+            `;
+            document.getElementById('video-file-upload-content').innerHTML = videoContent;
+            document.getElementById('video-file-upload-content').style.display = 'flex';
+        }
+
+        reader.readAsDataURL(videoFile);
+    }
+}
+
+function removeVideo(element) {
+    // Menghapus video dan mengembalikan tampilan upload
+    var videoContent = document.getElementById('video-file-upload-content');
+    videoContent.innerHTML = '';
+    videoContent.style.display = 'none';
+    document.getElementById('video').value = ''; // Reset input file
+}
+
+
+
+
+
+
+// HANDLE MULTIPLE UPLOAD IMAGE
+// let selectedFiles = [];
+
+// function handleFiles(files) {
+//     const fileUploadContent = document.getElementById('file-upload-content');
+//     const imageError = document.getElementById('image-error');
+//     const totalFiles = selectedFiles.length + files.length;
+
+//     // Reset pesan error
+//     imageError.style.display = 'none';
+//     imageError.textContent = '';
+
+//     // Cek jika jumlah file melebihi 6
+//     if (totalFiles > 6) {
+//         imageError.textContent = 'You can upload a maximum of 6 images.';
+//         imageError.style.display = 'block';
+//         return;
+//     }
+
+//     // Tambahkan file ke array selectedFiles
+//     for (let i = 0; i < files.length; i++) {
+//         selectedFiles.push(files[i]);
+//     }
+
+//     // Tampilkan gambar di form
+//     Array.from(files).forEach(file => {
+//         const maxSize = 2 * 1024 * 1024; // 2MB
+//         if (file.size > maxSize) {
+//             imageError.textContent = 'Each image file must be less than 2MB.';
+//             imageError.style.display = 'block';
+//             return;
+//         }
+
+//         if (!file.type.match('image.*')) return; // Hanya file gambar
+
+//         const reader = new FileReader();
+//         reader.onload = function (e) {
+//             // Buat elemen gambar
+//             const imgBox = document.createElement('div');
+//             imgBox.classList.add('upload__img-box-multiple');
+
+//             const imgBg = document.createElement('div');
+//             imgBg.classList.add('img-bg');
+//             imgBg.style.backgroundImage = `url(${e.target.result})`;
+
+//             // Tambahkan tombol close
+//             const imgClose = document.createElement('div');
+//             imgClose.classList.add('upload__img-close');
+//             imgClose.onclick = function () {
+//                 const index = Array.from(fileUploadContent.children).indexOf(imgBox);
+//                 selectedFiles.splice(index, 1);
+//                 fileUploadContent.removeChild(imgBox);
+//             };
+
+//             imgBg.appendChild(imgClose);
+//             imgBox.appendChild(imgBg);
+//             fileUploadContent.appendChild(imgBox);
+//         };
+//         reader.readAsDataURL(file);
+//     });
+// }
+
+// document.querySelector('form').addEventListener('submit', function (event) {
+//     const imageError = document.getElementById('image-error');
+
+//     if (selectedFiles.length === 0) {
+//         event.preventDefault(); // Mencegah form dari submit
+//         imageError.textContent = 'Please upload at least one image.';
+//         imageError.style.display = 'block';
+//         imageError.scrollIntoView({
+//             behavior: 'smooth',
+//             block: 'center'
+//         });
+//         return;
+//     }
+
+//     const fileInput = document.getElementById('images');
+//     const dataTransfer = new DataTransfer();
+
+//     selectedFiles.forEach(file => {
+//         dataTransfer.items.add(file);
+//     });
+
+//     fileInput.files = dataTransfer.files;
+// });
+
+
+let selectedFiles = [];
+
+function handleFiles(files) {
+    const fileUploadContent = document.getElementById('file-upload-content');
+    const imageError = document.getElementById('image-error');
+    const totalFiles = selectedFiles.length + files.length;
+
+    // Reset pesan error
+    imageError.style.display = 'none';
+    imageError.textContent = '';
+
+    // Cek jika jumlah file melebihi 6
+    if (totalFiles > 6) {
+        imageError.textContent = 'You can upload a maximum of 6 files (images/videos).';
+        imageError.style.display = 'block';
+        return;
+    }
+
+    // Tambahkan file ke array selectedFiles
+    for (let i = 0; i < files.length; i++) {
+        selectedFiles.push(files[i]);
+    }
+
+    // Tampilkan gambar/video di form
+    Array.from(files).forEach(file => {
+        const maxSize = 10 * 1024 * 1024; // 10MB untuk gambar/video
+        if (file.size > maxSize) {
+            imageError.textContent = 'Each file must be less than 10MB.';
+            imageError.style.display = 'block';
+            return;
+        }
+
+        if (!file.type.match('image.*') && !file.type.match('video.*')) return; // Hanya file gambar/video
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const mediaBox = document.createElement('div');
+            mediaBox.classList.add('upload__img-box-multiple');
+
+            const mediaBg = document.createElement('div');
+            mediaBg.classList.add('img-bg');
+            mediaBox.appendChild(mediaBg);
+
+            // Jika file gambar
+            if (file.type.match('image.*')) {
+                mediaBg.style.backgroundImage = `url(${e.target.result})`;
+            } else if (file.type.match('video.*')) {
+                // Jika file video
+                const videoElement = document.createElement('video');
+                videoElement.setAttribute('src', e.target.result);
+                videoElement.setAttribute('controls', 'controls');
+                videoElement.style.width = '100px'; // Ubah ukuran sesuai kebutuhan
+                videoElement.style.height = 'auto';
+                mediaBg.appendChild(videoElement);
+            }
+
+            // Tambahkan tombol close
+            const mediaClose = document.createElement('div');
+            mediaClose.classList.add('upload__img-close');
+            mediaClose.onclick = function () {
+                const index = Array.from(fileUploadContent.children).indexOf(mediaBox);
+                selectedFiles.splice(index, 1);
+                fileUploadContent.removeChild(mediaBox);
+            };
+
+            mediaBg.appendChild(mediaClose);
+            fileUploadContent.appendChild(mediaBox);
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+document.querySelector('form').addEventListener('submit', function (event) {
+    const imageError = document.getElementById('image-error');
+
+    if (selectedFiles.length === 0) {
+        event.preventDefault(); // Mencegah form dari submit
+        imageError.textContent = 'Please upload at least one image or video.';
+        imageError.style.display = 'block';
+        imageError.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+        return;
+    }
+
+    const fileInput = document.getElementById('media');
+    const dataTransfer = new DataTransfer();
+
+    selectedFiles.forEach(file => {
+        dataTransfer.items.add(file);
+    });
+
+    fileInput.files = dataTransfer.files;
+});
+
+
+
+
+
+//HANDLE UPLOAD SINGLE IMAGE
+function readURLSingle(input) {
+    const singleUploadContent = document.getElementById('single-file-upload-content');
+    const mainImageError = document.getElementById('main-image-error');
+    singleUploadContent.innerHTML = ''; // Kosongkan konten jika sudah ada gambar sebelumnya
+    mainImageError.style.display = 'none'; // Sembunyikan pesan error
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+
+        // Validasi ukuran file
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        if (file.size > maxSize) {
+            mainImageError.textContent = 'Image file must be less than 2MB.';
+            mainImageError.style.display = 'block';
+            input.value = ''; // Reset input file
+            return;
+        }
+
+        // Validasi tipe file
+        if (!file.type.match('image.*')) {
+            mainImageError.textContent = 'Only image files are allowed.';
+            mainImageError.style.display = 'block';
+            input.value = ''; // Reset input file
+            return;
+        }
+
+        // Jika validasi lolos, tampilkan gambar
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const imgBox = document.createElement('div');
+            imgBox.classList.add('upload__img-box-single');
+
+            const imgBg = document.createElement('div');
+            imgBg.classList.add('img-bg');
+            imgBg.style.backgroundImage = `url(${e.target.result})`;
+
+            // Tambahkan tombol close
+            const imgClose = document.createElement('div');
+            imgClose.classList.add('upload__img-close');
+            imgClose.onclick = function () {
+                singleUploadContent.innerHTML = ''; // Hapus gambar jika tombol close diklik
+                input.value = ''; // Reset input file
+            };
+
+            imgBg.appendChild(imgClose);
+            imgBox.appendChild(imgBg);
+            singleUploadContent.appendChild(imgBox);
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+
+
+
+
+// HANDLE PRODUCT VARIANT SELECT2 & TABLE VARIANT
 function initializeSelect2Basic(selectElement) {
-    $(selectElement).select2({
-        width: '100%',
-        allowClear: true
+    $(document).ready(function () {
+        $('.select2-basic-category').select2({
+            placeholder: "Select a subcategory",
+            allowClear: true
+        });
+    });
+
+    $(document).ready(function () {
+        $('.select2-basic-brand').select2({
+            placeholder: "Select a Brand",
+            allowClear: true
+        });
     });
 }
 
@@ -32,13 +350,27 @@ document.addEventListener('DOMContentLoaded', function () {
     let variantTypes = 1;
 
     const variantOptions = {
-        rasa: ['Vanilla', 'Coklat', 'Strawberry', 'Matcha'],
+        warna: ['Merah', 'Hijau', 'Biru', 'Ungu', 'Putih', 'Kuning', 'Pink', 'Hitam', 'Orange', 'Coklat'],
         ukuran: ['Small', 'Medium', 'Large', 'Extra Large'],
-        warna: ['Merah', 'Hijau', 'Biru', 'Ungu', 'Putih', 'Kuning', 'Pink', 'Hitam']
+        aroma: ['Mint', 'Rosemary', 'Lavender', 'Pandan', 'Lemon'],
+        rasa: ['Vanilla', 'Coklat', 'Strawberry', 'Matcha'],
     };
+
+    // Tambahkan event listener untuk input stock quantity, regular price, dan weight product
+    const stockQuantityInput = document.querySelector('input[name="stock_quantity"]');
+    const regularPriceInput = document.querySelector('input[name="regular_price"]');
+    const weightProductInput = document.querySelector('input[name="weight_product"]');
+
+    stockQuantityInput.addEventListener('input', updateVariantTable);
+    regularPriceInput.addEventListener('input', updateVariantTable);
+    weightProductInput.addEventListener('input', updateVariantTable);
 
     function updateVariantTable() {
         variantTableBody.innerHTML = '';
+        const stockQuantity = stockQuantityInput.value;
+        const regularPrice = regularPriceInput.value;
+        const weightProduct = weightProductInput.value;
+
         document.querySelectorAll('.variant-type').forEach((variantType, typeIndex) => {
             const typeSelect = variantType.querySelector('select[name="variant_type[]"]');
             const valuesSelect = variantType.querySelector('select[name^="variant_values"]');
@@ -58,10 +390,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </td>
                     <td>${selectedType}: ${value}</td>
-                    <td><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" placeholder="Price" min="0" step="0.01"></td>
-                    <td><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" placeholder="Stock" min="0"></td>
-                    <td><input type="text" class="form-control" name="variant_sku[${typeIndex}][${valueIndex}]" placeholder="SKU"></td>
-                    <td><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" placeholder="Weight" min="0"></td>                    
+                    <td><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" placeholder="Price" min="0" step="0.01" value="${regularPrice}"></td>
+                    <td><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" placeholder="Stock" min="0" value="${stockQuantity}"></td>
+                    <td><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" placeholder="Weight" min="0" value="${weightProduct}"></td>                    
                 `;
                 variantTableBody.appendChild(row);
             });
@@ -175,4 +506,3 @@ document.addEventListener('DOMContentLoaded', function () {
     initializeSelect2WithAddOption('.select2-add-option');
     initializeSelect2('.select2-variant-type', { tags: false, closeOnSelect: true });
 });
-
