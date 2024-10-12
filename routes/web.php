@@ -8,6 +8,7 @@ use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChartofAccountController;
 use App\Http\Controllers\DashboardController;
