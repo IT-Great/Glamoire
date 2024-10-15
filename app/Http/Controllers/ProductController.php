@@ -48,7 +48,7 @@ class ProductController extends Controller
 
                 return view('user.component.home')->with('data', $data);
             } else {
-                $product = Product::get();
+                $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
                 $promos = Promo::where('type', '=', 'promo')->get();
 
                 $data = [

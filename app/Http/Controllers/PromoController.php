@@ -36,6 +36,19 @@ class PromoController extends Controller
             $promo = Promo::where('promo_name', $name)->with(['products.brand'])
             ->get();
 
+            foreach ($promo as $promoItem) {
+                // Pastikan products adalah koleksi
+                foreach ($promoItem->products as $product) {
+                    // Hitung diskon untuk setiap produk
+                    $priceDiscount = ($product->regular_price * $promoItem->diskon) / 100;
+                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    
+                    // Masukkan hasil diskon ke objek promo
+                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
+                    $product->price_after_discount = $priceAfterDiscount;
+                }
+            }
+
             $cartId = Cart::where('user_id', $userId)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
             $wishlists = Wishlist::where('user_id', $userId)->get();
@@ -47,8 +60,23 @@ class PromoController extends Controller
             ]);
         }
         else{
+
             $promo = Promo::where('promo_name', $name)
-            ->with(['products.brand'])->get();
+            ->with(['products.brand'])
+            ->get();
+
+            foreach ($promo as $promoItem) {
+                // Pastikan products adalah koleksi 
+                foreach ($promoItem->products as $product) {
+                    // Hitung diskon untuk setiap produk
+                    $priceDiscount = ($product->regular_price * $promoItem->diskon) / 100;
+                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    
+                    // Masukkan hasil diskon ke objek promo
+                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
+                    $product->price_after_discount = $priceAfterDiscount;
+                }
+            }
 
             // dd($promo);
             return view('user.component.detail-promo', [

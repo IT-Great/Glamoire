@@ -485,7 +485,7 @@
             <div class="modal-body p-1 p-md-3">
                 <div class="col-12 p-0">
                     @foreach ($data['vouchers'] as $voucher)
-                        <div class="col-12 p-2 promo-item" onclick="selectPromo(this)">
+                        <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
                             <div class="grid gap-1 p-2 border rounded-md bg-light cursor-pointer">
                                 <div class="d-flex">
                                     <div class="col-10 p-0">
@@ -525,7 +525,7 @@
                         <p class="mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Yey, kamu hemat</p>
                         <p class="mb-0 text-black font-semibold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp10.000</p>
                     </div>
-                    <button type="submit" id="button-use-voucher" class="btn border rounded-md text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
+                    <button type="button" id="button-use-voucher" class="btn border rounded-md text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
                         Pakai Voucher
                     </button>
                 </div>
@@ -738,6 +738,8 @@
         // Add border to the selected promo
         promoElement.querySelector('.grid').classList.add('border', 'border-dark');
         promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
+
+        
     }
 
     function selectAddress(addressElement) {

@@ -171,7 +171,7 @@
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating,1) }}</p>
                                     </div>
 
                                     <div class="ml-auto">
@@ -306,7 +306,7 @@
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
                                     </div>
 
                                     <div class="ml-auto">

@@ -80,7 +80,7 @@ class ArticleController extends Controller
 
     // USER
     public function articleUser(){
-        $articles = Article::with(['category'])->get();
+        $articles = Article::with(['categoryArticle'])->get();
         $categoryArticles = CategoryArticle::with(['articles'])
         ->get();
 
@@ -94,10 +94,10 @@ class ArticleController extends Controller
     }
 
     public function detailArticleUser($name){
-        $article = Article::where('title', $name)->with(['category'])->first();
+        $article = Article::where('title', $name)->with(['categoryArticle'])->first();
         $categoryArticles = CategoryArticle::with(['articles'])
         ->get();
-        $articles = Article::with(['category'])->get();
+        $articles = Article::with(['categoryArticle'])->get();
 
         // dd($categoryArticles);
         return view('user.component.blog', [

@@ -357,7 +357,7 @@
 
                 <!-- MUNCULKAN DATA PRODUK JIKA USER BELUM LOGIN -->
                 @else
-                    @foreach ($data as $product)
+                    @foreach ($youlike as $product)
                         <div class="swiper-slide p-0">
                             <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300" style="min-height:365px; max-height:365px;">
                                 <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
@@ -366,7 +366,7 @@
                                     <div class="flex rating-wishlist">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
                                         </div>
 
                                         <div class="ml-auto">

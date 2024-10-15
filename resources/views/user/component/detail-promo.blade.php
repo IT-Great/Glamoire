@@ -52,9 +52,18 @@
                         </p>
 
                         <div class="flex justify-content-start gap-1">
-                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
-                                Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                          @if ($product->price_after_discount)
+                            <p class="text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                              <del>
+                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                              </del>
                             </p>
+                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
+                            @else
+                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                            </p>
+                          @endif
                         </div>
                     </div>
                 </div>
@@ -110,9 +119,18 @@
                         </a>
                     </p>
                     <div class="flex justify-content-start gap-1">
-                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
-                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
-                        </p>
+                        @if ($product->price_after_discount)
+                          <p class="text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                            <del>
+                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                            </del>
+                          </p>
+                          <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
+                          @else
+                          <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                          </p>
+                        @endif
                     </div>
                 </div>
             </div>
