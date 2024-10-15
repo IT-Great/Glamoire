@@ -6,75 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mazer Admin Dashboard</title>
 
-    <!-- Include Choices CSS -->
-    <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-
-
-    <style>
-        .upload__img-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
-        }
-
-        .upload__img-box-multiple {
-            width: 195px;
-            padding: 0 10px;
-            margin-bottom: 12px;
-            position: relative;
-        }
-
-        .upload__img-box-single {
-            width: 450px;
-            padding: 0 10px;
-            margin-bottom: 12px;
-            position: relative;
-        }
-
-        .upload__img-close {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            text-align: center;
-            line-height: 24px;
-            z-index: 1;
-            cursor: pointer;
-        }
-
-        .upload__img-close:after {
-            content: '\2716';
-            font-size: 14px;
-            color: white;
-        }
-
-        .img-bg {
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            position: relative;
-            padding-bottom: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/brand/createbrand.css">
 
 </head>
 
@@ -88,9 +30,6 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Add New Brand</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/brand-admin">Brand</a></li>
@@ -112,32 +51,49 @@
                                             enctype="multipart/form-data" class="form form-vertical">
                                             @csrf
                                             <div class="form-body">
+                                                <h3 class="mb-3">Create a New Brand</h3>
+                                                <p class="text-muted">Please fill in the details below to create a new
+                                                    brand.</p>
                                                 <div class="row">
+                                                    <!-- Brand Name Section -->
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Brand Name <span
+                                                            <label for="brand-name-icon">Brand Name <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    {{ $errors->has('name') ? 'is-invalid' : '' }}
-                                                                    placeholder="Enter Brand Name" id="first-name-icon"
-                                                                    name="name">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter a unique brand name (e.g., Nike, Adidas)"
+                                                                    id="brand-name-icon" name="name">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-bag"></i>
                                                                 </div>
-
                                                             </div>
                                                             @if ($errors->has('name'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('name') }}</p>
+                                                                <p style="color: red">{{ $errors->first('name') }}</p>
+                                                            @else
+                                                                <small class="text-muted" style="font-size: 14px;">Give
+                                                                    your brand a distinct
+                                                                    name that users will recognize.</small>
                                                             @endif
                                                         </div>
 
-                                                        <div class="form-group ">
-                                                            <label for="first-name-icon">Description <span
+                                                        <!-- Description Section -->
+                                                        <div class="form-group">
+                                                            <label for="brand-description">Description <span
                                                                     style="color: red">*</span></label>
-                                                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"></textarea>
-
+                                                            <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" id="brand-description"
+                                                                rows="3" placeholder="Provide a brief description of the brand, its identity, and what it represents"
+                                                                name="description"></textarea>
+                                                            @if ($errors->has('description'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('description') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Describe what makes your
+                                                                    brand
+                                                                    stand out and its mission.</small>
+                                                            @endif
                                                         </div>
                                                     </div>
 
@@ -158,41 +114,51 @@
                                                                     <p>Drag and drop a file or select to add Image</p>
                                                                 </div>
 
-                                                            </div>
-                                                            @if ($errors->has('brand_logo'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('brand_logo') }}</p>
-                                                            @endif
+                                                            </div>                                                        
+
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
                                                                 style="display: flex; flex-wrap: wrap;">
                                                                 <!-- Gambar yang diunggah akan ditambahkan di sini -->
                                                             </div>
+
+                                                            @if ($errors->has('brand_logo'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('brand_logo') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Your
+                                                                    brand logo should be in
+                                                                    image format (e.g., .jpg, .png).</small>
+                                                            @endif
                                                         </div>
                                                     </div>
+                                                </div>
 
-                                                    <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit" class="btn btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Submit</button>
-                                                        {{-- <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px;">Reset</button> --}}
-                                                    </div>
+                                                <!-- Submit Button -->
+                                                <div class="col-12 d-flex justify-content-end">
+                                                    <button type="reset"
+                                                        class="btn btn-sm btn-light-secondary me-3 mb-1">Reset
+                                                        Form</button>
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-primary me-1 mb-1">Submit
+                                                        Brand</button>
                                                 </div>
                                             </div>
-                                        </form>
                                     </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
             </div>
-
-            @include('admin.layouts.footer')
-
-
+            </section>
         </div>
+
+        @include('admin.layouts.footer')
+
+
+    </div>
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -227,7 +193,7 @@
     </script>
 
     {{-- Upload Single Image --}}
-    <script>
+    {{-- <script>
         // Fungsi untuk mengunggah satu gambar
         function readURLSingle(input) {
             const singleUploadContent = document.getElementById('single-file-upload-content');
@@ -254,6 +220,41 @@
                     imgClose.onclick = function() {
                         singleUploadContent.innerHTML = ''; // Hapus gambar jika tombol close diklik
                         input.value = ''; // Reset input file
+                    };
+
+                    imgBg.appendChild(imgClose);
+                    imgBox.appendChild(imgBg);
+                    singleUploadContent.appendChild(imgBox);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script> --}}
+
+    <script>
+        function readURLSingle(input) {
+            const singleUploadContent = document.getElementById('single-file-upload-content');
+            singleUploadContent.innerHTML = '';
+
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+
+                if (!file.type.match('image.*')) return;
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgBox = document.createElement('div');
+                    imgBox.classList.add('upload__img-box-single');
+
+                    const imgBg = document.createElement('div');
+                    imgBg.classList.add('img-bg');
+                    imgBg.style.backgroundImage = `url(${e.target.result})`;
+
+                    const imgClose = document.createElement('div');
+                    imgClose.classList.add('upload__img-close');
+                    imgClose.onclick = function() {
+                        singleUploadContent.innerHTML = '';
+                        input.value = '';
                     };
 
                     imgBg.appendChild(imgClose);

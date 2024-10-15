@@ -22,15 +22,12 @@
     <div id="app">
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
-     
+
         <div id="main">
             <div class="container mb-4">
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Detail Product</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/product-admin"
@@ -38,7 +35,7 @@
                                     <li class="breadcrumb-item active" aria-current="page">Detail Product</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div>                       
                     </div>
                 </div>
 
@@ -116,7 +113,6 @@
                                                                 onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
                                                         </div>
                                                         <div class="variant-value">{{ $variant->sku }}</div>
-
                                                     @else
                                                         <!-- Display text like product-meta -->
                                                         <div class="product-variant-meta">
@@ -141,23 +137,21 @@
                     <p>{{ $product->description }}</p>
                 </div>
 
-
                 @if (!empty($product->video))
                     <div class="description-card">
                         <h4>Product Video</h4>
-                        <video controls class="w-100 rounded">
-                            <source src="{{ Storage::url($product->video) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
+                        <div class="video-container">
+                            <video controls>
+                                <source src="{{ Storage::url($product->video) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
                     </div>
                 @endif
-
             </div>
             @include('admin.layouts.footer')
-
         </div>
     </div>
-
 
     <script>
         // Fungsi untuk membuka gambar di tab baru
@@ -165,18 +159,12 @@
             window.open(url, '_blank');
         }
     </script>
-
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/vendors/choices.js/choices.min.js') }}"></script>
-
-    <!-- toastify -->
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
-
 </body>
 
 </html>

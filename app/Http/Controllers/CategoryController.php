@@ -9,13 +9,6 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    // // CATEGORY PRODUCT
-    // public function indexCategoryProduct()
-    // {
-    //     $categoryProduct = CategoryProduct::all(); // Mengambil semua data kategori
-    //     return view('admin.category.index', compact('categoryProduct'));
-    // }
-
     public function indexCategoryProduct()
     {
         $categories = CategoryProduct::with('children.children')->whereNull('parent_id')->get();
@@ -25,17 +18,16 @@ class CategoryController extends Controller
     public function createCategoryProduct(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'parent_id' => 'nullable|exists:category_products,id',
-            'type' => 'required|in:category,subcategory,option',
+            'name' => 'required|string|max:255',
+            'parent_id' => 'nullable|exists:category_products,id'
         ]);
 
-        $category = CategoryProduct::create([
+        CategoryProduct::create([
             'name' => $request->name,
             'parent_id' => $request->parent_id
         ]);
 
-        return response()->json(['success' => true, 'category' => $category]);
+        return response()->json(['success' => true]);
     }
 
     public function deleteCategoryProduct($id)

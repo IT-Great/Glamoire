@@ -27,4 +27,16 @@ class Promo extends Model
     {
         return $this->belongsToMany(Product::class, 'promo_products', 'promo_id', 'product_id');
     }
+
+    // Mutator untuk date_range
+    public function setDateRangeAttribute($value)
+    {
+        $this->attributes['date_range'] = $value; // Simpan range langsung
+    }
+
+    // Accessor (opsional) jika Anda ingin menampilkan date_range kembali dalam format string
+    public function getDateRangeAttribute($value)
+    {
+        return $value; // Tampilkan seperti yang ada
+    }
 }

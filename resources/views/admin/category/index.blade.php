@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+
 </head>
 
 <body>
@@ -29,16 +31,13 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>All Category</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/category-product">Category</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Category</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
 
@@ -52,8 +51,8 @@
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="#" type="button"
                                         class="btn btn-sm btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                                        data-bs-target="#mainCategoryModal" style="border-radius: 8px;">
-                                        <i class="bi bi-plus-circle" style="margin-right: 3px;"></i> Add Category
+                                        data-bs-target="#categoryModal">
+                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Category
                                     </a>
                                 </div>
                             </div>
@@ -77,43 +76,23 @@
                                                 <button class="btn btn-sm btn-primary add-subcategory"
                                                     data-id="{{ $category->id }}" data-type="subcategory">Add
                                                     Subcategory</button>
-                                                <button class="btn btn-sm btn-warning edit-category"
-                                                    data-id="{{ $category->id }}">Edit</button>
                                                 <button class="btn btn-sm btn-danger delete-category"
                                                     data-id="{{ $category->id }}">Delete</button>
                                             </td>
                                         </tr>
-                                        @if ($category->children->count() > 0)
-                                            @foreach ($category->children as $subcategory)
-                                                <tr>
-                                                    <td>-- {{ $subcategory->name }}</td>
-                                                    <td>{{ $subcategory->products->count() }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-primary add-subcategory"
-                                                            data-id="{{ $subcategory->id }}" data-type="option">Add
-                                                            Option</button>
-                                                        <button class="btn btn-sm btn-warning edit-category"
-                                                            data-id="{{ $subcategory->id }}">Edit</button>
-                                                        <button class="btn btn-sm btn-danger delete-category"
-                                                            data-id="{{ $subcategory->id }}">Delete</button>
-                                                    </td>
-                                                </tr>
-                                                @if ($subcategory->children->count() > 0)
-                                                    @foreach ($subcategory->children as $option)
-                                                        <tr>
-                                                            <td>---- {{ $option->name }}</td>
-                                                            <td>{{ $option->products->count() }}</td>
-                                                            <td>
-                                                                <button class="btn btn-sm btn-warning edit-category"
-                                                                    data-id="{{ $option->id }}">Edit</button>
-                                                                <button class="btn btn-sm btn-danger delete-category"
-                                                                    data-id="{{ $option->id }}">Delete</button>
-                                                            </td>
-                                                        </tr>
-                                                    @endforeach
-                                                @endif
-                                            @endforeach
-                                        @endif
+
+                                        <!-- Tampilkan subcategory jika ada -->
+                                        @foreach ($category->children as $subcategory)
+                                            <tr>
+                                                <td>— {{ $subcategory->name }} (Subcategory of {{ $category->name }})
+                                                </td>
+                                                <td>{{ $subcategory->products->count() }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-danger delete-category"
+                                                        data-id="{{ $subcategory->id }}">Delete</button>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endforeach
                                 </tbody>
                             </table>
@@ -122,25 +101,25 @@
                 </section>
             </div>
 
-
-            <div class="modal fade text-left" id="mainCategoryModal" tabindex="-1" role="dialog"
-                aria-labelledby="myModalLabel33" aria-hidden="true">
+            <div class="modal fade text-left" id="categoryModal" tabindex="-1" role="dialog"
+                aria-labelledby="categoryModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel33">Form Add Categories</h4>
+                            <h4 class="modal-title" id="categoryModalLabel">Form Add Category</h4>
                             <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                 <i data-feather="x"></i>
                             </button>
                         </div>
-                        <form id="mainCategoryForm">
+                        <form id="categoryForm">
                             @csrf
-                            <input type="hidden" name="type" value="category">
+                            <input type="hidden" name="parent_id" id="parentId">
+                            <input type="hidden" name="type" id="categoryType" value="category">
                             <div class="modal-body">
-                                <label>Category Name <span style="color: red">*</span> </label>
+                                <label>Category/Subcategory Name <span style="color: red">*</span> </label>
                                 <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control"
-                                        name="name" id="mainCategoryName">
+                                    <input type="text" placeholder="Enter Name" class="form-control" name="name"
+                                        id="categoryName">
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -184,7 +163,6 @@
                 </div>
             </div>
 
-
             @include('admin.layouts.footer')
         </div>
     </div>
@@ -203,8 +181,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
 
-    <script>
+
+    {{-- <script>
         $(document).ready(function() {
             // Main category form submission
             $('#mainCategoryForm').on('submit', function(e) {
@@ -300,11 +280,57 @@
                 });
             });
         });
+    </script> --}}
+
+    <script>
+        $(document).ready(function() {
+            // Form submission for category and subcategory
+            $('#categoryForm').on('submit', function(e) {
+                e.preventDefault();
+                submitCategoryForm($(this), '#categoryModal');
+            });
+
+            // Trigger modal for adding subcategory
+            $('.add-subcategory').click(function() {
+                $('#parentId').val($(this).data('id')); // Set the parent category ID
+                $('#categoryType').val('subcategory'); // Define the type as subcategory
+                $('#categoryModalLabel').text('Add Subcategory'); // Change modal title
+                $('#categoryModal').modal('show');
+            });
+
+            function submitCategoryForm(form, modalId) {
+                $.ajax({
+                    url: "{{ route('create-category-product') }}",
+                    type: "POST",
+                    data: form.serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            $(modalId).modal('hide');
+                            form[0].reset();
+                            Swal.fire({
+                                title: 'Success!',
+                                text: 'Category has been successfully created.',
+                                icon: 'success',
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#4A69E2',
+                            });
+                            setTimeout(function() {
+                                location.reload();
+                            }, 1500);
+                        }
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error!', 'An error occurred while creating the category.', 'error');
+                    }
+                });
+            }
+        });
     </script>
 
     <script>
         $(document).ready(function() {
-            $('.add-subcategory').click(function() {
+            // Gunakan event delegation untuk elemen yang dimuat dinamis oleh DataTable
+            $(document).on('click', '.add-subcategory', function() {
                 $('#parentId').val($(this).data('id'));
                 $('#categoryType').val($(this).data('type'));
                 $('#categoryModalLabel').text('Add ' + $(this).data('type'));

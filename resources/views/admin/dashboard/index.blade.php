@@ -45,6 +45,23 @@
                 <section class="row">
                     <div class="col-12 col-lg-9">
                         <div class="row">
+                            {{-- <div class="col-6 col-lg-3 col-md-6">
+                                <div class="card">
+                                    <div class="card-body px-3 py-4-5">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldShow"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h6 class="text-muted font-semibold">New Order</h6>
+                                                <h6 class="font-extrabold mb-0">112</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
                             <div class="col-6 col-lg-3 col-md-6">
                                 <div class="card">
                                     <div class="card-body px-3 py-4-5">
@@ -62,6 +79,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                             <div class="col-6 col-lg-3 col-md-6">
                                 <div class="card">
                                     <div class="card-body px-3 py-4-5">
@@ -124,12 +143,10 @@
                                         <h4>Sales Information</h4>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <!-- Input untuk memilih range tanggal -->
                                                 <input type="text" id="filter-date-range" class="form-control"
                                                     placeholder="Select Date Range">
                                             </div>
                                             <div class="col-md-6">
-                                                <!-- Filter untuk memilih Brand -->
                                                 <select id="filter-brand" class="form-select select2">
                                                     <option value="">Select Brand</option>
                                                     @foreach ($brands as $brand)
@@ -145,7 +162,6 @@
                                 </div>
                             </div>
                         </div> --}}
-
 
                         <div class="row">
                             <div class="col-12">
@@ -164,6 +180,11 @@
                                                         <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-12">
+                                                <button id="export-csv" class="btn btn-primary">Export to CSV</button>
                                             </div>
                                         </div>
                                     </div>
@@ -230,6 +251,18 @@
                             </div>
                         </div>
 
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4>Pemasukan Mingguan</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="weeklyIncomeChart"></div>
+                            </div>
+                        </div>
+
+
+
                         <div class="row">
 
                             <div class="col-12 col-xl-8">
@@ -287,9 +320,10 @@
                     {{-- <div class="col-12 col-lg-3">
                         <div class="card">
                             <div class="card-header">
-                                <h4>Recent Messages</h4>
+                                <h4>Frequent Buyers</h4> <!-- Judul berubah menjadi Frequent Buyers -->
                             </div>
                             <div class="card-content pb-4">
+                                <!-- User 1 -->
                                 <div class="recent-message d-flex px-4 py-3">
                                     <div class="avatar avatar-lg">
                                         <img src="assets/images/faces/4.jpg">
@@ -297,8 +331,13 @@
                                     <div class="name ms-4">
                                         <h5 class="mb-1">Hank Schrader</h5>
                                         <h6 class="text-muted mb-0">@johnducky</h6>
+                                        <p class="mb-0 text-primary">Pembelian: 45</p>
+                                        <p class="mb-0">Total Transaksi: Rp 15.000.000</p> <!-- Total transaksi -->
+                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 12 Okt 2024</p> <!-- Terakhir diperbarui -->
                                     </div>
                                 </div>
+                                
+                                <!-- User 2 -->
                                 <div class="recent-message d-flex px-4 py-3">
                                     <div class="avatar avatar-lg">
                                         <img src="assets/images/faces/5.jpg">
@@ -306,8 +345,13 @@
                                     <div class="name ms-4">
                                         <h5 class="mb-1">Dean Winchester</h5>
                                         <h6 class="text-muted mb-0">@imdean</h6>
+                                        <p class="mb-0 text-primary">Pembelian: 32</p>
+                                        <p class="mb-0">Total Transaksi: Rp 10.000.000</p> <!-- Total transaksi -->
+                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 10 Okt 2024</p> <!-- Terakhir diperbarui -->
                                     </div>
                                 </div>
+                                
+                                <!-- User 3 -->
                                 <div class="recent-message d-flex px-4 py-3">
                                     <div class="avatar avatar-lg">
                                         <img src="assets/images/faces/1.jpg">
@@ -315,28 +359,23 @@
                                     <div class="name ms-4">
                                         <h5 class="mb-1">John Dodol</h5>
                                         <h6 class="text-muted mb-0">@dodoljohn</h6>
+                                        <p class="mb-0 text-primary">Pembelian: 28</p>
+                                        <p class="mb-0">Total Transaksi: Rp 8.500.000</p> <!-- Total transaksi -->
+                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 09 Okt 2024</p> <!-- Terakhir diperbarui -->
                                     </div>
                                 </div>
+                    
                                 <div class="px-4">
-                                    <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Start
-                                        Conversation</button>
+                                    <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>See All Buyers</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Visitors Profile</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="chart-visitors-profile"></div>
-                            </div>
-                        </div>
-
                     </div> --}}
+                    
 
                     <div class="col-12 col-lg-3">
 
-                        <div class="card">
+                        {{-- <div class="card">
                             <div class="card-header">
                                 <h4>Profile Visit</h4>
                             </div>
@@ -396,7 +435,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="card">
                             <div class="card-header">
@@ -427,92 +466,6 @@
 
 
     <script src="assets/js/main.js"></script>
-    {{-- script awal untuk sales information --}}
-    {{-- <script>
-        // Inisialisasi chart menggunakan ApexCharts
-        let salesChart;
-
-        // Function untuk memuat data berdasarkan tanggal dan tipe data
-        function loadSalesData(startDate, endDate, type) {
-            // Kamu bisa ganti ini dengan data yang kamu dapatkan dari backend
-            let allData = {
-                sales: [40, 55, 60, 70, 80, 90, 100],
-                returns: [10, 15, 20, 25, 30, 35, 40]
-            };
-
-            let categories = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-            let filteredData = [];
-
-            // Filter data sesuai tipe
-            if (type === 'sales') {
-                filteredData = allData.sales;
-            } else if (type === 'returns') {
-                filteredData = allData.returns;
-            } else {
-                filteredData = allData.sales.map((value, index) => value + allData.returns[index]);
-            }
-
-            // Update atau render chart
-            if (salesChart) {
-                salesChart.updateOptions({
-                    series: [{
-                        name: 'Amount',
-                        data: filteredData
-                    }],
-                    xaxis: {
-                        categories: categories
-                    }
-                });
-            } else {
-                var options = {
-                    chart: {
-                        type: 'line',
-                        height: 350
-                    },
-                    series: [{
-                        name: 'Amount',
-                        data: filteredData
-                    }],
-                    xaxis: {
-                        categories: categories
-                    }
-                };
-
-                salesChart = new ApexCharts(document.querySelector("#chart-sales-information"), options);
-                salesChart.render();
-            }
-        }
-
-        // Inisialisasi Date Range Picker
-        $(function() {
-            $('#filter-date-range').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'YYYY-MM-DD'
-                }
-            }, function(start, end, label) {
-                let type = $('#filter-type').val();
-                loadSalesData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'), type);
-            });
-        });
-
-        // Event listener untuk tipe data
-        document.getElementById('filter-type').addEventListener('change', function() {
-            let dates = $('#filter-date-range').data('daterangepicker');
-            let startDate = dates.startDate.format('YYYY-MM-DD');
-            let endDate = dates.endDate.format('YYYY-MM-DD');
-            let type = this.value;
-
-            loadSalesData(startDate, endDate, type);
-        });
-
-        // Load initial chart data
-        let initialStart = moment().subtract(6, 'days').format('YYYY-MM-DD');
-        let initialEnd = moment().format('YYYY-MM-DD');
-        loadSalesData(initialStart, initialEnd, 'all');
-    </script> --}}
-
     {{-- script sales information untuk bagian 7 hari terakhir --}}
     {{-- <script>
         // inisialisasi select2
@@ -610,12 +563,14 @@
         let salesChart;
 
         // Dummy data for the last 3 months
+        // Dummy data for the last 3 months
         const dummyCategories = [
-            '1-30 ' + moment().subtract(3, 'months').format('MMMM YYYY'), // e.g., "1-30 September 2024"
-            '1-31 ' + moment().subtract(2, 'months').format('MMMM YYYY'),
-            '1-31 ' + moment().subtract(1, 'months').format('MMMM YYYY'),
-            '1-31 ' + moment().format('MMMM YYYY'),
+            moment().subtract(3, 'months').format('MMMM YYYY'), // Misalnya: "September 2024"
+            moment().subtract(2, 'months').format('MMMM YYYY'),
+            moment().subtract(1, 'months').format('MMMM YYYY'),
+            moment().format('MMMM YYYY'),
         ];
+
 
 
         const dummySalesData = [100, 150, 200, 250]; // Dummy sales data for each month
@@ -653,6 +608,73 @@
             }
         }
 
+        function exportToCSV() {
+            let dates = $('#filter-date-range').data('daterangepicker');
+            let startDate = dates.startDate.format('YYYY-MM-DD');
+            let endDate = dates.endDate.format('YYYY-MM-DD');
+            let brandId = $('#filter-brand').val();
+
+            // In a real scenario, you would fetch this data from your backend
+            // For this example, we'll use dummy data
+            let csvContent = [
+                ['No. Pesanan', 'Status Pesanan', 'Status Pembatalan/ Pengembalian', 'No. Resi', 'Opsi Pengiriman',
+                    'Antar ke counter/ pick-up', 'Pesanan Harus Dikirimkan Sebelum (Menghindari keterlambatan)',
+                    'Waktu Pengiriman Diatur', 'Waktu Pesanan Dibuat', 'Waktu Pembayaran Dilakukan',
+                    'Metode Pembayaran', 'SKU Induk', 'Nama Produk', 'Nomor Referensi SKU', 'Nama Variasi',
+                    'Harga Awal', 'Harga Setelah Diskon', 'Jumlah', 'Returned quantity', 'Total Harga Produk',
+                    'Total Diskon', 'Diskon Dari Penjual', 'Diskon Dari Shopee', 'Berat Produk',
+                    'Jumlah Produk di Pesan', 'Total Berat', 'Voucher Ditanggung Penjual', 'Cashback Koin',
+                    'Voucher Ditanggung Shopee', 'Paket Diskon', 'Paket Diskon (Diskon dari Shopee)',
+                    'Paket Diskon (Diskon dari Penjual)', 'Potongan Koin Shopee', 'Diskon Kartu Kredit',
+                    'Ongkos Kirim Dibayar oleh Pembeli', 'Estimasi Potongan Biaya Pengiriman',
+                    'Ongkos Kirim Pengembalian Barang', 'Total Pembayaran', 'Perkiraan Ongkos Kirim',
+                    'Catatan dari Pembeli', 'Catatan', 'Username (Pembeli)', 'Nama Penerima', 'No. Telepon',
+                    'Alamat Pengiriman', 'Kota/Kabupaten', 'Provinsi', 'Waktu Pesanan Selesai'
+                ],
+                ['1', 'Selesai', '', 'JP6969696969', 'J&T Express', 'Antar ke counter', '2023-05-15 23:59',
+                    '2023-05-14 10:00', '2023-05-13 14:30', '2023-05-13 14:35', 'Transfer Bank', 'PROD001',
+                    'T-Shirt Katun', 'SKU001', 'Putih-M', '100000', '90000', '1', '0', '90000', '10000',
+                    '5000', '5000', '0.3', '1', '0.3', '5000', '1000', '5000', '0', '0', '0', '2000', '0',
+                    '15000', '0', '0', '105000', '15000', 'Tolong bungkus rapi', '', 'john_doe',
+                    'John Doe', '081234567890', 'Jl. Contoh No. 123', 'Jakarta Selatan', 'DKI Jakarta',
+                    '2023-05-16 15:30'
+                ],
+                ['2', 'Dikirim', '', 'JP7070707070', 'J&T Express', 'Antar ke counter', '2023-05-16 23:59',
+                    '2023-05-15 11:00', '2023-05-14 09:45', '2023-05-14 09:50', 'Transfer Bank', 'PROD002',
+                    'Celana Jeans', 'SKU002', 'Biru-32', '250000', '225000', '1', '0', '225000', '25000',
+                    '20000', '5000', '0.7', '1', '0.7', '0', '0', '0', '0', '0', '0', '0', '0',
+                    '15000', '0', '0', '240000', '15000', '', '', 'jane_smith',
+                    'Jane Smith', '087654321098', 'Jl. Sample No. 456', 'Surabaya', 'Jawa Timur',
+                    '2023-05-17 14:45'
+                ],
+                // ... add more rows as needed
+            ];
+
+
+            // Convert array to CSV string
+            let csv = csvContent.map(row => row.join(',')).join('\n');
+
+            // Create a Blob with the CSV content
+            let blob = new Blob([csv], {
+                type: 'text/csv;charset=utf-8;'
+            });
+            let url = URL.createObjectURL(blob);
+
+            // Create a link to download the CSV file
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "sales_data.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Add event listener for export button
+        document.getElementById('export-csv').addEventListener('click', exportToCSV);
+
+
+
         // Inisialisasi Date Range Picker
         $(function() {
             $('#filter-date-range').daterangepicker({
@@ -683,6 +705,57 @@
 
         // Load initial dummy data for the last 3 months
         loadDummySalesData(); // Muat data awal
+    </script>
+
+    {{-- script penjualan 1 minggu --}}
+
+    <script>
+        var options = {
+            series: [{
+                name: 'Pemasukan',
+                data: [500000, 300000, 700000, 400000, 600000, 450000, 800000] // Data dummy pemasukan per hari
+            }],
+            chart: {
+                height: 350,
+                type: 'bar', // Kamu bisa ganti tipe chart menjadi 'line' atau yang lain
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], // Hari dalam seminggu
+            },
+            yaxis: {
+                title: {
+                    text: 'Pemasukan (Rp)'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return "Rp " + val.toLocaleString(); // Format Rupiah
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#weeklyIncomeChart"), options);
+        chart.render();
     </script>
 
     {{-- setup backend data dinamis --}}

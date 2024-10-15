@@ -62,92 +62,6 @@ function removeVideo(element) {
 
 
 // HANDLE MULTIPLE UPLOAD IMAGE
-// let selectedFiles = [];
-
-// function handleFiles(files) {
-//     const fileUploadContent = document.getElementById('file-upload-content');
-//     const imageError = document.getElementById('image-error');
-//     const totalFiles = selectedFiles.length + files.length;
-
-//     // Reset pesan error
-//     imageError.style.display = 'none';
-//     imageError.textContent = '';
-
-//     // Cek jika jumlah file melebihi 6
-//     if (totalFiles > 6) {
-//         imageError.textContent = 'You can upload a maximum of 6 images.';
-//         imageError.style.display = 'block';
-//         return;
-//     }
-
-//     // Tambahkan file ke array selectedFiles
-//     for (let i = 0; i < files.length; i++) {
-//         selectedFiles.push(files[i]);
-//     }
-
-//     // Tampilkan gambar di form
-//     Array.from(files).forEach(file => {
-//         const maxSize = 2 * 1024 * 1024; // 2MB
-//         if (file.size > maxSize) {
-//             imageError.textContent = 'Each image file must be less than 2MB.';
-//             imageError.style.display = 'block';
-//             return;
-//         }
-
-//         if (!file.type.match('image.*')) return; // Hanya file gambar
-
-//         const reader = new FileReader();
-//         reader.onload = function (e) {
-//             // Buat elemen gambar
-//             const imgBox = document.createElement('div');
-//             imgBox.classList.add('upload__img-box-multiple');
-
-//             const imgBg = document.createElement('div');
-//             imgBg.classList.add('img-bg');
-//             imgBg.style.backgroundImage = `url(${e.target.result})`;
-
-//             // Tambahkan tombol close
-//             const imgClose = document.createElement('div');
-//             imgClose.classList.add('upload__img-close');
-//             imgClose.onclick = function () {
-//                 const index = Array.from(fileUploadContent.children).indexOf(imgBox);
-//                 selectedFiles.splice(index, 1);
-//                 fileUploadContent.removeChild(imgBox);
-//             };
-
-//             imgBg.appendChild(imgClose);
-//             imgBox.appendChild(imgBg);
-//             fileUploadContent.appendChild(imgBox);
-//         };
-//         reader.readAsDataURL(file);
-//     });
-// }
-
-// document.querySelector('form').addEventListener('submit', function (event) {
-//     const imageError = document.getElementById('image-error');
-
-//     if (selectedFiles.length === 0) {
-//         event.preventDefault(); // Mencegah form dari submit
-//         imageError.textContent = 'Please upload at least one image.';
-//         imageError.style.display = 'block';
-//         imageError.scrollIntoView({
-//             behavior: 'smooth',
-//             block: 'center'
-//         });
-//         return;
-//     }
-
-//     const fileInput = document.getElementById('images');
-//     const dataTransfer = new DataTransfer();
-
-//     selectedFiles.forEach(file => {
-//         dataTransfer.items.add(file);
-//     });
-
-//     fileInput.files = dataTransfer.files;
-// });
-
-
 let selectedFiles = [];
 
 function handleFiles(files) {
@@ -161,7 +75,7 @@ function handleFiles(files) {
 
     // Cek jika jumlah file melebihi 6
     if (totalFiles > 6) {
-        imageError.textContent = 'You can upload a maximum of 6 files (images/videos).';
+        imageError.textContent = 'You can upload a maximum of 6 images.';
         imageError.style.display = 'block';
         return;
     }
@@ -171,52 +85,40 @@ function handleFiles(files) {
         selectedFiles.push(files[i]);
     }
 
-    // Tampilkan gambar/video di form
+    // Tampilkan gambar di form
     Array.from(files).forEach(file => {
-        const maxSize = 10 * 1024 * 1024; // 10MB untuk gambar/video
+        const maxSize = 2 * 1024 * 1024; // 2MB
         if (file.size > maxSize) {
-            imageError.textContent = 'Each file must be less than 10MB.';
+            imageError.textContent = 'Each image file must be less than 2MB.';
             imageError.style.display = 'block';
             return;
         }
 
-        if (!file.type.match('image.*') && !file.type.match('video.*')) return; // Hanya file gambar/video
+        if (!file.type.match('image.*')) return; // Hanya file gambar
 
         const reader = new FileReader();
         reader.onload = function (e) {
-            const mediaBox = document.createElement('div');
-            mediaBox.classList.add('upload__img-box-multiple');
+            // Buat elemen gambar
+            const imgBox = document.createElement('div');
+            imgBox.classList.add('upload__img-box-multiple');
 
-            const mediaBg = document.createElement('div');
-            mediaBg.classList.add('img-bg');
-            mediaBox.appendChild(mediaBg);
-
-            // Jika file gambar
-            if (file.type.match('image.*')) {
-                mediaBg.style.backgroundImage = `url(${e.target.result})`;
-            } else if (file.type.match('video.*')) {
-                // Jika file video
-                const videoElement = document.createElement('video');
-                videoElement.setAttribute('src', e.target.result);
-                videoElement.setAttribute('controls', 'controls');
-                videoElement.style.width = '100px'; // Ubah ukuran sesuai kebutuhan
-                videoElement.style.height = 'auto';
-                mediaBg.appendChild(videoElement);
-            }
+            const imgBg = document.createElement('div');
+            imgBg.classList.add('img-bg');
+            imgBg.style.backgroundImage = `url(${e.target.result})`;
 
             // Tambahkan tombol close
-            const mediaClose = document.createElement('div');
-            mediaClose.classList.add('upload__img-close');
-            mediaClose.onclick = function () {
-                const index = Array.from(fileUploadContent.children).indexOf(mediaBox);
+            const imgClose = document.createElement('div');
+            imgClose.classList.add('upload__img-close');
+            imgClose.onclick = function () {
+                const index = Array.from(fileUploadContent.children).indexOf(imgBox);
                 selectedFiles.splice(index, 1);
-                fileUploadContent.removeChild(mediaBox);
+                fileUploadContent.removeChild(imgBox);
             };
 
-            mediaBg.appendChild(mediaClose);
-            fileUploadContent.appendChild(mediaBox);
+            imgBg.appendChild(imgClose);
+            imgBox.appendChild(imgBg);
+            fileUploadContent.appendChild(imgBox);
         };
-
         reader.readAsDataURL(file);
     });
 }
@@ -226,7 +128,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
 
     if (selectedFiles.length === 0) {
         event.preventDefault(); // Mencegah form dari submit
-        imageError.textContent = 'Please upload at least one image or video.';
+        imageError.textContent = 'Please upload at least one image.';
         imageError.style.display = 'block';
         imageError.scrollIntoView({
             behavior: 'smooth',
@@ -235,7 +137,7 @@ document.querySelector('form').addEventListener('submit', function (event) {
         return;
     }
 
-    const fileInput = document.getElementById('media');
+    const fileInput = document.getElementById('images');
     const dataTransfer = new DataTransfer();
 
     selectedFiles.forEach(file => {
@@ -310,15 +212,22 @@ function readURLSingle(input) {
 function initializeSelect2Basic(selectElement) {
     $(document).ready(function () {
         $('.select2-basic-category').select2({
+            width: '100%',
+            dropdownAutoWidth: true,
             placeholder: "Select a subcategory",
-            allowClear: true
+            allowClear: true,
+            dropdownParent: $('.select2-basic-category').parent()
         });
     });
 
     $(document).ready(function () {
         $('.select2-basic-brand').select2({
+            width: '100%',
+            dropdownAutoWidth: true,         
             placeholder: "Select a Brand",
-            allowClear: true
+            allowClear: true,
+            dropdownParent: $('.select2-basic-brand').parent()
+
         });
     });
 }

@@ -11,12 +11,11 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
+
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
 
     <style>
         .upload__img-wrap {
@@ -82,12 +81,18 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
+                            {{-- <h3>Add Voucher New User</h3> --}}
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo') }}">Promo</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-new-user') }}">Voucher
+                                            New
+                                            User</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Voucher New User</li>
                                 </ol>
                             </nav>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+
                         </div>
                     </div>
                 </div>
@@ -99,150 +104,109 @@
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <h4 class="mb-4">Create Promo</h4>
-                                        <p>Fill in the form below to create a new promotional offer.</p>
-                                        <form action="{{ route('store-promo') }}" class="form form-vertical"
+                                        <form action="{{ route('store-promo-new-user') }}" class="form form-vertical"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <input type="hidden" name="type" value="promo">
+                                            <input type="hidden" name="type" value="new user">
+
                                             <div class="form-body">
+                                                <h4 class="mb-4">Create New User Voucher</h4>
+                                                <p class="text-muted">Fill out the form below to create a new user
+                                                    voucher. Ensure that all required fields are filled out, including
+                                                    the voucher name, minimum transaction, discount, and maximum
+                                                    discount.</p>
+
                                                 <div class="row">
+                                                    <!-- Left Column -->
                                                     <div class="col-md-6">
+                                                        <!-- Voucher Name -->
                                                         <div class="form-group has-icon-left">
-                                                            <label for="promo_name">Promo Name <span
+                                                            <label for="voucher-name">Voucher Name <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Promo Name" id="promo_name"
-                                                                    name="promo_name">
+                                                                    placeholder="Enter the name of the voucher (e.g., New User Discount)"
+                                                                    id="voucher-name" name="promo_name">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-bag"></i>
                                                                 </div>
                                                             </div>
-                                                            <small class="text-muted" style="font-size: 14px;">Enter a
-                                                                unique name for the promo.</small>
-
                                                             @if ($errors->has('promo_name'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('promo_name') }}</p>
+                                                                <p style="color: red">{{ $errors->first('promo_name') }}
+                                                                </p>
                                                             @endif
+                                                            <small class="text-muted" style="font-size: 14px;">Choose a
+                                                                unique and descriptive name for this voucher.</small>
                                                         </div>
 
+                                                        <!-- Minimum Transaction -->
                                                         <div class="form-group has-icon-left">
-                                                            <label for="daterange">Date Range <span
+                                                            <label for="min-transaction">Minimum Transaction <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
-                                                                    class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
-                                                                    id="daterange" name="date_range" required>
+                                                                    class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter the minimum transaction amount (e.g., $100)"
+                                                                    id="min-transaction" name="min_transaction">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-calendar"></i>
+                                                                    <i class="bi bi-cart"></i>
                                                                 </div>
                                                             </div>
-                                                            <small class="form-text text-muted"
-                                                                style="font-size: 14px;">Select the period during
-                                                                which the promo is valid.</small>
-                                                            @if ($errors->has('date_range'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('date_range') }}</p>
+                                                            @if ($errors->has('min_transaction'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('min_transaction') }}</p>
                                                             @endif
+                                                            <small class="text-muted" style="font-size: 14px;">Specify
+                                                                the minimum transaction value to apply the
+                                                                voucher.</small>
                                                         </div>
                                                     </div>
 
+                                                    <!-- Right Column -->
                                                     <div class="col-md-6">
+                                                        <!-- Discount -->
                                                         <div class="form-group has-icon-left">
-                                                            <label for="diskon">Discount <span
+                                                            <label for="discount">Discount (%) <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Discount" id="discount"
-                                                                    name="discount">
+                                                                    placeholder="Enter the discount percentage (e.g., 10%)"
+                                                                    id="discount" name="discount">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-percent"></i>
                                                                 </div>
                                                             </div>
-                                                            <small class="text-muted" style="font-size: 14px;">Enter the
-                                                                discount percentage
-                                                                (e.g., 20 for 20%).</small>
                                                             @if ($errors->has('discount'))
-                                                                <p class="text-danger">{{ $errors->first('discount') }}
+                                                                <p style="color: red">{{ $errors->first('discount') }}
                                                                 </p>
                                                             @endif
+                                                            <small class="text-muted" style="font-size: 14px;">Provide
+                                                                the percentage of discount users will receive.</small>
                                                         </div>
 
-                                                        <div class="card" style="margin-bottom: 20px;">
-                                                            <label for="first-name-icon">Banner Promo<span
+                                                        <!-- Maximum Discount -->
+                                                        <div class="form-group has-icon-left">
+                                                            <label for="max-discount">Maximum Discount Amount <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="image-upload-wrap"
-                                                                id="single-image-upload-wrap"
-                                                                style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
-                                                                <input type="file" name="image"
-                                                                    class="file-upload-input"
-                                                                    onchange="readURLSingle(this);" accept="image/*"
-                                                                    style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
-                                                                <div class="drag-text"
-                                                                    style="text-align: center; color: #888;">
-                                                                    <p>Drag and drop a file or select to add Image</p>
+                                                            <div class="position-relative">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('max_discount') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter the maximum discount amount (e.g., $50)"
+                                                                    id="max-discount" name="max_discount">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-cash"></i>
                                                                 </div>
                                                             </div>
-
-                                                            <div class="file-upload-content"
-                                                                id="single-file-upload-content"
-                                                                style="display: flex; flex-wrap: wrap;">
-                                                                <!-- Gambar yang diunggah akan ditambahkan di sini -->
-                                                            </div>
-                                                            <small class="text-muted" style="font-size: 14px;">Upload
-                                                                a banner image for the
-                                                                promo.</small>
-                                                            @if ($errors->has('image'))
-                                                                <p class="text-danger">{{ $errors->first('image') }}
-                                                                </p>
+                                                            @if ($errors->has('max_discount'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('max_discount') }}</p>
                                                             @endif
-
+                                                            <small class="text-muted" style="font-size: 14px;">Set a
+                                                                limit on the maximum discount amount a user can
+                                                                receive.</small>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="col-lg-12">
-                                                        <div class="mb-2">
-                                                            <label for="product_ids">Pilih Produk <span
-                                                                    style="color: red">*</span></label> <br>
-                                                            <small class="text-muted">Select the products that the
-                                                                promo will apply to.</small>
-                                                        </div>
-                                                        <table class="table" id="table1">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Select</th>
-                                                                    <th>Product</th>
-                                                                    <th>Stock</th>
-                                                                    <th>Price</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                @foreach ($products as $product)
-                                                                    <tr>
-                                                                        <td>
-                                                                            <input type="checkbox"
-                                                                                name="product_ids[]"
-                                                                                value="{{ $product->id }}">
-                                                                        </td>
-                                                                        <td>
-                                                                            <img src="{{ Storage::url($product->main_image) }}"
-                                                                                loading="lazy" class="lazyload"
-                                                                                alt="Product Image"
-                                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                                            {{ $product->product_name }}
-                                                                        </td>
-                                                                        <td>{{ $product->stock_quantity }}</td>
-                                                                        <td>Rp.
-                                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
-                                                            </tbody>
-                                                        </table>
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end">
@@ -253,6 +217,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </form>
                                     </div>
                                 </div>
@@ -260,50 +225,21 @@
                         </div>
                     </div>
                 </section>
-
             </div>
 
             @include('admin.layouts.footer')
 
         </div>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
-
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
 
-    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <script>
-        // Simple Datatable
-        let table1 = document.querySelector('#table1');
-        let dataTable = new simpleDatatables.DataTable(table1);
-    </script>
-
+    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
 
     <script src="assets/vendors/choices.js/choices.min.js"></script>
 
-    <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>
-
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-
-    <script type="text/javascript">
-        $(function() {
-            $('#daterange').daterangepicker({
-                locale: {
-                    format: 'YYYY-MM-DD'
-                },
-                startDate: moment().startOf('day'), // Default start date
-                endDate: moment().endOf('day') // Default end date
-            });
-        });
-    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -324,6 +260,9 @@
             @endif
         });
     </script>
+
+    <!-- toastify -->
+    <script src="assets/vendors/toastify/toastify.js"></script>
 
     {{-- Upload Single Image --}}
     <script>

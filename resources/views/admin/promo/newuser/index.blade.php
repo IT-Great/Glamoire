@@ -4,19 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo Diskon || Admin Glamoire</title>
+    <title>Promo Voucher New User || Admin Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
+
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
+
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
 
+    <style>
+        .action-buttons a {
+            display: block;
+            /* Set to block so each link appears on a new line */
+            margin-bottom: 5px;
+            /* Add some space between the buttons */
+        }
+    </style>
 </head>
 
 <body>
@@ -28,14 +39,18 @@
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                        <div class="col-12 col-md-6 mb-3">
+                            {{-- <h3>All Promo New User</h3> --}}
+                            <nav aria-label="breadcrumb" class="breadcrumb-header me-3">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="#">Promo Discount</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Promo Discount</li>
+                                    <li class="breadcrumb-item"><a href="#">Promo New User</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">All Promo New User</li>
                                 </ol>
                             </nav>
-                        </div>                       
+                        </div>
+                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+
+                        </div>
                     </div>
                 </div>
                 <section class="section">
@@ -43,38 +58,38 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Promo Discount</h4>
+                                    <h4>List Promo Voucher New User</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="{{ route('create-promo-diskon') }}" type="submit"
+                                    <a href="{{ route('create-promo-new-user') }}" type="submit"
                                         class="btn btn-sm btn-primary d-flex align-items-center">
                                         <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Data
                                     </a>
                                 </div>
                             </div>
                         </div>
+
                         <div class="card-body">
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Discount Name</th>
-                                        <th>Periode</th>
+                                        <th>Voucher Name</th>
                                         <th>Discount</th>
+                                        <th>Max Discount</th>
+                                        <th>Min Transaction</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($promo as $item)
                                         <tr id="promo-item-{{ $item->id }}">
-                                            <td>{{ $item->promo_name }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }}
-                                                -
-                                                {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}
-                                            </td>
-                                            <td>{{ $item->discount }}% </td>
+                                            <td>{{ $item->promo_name }}</td>                                           
+                                            <td>{{ $item->discount }}%</td>
+                                            <td>{{ $item->max_discount }}%</td>
+                                            <td>{{ $item->min_transaction }}</td>
                                             <td class="action-buttons">
                                                 <a href="{{ url('detail-promo/' . $item->id) }}">
-                                                    <span class="badge bg-info"> Review</span>
+                                                    <span class="badge bg-info">Review</span>
                                                 </a>
                                                 <a href="javascript:void(0);" class="delete-promo"
                                                     data-id="{{ $item->id }}">
@@ -103,6 +118,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
+
 
     <script>
         // Fungsi untuk membuka gambar di tab baru
@@ -197,7 +213,6 @@
             });
         </script>
     @endif
-
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

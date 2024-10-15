@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticateController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
@@ -23,7 +24,7 @@ use App\Http\Controllers\ContactusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
-
+use Illuminate\Support\Facades\Auth;
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -283,6 +284,15 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/create-promo', [PromoController::class, 'createPromo'])->name('create-promo');
     Route::post('/create-promo', [PromoController::class, 'storePromo'])->name('store-promo');
 
+    // promo voucher toko
+    Route::get('/create-promo-shop-voucher', [PromoController::class, 'createPromoShopVoucher'])->name('create-promo-shop-voucher');
+    Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
+   
+    // promo voucher produk tertentu
+    Route::get('/create-promo-product-voucher', [PromoController::class, 'createPromoProductVoucher'])->name('create-promo-product-voucher');
+    Route::post('/create-promo-product-voucher', [PromoController::class, 'storePromoProductVoucher'])->name('store-promo-product-voucher');
+   
+    // promo voucher terbatas
     Route::get('/promo-voucher', [PromoController::class, 'indexPromoVoucher'])->name('index-promo-voucher');
     Route::get('/create-promo-voucher', [PromoController::class, 'createPromoVoucher'])->name('create-promo-voucher');
     Route::post('/create-promo-voucher', [PromoController::class, 'storePromoVoucher'])->name('store-promo-voucher');
@@ -294,6 +304,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/promo-diskon', [PromoController::class, 'indexPromoDiskon'])->name('index-promo-diskon');
     Route::get('/create-promo-diskon', [PromoController::class, 'createPromoDiskon'])->name('create-promo-diskon');
     Route::post('/create-promo-diskon', [PromoController::class, 'storePromoDiskon'])->name('store-promo-diskon');
+    
+    Route::get('/promo-new-user', [PromoController::class, 'indexPromoNewUser'])->name('index-promo-new-user');
+    Route::get('/create-promo-new-user', [PromoController::class, 'createPromoNewUser'])->name('create-promo-new-user');
+    Route::post('/create-promo-new-user', [PromoController::class, 'storePromoNewUser'])->name('store-promo-new-user');
     
     Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
     Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');

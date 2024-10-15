@@ -53,6 +53,9 @@
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
+                                                <h3 class="mb-3">Create a New Product</h3>
+                                                <p class="text-muted">Please fill in the details below to create a new
+                                                    product.</p>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-3">
@@ -71,6 +74,10 @@
                                                             @if ($errors->has('product_name'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('product_name') }}</p>
+                                                            @else
+                                                                <small class="text-muted" style="font-size: 14px;">Give
+                                                                    your brand a distinct
+                                                                    name that users will recognize.</small>
                                                             @endif
                                                         </div>
 
@@ -93,9 +100,14 @@
                                                                     @endforeach
                                                                 </select>
                                                                 @if ($errors->has('category_product_id'))
-                                                                    <div class="invalid-feedback">
+                                                                    <p style="color: red">
                                                                         {{ $errors->first('category_product_id') }}
-                                                                    </div>
+                                                                    </p>
+                                                                @else
+                                                                    <small class="text-muted"
+                                                                        style="font-size: 14px;">Select the
+                                                                        appropriate sub-category for your
+                                                                        product.</small>
                                                                 @endif
                                                             </div>
                                                         </div>
@@ -118,9 +130,12 @@
                                                                     @endforeach
                                                                 </select>
                                                                 @if ($errors->has('brand_id'))
-                                                                    <div class="invalid-feedback">
-                                                                        {{ $errors->first('brand_id') }}
-                                                                    </div>
+                                                                    <p style="color: red">
+                                                                        {{ $errors->first('brand_id') }}</p>
+                                                                @else
+                                                                    <small class="text-muted"
+                                                                        style="font-size: 14px;">Choose the brand
+                                                                        associated with this product.</small>
                                                                 @endif
                                                             </div>
                                                         </div>
@@ -139,6 +154,12 @@
                                                             @if ($errors->has('description'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('description') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Provide a detailed
+                                                                    description of your product, focusing on key
+                                                                    features, benefits, and unique selling
+                                                                    points.</small>
                                                             @endif
                                                         </div>
 
@@ -152,6 +173,12 @@
                                                             @if ($errors->has('information_product'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('information_product') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Provide detailed technical
+                                                                    or specific product information such as
+                                                                    specifications, materials, warranty, or usage
+                                                                    instructions.</small>
                                                             @endif
                                                         </div>
 
@@ -214,6 +241,11 @@
                                                             @if ($errors->has('stock_quantity'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('stock_quantity') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Give
+                                                                    your brand a distinct
+                                                                    name that users will recognize.</small>
                                                             @endif
                                                         </div>
 
@@ -234,18 +266,27 @@
                                                             @if ($errors->has('regular_price'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('regular_price') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Give
+                                                                    your brand a distinct
+                                                                    name that users will recognize.</small>
                                                             @endif
                                                         </div>
 
-                                                        <label for="">Weight Product</label>
-                                                        <div class="input-group mb-3">
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Weight Product" name="weight_product"
-                                                                value="{{ old('weight_product') }}">
-                                                            <span class="input-group-text"
-                                                                id="basic-addon2">gram</span>
-                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="">Weight Product</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control"
+                                                                    placeholder="Weight Product" name="weight_product"
+                                                                    value="{{ old('weight_product') }}">
+                                                                <span class="input-group-text"
+                                                                    id="basic-addon2">gram</span>
 
+                                                            </div>
+                                                            <small class="form-text text-muted">Specify the weight of
+                                                                the product for shipping calculations.</small>
+                                                        </div>
 
                                                         <label for="">Dimension Product</label>
                                                         <div class="row mb-3">
@@ -276,6 +317,9 @@
                                                                         id="basic-addon3">cm</span>
                                                                 </div>
                                                             </div>
+                                                            <small class="form-text text-muted">Enter the dimensions of
+                                                                your
+                                                                product for accurate shipping estimates.</small>
                                                         </div>
 
                                                         {{-- single image --}}
@@ -297,24 +341,28 @@
                                                                 </div>
 
                                                             </div>
-                                                            @if ($errors->has('main_image'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('main_image') }}</p>
-                                                            @endif
-
-                                                            <span id="main-image-error"
-                                                                style="color: red; display: none;"></span>
-                                                            <!-- Unik untuk Single Image -->
 
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
                                                                 style="display: flex; flex-wrap: wrap;">
                                                                 <!-- Gambar yang diunggah akan ditambahkan di sini -->
                                                             </div>
+
+                                                            @if ($errors->has('main_image'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('main_image') }}</p>
+                                                            @else
+                                                                <small class="form-text text-muted">Upload a clear,
+                                                                    high-quality image that best represents your
+                                                                    product. This will be the main image shown in search
+                                                                    results. For file formats, please use JPG, JPEG, or
+                                                                    PNG, and ensure the size is no more than
+                                                                    2MB.</small>
+                                                            @endif
                                                         </div>
 
                                                         {{-- multiple image --}}
-                                                        {{-- <div class="card">
+                                                        <div class="card">
                                                             <label for="first-name-icon">Product Gallery multiple
                                                                 <span style="color: red">*</span></label>
                                                             <div class="image-upload-wrap" id="image-upload-wrap"
@@ -332,11 +380,6 @@
                                                                 </div>
                                                             </div>
 
-                                                            @if ($errors->has('images[]'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('images[]') }}</p>
-                                                            @endif
-
                                                             <!-- Tempat pesan error -->
                                                             <span id="image-error"
                                                                 style="color: red; display: none;"></span>
@@ -346,43 +389,19 @@
                                                                 style="display: flex; flex-wrap: wrap;">
                                                                 <!-- Gambar yang diunggah akan ditambahkan di sini -->
                                                             </div>
-                                                        </div> --}}
 
-                                                        <div class="card">
-                                                            <label for="first-name-icon">Product Gallery multiple
-                                                                (Images & Videos)
-                                                                <span style="color: red">*</span></label>
-                                                            <div class="image-upload-wrap" id="image-upload-wrap"
-                                                                style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
-                                                                <input type="file" id="media" name="images[]"
-                                                                    class="file-upload-input"
-                                                                    {{ $errors->has('images[]') ? 'is-invalid' : '' }}
-                                                                    onchange="handleFiles(this.files);"
-                                                                    accept="image/*,video/*" multiple
-                                                                    style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
-                                                                <div class="drag-text"
-                                                                    style="text-align: center; color: #888;">
-                                                                    <p>Drag and drop files or select add
-                                                                        Image(s)/Video(s)</p>
-                                                                </div>
-                                                            </div>
-
-                                                            @if ($errors->has('media[]'))
-                                                                <p style="color: red">{{ $errors->first('media[]') }}
-                                                                </p>
+                                                            @if ($errors->has('images'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('images') }}</p>
+                                                            @else
+                                                                <small class="form-text text-muted">Add additional
+                                                                    images to showcase different angles or features of
+                                                                    your product. You can upload multiple images at
+                                                                    once. For image format, use JPG, JPEG, or PNG, with
+                                                                    a file size not exceeding 2MB, and a maximum of 6
+                                                                    images can be uploaded.</small>
                                                             @endif
-
-                                                            <!-- Tempat pesan error -->
-                                                            <span id="image-error"
-                                                                style="color: red; display: none;"></span>
-
-                                                            <div class="file-upload-content upload__img-wrap"
-                                                                id="file-upload-content"
-                                                                style="display: flex; flex-wrap: wrap;">
-                                                                <!-- Gambar/Video yang diunggah akan ditambahkan di sini -->
-                                                            </div>
                                                         </div>
-
 
                                                         <div class="card">
                                                             <label for="video-upload">Upload Video</label>
@@ -405,6 +424,12 @@
                                                                 style="display: flex; flex-wrap: wrap;">
                                                                 <!-- Video that is uploaded will be added here -->
                                                             </div>
+
+                                                            <small class="form-text text-muted">Upload a short video to
+                                                                demonstrate your product in action. This can
+                                                                significantly increase buyer interest. The uploaded
+                                                                video format must be MP4, and the file size should not
+                                                                exceed 5MB</small>
                                                         </div>
 
                                                     </div>
@@ -438,13 +463,14 @@
                                                     <div class="col-12 d-flex justify-content-end">
                                                         <button type="reset"
                                                             class="btn btn-sm btn-light-secondary me-2 mb-1"
-                                                            style="border-radius: 5px;">Reset</button>
+                                                            style="border-radius: 5px;">Reset Product</button>
                                                         <button type="submit"
                                                             class="btn btn-sm btn-primary me-1 mb-1"
-                                                            id="submitButton">Submit</button>
+                                                            id="submitButton">Submit Product</button>
 
                                                     </div>
                                                 </div>
+
                                             </div>
 
                                         </form>
