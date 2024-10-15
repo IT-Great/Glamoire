@@ -76,8 +76,8 @@
             <div class="flex container mt-3 p-0 bg-white custom-shadow rounded-md overflow-y-auto custom-scroll border-white border-8" style="min-height: 50vh;max-height:50vh; min-width: 40vw;">
               <div class="grid-container-brands h-fit p-3">
                 @foreach ($brands as $brand)
-                  <a href="/{{ $brand->name }}_brand" class="rounded-sm border border-white hover:border-white hover:shadow-xl bg-[#183018]">
-                    <img src="{{ Storage::url($brand->brand_logo) }}" class="img-fluid" alt="{{ $brand->name }}" title="{{ $brand->name }}">
+                  <a href="/{{ $brand->name }}_brand" class="py-2 rounded-sm border border-primary  hover:border-white hover:bg-[#183018] hover:text-white text-decoration-none text-center">
+                    {{ $brand->name }}
                   </a>
                 @endforeach
               </div>

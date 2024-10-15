@@ -11,6 +11,7 @@ use App\Models\Cart_item;
 use App\Models\Wishlist;
 use App\Models\Buynow;
 use App\Models\Product;
+use App\Models\RatingAndReview;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -27,18 +28,17 @@ class UserController extends Controller
                     $query->orderBy('is_main', 'DESC'); // Mengurutkan shippingAddress berdasarkan is_main
                 },
                 'wishlist.product', 
-                'cart.cartItems'
-            ])->where('id', $id)->first();
+                'cart.cartItems',
+                'orders.items.product.brand',
+                'orders.invoice',
+                'orders.ratingAndReviews'
+            ])->where('id', $id)
+            ->with(['orders' => function ($query) {
+                $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
+            }])->first();
 
-            // $shippingAddress = Shipping_address::where('user_id', $id)
-            // $whistlist       = Whistlist::where('user_id', $id);
-            // $cart            = Cart::where('user_id', $id)
-            // ->with('cartItems');
-            // get();
-
-            // dd($shippingAddress);
-
-            // dd($profile->wishlist);
+            // dd($profile);
+            
             return view('user.component.account')->with('profile', $profile);
         } catch (Exception $err) {
             dd($err);
@@ -89,44 +89,20 @@ class UserController extends Controller
 
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
                 if($checkCartUser){
-                    $checkCartItem = Cart_item::where('cart_id', $cartId)
-                    ->where('product_id', $request->product_id)->exists();
-                    // JIKA PRODUK SUDAH ADA DI CART USER
-                    if ($checkCartItem) {
-                        $cartItem  = Cart_item::where('cart_id', $cartId)
-                        ->where('product_id', $request->product_id)->first();
-                        $itemPrice = $cartItem->price; 
-                        $itemQuantity = $cartItem->quantity;
+                    $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
 
-                        // Tingkatkan kuantitas item dengan 1
-                        $newQuantity = $itemQuantity + 1;
+                    Cart_item::create([
+                        'cart_id'    => $cartId,
+                        'product_id' => $request->product_id,
+                        'quantity'   =>  1,
+                        'is_choose'  => TRUE,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
+                    ]);
 
-                        // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
-                        $newPrice = $itemPrice * $newQuantity;
-
-                        // Update kuantitas dan harga di database
-                        $cartItem->update([
-                            'quantity' => $newQuantity,
-                            'total'    => $newPrice,
-                        ]);
-                    }
-                    // JIKA PRODUK BELUM ADA DI CART USER
-                    else{
-                        $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                        $product = Product::where('id', $request->product_id)->first();
-                        $total = $product->regular_price;
-
-                        Cart_item::create([
-                            'cart_id'    => $cartId,
-                            'product_id' => $request->product_id,
-                            'quantity'   =>  1,
-                            'is_choose'  => TRUE,
-                            'price'      => $product->regular_price,
-                            'total'      => $total,
-                        ]);
-                    }
-
-                    // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART
                 } else {
                     $cart = Cart::create([
                         'user_id' => $userId,
@@ -154,6 +130,37 @@ class UserController extends Controller
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
+    }
+
+    public function addToCartBuyNow(Request $request){
+        
+        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+        foreach ($request->product_id as $productId) {
+            $checkStockProduct = Produk::where('id', $producId)->value('stock_quantity');
+
+            if ($checkStockProduct !== 0) {
+                $cartItem = Cart_item::where('cart_id', $cartId)
+                ->where('product_id', $productId)
+                ->exists(); 
+    
+                if(!$cartItem){
+                    $price = Product::where('id', $productId)->value('regular_price');
+                    
+                    Cart_item::create([
+                        'cart_id'    => $cartId,
+                        'product_id' => $productId,
+                        'quantity'   =>  1,
+                        'is_choose'  => TRUE,
+                        'price'      => $price,
+                        'total'      => $price,
+                    ]);
+                }
+            }
+            else{
+                
+            }
+        }
+        return response()->json(['success' => true, 'message' => 'Cek Keranjang Belanjamu']);
     }
 
     public function addToChartWithQuantity(Request $request){
@@ -438,6 +445,69 @@ class UserController extends Controller
         session(['activeTab' => $request->input('tab_id')]);
         return response()->json(['success' => true]);
     }
+
+    public function ratingAndReview(Request $request)
+    {
+        try {
+            $userId = session('id_user');
+
+            // Loop through each product ID from the request
+            foreach ($request->ratingReviewProductId as $productId) {
+                // Collect rating, description, and files from the request
+                $rating = $request->star[$productId];
+                $description = $request->description[$productId];
+
+                // Initialize paths for images and video
+                $imagePaths = [];
+                $videoPath = null;
+
+                // dd($request->hasFile("upload.$productId"));
+                // Check if there are uploaded files for the current product ID
+                if ($request->file("upload.$productId")) {
+                    // Loop through each uploaded file for the current productId
+                    foreach ($request->file("upload.$productId") as $file) {
+                        // Check if the $file is a valid instance of UploadedFile
+                        if ($file instanceof \Illuminate\Http\UploadedFile) {
+                            // Get the MIME type of the file
+                            $mimeType = $file->getMimeType();
+                            $fileName = time() . '_' . $file->getClientOriginalName() . '_' . $userId . '_' . $productId;
+
+                            // Check if the file is an image
+                            if (strpos($mimeType, 'image/') === 0) {
+                                // Save image
+                                $imagePath = $file->storeAs('rating_review_images', $fileName, 'public');
+                                $imagePaths[] = $imagePath;
+                            }
+                            // Check if the file is a video
+                            elseif (strpos($mimeType, 'video/') === 0) {
+                                // Save video
+                                $videoPath = $file->storeAs('rating_review_videos', $fileName, 'public');
+                            }
+                        }
+                    }
+                }
+
+                // Save review and rating with images and video paths
+                RatingAndReview::create([
+                    'user_id' => $userId,
+                    'product_id' => $productId,
+                    'order_id' => $request->ratingReviewOrderId,
+                    'rating' => $rating,
+                    'description' => $description,
+                    'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
+                    'video' => $videoPath,
+                ]);
+            }
+
+            session()->flash('rating_and_review_success');
+
+            return redirect()->back();
+        } catch (Exception $err) {
+            // Handle any exception and show error message
+            dd($err);
+        }
+    }
+
 
     // ADMIN PAGE
     public function indexUserAdmin()

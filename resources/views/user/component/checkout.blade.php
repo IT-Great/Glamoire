@@ -130,85 +130,92 @@
             </div>
             <!-- END MODAL TAMBAH ALAMAT -->
             @endif
-
-            <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
-                <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Rincian Pengiriman</h1>
-                <div class="grid gap-1 gap-md-2 mb-md-2">
-                    <div class="flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 48c0-26.5 21.5-48 48-48L592 0c26.5 0 48 21.5 48 48l0 416c0 26.5-21.5 48-48 48l-210.7 0c1.8-5 2.7-10.4 2.7-16l0-242.7c18.6-6.6 32-24.4 32-45.3l0-32c0-26.5-21.5-48-48-48l-112 0 0-80zM571.3 347.3c6.2-6.2 6.2-16.4 0-22.6l-64-64c-6.2-6.2-16.4-6.2-22.6 0l-64 64c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L480 310.6 480 432c0 8.8 7.2 16 16 16s16-7.2 16-16l0-121.4 36.7 36.7c6.2 6.2 16.4 6.2 22.6 0zM0 176c0-8.8 7.2-16 16-16l352 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16L16 224c-8.8 0-16-7.2-16-16l0-32zm352 80l0 224c0 17.7-14.3 32-32 32L64 512c-17.7 0-32-14.3-32-32l0-224 320 0zM144 320c-8.8 0-16 7.2-16 16s7.2 16 16 16l96 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-96 0z"/></svg>
-                        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">Dikirim dari Kota Surabaya, Jawa Timur</p>
-                    </div>
-                    <div class="flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M112 0C85.5 0 64 21.5 64 48l0 48L16 96c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 208 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 160l-16 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l16 0 176 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 224l-48 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 144 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 288l0 128c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L112 0zM544 237.3l0 18.7-128 0 0-96 50.7 0L544 237.3zM160 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm272 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z"/>
-                        </svg>
-                        @foreach ($data['address'] as $checkout_address)
+            
+        <form action="{{ route('order.payment')}}" method="POST">
+                @csrf
+                <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                    <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Rincian Pengiriman</h1>
+                    <div class="grid gap-1 gap-md-2 mb-md-2">
+                        <div class="flex gap-1 align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 48c0-26.5 21.5-48 48-48L592 0c26.5 0 48 21.5 48 48l0 416c0 26.5-21.5 48-48 48l-210.7 0c1.8-5 2.7-10.4 2.7-16l0-242.7c18.6-6.6 32-24.4 32-45.3l0-32c0-26.5-21.5-48-48-48l-112 0 0-80zM571.3 347.3c6.2-6.2 6.2-16.4 0-22.6l-64-64c-6.2-6.2-16.4-6.2-22.6 0l-64 64c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L480 310.6 480 432c0 8.8 7.2 16 16 16s16-7.2 16-16l0-121.4 36.7 36.7c6.2 6.2 16.4 6.2 22.6 0zM0 176c0-8.8 7.2-16 16-16l352 0c8.8 0 16 7.2 16 16l0 32c0 8.8-7.2 16-16 16L16 224c-8.8 0-16-7.2-16-16l0-32zm352 80l0 224c0 17.7-14.3 32-32 32L64 512c-17.7 0-32-14.3-32-32l0-224 320 0zM144 320c-8.8 0-16 7.2-16 16s7.2 16 16 16l96 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-96 0z"/></svg>
+                            <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">Dikirim dari Kota Surabaya, Jawa Timur</p>
+                        </div>
+                        <div class="flex gap-1 align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M112 0C85.5 0 64 21.5 64 48l0 48L16 96c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 208 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 160l-16 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l16 0 176 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 224l-48 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 144 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 288l0 128c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L112 0zM544 237.3l0 18.7-128 0 0-96 50.7 0L544 237.3zM160 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm272 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z"/>
+                            </svg>
+                            @foreach ($data['address'] as $checkout_address)
                             @if($checkout_address->is_use)
                                 <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">Menuju {{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
                                 </p>
-                            @endif
-                        @endforeach
-                    </div>
-                    <div class="flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 112.5L0 422.3c0 18 10.1 35 27 41.3c87 32.5 174 10.3 261-11.9c79.8-20.3 159.6-40.7 239.3-18.9c23 6.3 48.7-9.5 48.7-33.4l0-309.9c0-18-10.1-35-27-41.3C462 15.9 375 38.1 288 60.3C208.2 80.6 128.4 100.9 48.7 79.1C25.6 72.8 0 88.6 0 112.5zM288 352c-44.2 0-80-43-80-96s35.8-96 80-96s80 43 80 96s-35.8 96-80 96zM64 352c35.3 0 64 28.7 64 64l-64 0 0-64zm64-208c0 35.3-28.7 64-64 64l0-64 64 0zM512 304l0 64-64 0c0-35.3 28.7-64 64-64zM448 96l64 0 0 64c-35.3 0-64-28.7-64-64z"/></svg>
-                        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]" id="shipping_price" value="20000">Tarif Biaya : Rp20.000</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
-                <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Metode Pembayaran</h1>
-                <div class="grid gap-md-2 mb-md-2">
-                    <div class="col-sm-10">
-                        <form>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                                <input class="form-check-input" type="radio" name="gridRadios" id="qris" value="qris" checked>
-                                <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="qris">
-                                    QRIS
-                                </label>
-                            </div>
-                            <div class="form-check d-flex align-items-center justify-content-start">
-                                <input class="form-check-input" type="radio" name="gridRadios" id="bca_va" value="bca_va">
-                                <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="bca_va">
-                                    BCA Virtual Account
-                                </label>
-                            </div>
-                        </form>         
-                                
-                    </div>
-                </div>
-            </div> -->
-    
-            @foreach ($data['cartItems'] as $cart => $product)
-                <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
-                    <div class="grid mb-2">
-                        <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
-                    </div>  
-    
-                    <div class="flex">
-                        <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
-                            <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-md border">
+                                <input type="number" name="shipping_address_id" id="shipping-address-id" value="{{$checkout_address->id}}" hidden>
+                                <input type="number" name="shipping_cost" id="shipping-cost" value="20000" hidden>
+                                @endif
+                            @endforeach
                         </div>
-                        <div class="col p-0">
-                            <div class="d-flex col-12 gap-1 gap-md-2 mb-2 h-[20px] h-md-[20px]">
-                                <img class="rounded-sm" src="{{ Storage::url($product->product->brand->brand_logo) }}" alt="logo brand" style="background-color:#183018">
-                                <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
-                            </div>
-                            <div class="grid lg:flex">
-                                <div class="col-lg-10">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                        <div class="flex gap-1 align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 112.5L0 422.3c0 18 10.1 35 27 41.3c87 32.5 174 10.3 261-11.9c79.8-20.3 159.6-40.7 239.3-18.9c23 6.3 48.7-9.5 48.7-33.4l0-309.9c0-18-10.1-35-27-41.3C462 15.9 375 38.1 288 60.3C208.2 80.6 128.4 100.9 48.7 79.1C25.6 72.8 0 88.6 0 112.5zM288 352c-44.2 0-80-43-80-96s35.8-96 80-96s80 43 80 96s-35.8 96-80 96zM64 352c35.3 0 64 28.7 64 64l-64 0 0-64zm64-208c0 35.3-28.7 64-64 64l0-64 64 0zM512 304l0 64-64 0c0-35.3 28.7-64 64-64zM448 96l64 0 0 64c-35.3 0-64-28.7-64-64z"/></svg>
+                            <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]" id="shipping_price" value="20000">Tarif Biaya : Rp20.000</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                    <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Metode Pembayaran</h1>
+                    <div class="grid gap-md-2 mb-md-2">
+                        <div class="col-sm-10">
+                            <form>
+                                <div class="form-check d-flex align-items-center justify-content-start">
+                                    <input class="form-check-input" type="radio" name="gridRadios" id="qris" value="qris" checked>
+                                    <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="qris">
+                                        QRIS
+                                    </label>
                                 </div>
-                                <div class="col-lg-2 p-lg-0">
-                                    <div class="d-flex gap-1 font-semibold">
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                <div class="form-check d-flex align-items-center justify-content-start">
+                                    <input class="form-check-input" type="radio" name="gridRadios" id="bca_va" value="bca_va">
+                                    <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="bca_va">
+                                        BCA Virtual Account
+                                    </label>
+                                </div>
+                            </form>         
+                                    
+                        </div>
+                    </div>
+                </div> -->
+        
+                @foreach ($data['cartItems'] as $cart => $product)
+                    <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
+                        <div class="grid mb-2">
+                            <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
+                        </div>  
+        
+                        <div class="flex">
+                            <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                                <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-md border">
+                            </div>
+                            <div class="col p-0">
+                                <div class="d-flex col-12 gap-1 gap-md-2 mb-2 h-[20px] h-md-[20px]">
+                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
+                                </div>
+                                <div class="grid lg:flex">
+                                    <div class="col-lg-10">
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                                    </div>
+                                    <div class="col-lg-2 p-lg-0">
+                                        <div class="d-flex gap-1 font-semibold">
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+    
+                    <input type="number" name="product[]" id="product-id-{{$product->product_id}}" value="{{ $product->product_id }}" hidden>
+                    <input type="number" name="product_quantity[{{ $product->product_id }}]" id="product-quantity-{{$product->product_id}}" value="{{ $product->quantity }}" hidden>
+                    <input type="number" name="product_price[{{ $product->product_id }}]" id="product-price-{{$product->product_id}}" value="{{ $product->price }}" hidden>
+                @endforeach
         </div>
     
         <!-- PERHITUNGAN -->
@@ -225,6 +232,7 @@
                         <div class="d-none" id="discount-use">
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Diskon</p>
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto" id="discount"></p>
+                            <input type="number" name="discount_amount" id="discount-amount" value="" hidden>
                         </div>
                         <div class="d-flex">
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Ongkos Kirim</p>
@@ -234,22 +242,20 @@
                     <div class="d-flex py-2 border-bottom border-top align-items-center">
                         <p class="text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
                         <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[16px] xl:text-[18px] ml-auto" id="total-shopping">Rp{{ number_format($data['totalPrice'], 0, ',', '.') }}</p>
+                        <input type="number" name="subtotal" id="subtotal-price" value="{{$data['totalPrice']}}" hidden>
                     </div>
                     <div>
-                        <form  id="code-voucher-form" class="grid gap-2">
-                            @csrf
-                            <div class="relative flex gap-1 items-center">
-                                <input type="text" class="form-control pl-5 w-full rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code_voucher" name="code_voucher" placeholder="Masukkan kode promo">
-                                <div class="spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
-                                    <span class="visually-hidden"></span>
-                                </div>
-                                <button type="submit" id="button-code-voucher" class="btn border rounded-md w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
-                                    Pakai
-                                </button>
+                        <div class="relative flex gap-1 items-center">
+                            <input type="text" class="form-control pl-5 w-full rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code-voucher" name="code_voucher" placeholder="Masukkan kode promo">
+                            <div class="spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
+                                <span class="visually-hidden"></span>
                             </div>
-                            <div id="validationVoucher" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
-                            </div>
-                        </form>
+                            <button type="button" id="button-code-voucher" class="btn border rounded-md w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
+                                Pakai
+                            </button>
+                        </div>
+                        <div id="validationVoucher" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
+                        </div>
                     </div>
                     <button type="button" class="d-flex align-items-center btn btn-primary rounded-md text-black text-[6px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#promo" style="background-color: #FFFFFF" id="show-voucher">
                         <i class="fas fa-solid fa-tag mr-2"></i>
@@ -262,7 +268,8 @@
                 </div>
             </div>
         </div>
-
+        
+        </form>
     </div>
 </div>
 
@@ -375,6 +382,7 @@
         // END API WILAYAH REGISTER
     </script>
 @endif
+
 <!-- JIKA LAMAT KOSONG MENAMPILKAN POP-UP TAMBAH ALAMAT PENGIRIMAN -->
 @if(count($data['address']) == 0)
     <script>
@@ -476,40 +484,38 @@
 
             <div class="modal-body p-1 p-md-3">
                 <div class="col-12 p-0">
-                    @for ($i=1;$i <= 3;$i++)
-                    <div class="col-12 p-2 promo-item" onclick="selectPromo(this)">
-                        <div class="grid gap-1 p-2 border rounded-md bg-light cursor-pointer">
-                            <div class="d-flex">
-                                <div class="col-10 p-0">
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">PROMO DISCOUNT UP TO 10%</p>
-                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">Get 10% off with min Rp100.000</p>
+                    @foreach ($data['vouchers'] as $voucher)
+                        <div class="col-12 p-2 promo-item" onclick="selectPromo(this)">
+                            <div class="grid gap-1 p-2 border rounded-md bg-light cursor-pointer">
+                                <div class="d-flex">
+                                    <div class="col-10 p-0">
+                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
+                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
+                                    </div>
+                                    <div class="col-2 d-flex flex-column align-items-start justify-content-center">
+                                        <i class="fas fa-check hidden"></i>
+                                    </div>
                                 </div>
-                                <div class="col-2 d-flex flex-column align-items-start justify-content-center">
-                                    <i class="fas fa-check hidden"></i>
+
+                                <div class="d-flex gap-1 gap-md-2 align-items-center">
+                                    <i class="fas fa-regular fa-clock"></i>
+                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
+                                    <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
                                 </div>
-                            </div>
 
-                            <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                <i class="fas fa-regular fa-clock"></i>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga 31 Agustus 2024</p>
-                                <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$i}}', this)">Lihat Detail</a>
-                            </div>
+                                <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
+                                    <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                        <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
+                                            <span class=""></span> <!-- Nomor list -->
+                                            <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
+                                        </li>
+                                    </ol>
+                                </div>
 
-                            <div class="grid mt-3 detail-promo" id="detail-promo-{{$i}}" style="display: none;">
-                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
-                                    @for ($j = 1; $j <= 12; $j++)
-                                    <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
-                                        <span class=""></span> <!-- Nomor list -->
-                                        <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">Kupon Toko Diskon dapat digunakan dengan membuka halaman promo di Keranjang.</p>
-                                    </li>
-                                    @endfor
-                                </ol>
                             </div>
-
                         </div>
-                    </div>
-                    @endfor
+                    @endforeach
                 </div>
             </div>
 
@@ -531,7 +537,7 @@
 
 <!-- CHECK KODE VOUCHER TERSEDIA ATAU TIDAK -->
 <script>
-     $('#code_voucher').on('keyup', function () {
+     $('#code-voucher').on('keyup', function () {
         var code = $(this).val();
         if (code) {
             $.ajax({
@@ -547,10 +553,10 @@
                 },
                 success: function (response) {
                     if (response.exists) {
-                        $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-red-900').show();
+                        $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
                         $('#button-code-voucher').prop('disabled', false);
                     } else {
-                        $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-red-900').show();
+                        $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-danger').show();
                         $('#button-code-voucher').prop('disabled', true);
                     }
                 },
@@ -651,9 +657,9 @@
 
 <!-- GUNAKAN KODE VOUCHER -->
 <script>
-    $(document).on("submit", "#code-voucher-form", function (e) {
+    $(document).on("click", "#button-code-voucher", function (e) {
         e.preventDefault();
-        var voucherCode = $("#code_voucher").val();
+        var voucherCode = $("#code-voucher").val();
         var spinner = $("#voucher-spinner");
         var button = $("#button-code-voucher");
 
@@ -684,9 +690,12 @@
                     $("#discount").text("-" + formatRupiah(response.discountFormatted)); // Mengubah teks diskon ke format Rupiah
                     $("#total-shopping").text(formatRupiah(response.totalShoppingFormatted)); // Mengubah teks total belanja ke format Rupiah
                     $("#discount-use").removeClass("d-none").addClass("d-flex"); // Hapus class d-none dan ubah menjadi d-flex
-                    $("#validationVoucher").text("Kode promo berhasil diterapkan.").show();
+                    $("#validationVoucher").text("Kode promo berhasil diterapkan.").addClass('text-success').show();
                     $('#button-code-voucher').prop('disabled', true);
-                    $('#show-voucher').prop('disabled', true)
+                    $('#show-voucher').prop('disabled', true);
+                    $('#discount-amount').prop('value', response.discountFormatted);
+                    $("#subtotal-price").prop('value', response.totalShoppingFormatted);
+                    // $("#subtotalPrice").val(response.totalPriceFormatted);
                 } else {
                     $("#validationVoucher").text(response.message).show();
                 }
@@ -916,4 +925,59 @@
     </script>  
 @endif
 
+<!-- PEMBAYARAN -->
+<!-- <script>
+    $(document).on("click", "#paynow", function (e) {
+        e.preventDefault();
+
+        let shipping_address_id = $("input[name='shippingAddressId']").val();
+        let shipping_cost = $("input[name='shippingCost']").val();
+        let code_voucher = $("input[name='codeVoucher']").val();
+        let discount_amount = $("input[name='discountAmount']").val();
+        let subtotal = $("input[name='subtotal']").val();
+
+        let product_quantity = {};
+        $("input[name^='productQuantity']").each(function() {
+            let id = $(this).attr('id'); // Dapatkan id atau kunci dari input
+            product_quantity[id] = $(this).val(); // Simpan nilai berdasarkan id
+        });
+        let product_price = $("input[name^='productPrice']").map(function() {
+            return $(this).val(); // Mengambil nilai dari setiap input
+        }).get();
+
+
+        console.log({
+            'shippingAddressId': shipping_address_id,
+            'shippingCost': shipping_cost,
+            'codeVoucher': code_voucher,
+            'discountAmount': discount_amount,
+            'subtotal': subtotal,
+            'productQuantity': product_quantity,
+            'productPrice': product_price,
+        });
+
+
+        // Simpan atau kirim data email dan password ke server
+        // Misal menggunakan AJAX:
+
+        /*
+        $.ajax({
+            url: '/your-endpoint',
+            method: 'POST',
+            data: {email: email, password: password},
+            success: function(response) {
+                Swal.close();  // Tutup loading
+                // Lakukan sesuatu setelah sukses
+            },
+            error: function(error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Terjadi kesalahan!',
+                });
+            }
+        });
+        */
+    });
+</script> -->
 @endsection

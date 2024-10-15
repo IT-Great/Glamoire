@@ -398,6 +398,8 @@
                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
                   }
+                }).then(function () {
+                  window.location.reload(); // Redirect ke halaman utama atau halaman lain
                 });
               } else {
                 let errors = response.errors;
@@ -468,11 +470,31 @@
                             errorMessages += errors[key][0] + "<br>";
                         }
                     }
-                    Toast.fire("Error", errorMessages, "error");
+                    Toast.fire({
+                      icon: "error",
+                      text: response.message,
+                      title: "Oops..",
+                      willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                      }
+                    });
                 }
             },
             error: function (response) {
-                Toast.fire("Error", "Kesalahan Sistem", "error");
+              Toast.fire({
+                icon: "error",
+                text: "Kesalahan Sistem",
+                title: "Oops..",
+                willOpen: () => {
+                  const title = document.querySelector('.swal2-title');
+                  const content = document.querySelector('.swal2-html-container');
+                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+              });
             },
         });
       }

@@ -10,7 +10,7 @@ class Article extends Model
     use HasFactory;
     protected $guarded = ['id'];
 
-    public function categoryArticle()
+    public function category()
     {
         return $this->belongsTo(CategoryArticle::class, 'category_article_id');
     }

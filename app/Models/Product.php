@@ -39,4 +39,10 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariations::class);
     }
+
+    public function ratingAndReviews()
+    {
+        return $this->hasMany(RatingAndReview::class);
+    }
+
 }

@@ -10,6 +10,11 @@ use App\Models\Partner;
 use App\Models\ProductVariations;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\Promo;
+
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -24,29 +29,36 @@ class ProductController extends Controller
         try {
             $userId = session('id_user');
 
-            // dd($userId);
             if ($userId) {
-                $data = User::where('id', $userId)
-                    ->first();
+                $data = User::where('id', $userId)->first();
+                $wishlist = Wishlist::where('user_id', $userId)->get();
 
-                $wishlist = Wishlist::where('id', $userId)
-                    ->get();
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $cartItems = Cart_item::where('cart_id', $cartId)->get();
 
+                $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
+                $promos = Promo::where('type', '=', 'promo')->get();
+                
+                $data = [
+                    'wishlist'  => $wishlist,
+                    'product'   => $product,
+                    'cartItems' => $cartItems,
+                    'promos'    => $promos,
+                ];
+
+                return view('user.component.home')->with('data', $data);
+            } else {
                 $product = Product::get();
+                $promos = Promo::where('type', '=', 'promo')->get();
 
                 $data = [
-                    'wishlist' => $wishlist,
-                    'product'  => $product,
+                    'product' => $product,
+                    'promos'  => $promos,
                 ];
 
                 // dd(count($data['wishlist']));
                 // dd($data);
                 return view('user.component.home')->with('data', $data);
-            } else {
-                $product = Product::get();
-
-                // dd($product);
-                return view('user.component.home')->with('data', $product);
             }
 
             // dd($data->whislist);
@@ -61,18 +73,41 @@ class ProductController extends Controller
     public function detail($code)
     {
         try {
+            $product = Product::where('product_code', $code)
+                ->with(['ratingAndReviews.user'])
+                ->withCount('ratingAndReviews')   // Count the total number of reviews
+                ->withAvg('ratingAndReviews', 'rating')
+                ->first();
 
-            $product = Product::where('product_code', $code)->first();
-            $youlike = Product::get();
+            $averageRating = number_format($product->rating_and_reviews_avg_rating, 1);
+            $totalReviews = $product->rating_and_reviews_count;
 
-
+            $youlike = Product::with(['ratingAndReviews'])->withAvg('ratingAndReviews', 'rating')->get();
             $product->images = json_decode($product->images, true);
             $product->dimensions = json_decode($product->dimensions, true);
 
-            return view('user.component.detail', [
-                'product' => $product,
-                'youlike' => $youlike,
-            ]);
+            $userId = session('id_user');
+
+            if ($userId) {
+                $wishlists = Wishlist::where('user_id', $userId)->get();
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $cartItems = Cart_item::where('cart_id', $cartId)->get();
+                
+                return view('user.component.detail', [
+                    'averageRating' => $averageRating,
+                    'product'       => $product,
+                    'youlike'       => $youlike,
+                    'wishlists'     => $wishlists,
+                    'cartItems'     => $cartItems,
+                ]);
+            }else{
+                return view('user.component.detail', [
+                    'averageRating' => $averageRating,
+                    'product'       => $product,
+                    'youlike'       => $youlike,
+                ]);
+            }
+
         } catch (Exception $err) {
             dd($err);
         }
@@ -82,37 +117,45 @@ class ProductController extends Controller
     {
         // dd($request);
         $product_search = $request->product_search; // Get the search query
+        $products = Product::where('product_name', 'like', '%' . $product_search . '%')->get(); // Search products
+        $userId = session('id_user');
 
-        $products = Partner::where('fullname', 'like', '%' . $product_search . '%')->get(); // Search products
-        // dd($query);
-
-        if (count($products) !== 0) {
-            $products = Partner::where('fullname', 'like', '%' . $query . '%')->get(); // Search products
-            $products = [
-                'product' => 0,
-                'keyword' => $query,
-                'count'   => count($products),
-            ];
-
-            return view('user.component.search')->with('data', $products); // Return results to a view
-        } else {
-            $products = [
-                'product' => 0,
-                'keyword' => $product_search,
-                'count'   => 0,
-                'brand'   => $request->brand,
-                'min_price' => $request->min_price,
-                'max_price' => $request->max_price,
-                'rating' => $request->rating,
-            ];
-
-            return view('user.component.search')->with('data', $products);
+        if ($userId) {
+            $wishlists = Wishlist::where('user_id', $userId)->get();
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            
+            if (count($products) !== 0) {
+                $products = Product::where('product_name', 'like', '%' . $product_search . '%')->get(); // Search products
+                
+                $data = [
+                    'products'    => $products,
+                    'keyword'     => $product_search,
+                    'count'       => count($products),
+                    'wishlists'   => $wishlists,
+                    'cartItems' => $cartItems,
+                ];
+    
+                return view('user.component.search')->with('data', $data); // Return results to a view
+            } else {
+                $products = [
+                    'products' => [],
+                    'keyword' => $product_search,
+                    'count'   => 0,
+                    'brand'   => $request->brand,
+                    'min_price' => $request->min_price,
+                    'max_price' => $request->max_price,
+                    'rating' => $request->rating,
+                ];
+    
+                return view('user.component.search')->with('data', $products);
+            }
         }
+        else{
+
+        }
+
     }
-
-
-
-
 
     // START PRODUCT ADMIN
     public function indexProductAdmin()

@@ -155,25 +155,27 @@ Route::post('/add-product-buy-now', [CheckoutController::class, 'addProductBuyNo
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->middleware(['auth', 'verified'])->name('buy.now');
 Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'updateCartQuantityBuyNow'])->name('update.cart.quantity.buy.now');
 
+// BUY AGAIN
+Route::post('/buy-again', [UserController::class, 'addToCartBuyNow'])->name('buy.again');
 
 Route::get('/help', function () {
     return view('user.component.help');
 });
 
-Route::get('/promotion', function () {
-    return view('user.component.promo');
-})->name('promo.user');
-
-Route::get('/detail-promo', function () {
-    return view('user.component.detail-promo');
-});
+Route::get('/promotion', [PromoController::class, 'index'])->name('promo.user');
+Route::get('/{name}-detail-promo', [PromoController::class, 'detailPromoUser'])->name('detail.promo.user');
 
 Route::get('/newsletter', function () {
     return view('user.component.newsletter');
 });
 
 Route::get('/newsletter', [ArticleController::class, 'articleUser'])->name('newsletter.user');
-Route::get('/blog-{nameArticle}', [ArticleController::class, 'detailArticle'])->name('detail.newsletter.user');
+Route::get('/{nameArticle}_detailnewsletter', [ArticleController::class, 'detailArticleUser'])->name('detail.newsletter.user');
+
+// LAKUKAN PEMBAYARAN
+Route::post('/order-paynow', [CheckoutController::class, 'orderPayment'])->name('order.payment');
+Route::post('/rating-and-review', [UserController::class, 'ratingAndReview'])->name('rating.and.review');
+
 
 Route::prefix('/cart')->group(function () {
     Route::get('/', [CartController::class, 'index']);

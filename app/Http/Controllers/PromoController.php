@@ -6,12 +6,59 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Promo;
+use App\Models\PromoProduct;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PromoController extends Controller
 {
-    // PROMO EVENT
+    // USER
+    public function index(){
+
+        $promos = Promo::with(['products'])->where('type', '=', 'promo')->get();
+        $vouchers = Promo::with(['products'])->where('type', '=', 'voucher')->get();
+
+        return view('user.component.promo', [
+            'promos' => $promos,
+            'vouchers' => $vouchers,
+        ]);
+    }
+
+    public function detailPromoUser($name)
+    {
+        // dd($name);
+        $userId = session('id_user');
+
+        if ($userId) { 
+            $promo = Promo::where('promo_name', $name)->with(['products.brand'])
+            ->get();
+
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            $wishlists = Wishlist::where('user_id', $userId)->get();
+
+            return view('user.component.detail-promo', [
+                'promo' => $promo,
+                'cartItems' => $cartItems,
+                'wishlists' => $wishlists,
+            ]);
+        }
+        else{
+            $promo = Promo::where('promo_name', $name)
+            ->with(['products.brand'])->get();
+
+            // dd($promo);
+            return view('user.component.detail-promo', [
+                'promo' => $promo,
+            ]);
+        }
+    }
+
+
+    // ADMIN
     public function indexPromo()
     {
         $promo = Promo::where('type', 'promo')->get();
