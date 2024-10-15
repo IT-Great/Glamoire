@@ -80,23 +80,30 @@ class ArticleController extends Controller
 
     // USER
     public function articleUser(){
-        $articles = Article::all();
-        $categoryArticles = CategoryArticle::with(['categoryArticles'])
+        $articles = Article::with(['category'])->get();
+        $categoryArticles = CategoryArticle::with(['articles'])
         ->get();
 
         // dd(count($categoryArticles));
 
+        // dd($categoryArticles);
         return view('user.component.newsletter', [
             'articles' => $articles,
             'categoryArticles' => $categoryArticles,
         ]);
     }
 
-    public function detailArticle($name){
-        $article = Article::where('name', $name)->first();
+    public function detailArticleUser($name){
+        $article = Article::where('title', $name)->with(['category'])->first();
+        $categoryArticles = CategoryArticle::with(['articles'])
+        ->get();
+        $articles = Article::with(['category'])->get();
 
+        // dd($categoryArticles);
         return view('user.component.blog', [
-            'artcile' => $article,
+            'article' => $article,
+            'categoryArticles' => $categoryArticles,
+            'articles' => $articles,
         ]);
     }
 }

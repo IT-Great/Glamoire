@@ -30,14 +30,6 @@
         "Liberation Mono", "Courier New", monospace;
 }
 
-.grid-container {
-    display: row;
-    row-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
-    padding: 5px;
-}
-  
-
 .hover-red:hover {
     color: red;
 }

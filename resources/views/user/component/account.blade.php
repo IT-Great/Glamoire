@@ -22,7 +22,11 @@
   <div class="container-fluid pb-2 pb-md-4">
     <nav class="tabbable">
       <div class="nav nav-tabs border-secondary mb-2">
+          @if (empty(session('activeTab')))
+          <a class="nav-item active nav-link text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#my-profile">Profilku</a>
+          @else
           <a class="nav-item nav-link text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#my-profile">Profilku</a>
+          @endif
           <a class="nav-item nav-link text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#shipping-address">Alamat Pengiriman</a>
           <a class="nav-item nav-link text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#my-order">Orderanku</a>
           <a class="nav-item nav-link text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#my-wishlist">Produk Favorit</a>
@@ -212,158 +216,323 @@
         <div class="tab-pane p-0 m-0" id="all">
           <!-- CARD -->
           <div class="grid gap-2 p-0 m-0">
-            <!-- DONE -->
-            <div class="col-12 p-0">
-              <div class="p-2 custom-shadow">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-plus  text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
-                  <p class="font-semibold text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Shopping</p>
-                  <p class="text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px]">2 September 2024</p>
-                  <span class="badge badge-success d-flex align-items-center justify-content-center
-                  text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">Done</span>
-                  <p class="text-primary mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] d-none d-md-block">
-                    INV/07082024/IND/19081010111
-                  </p>
-                </div>
 
-                <div class="d-flex align-items-center mb-2 gap-1" style="max-width:50px;">
-                  <img src="images/l-1.png" alt="logo brand">
-                  <p class="font-semibold text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-                </div>
+            @foreach ($profile->orders as $order)
+              <!-- DONE -->
+              <div class="col-12 p-0">
+                <div class="p-3 custom-shadow">
+                  <div class="d-flex align-items-center mb-2">
+                    <svg class="d-flex align-items-center justify-content-center" xmlns="http://www.w3.org/2000/svg" width="15" height="15" 
+                      viewBox="0 0 448 512">
+                      <path d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/>
+                    </svg>
+                    <p class="font-semibold text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Belanja</p>
+                    <p class="text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px]">{{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
+                    <span class="badge 
+                        @if($order->status == 'done') badge-success
+                        @elseif($order->status == 'waiting confirm') badge-secondary
+                        @elseif($order->status == 'in process') badge-info
+                        @elseif($order->status == 'in delivery') badge-warning
+                        @endif
+                        d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">
+                        {{
+                            $order->status == 'done' ? 'Selesai' :
+                            ($order->status == 'waiting confirm' ? 'Menunggu Konfirmasi' :
+                            ($order->status == 'in process' ? 'Sedang Diproses' :
+                            ($order->status == 'in delivery' ? 'Dalam Pengiriman' : 'Unknown')))
+                        }}
+                    </span>
+                    <p class="text-primary mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] d-none d-md-block">
+                      {{ $order->invoice->no_invoice }}
+                    </p>
+                  </div>
 
-                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                  <div class="col-2 col-md-1 p-0 m-0">
-                    <img class="border" src="images/produk1.png" alt="nama produk">    
-                  </div>
-                  <div class="col-6 col-md-8 gap-4">
-                    <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Nama Produk</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">1 Product x Rp10.000</p>
-                  </div>
-                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                    <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Total Belanja</p>
-                    <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp20.000</p>  
-                  </div>
-                </div>
-                
-
-                <div class="d-flex justify-content-end input-group-btn mt-2">
-                  <div class="col-12 d-flex p-0 justify-content-end gap-2">
-                    <div class="d-flex align-items-center justify-content-center">
-                      <a class="text-decoration-none hover:cursor-pointer text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] text-red-700 font-semibold" data-bs-toggle="modal" data-bs-target="#transaction-detail">
-                        Detail Transaksi
-                      </a>
+                  @foreach ($order->items as $item)
+                    <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                      <div class="col-2 col-md-1 p-0 m-0">
+                        <img class="border border-[#183018] rounded-md" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
+                      </div>
+                      <div class="col-6 col-md-8 gap-4">
+                        <p class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
+                        <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->product_name }}</p>
+                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                      </div>
+                      <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                        <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
+                        <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
+                      </div>
                     </div>
-                    <button type="submit" class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" data-bs-toggle="modal" data-bs-target="#form-rating-review" style="background-color: #ffffff">
-                      Rating & Review
-                    </button>
-                    <button type="submit" class="btn border rounded-sm w-fit text-white text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" style="background-color: #183018">
-                      Beli Lagi
-                    </button>
-                  </div>
-                </div>
+                  @endforeach
+                  
 
-              </div>
-            </div>
-            <!-- END DONE -->
-            
-            <!-- WAITING -->
-            <div class="col-12 p-0">
-              <div class="p-2 custom-shadow">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-plus  text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
-                  <p class="font-semibold text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Shopping</p>
-                  <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">2 September 2024</p>
-                  <span class="badge badge-secondary d-flex align-items-center justify-content-center
-                  text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">Confirm Waiting</span>
-                </div>
+                  <div class="d-flex justify-content-end input-group-btn mt-2">
+                    <div class="col-12 d-flex p-0 justify-content-end gap-2">
+                      <div class="d-flex align-items-center justify-content-center">
+                        <a class="hover:cursor-pointer text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] text-red-700" data-bs-toggle="modal" data-bs-target="#transaction-detail-{{$order->invoice->no_invoice}}">
+                          Lihat Detail Transaksi
+                        </a>
+                      </div>
+                      @if ($order->status == 'done')
+                        @if (count($order->ratingAndReviews) == 0)
+                          <button type="submit" class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" data-bs-toggle="modal" data-bs-target="#form-rating-review-{{$order->id}}" style="background-color: #ffffff">
+                              Rating & Review
+                          </button>
+                        @else
+                        @endif
+                        <button type="button" class="btn border rounded-sm w-fit text-white text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" style="background-color: #183018" data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
+                            Beli Lagi
+                        </button>
+                      @endif
+                    </div>
+                  </div>
 
-                <div class="d-flex align-items-center mb-2 gap-1" style="max-width:50px;">
-                  <img src="images/l-1.png" alt="logo brand">
-                  <p class="font-semibold text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-                </div>
-
-                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                  <div class="col-2 col-md-1 p-0 m-0">
-                    <img class="border" src="images/produk1.png" alt="nama produk">    
-                  </div>
-                  <div class="col-6 col-md-8 gap-4">
-                    <p class="text-black font-semibold text-[7px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Nama Produk</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">1 Product x Rp10.000</p>
-                  </div>
-                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Total Belanja</p>
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp20.000</p>  
-                  </div>
                 </div>
               </div>
-            </div>
-            <!-- END WAITING -->
+              <!-- END DONE -->
+              
+              <!-- DETAIL TRANSAKSI -->
+              <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}" tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content overflow-y-auto" style="max-height:90vh;">
 
-            <!-- PROSES -->
-            <div class="col-12 p-0">
-              <div class="p-2 custom-shadow">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-plus  text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
-                  <p class="font-semibold text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Shopping</p>
-                  <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">2 September 2024</p>
-                  <span class="badge badge-info d-flex align-items-center justify-content-center
-                  text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">In Progress</span>
-                </div>
+                    <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                      <div class="row gap-2 gap-lg-0">
+                        <div class="col-12 col-lg-5 pl-lg-0 d-lg-none d-block">
+                          <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky" style="top: 0.1rem;">
+                            <div class="col-12 p-0 border-bottom">
+                              <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">Riwayat Pengiriman</p>
+                              <div class="track">
+                                <div class="step {{ $order->status == 'in process' || $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-check"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Dikonfirmasi</span>
+                                </div>
+                                <div class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-user"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Diambil Kurir</span>
+                                </div>
+                                <div class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-truck"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam Pengiriman</span>
+                                </div>
+                                <div class="step {{ $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-box"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Selesai</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
 
-                <div class="d-flex align-items-center mb-2 gap-1" style="max-width:50px;">
-                  <img src="images/l-1.png" alt="logo brand">
-                  <p class="font-semibold text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-                </div>
+                        <div class="col-12 col-lg-7">
+                          <div class="grid p-3 custom-shadow rounded-sm">
+                            <div class="col-12 p-0 pb-2 border-bottom">
+                              <div class="d-flex">
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">No. Invoice</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">{{ $order->invoice->no_invoice }}</p>
+                              </div>
+                              <div class="d-flex">
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Tanggal Pembelian</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">{{ $order->created_at->format('d F Y, H:i') }}</p>
+                              </div>
+                            </div>
+                            <div class="col-12 p-0 border-bottom">
+                              <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">Detail Produk</p>
+                              
+                              @foreach ($order->items as $item)
+                                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                                  <div class="col-2 col-md-2 p-0 m-0">
+                                    <img class="border" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
+                                  </div>
+                                  <div class="col-6 col-md-7 gap-4">
+                                    <div class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
+                                      
+                                      <p class="text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
+                                    </div>
+                                    <p class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ $item->product->product_name }}</p>
+                                    <p class="text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                  </div>
+                                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                                    <p class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Harga</p>
+                                    <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
+                                  </div>
+                                </div>
+                              @endforeach
 
-                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                  <div class="col-2 col-md-1 p-0 m-0">
-                    <img class="border" src="images/produk1.png" alt="nama produk">    
-                  </div>
-                  <div class="col-6 col-md-8 gap-4">
-                    <p class="text-black font-semibold text-[7px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Nama Produk</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">1 Product x Rp10.000</p>
-                  </div>
-                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Total Belanja</p>
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp20.000</p>  
+                            </div>
+
+                            <!-- INFO PENGIRIMAN -->
+                            <div class="col-12 p-0 border-bottom">
+                              <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">Info Pengiriman</p>
+                              <div class="d-flex mb-1 mb-md-2">
+                                <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Kurir</p>
+                                <p class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">:</p>
+                                <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">JNE</p>
+                              </div>
+                              <div class="d-flex mb-1 mb-md-2">
+                                <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">No.Resi</p>
+                                <p class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">:</p>
+                                <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">082723615</p>
+                              </div>
+                              <div class="d-flex mb-1 mb-md-2">
+                                <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Alamat</p>
+                                <p class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">:</p>
+                                  <div class="grid gap-1">
+                                    <p class="font-semibold text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $order->shippingAddress->label }}</p>
+                                    <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Penerima : {{ $order->shippingAddress->recipient_name }}</p>
+                                    <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $order->shippingAddress->handhphone }}</p>
+                                    <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $order->shippingAddress->address }} 
+                                      @if ($order->shippingAddress->benchmark !== NULL)
+                                        ({{ $order->shippingAddress->benchmark }})
+                                      @endif
+                                    </p>
+                                    <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{  ucwords(strtolower($order->shippingAddress->province)) }}, {{  ucwords(strtolower($order->shippingAddress->regency)) }}, {{  ucwords(strtolower($order->shippingAddress->district)) }}</p>
+                                  </div>
+                              </div>
+                            </div>
+                            <!--  -->
+
+                            <!-- RINCIAN PEMBAYARAN -->
+                            <div class="col-12 p-0">
+                              <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] pt-2 pt-md-3">Rincian Pembayaran</p>
+                                <div class="p-3 bg-light grid gap-2 gap-md-3">
+                                    <div class="grid">
+                                        <div class="d-flex">
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Harga ({{ count($order->items) }} Barang)</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</p>
+                                        </div>
+                                        @if ($order->voucher_promo !== NULL)
+                                        <div class="d-flex">
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Diskon</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">-Rp{{ number_format($order->discount_amount, 0, ',', '.') }}</p>
+                                        </div>
+                                        @endif
+                                        <div class="d-flex">
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Ongkos Kirim</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex py-2 border-bottom border-top align-items-center">
+                                        <p class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
+                                        <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto">Rp{{ number_format(($order->total_amount+$order->shipping_cost), 0, ',', '.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
+                          <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky" style="top: 0.1rem;">
+                            <div class="col-12 p-0 border-bottom">
+                              <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">Riwayat Pengiriman</p>
+                              <div class="track">
+                                <div class="step {{ $order->status == 'in process' || $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-check"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Dikonfirmasi</span>
+                                </div>
+                                <div class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-user"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Diambil Kurir</span>
+                                </div>
+                                <div class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-truck"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam Pengiriman</span>
+                                </div>
+                                <div class="step {{ $order->status == 'done' ? 'active' : '' }}">
+                                    <span class="icon"> <i class="fa fa-box"></i> </span>
+                                    <span class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan Selesai</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- PROSES -->
+              <!-- END DETAIL TRANSAKSI -->
 
-            <!-- PENGIRIMAN -->
-            <div class="col-12 p-0">
-              <div class="p-2 custom-shadow">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-plus  text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
-                  <p class="font-semibold text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Shopping</p>
-                  <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">2 September 2024</p>
-                  <span class="badge badge-warning d-flex align-items-center justify-content-center
-                  text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">In Delivery</span>
-                </div>
+              @if ($order->status == 'done')
+              <!-- RATING & REVIEW -->
+              <div class="modal fade" id="form-rating-review-{{$order->id}}" tabindex="-1" aria-labelledby="form-rating-review-{{$order->id}}" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content overflow-y-auto custom-scroll" style="max-height:90vh;">
+                    <div class="modal-header pb-0 border-none">
+                      <h1 class="modal-title text-[#183018]" id="exampleModalLabel">Ulasan Produk</h1>
+                      <button type="button" class="btn-close" style="color:#183018;" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-                <div class="d-flex align-items-center mb-2 gap-1" style="max-width:50px;">
-                  <img src="images/l-1.png" alt="logo brand">
-                  <p class="font-semibold text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-                </div>
+                    <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                      <div class="col-12 p-0">
+                        <form action="{{ route('rating.and.review') }}" method="POST" id="review-and-rating-form-{{$order->id}}-{{$item->product->id}}" multiple accept="image/*,video/*" enctype="multipart/form-data">
+                        @csrf
+                          @foreach ($order->items as $item)
+                          <input type="number" name="ratingReviewOrderId" value="{{ $order->id }}" hidden>
+                          <input type="number" name="ratingReviewProductId[]" id="productId-{{$order->id}}-{{$item->product->id}}" value="{{ $item->product->id }}" hidden>
+                          <div class="grid pb-4">
+                            <div class="d-flex mb-1">
+                              <div class="col-2 col-md-2 p-0 m-0">
+                                <img class="border" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
+                              </div>
+                              <div class="col-10">
+                                <div class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
+                                  <p class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
+                                </div>
+                                <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->product_name }}</p>
+                                <div>
+                                  <p class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">Berikan ulasan untuk produk ini</p>
+                                  <div class="grid gap-1">
+                                    <!-- RATING -->
+                                    <div class="d-flex align-items-center p-0 gap-2">
+                                      @for ($i = 1; $i <= 5; $i++)
+                                        <i class="fas fa-star" id="star-{{ $i }}-{{ $item->product->id }}-{{$order->id}}" style="width:20px;height:20px;">
+                                        </i>
+                                      @endfor
+                                      <input type="number" name="star[{{$item->product->id}}]" id="star-product-{{$item->product->id}}-{{$order->id}}" value="" hidden required>
+                                    </div>
+                        
+                                    <!-- REVIEW -->
+                                    <div class="col-12 p-0">
+                                      <textarea name="description[{{$item->product->id}}]" class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" name="address" rows="3"  autocomplete="off"  placeholder="Ceritakan Pengalamanmu Tentang Produk ini" required></textarea>
+                                    </div>
+    
+                                    <p class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Bagikan foto-foto dari produk yang Anda terima</p>
+                                    
+                                    <!-- UPLOAD IMAGE -->
+                                    <div id="mediaPreview-{{$order->id}}-{{$item->product->product_name}}" class="media-preview flex gap-1">
+                                        <!-- Previews will be inserted here -->
+                                    </div>
+                                    <div>
+                                        <label class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer" for="customFile-{{ $order->id }}-{{$item->product->product_name}}">Upload Gambar</label>
+                                        <input type="file" name="upload[{{$item->product->id}}][]" multiple accept="image/*,video/*" class="form-control d-none" onchange="displaySelectedMedia(event, 'mediaPreview-{{$order->id}}-{{$item->product->product_name}}')" id="customFile-{{ $order->id }}-{{$item->product->product_name}}">
+                                    </div>
+                        
+                                    <!-- BUTTON SUBMIT -->
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
-                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                  <div class="col-2 col-md-1 p-0 m-0">
-                    <img class="border" src="images/produk1.png" alt="nama produk">    
-                  </div>
-                  <div class="col-6 col-md-8 gap-4">
-                    <p class="text-black font-semibold text-[7px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Nama Produk</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">1 Product x Rp10.000</p>
-                  </div>
-                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Total Belanja</p>
-                    <p class="text-black font-semibold text-[6px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp20.000</p>  
+                          </div>
+                          @endforeach
+                          <div class="col-12 p-0">
+                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" type="submit"  style="background-color: #183018">Selesai</button>
+                          </div>
+                        </form>
+                      </div>
+
+
+
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- PENGIRIMAN -->
+              <!-- END RATING & REVIEW -->
+              @endif
+
+            @endforeach
+
           </div>
           <!-- CARD -->
         </div>
@@ -376,7 +545,7 @@
           <div class="row">
             @foreach ($profile->wishlist as $wp)
             <div class="col-lg-2 col-md-3 col-6 p-1">
-              <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+              <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl" style="min-height:325px; max-height:325px;">
                 <a href="/{{ $wp->product->product_code }}_product" class="text-decoration-none">
                     <div class="position-relative overflow-hidden bg-transparent p-0">
                         <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
@@ -393,17 +562,44 @@
                               </a>
                             </div>
                         </div>
-                        <h1 class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] product-title" id="product{{$wp->product->id}}">{{ Str::limit($wp->product->product_name, 42) }}</h1>
-                        <div class="flex justify-content-start gap-1">
-                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}</p>
-                            <!-- <p class="text-muted text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]"><del>Rp810.000</del></p> -->
+                          <div class="grid name-price hover:cursor-pointer">
+                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="{{ $wp->product->product_name }}">
+
+                                <a href="/{{ $wp->product->product_code }}_product" 
+                                    class="text-decoration-none">
+                                    {{ Str::limit($wp->product->product_name, 20) }}
+                                </a>
+                            </p>
+
+                            <div class="flex justify-content-start gap-1">
+                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                    Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}
+                                </p>
+                            </div>
                         </div>
                     </div>
                     <div class="flex justify-content-between px-2">
-                        <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
-                            + <i class="fas fa-shopping-cart"></i>
-                            Keranjang
+                      @if ($wp->product->stock_quantity == 0)
+                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                          Maaf Stok Habis
                         </a>
+                      @else
+                        @php
+                          $inCart = collect($profile->cartItems)->contains('product_id', $wp->product->id);
+                        @endphp
+                        @if($inCart)
+                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
+                              Cek Keranjang Belanjamu
+                          </a>
+                        @else
+                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
+                              + <i class="fas fa-shopping-cart"></i> Keranjang
+                          </a>
+                        @endif
+                      @endif
                     </div>
                 </a>
               </div>
@@ -420,7 +616,7 @@
           <div class="p-2 p-md-3 p-lg-3 p-xl-3 rounded-sm custom-shadow">
               <div class="row align-items-center mb-2 mb-md-3 border-bottom pb-2 pb-md-3">
                 <div class="col-md-6 col-12">
-                  <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Shopping - 2 September</p>
+                  <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Belanja - 2 September</p>
                 </div>
                 <div class="col-md-6 col-12 text-start text-md-end  text-lg-end  text-xl-end text-red-800">
                   <p class="text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Bayar Sebelum, 3 September 2024 17:00 WIB</p>
@@ -632,203 +828,6 @@
 </div>
 <!-- END MODAL EDIT ALAMAT -->
 
-<!-- RATING & REVIEW -->
-<div class="modal fade" id="form-rating-review" tabindex="-1" aria-labelledby="form-rating-review" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header pb-0 border-none">
-        <h1 class="modal-title text-[#183018]" id="exampleModalLabel">Ulasan Produk</h1>
-        <button type="button" class="btn-close" style="color:#183018;" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-        <div class="col-12 p-0">
-          <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3">Detail Produk</p>
-          <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-            <div class="col-2 col-md-2 p-0 m-0">
-              <img class="border" src="images/produk1.png" alt="nama produk">    
-            </div>
-            <div class="col-6 col-md-7 gap-4">
-              <div class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
-                <img src="images/l-1.png" alt="logo brand">
-                <p class="font-semibold text-black mb-0 text-[8px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-              </div>
-              <p class="text-black font-semibold text-[8px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Nama Produk</p>
-              <p class="text-[8px] md:text-[11px] lg:text-[13px] xl:text-[15px]">1 Product x Rp10.000</p>
-            </div>
-            <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-              <p class="text-black font-semibold text-[8px] md:text-[9px] lg:text-[11px] xl:text-[15px]">Total Belanja</p>
-              <p class="text-black font-semibold text-[8px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Rp20.000</p>  
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3">Rating & Review</p>
-          <form action="" id="review-and-rating-form">
-            @csrf
-            <div class="grid gap-1 gap-md-2">
-              <!-- RATING -->
-              <div class="d-flex justify-content-center align-items-center p-0">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-  
-              <!-- REVIEW -->
-              <div class="col-12 p-0">
-                <textarea class="form-control rounded-lg text-[10px] md:text-[12px] lg:text-[13px] xl:text-[15px]" name="address" rows="3" placeholder="Ceritakan Pengalamanmu Tentang Produk ini" required></textarea>
-              </div>
-  
-              <!-- BUTTON SUBMIT -->
-              <div class="col-12 p-0">
-                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Selesai</button>
-              </div>
-            </div>
-          </form>
-        </div>
-
-
-      </div>
-    </div>
-  </div>
-</div>
-<!-- END RATING & REVIEW -->
-
-<!-- DETAIL TRANSAKSI -->
-<div class="modal fade" id="transaction-detail" tabindex="-1" aria-labelledby="transaction-detail" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-
-      <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-        <div class="row gap-2 gap-lg-0">
-          <div class="col-12 col-lg-5 pl-lg-0 d-lg-none d-block">
-            <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky" style="top: 0.1rem;">
-              <div class="col-12 p-0 border-bottom">
-                <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">Riwayat Pengiriman</p>
-                <div class="track">
-                  <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">Order confirmed</span> </div>
-                  <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]"> Picked by courier</span> </div>
-                  <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]"> On the way </span> </div>
-                  <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">Ready for pickup</span> </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-7">
-            <div class="grid p-3 custom-shadow rounded-sm">
-              <div class="col-12 p-0 pb-2 border-bottom">
-                <div class="d-flex">
-                  <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">No. Invoice</p>
-                  <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">INV/07082024/IND/19081010111</p>
-                </div>
-                <div class="d-flex">
-                  <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Tanggal Pembelian</p>
-                  <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">06 September 2024, 15:03 </p>
-                </div>
-              </div>
-              <div class="col-12 p-0 border-bottom">
-                <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">Detail Produk</p>
-                <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                  <div class="col-2 col-md-2 p-0 m-0">
-                    <img class="border" src="images/produk1.png" alt="nama produk">    
-                  </div>
-                  <div class="col-6 col-md-7 gap-4">
-                    <div class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
-                      <img src="images/l-1.png" alt="logo brand">
-                      <p class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Glamoire</p>
-                    </div>
-                    <p class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[13px] xl:text-[15px]">EVERLASKIN Refine Gentle Aqua Gel Face and Body Exfoliating Gel 30ml</p>
-                    <p class="text-[8px] md:text-[10px] lg:text-[13px] xl:text-[15px]">1 Product x Rp10.000</p>
-                  </div>
-                  <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                    <p class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[11px] xl:text-[13px]">Total Belanja</p>
-                    <p class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[11px] xl:text-[13px]">Rp20.000</p>  
-                  </div>
-                </div>
-              </div>
-
-              <!-- INFO PENGIRIMAN -->
-              <div class="col-12 p-0 border-bottom">
-                <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">Info Pengiriman</p>
-                <div class="d-flex mb-1 mb-md-2">
-                  <p class="col-2 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Kurir</p>
-                  <p class="col-1 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">:</p>
-                  <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">JNE</p>
-                </div>
-                <div class="d-flex mb-1 mb-md-2">
-                  <p class="col-2 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">No.Resi</p>
-                  <p class="col-1 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">:</p>
-                  <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">082723615</p>
-                </div>
-                <div class="d-flex mb-1 mb-md-2">
-                  <p class="col-2 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Alamat</p>
-                  <p class="col-1 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">:</p>
-                  <div class="grid gap-1">
-                    <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Penerima : Muhammad Helmi Satria</p>
-                    <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">08979243010</p>
-                    <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Taman Aloha H4/17 (Depan Gudeg Jogja Bu Susi)</p>
-                    <p class="text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Jawa Timur, Sidoarjo, Sukodono</p>
-                  </div>
-                </div>
-              </div>
-              <!--  -->
-
-              <!-- RINCIAN PEMBAYARAN -->
-              <div class="col-12 p-0">
-                <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] pt-2 pt-md-3">Rincian Pembayaran</p>
-                  <div class="p-3 bg-light grid gap-2 gap-md-3">
-                      <div class="grid">
-                          <div class="d-flex">
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Harga (2 Barang)</p>
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto">Rp30.000</p>
-                          </div>
-                          <div class="d-flex">
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Diskon</p>
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto">-Rp30.000</p>
-                          </div>
-                          <div class="d-flex">
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Ongkos Kirim</p>
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto">Rp30.000</p>
-                          </div>
-                          <div class="d-flex">
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Biaya Jasa Aplikasi</p>
-                              <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto">Rp30.000</p>
-                          </div>
-                      </div>
-                      <div class="d-flex py-2 border-bottom border-top align-items-center"">
-                          <p class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Subtotal</p>
-                          <p class="text-black font-semibold text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] ml-auto">Rp30.000</p>
-                      </div>
-                  </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
-            <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky" style="top: 0.1rem;">
-              <div class="col-12 p-0 border-bottom">
-                <p class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">Riwayat Pengiriman</p>
-                <div class="track">
-                  <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text text-[10px] md:text-[8px] lg:text-[12px] xl:text-[12px]">Order confirmed</span> </div>
-                  <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text text-[10px] md:text-[8px] lg:text-[12px] xl:text-[12px]"> Picked by courier</span> </div>
-                  <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text text-[10px] md:text-[8px] lg:text-[12px] xl:text-[12px]"> On the way </span> </div>
-                  <div class="step"> <span class="icon"> <i class="fa fa-box"></i> </span> <span class="text text-[10px] md:text-[8px] lg:text-[12px] xl:text-[12px]">Ready for pickup</span> </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-<!-- END DETAIL TRANSAKSI -->
-
   @if(!Auth::check())
     <script>
         $(document).ready(function(){
@@ -836,6 +835,131 @@
         });
     </script>
   @endif
+
+<!-- IMAGE HANDLER FOR RATING & REVIEW -->
+<script>
+  function displaySelectedImage(event, elementId) {
+    const selectedImage = document.getElementById(elementId);
+    const fileInput = event.target;
+
+    if (fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            selectedImage.src = e.target.result;
+        };
+
+        reader.readAsDataURL(fileInput.files[0]);
+    }
+  }
+
+  function displaySelectedMedia(event, previewContainerId) {
+    const previewContainer = document.getElementById(previewContainerId);
+    const fileInput = event.target;
+    const files = fileInput.files;
+    
+    const maxImages = 2;
+    const maxVideos = 1;
+    let imageCount = 0;
+    let videoCount = 0;
+
+    // Clear previous previews
+    previewContainer.innerHTML = '';
+
+    // Iterate through selected files
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const fileType = file.type;
+
+        // Check if the file is an image
+        if (fileType.startsWith('image/')) {
+            if (imageCount >= maxImages) {
+                // alert('You can only upload up to 2 images.');
+                Toast.fire({
+                  icon: "error",
+                  text: "Anda hanya bisa mengupload 2 gambar ",
+                  title: "Oops..",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                });
+                break;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.classList.add('img-preview');
+                img.style.maxWidth = '150px'; // Set image size
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+            imageCount++;
+        }
+        // Check if the file is a video
+        else if (fileType.startsWith('video/')) {
+            if (videoCount >= maxVideos) {
+                alert('You can only upload 1 video.');
+                Toast.fire({
+                  icon: "error",
+                  text: "Kamu hanya bisa mengupload 1 video",
+                  title: "Oops..",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                });
+                break;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const video = document.createElement('video');
+                video.src = e.target.result;
+                video.controls = true;
+                video.style.maxWidth = '150px'; // Set video size
+                previewContainer.appendChild(video);
+            };
+            reader.readAsDataURL(file);
+            videoCount++;
+        }
+        else {
+            Toast.fire({
+              icon: "error",
+              text: "Kamu hanya bisa mengupload gambar dan video saja.",
+              title: "Oops..",
+              willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+              }
+            });
+        }
+    }
+
+    if (imageCount === 0 && videoCount === 0) {
+        Toast.fire({
+          icon: "error",
+          text: "Masukkan minimal 1 review berupa foto atau video produk",
+          title: "Oops..",
+          willOpen: () => {
+            const title = document.querySelector('.swal2-title');
+            const content = document.querySelector('.swal2-html-container');
+            if (title) title.style.color = '#ffffff'; // Ubah warna judul
+            if (content) content.style.color = '#ffffff'; // Ubah warna konten
+          }
+        });
+    }
+  }
+
+</script>
 
   <!-- LOGIC PROFILE FORM -->
   <script>
@@ -886,8 +1010,6 @@
         modalBody.querySelector('[name="address"]').value = address;
         modalBody.querySelector('[name="benchmark"]').value = benchmark;
         modalBody.querySelector('[name="address-id"]').value = id;
-
-
       });
     });
   </script>
@@ -939,125 +1061,137 @@
 
   </script> -->
 
-  <!-- DELETE ADDRESS -->
-  <script>
-    $(document).on('click', 'button[name="deleteAddress"]', function(e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        
-        $.ajax({
-            url: "{{ route('delete.shipping.address') }}",
-            type: 'POST',
-            data: {
-                address_id: id,
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-              Toast.fire({
-                icon: "success",
-                text: response.message,
-                title: "Berhasil",
-                willOpen: () => {
-                  const title = document.querySelector('.swal2-title');
-                  const content = document.querySelector('.swal2-html-container');
-                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-              }).then(function () {
-                location.reload(); // Redirect ke halaman utama atau halaman lain
-              });
-            },
-            error: function(xhr) {
-              Toast.fire({
-                icon: "error",
-                text: "Kesalahan Sistem",
-                title: "Oops..",
-                willOpen: () => {
-                  const title = document.querySelector('.swal2-title');
-                  const content = document.querySelector('.swal2-html-container');
-                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-              });
-            }
-        });
-    });
-  </script>
-
-  <!-- SET MAIN ADDRESS -->
-  <script>
-    $(document).on('click', 'button[name="setMainAddress"]', function(e) {
-        e.preventDefault();
-        var id = $(this).data('id'); // Ambil ID dari tombol yang diklik
-
-        $.ajax({
-            url: "{{ route('main.shipping.address') }}",  // Pastikan route ini di-render dengan benar
-            type: 'POST',
-            data: {
-                address_id: id,  // Sesuaikan dengan request di controller
-                _token: '{{ csrf_token() }}'  // Kirim token CSRF untuk keamanan
-            },
-            success: function(response) {
-                if (response.success) {
-                  Toast.fire({
-                    icon: "success",
-                    text: response.message,
-                    title: "Berhasil",
-                    willOpen: () => {
-                      const title = document.querySelector('.swal2-title');
-                      const content = document.querySelector('.swal2-html-container');
-                      if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                      if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                  }).then(function () {
-                    location.reload(); // Redirect ke halaman utama atau halaman lain
-                  });
-                } else {
-                  Toast.fire({
-                    icon: "error",
-                    text: response.message,
-                    title: "Oops..",
-                    willOpen: () => {
-                      const title = document.querySelector('.swal2-title');
-                      const content = document.querySelector('.swal2-html-container');
-                      if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                      if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                  });
-                }
-            },
-            error: function(xhr, status, error) {
-              Toast.fire({
-                icon: "error",
-                text: "Gagal Mengubah Alamat",
-                title: "Oops..",
-                willOpen: () => {
-                  const title = document.querySelector('.swal2-title');
-                  const content = document.querySelector('.swal2-html-container');
-                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-              });
-            }
-        });
-    });
-  </script>
-
-  @if(session('after_add_address'))
-    <script>
-      Toast.fire({
-        icon: "success",
-        text: "Berhasil menambahkan alamat pengiriman baru",
-        title: "Berhasil",
-        willOpen: () => {
-          const title = document.querySelector('.swal2-title');
-          const content = document.querySelector('.swal2-html-container');
-          if (title) title.style.color = '#ffffff'; // Ubah warna judul
-          if (content) content.style.color = '#ffffff'; // Ubah warna konten
-        }
+<!-- DELETE ADDRESS -->
+<script>
+  $(document).on('click', 'button[name="deleteAddress"]', function(e) {
+      e.preventDefault();
+      var id = $(this).data('id');
+      
+      $.ajax({
+          url: "{{ route('delete.shipping.address') }}",
+          type: 'POST',
+          data: {
+              address_id: id,
+              _token: '{{ csrf_token() }}'
+          },
+          success: function(response) {
+            Toast.fire({
+              icon: "success",
+              text: response.message,
+              title: "Berhasil",
+              willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+              }
+            }).then(function () {
+              location.reload(); // Redirect ke halaman utama atau halaman lain
+            });
+          },
+          error: function(xhr) {
+            Toast.fire({
+              icon: "error",
+              text: "Kesalahan Sistem",
+              title: "Oops..",
+              willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+              }
+            });
+          }
       });
-  </script>  
-  @endif
+  });
+</script>
+
+<!-- SET MAIN ADDRESS -->
+<script>
+  $(document).on('click', 'button[name="setMainAddress"]', function(e) {
+      e.preventDefault();
+      var id = $(this).data('id'); // Ambil ID dari tombol yang diklik
+
+      $.ajax({
+          url: "{{ route('main.shipping.address') }}",  // Pastikan route ini di-render dengan benar
+          type: 'POST',
+          data: {
+              address_id: id,  // Sesuaikan dengan request di controller
+              _token: '{{ csrf_token() }}'  // Kirim token CSRF untuk keamanan
+          },
+          success: function(response) {
+              if (response.success) {
+                Toast.fire({
+                  icon: "success",
+                  text: response.message,
+                  title: "Berhasil",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                }).then(function () {
+                  location.reload(); // Redirect ke halaman utama atau halaman lain
+                });
+              } else {
+                Toast.fire({
+                  icon: "error",
+                  text: response.message,
+                  title: "Oops..",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                });
+              }
+          },
+          error: function(xhr, status, error) {
+            Toast.fire({
+              icon: "error",
+              text: "Gagal Mengubah Alamat",
+              title: "Oops..",
+              willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+              }
+            });
+          }
+      });
+  });
+</script>
+
+@if(session('after_add_address'))
+<script>
+  var Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      background: "#183018",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+      },
+  });
+  Toast.fire({
+    icon: "success",
+    text: "Berhasil menambahkan alamat pengiriman baru",
+    title: "Berhasil",
+    willOpen: () => {
+      const title = document.querySelector('.swal2-title');
+      const content = document.querySelector('.swal2-html-container');
+      if (title) title.style.color = '#ffffff'; // Ubah warna judul
+      if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    }
+  });
+</script>  
+@endif
 
 
 <!-- 
@@ -1084,6 +1218,18 @@
 -->
 @if(session('after_update_profile'))
 <script>
+  var Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      background: "#183018",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+      },
+  });
   Toast.fire({
     icon: "success",
     text: "Profilmu berhasil diubah",
@@ -1100,19 +1246,87 @@
 
 @if(session('success_send_email'))
 <script>
-    Toast.fire({
-      icon: "success",
-      text: "Link verifikasi email berhasil dikirim. Cek kotak emailmu sekarang",
-      title: "Berhasil",
-      willOpen: () => {
-        const title = document.querySelector('.swal2-title');
-        const content = document.querySelector('.swal2-html-container');
-        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-      }
-    });
+  var Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      background: "#183018",
+      showConfirmButton: false,
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+      },
+  });
+  Toast.fire({
+    icon: "success",
+    text: "Link verifikasi email berhasil dikirim. Cek kotak emailmu sekarang",
+    title: "Berhasil",
+    willOpen: () => {
+      const title = document.querySelector('.swal2-title');
+      const content = document.querySelector('.swal2-html-container');
+      if (title) title.style.color = '#ffffff'; // Ubah warna judul
+      if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    }
+  });
 </script>  
 @endif 
+
+@if(session('payment_success'))
+<script>
+  var Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      background: "#183018",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+      },
+  });
+  Toast.fire({
+    icon: "success",
+    text: "Pembayaran Berhasil. Cek Tab Orderanku untuk melihat perkembangan orderanmu",
+    title: "Berhasil",
+    willOpen: () => {
+      const title = document.querySelector('.swal2-title');
+      const content = document.querySelector('.swal2-html-container');
+      if (title) title.style.color = '#ffffff'; // Ubah warna judul
+      if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    }
+  });
+</script>  
+@endif 
+
+@if(session('rating_and_review_success'))
+<script>
+  var Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      background: "#183018",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+      },
+  });
+  Toast.fire({
+    icon: "success",
+    text: "Horeee... Ulasanmu kami terima. Terimakasih sudah memberikan ulasan.",
+    title: "Berhasil",
+    willOpen: () => {
+      const title = document.querySelector('.swal2-title');
+      const content = document.querySelector('.swal2-html-container');
+      if (title) title.style.color = '#ffffff'; // Ubah warna judul
+      if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    }
+  });
+</script>  
+@endif
 
 <!-- VERIFICATION EMAIL -->
 <script>
@@ -1335,5 +1549,128 @@
     // END API WILAYAH REGISTER
 </script>
 
-@endsection
+<!-- RATING STAR -->
+<script>
+  document.querySelectorAll('.fa-star').forEach(star => {
+    let clickedStars = {}; // Object to store the last clicked star for each product
+    
+    star.addEventListener('click', function() {
+        const starId = this.id.split('-');
+        const clickedStar = parseInt(starId[1]);  // Get the star number
+        const productId = starId[2];  // Get the product ID
+        const orderId = starId[3];
 
+        // Store the clicked star for this product
+        clickedStars[productId] = clickedStar;
+        console.log({
+          'clickedStar' : clickedStar,
+          'orderId'     : orderId, 
+          'productId'   : productId,
+        });
+
+        $(`#star-product-${productId}-${orderId}`).val(clickedStar);
+
+        // Change star color for the clicked product
+        for (let i = 1; i <= 5; i++) {
+            const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+            let valueStar = document.getElementById
+            if (i <= clickedStar) {
+                currentStar.style.color = 'orange';
+            } else {
+                currentStar.style.color = '';
+            }
+        }
+    });
+    
+    // Handle hover logic
+    star.addEventListener('mouseover', function() {
+        const starId = this.id.split('-');
+        const hoverStar = parseInt(starId[1]);  // Get the star number
+        const productId = starId[2];  // Get the product ID
+        const orderId = starId[3];
+
+        // Change star color while hovering
+        for (let i = 1; i <= 5; i++) {
+            const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+            if (i <= hoverStar) {
+                currentStar.style.color = 'orange';
+            } else {
+                currentStar.style.color = '';
+            }
+        }
+    });
+
+    // Reset star colors when the mouse leaves the star area
+    star.addEventListener('mouseout', function() {
+        const starId = this.id.split('-');
+        const productId = starId[2];  // Get the product ID
+        const orderId = starId[3];
+
+        // Get the last clicked star for this product
+        const lastClicked = clickedStars[productId] || 0;  // Default to 0 if none clicked
+
+        for (let i = 1; i <= 5; i++) {
+            const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+            if (i <= lastClicked) {
+                currentStar.style.color = 'orange';  // Maintain color for previously clicked stars
+            } else {
+                currentStar.style.color = '';  // Reset color for stars that weren't clicked
+            }
+        }
+    });
+  });
+</script>
+
+<!-- BELI LAGI -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Menangani klik pada tombol "Beli Lagi"
+        const buyNowButtons = document.querySelectorAll('[data-product-ids]');
+        buyNowButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productIds = this.getAttribute('data-product-ids').split(',');
+
+                // Melakukan permintaan AJAX
+                $.ajax({
+                    url: "{{ route('buy.again') }}",
+                    method: 'POST',
+                    data: {
+                        product_id: productIds, // Mengirimkan sebagai array
+                        _token: '{{ csrf_token() }}' // Sertakan CSRF token jika perlu
+                    },
+                    success: function(response) {
+                        Toast.fire({
+                            icon: "success",
+                            text: response.message,
+                            title: "Berhasil",
+                            willOpen: () => {
+                                const title = document.querySelector('.swal2-title');
+                                const content = document.querySelector('.swal2-html-container');
+                                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                            }
+                        }).then(function () {
+                            window.location.href = "/cart"; // Redirect ke halaman utama atau halaman lain
+                        });
+                    },
+                    error: function(error) {
+                        Toast.fire({
+                            icon: "error",
+                            text: "Kesalahan Sistem",
+                            title: "Oops...",
+                            willOpen: () => {
+                                const title = document.querySelector('.swal2-title');
+                                const content = document.querySelector('.swal2-html-container');
+                                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+@endsection

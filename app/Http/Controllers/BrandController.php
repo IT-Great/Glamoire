@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\Wishlist;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -167,13 +171,34 @@ class BrandController extends Controller
 
     // AKSES USER 
     public function brands($name){
-        $brand = Brand::where('name', $name)
-        ->with(['products'])
-        ->get();
+        $userId = session('id_user');
+
+        if ($userId) {
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            $wishlists = Wishlist::where('user_id', $userId)->get();
+            
+            $brand = Brand::where('name', $name)
+                ->with(['products.ratingAndReviews']) // Load products and their reviews
+                ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
+                ->get();
         
-        // dd($brand);
-        return view('user.component.brand', [
-            'brands' => $brand
-        ]);
+            
+            dd($brand);
+            return view('user.component.brand', [
+                'brands'    => $brand,
+                'cartItems' => $cartItems,
+                'wishlists' => $wishlists,
+            ]);
+        }else{
+            $brand = Brand::where('name', $name)
+            ->with(['products'])
+            ->get();
+            
+            // dd($brand);
+            return view('user.component.brand', [
+                'brands' => $brand
+            ]);
+        }
     }
 }
