@@ -25,12 +25,9 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">                    
+                <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>All User</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/user-admin">User</a></li>

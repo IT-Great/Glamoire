@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+
 </head>
 
 <body>
@@ -28,9 +30,6 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>All Article</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/article-admin">Article</a></li>
@@ -51,14 +50,13 @@
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="/category-article" type="button"
                                         class="btn btn-sm btn-dark d-flex align-items-center"
-                                        style="border-radius: 8px; margin-right: 10px;">
+                                        style="margin-right: 10px;">
                                         <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>Category
                                     </a>
 
                                     <a href="/create-article-admin" type="button"
-                                        class="btn btn-sm btn-primary d-flex align-items-center"
-                                        style="border-radius: 8px;">
-                                        <i class="bi bi-plus-circle" style="margin-right: 3px;"></i>Add Article
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="fa fa-plus" style="margin-right: 3px;"></i>Add Article
                                     </a>
                                 </div>
                             </div>
@@ -178,6 +176,8 @@
 
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
+
 
     <script src="assets/js/pages/dashboard.js"></script>
 

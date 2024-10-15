@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
 
+
     <style>
         .upload__img-wrap {
             display: flex;
@@ -73,7 +74,7 @@
             border-radius: 4px;
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -86,9 +87,6 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Add New Article</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/article-admin">Article</a></li>
@@ -124,18 +122,6 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
-                                                        {{-- <div class="form-group">
-                                                            <label for="brand-select">Category Name<span
-                                                                    style="color: red">*</span></label>
-                                                            <select class="form-control select2"
-                                                                name="category_article_id">
-                                                                @foreach ($categories as $category)
-                                                                    <option value="{{ $category->id }}">
-                                                                        {{ $category->name }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        </div> --}}
 
                                                         <div class="form-group mb-3">
                                                             <label for="first-name-icon">Category Name <span
@@ -197,12 +183,11 @@
 
 
                                                     <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Submit</button>
                                                         <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px;">Reset</button>
+                                                            class="btn btn-sm btn-light-secondary me-1 mb-1">Reset</button>
+
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-primary me-1 mb-1">Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -235,6 +220,8 @@
 
     <!-- summernote -->
     <script src="assets/vendors/summernote/summernote-lite.min.js"></script>
+
+
 
 
     <script>

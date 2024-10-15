@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 
     <style>
         .upload__img-wrap {
@@ -82,14 +84,11 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Add New Promo Diskon</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-ongkir') }}">Promo
-                                            Diskon</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Diskon</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-diskon') }}">Promo
+                                            Discount</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Discount</li>
                                 </ol>
                             </nav>
                         </div>
@@ -106,100 +105,97 @@
                                         <form action="{{ route('store-promo-diskon') }}" class="form form-vertical"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
-                                            <input type="hidden" name="type" value="diskon">
+                                            <input type="hidden" name="type" value="discount">
+
                                             <div class="form-body">
+                                                <h4 class="mb-4">Create a Promotional Discount</h4>
+                                                <p class="text-muted">Fill out the form below to create a new
+                                                    promotional discount. Please ensure all required information is
+                                                    provided, including the discount name, date range, and the products
+                                                    to be discounted.</p>
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left"
                                                             style="margin-bottom: 20px;">
-                                                            <label for="first-name-icon">Diskon Name <span
+                                                            <label for="promo_name">Discount Name <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Diskon Name" id="first-name-icon"
-                                                                    name="promo_name">
+                                                                    placeholder="Example: 20% Off" id="promo_name"
+                                                                    name="promo_name" value="{{ old('promo_name') }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-bag"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('promo_name'))
-                                                                <p style="color: red">{{ $errors->first('promo_name') }}
-                                                                </p>
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('promo_name') }}</p>
                                                             @endif
+                                                            <small class="text-muted">Enter the name of the discount
+                                                                that will be displayed to customers.</small>
                                                         </div>
 
-                                                        <div class="form-group has-icon-left"
-                                                            style="margin-bottom: 20px;">
-                                                            <label for="first-name-icon">Start Date <span
+                                                        <div class="form-group has-icon-left">
+                                                            <label for="daterange">Date Range <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="start_date">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
+                                                                    id="daterange" name="date_range"
+                                                                    value="{{ old('date_range') }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-calendar"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('start_date'))
-                                                                <p style="color: red">{{ $errors->first('start_date') }}
-                                                                </p>
+                                                            @if ($errors->has('date_range'))
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('date_range') }}</p>
                                                             @endif
+                                                            <small class="text-muted">Select the date range during which
+                                                                the discount will be valid.</small>
                                                         </div>
-
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left"
                                                             style="margin-bottom: 20px;">
-                                                            <label for="first-name-icon">Diskon <span
+                                                            <label for="discount">Discount Amount (%) <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Diskon" id="first-name-icon"
-                                                                    name="diskon">
+                                                                <input type="number"
+                                                                    class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter Discount Percentage"
+                                                                    id="discount" name="discount"
+                                                                    value="{{ old('discount') }}" min="0"
+                                                                    max="100">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-percent"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('diskon'))
-                                                                <p style="color: red">{{ $errors->first('diskon') }}
+                                                            @if ($errors->has('discount'))
+                                                                <p class="text-danger">{{ $errors->first('discount') }}
                                                                 </p>
                                                             @endif
+                                                            <small class="text-muted">Enter the discount percentage
+                                                                (e.g., enter 20 for a 20% discount).</small>
                                                         </div>
-
-                                                        <div class="form-group has-icon-left"
-                                                            style="margin-bottom: 20px;">
-                                                            <label for="first-name-icon">End Date <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('end_date') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="end_date">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-calendar"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('end_date'))
-                                                                <p style="color: red">{{ $errors->first('end_date') }}
-                                                                </p>
-                                                            @endif
-                                                        </div>
-
                                                     </div>
 
                                                     <div class="col-lg-12" style="margin-bottom: 20px;">
                                                         <div class="mb-2">
-                                                            <label for="first-name-icon">Pilih Produk <span
-                                                                    style="color: red">*</span></label>
+                                                            <label for="product_ids">Select Products <span
+                                                                    style="color: red">*</span></label><br>
+                                                            <small class="text-muted">Select the products to which you
+                                                                want
+                                                                to apply the discount. You can choose multiple
+                                                                products.</small>
                                                         </div>
                                                         <table class="table" id="table1">
                                                             <thead>
                                                                 <tr>
-                                                                    <th>✔</th>
+                                                                    <th>Select</th>
                                                                     <th>Product</th>
                                                                     <th>Stock</th>
                                                                     <th>Price</th>
@@ -228,18 +224,21 @@
                                                                 @endforeach
                                                             </tbody>
                                                         </table>
+
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px; margin-bottom: 20px;">Submit</button>
                                                         <button type="reset"
                                                             class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px; margin-bottom: 20px;">Reset</button>
+                                                            style="margin-bottom: 20px;">Reset</button>
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-primary me-1 mb-1"
+                                                            style="margin-bottom: 20px;">Create Discount</button>
                                                     </div>
                                                 </div>
                                             </div>
+
+
                                         </form>
                                     </div>
                                 </div>
@@ -260,6 +259,43 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('#daterange').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                startDate: moment().startOf('day'), // Default start date
+                endDate: moment().endOf('day') // Default end date
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            @if ($errors->any())
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: 'Error: {{ $errors->first() }}',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            @endif
+        });
     </script>
 
     <script src="assets/js/pages/dashboard.js"></script>

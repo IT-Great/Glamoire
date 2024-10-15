@@ -5,28 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Mazer Admin Dashboard</title>
-
-    <!-- Include Choices CSS -->
-    <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-
-    <!-- FilePond CSS -->
-    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-        rel="stylesheet">
-
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
 
     <style>
         .upload__img-wrap {
@@ -92,13 +81,13 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Add New Voucher</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Voucher</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
+                                            Voucher</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Limited Voucher
+                                    </li>
+
                                 </ol>
                             </nav>
                         </div>
@@ -127,146 +116,141 @@
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
                                                                     placeholder="Enter Voucher Name"
-                                                                    id="first-name-icon" name="promo_name">
+                                                                    id="first-name-icon" name="promo_name"
+                                                                    value="{{ old('promo_name') }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-bag"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('promo_name'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('promo_name') }}</p>
+                                                                <p style="color: red">{{ $errors->first('promo_name') }}
+                                                                </p>
                                                             @endif
                                                         </div>
 
                                                         <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Start Date <span
+                                                            <label for="daterange">Date Range <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="start_date">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
+                                                                    id="daterange" name="date_range"
+                                                                    value="{{ old('date_range') }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-calendar"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('start_date'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('start_date') }}</p>
+                                                            @if ($errors->has('date_range'))
+                                                                <p style="color: red">{{ $errors->first('date_range') }}
+                                                                </p>
                                                             @endif
                                                         </div>
 
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Minimum Transaction <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Enter Minimum Transaction"
-                                                                    id="first-name-icon" name="min_transaction">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
-                                                                </div>
-                                                            </div>
+                                                        <label for="promo_code" class="form-label">Voucher Code <span
+                                                                class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <span class="input-group-text">Glamo</span>
+                                                            <input type="text" class="form-control" id="promo_code"
+                                                                name="promo_code"
+                                                                value="{{ strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5)) }}">
                                                         </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Kode Promo<span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Enter Promo Code"
-                                                                    id="first-name-icon" name="promo_code">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-upc"></i>
-                                                                </div>
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <label for="usage_quota">Max Usage Quota <span
+                                                                        style="color: red">*</span></label>
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
+                                                                    placeholder="e.g., 100 times" name="usage_quota"
+                                                                    id="usage_quota" style="margin-bottom: 4px;"
+                                                                    value="{{ old('usage_quota') }}">
+                                                                <small class="form-text text-muted">Enter the maximum
+                                                                    number of times this item can be used (e.g., 100,
+                                                                    200).</small>
+                                                                @if ($errors->has('usage_quota'))
+                                                                    <p style="color: red">
+                                                                        {{ $errors->first('usage_quota') }}</p>
+                                                                @endif
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <label for="max_quantity_buyer">Max Quantity Per Buyer
+                                                                    <span style="color: red">*</span></label>
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
+                                                                    placeholder="e.g., 5 items per buyer"
+                                                                    name="max_quantity_buyer" id="max_quantity_buyer"
+                                                                    style="margin-bottom: 4px;"
+                                                                    value="{{ old('max_quantity_buyer') }}">
+                                                                <small class="form-text text-muted">Specify the maximum
+                                                                    number of items a single buyer can purchase (e.g.,
+                                                                    1, 5, 10).</small>
+                                                                @if ($errors->has('max_quantity_buyer'))
+                                                                    <p style="color: red">
+                                                                        {{ $errors->first('max_quantity_buyer') }}</p>
+                                                                @endif
                                                             </div>
                                                         </div>
-
-                                                        <div class="mb-3">
-                                                            <label for="first-name-icon">Description <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description"
-                                                                    id="description" cols="30" rows="10"></textarea>
-                                                            </div>
-                                                            @if ($errors->has('description'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('description') }}</p>
-                                                            @endif
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Syarat & Ketentuan<span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Enter Terms & Conditions"
-                                                                    id="first-name-icon" name="terms_conditions">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-ui-radios-grid"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
                                                     </div>
 
                                                     <div class="col-md-6">
+                                                        <div class="row mb-2">
+                                                            <div class="col">
+                                                                <label for="min_transaction">Minimum Transaction <span
+                                                                        style="color: red">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp.</span>
+                                                                    <input type="text" class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
+                                                                        id="min_transaction" placeholder="x.xxx.xxx"
+                                                                        name="min_transaction"
+                                                                        value="{{ old('min_transaction') }}">
+                                                                </div>
+                                                                @if ($errors->has('min_transaction'))
+                                                                    <p style="color: red">
+                                                                        {{ $errors->first('min_transaction') }}</p>
+                                                                @endif
+                                                            </div>
+                                                            <div class="col">
+                                                                <label for="max_transaction">Maximal Transaction <span
+                                                                        style="color: red">*</span></label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text">Rp.</span>
+                                                                    <input type="text" class="form-control {{ $errors->has('max_transaction') ? 'is-invalid' : '' }}"
+                                                                        id="max_transaction" placeholder="x.xxx.xxx"
+                                                                        name="max_transaction"
+                                                                        value="{{ old('max_transaction') }}">
+                                                                </div>
+                                                                @if ($errors->has('max_transaction'))
+                                                                    <p style="color: red">
+                                                                        {{ $errors->first('max_transaction') }}</p>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+
                                                         <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Diskon <span
+                                                            <label for="first-name-icon">Discount <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
-                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Diskon" id="first-name-icon"
-                                                                    name="diskon">
+                                                                    class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter Discount" id="first-name-icon"
+                                                                    name="discount" value="{{ old('discount') }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-percent"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('diskon'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('diskon') }}</p>
+                                                            @if ($errors->has('discount'))
+                                                                <p style="color: red">{{ $errors->first('discount') }}
+                                                                </p>
                                                             @endif
-                                                        </div>
-
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">End Date <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('end_date') ? 'is-invalid' : '' }}"
-                                                                    id="first-name-icon" name="end_date">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-calendar"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('end_date'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('end_date') }}</p>
-                                                            @endif
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Maximal Transaction <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    placeholder="Enter Max Transaction"
-                                                                    id="first-name-icon" name="max_transaction">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
-                                                                </div>
-                                                            </div>
                                                         </div>
 
                                                         <div class="card">
-                                                            <label for="first-name-icon">Banner Voucher<span
+                                                            <label for="first-name-icon">Banner Voucher <span
                                                                     style="color: red">*</span></label>
                                                             <div class="image-upload-wrap"
                                                                 id="single-image-upload-wrap"
-                                                                style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
+                                                                style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
                                                                 <input type="file" name="image"
                                                                     class="file-upload-input"
                                                                     onchange="readURLSingle(this);" accept="image/*"
@@ -277,24 +261,33 @@
                                                                 </div>
                                                             </div>
 
+                                                            @if ($errors->has('image'))
+                                                                <p style="color: red">{{ $errors->first('image') }}
+                                                                </p>
+                                                            @endif
+
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
                                                                 style="display: flex; flex-wrap: wrap;">
                                                                 <!-- Gambar yang diunggah akan ditambahkan di sini -->
                                                             </div>
+
+                                                            <small class="form-text text-muted">Upload an image for the
+                                                                voucher banner (JPG, PNG formats allowed).</small>
+
                                                         </div>
+
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Submit</button>
                                                         <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px;">Reset</button>
+                                                            class="btn btn-sm btn-light-secondary me-3">Reset</button>
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-primary me-1">Submit</button>
                                                     </div>
                                                 </div>
                                             </div>
+
                                         </form>
                                     </div>
                                 </div>
@@ -310,14 +303,78 @@
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
     <script src="assets/vendors/apexcharts/apexcharts.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
-
     <script src="assets/vendors/choices.js/choices.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            @if ($errors->any())
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: 'Error: {{ $errors->first() }}',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            @endif
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $('#daterange').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                startDate: moment().startOf('day'), // Default start date
+                endDate: moment().endOf('day') // Default end date
+            });
+        });
+    </script>
+
+    <script>
+        // HANDLE AUTO FORMAT RUPIAH
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // Tambahkan titik setiap 3 digit
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix === undefined ? rupiah : (rupiah ? prefix + rupiah : '');
+        }
+
+        // Event listener untuk input min_transaction
+        document.getElementById('min_transaction').addEventListener('input', function(e) {
+            this.value = formatRupiah(this.value);
+        });
+
+        // Event listener untuk input max_transaction
+        document.getElementById('max_transaction').addEventListener('input', function(e) {
+            this.value = formatRupiah(this.value);
+        });
+    </script>
 
     <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>  
+    <script src="assets/vendors/toastify/toastify.js"></script>
 
     {{-- Upload Single Image --}}
     <script>

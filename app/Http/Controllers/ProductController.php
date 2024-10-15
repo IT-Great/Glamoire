@@ -162,8 +162,7 @@ class ProductController extends Controller
 
                 'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'images' => 'required|array|min:1|max:6', // Ubah ini
-                // 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'images.*' => 'required|max:2048',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
                 'description' => 'required',
 
@@ -507,6 +506,60 @@ class ProductController extends Controller
     }
 
 
+    // public function deleteProductAdmin($id)
+    // {
+    //     $product = Product::find($id);
+
+    //     if (!$product) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Product not found.'
+    //         ]);
+    //     }
+
+    //     // Hapus gambar utama dari storage (jika ada)
+    //     if (!empty($product->main_image) && Storage::disk('public')->exists($product->main_image)) {
+    //         Log::info('Deleting main image: ' . $product->main_image);
+    //         Storage::disk('public')->delete($product->main_image);
+    //     } else {
+    //         Log::info('Main image not found: ' . $product->main_image);
+    //     }
+
+    //     // Hapus multiple images (jika ada)
+    //     if (!empty($product->images)) {
+    //         // Decode JSON string to an array
+    //         $images = json_decode($product->images, true);
+
+    //         if (is_array($images)) {
+    //             foreach ($images as $image) {
+    //                 if (Storage::disk('public')->exists($image)) {
+    //                     Log::info('Deleting image: ' . $image);
+    //                     Storage::disk('public')->delete($image);
+    //                 } else {
+    //                     Log::info('Image not found: ' . $image);
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Hapus video dari storage (jika ada)
+    //     if (!empty($product->video) && Storage::disk('public')->exists($product->video)) {
+    //         Log::info('Deleting video: ' . $product->video);
+    //         Storage::disk('public')->delete($product->video);
+    //     } else {
+    //         Log::info('Video not found: ' . $product->video);
+    //     }
+
+    //     // Hapus produk dari database
+    //     $product->delete();
+
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Product deleted successfully.'
+    //     ]);
+    // }
+
+
     public function deleteProductAdmin($id)
     {
         $product = Product::find($id);
@@ -519,11 +572,14 @@ class ProductController extends Controller
         }
 
         // Hapus gambar utama dari storage (jika ada)
-        if (!empty($product->main_image) && Storage::disk('public')->exists($product->main_image)) {
-            Log::info('Deleting main image: ' . $product->main_image);
-            Storage::disk('public')->delete($product->main_image);
-        } else {
-            Log::info('Main image not found: ' . $product->main_image);
+        if (!empty($product->main_image)) {
+            $mainImagePath = 'product_images/' . basename($product->main_image);
+            if (Storage::disk('public')->exists($mainImagePath)) {
+                Log::info('Deleting main image: ' . $mainImagePath);
+                Storage::disk('public')->delete($mainImagePath);
+            } else {
+                Log::info('Main image not found: ' . $mainImagePath);
+            }
         }
 
         // Hapus multiple images (jika ada)
@@ -533,22 +589,26 @@ class ProductController extends Controller
 
             if (is_array($images)) {
                 foreach ($images as $image) {
-                    if (Storage::disk('public')->exists($image)) {
-                        Log::info('Deleting image: ' . $image);
-                        Storage::disk('public')->delete($image);
+                    $imagePath = 'product_images/' . basename($image);
+                    if (Storage::disk('public')->exists($imagePath)) {
+                        Log::info('Deleting image: ' . $imagePath);
+                        Storage::disk('public')->delete($imagePath);
                     } else {
-                        Log::info('Image not found: ' . $image);
+                        Log::info('Image not found: ' . $imagePath);
                     }
                 }
             }
         }
 
         // Hapus video dari storage (jika ada)
-        if (!empty($product->video) && Storage::disk('public')->exists($product->video)) {
-            Log::info('Deleting video: ' . $product->video);
-            Storage::disk('public')->delete($product->video);
-        } else {
-            Log::info('Video not found: ' . $product->video);
+        if (!empty($product->video)) {
+            $videoPath = 'product_videos/' . basename($product->video);
+            if (Storage::disk('public')->exists($videoPath)) {
+                Log::info('Deleting video: ' . $videoPath);
+                Storage::disk('public')->delete($videoPath);
+            } else {
+                Log::info('Video not found: ' . $videoPath);
+            }
         }
 
         // Hapus produk dari database

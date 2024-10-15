@@ -6,61 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product || Admin Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-
-    <style>
-        .product-item-container {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            /* Allows items to wrap on smaller screens */
-        }
-
-        .product-item-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            object-fit: cover;
-            margin-right: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .product-item-container {
-                flex-direction: column;
-                /* Stack items vertically on smaller screens */
-                align-items: flex-start;
-            }
-
-            .product-item-container img {
-                margin-bottom: 10px;
-                width: 80px;
-                height: 80px;
-                /* Reduce image size on smaller screens */
-            }
-        }
-
-        .action-buttons a {
-            display: block;
-            /* Set to block so each link appears on a new line */
-            margin-bottom: 5px;
-            /* Add some space between the buttons */
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/product/index.css">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
 </head>
 
 <body>
@@ -72,17 +31,14 @@
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>All Products</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                        <div class="col-12 col-md-6 mb-3">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header" >
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/brand-admin">Products</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Products</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div>                       
                     </div>
                 </div>
 
@@ -95,9 +51,8 @@
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('create-product-admin') }}" type="submit"
-                                        class="btn btn-sm btn-primary d-flex align-items-center"
-                                        style="border-radius: 8px;">
-                                        <i class="bi bi-plus-circle" style="margin-right: 3px;"></i> Add Product
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Product
                                     </a>
                                 </div>
                             </div>
@@ -118,11 +73,6 @@
                                         <tr id="product-item-{{ $item->id }}">
                                             <td>
                                                 <div class="product-item-container">
-                                                    <!-- Image -->
-                                                    {{-- <img src="{{ asset($item->main_image) }}" class="lazyload"
-                                                        alt="Product Image"
-                                                        onclick="openImageInNewTab('{{ asset($item->main_image) }}')"> --}}
-
                                                     <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
                                                         class="lazyload"
                                                         style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
@@ -198,13 +148,10 @@
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
-
-    <!-- Include jQuery (if not included already) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script>
         // Fungsi untuk membuka gambar di tab baru
         function openImageInNewTab(url) {
@@ -272,12 +219,9 @@
             });
         });
     </script>
-
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
     <script src="assets/js/pages/dashboard.js"></script>
-
     <script src="assets/js/main.js"></script>
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

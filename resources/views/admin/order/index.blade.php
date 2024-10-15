@@ -1,9 +1,3 @@
-{{-- {% set title = 'DataTable' %}
-{% set filename = 'table-datatable.html' %}
-
-{% extends 'layouts/master.html' %}
-{% block content %} --}}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -15,9 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -26,9 +18,7 @@
 
 <body>
     <div id="app">
-
         @include('admin.layouts.sidebar')
-
         @include('admin.layouts.navbar')
 
         <div id="main">
@@ -36,16 +26,13 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Order Data</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/brand-admin">Order</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Order Data</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div>                      
                     </div>
                 </div>
                 <section class="section">

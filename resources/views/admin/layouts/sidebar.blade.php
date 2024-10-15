@@ -67,6 +67,9 @@
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                                 <a href="/promo-diskon">Diskon</a>
                             </li>
+                            <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                                <a href="/promo-new-user">Promo New User</a>
+                            </li>
                         </ul>
 
                     </li>
