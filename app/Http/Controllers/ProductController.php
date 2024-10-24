@@ -38,7 +38,7 @@ class ProductController extends Controller
 
                 $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
                 $promos = Promo::where('type', '=', 'promo')->get();
-                
+
                 $data = [
                     'wishlist'  => $wishlist,
                     'product'   => $product,
@@ -92,7 +92,7 @@ class ProductController extends Controller
                 $wishlists = Wishlist::where('user_id', $userId)->get();
                 $cartId = Cart::where('user_id', $userId)->value('id');
                 $cartItems = Cart_item::where('cart_id', $cartId)->get();
-                
+
                 return view('user.component.detail', [
                     'averageRating' => $averageRating,
                     'product'       => $product,
@@ -100,14 +100,13 @@ class ProductController extends Controller
                     'wishlists'     => $wishlists,
                     'cartItems'     => $cartItems,
                 ]);
-            }else{
+            } else {
                 return view('user.component.detail', [
                     'averageRating' => $averageRating,
                     'product'       => $product,
                     'youlike'       => $youlike,
                 ]);
             }
-
         } catch (Exception $err) {
             dd($err);
         }
@@ -124,10 +123,10 @@ class ProductController extends Controller
             $wishlists = Wishlist::where('user_id', $userId)->get();
             $cartId = Cart::where('user_id', $userId)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
-            
+
             if (count($products) !== 0) {
                 $products = Product::where('product_name', 'like', '%' . $product_search . '%')->get(); // Search products
-                
+
                 $data = [
                     'products'    => $products,
                     'keyword'     => $product_search,
@@ -135,7 +134,7 @@ class ProductController extends Controller
                     'wishlists'   => $wishlists,
                     'cartItems' => $cartItems,
                 ];
-    
+
                 return view('user.component.search')->with('data', $data); // Return results to a view
             } else {
                 $products = [
@@ -147,14 +146,11 @@ class ProductController extends Controller
                     'max_price' => $request->max_price,
                     'rating' => $request->rating,
                 ];
-    
+
                 return view('user.component.search')->with('data', $products);
             }
+        } else {
         }
-        else{
-
-        }
-
     }
 
     // START PRODUCT ADMIN
@@ -176,14 +172,17 @@ class ProductController extends Controller
             $query->whereNotNull('parent_id');
         })->get();
 
-        $subcategories = CategoryProduct::whereNotNull('parent_id')->get();
+        $categories = CategoryProduct::whereNull('parent_id')->get(); // Mengambil semua category utama
 
+
+        $subcategories = CategoryProduct::whereNotNull('parent_id')->get();
 
         $brands = Brand::all(); // Mengambil semua data brand
 
         return view('admin.product.create', [
             'options' => $options,
             'subcategories' => $subcategories,
+            'categories' => $categories,
             'brands' => $brands
         ]);
     }
@@ -296,6 +295,7 @@ class ProductController extends Controller
                 'information_product' => $request->information_product,
                 'stock_quantity' => $request->stock_quantity,
                 'regular_price' => $regularPrice,
+                'date_expired' => $request->date_expired,
                 'weight_product' => $request->weight_product,
                 'main_image' => $mainImagePath,
                 'images' => json_encode($imagePaths),
@@ -372,7 +372,13 @@ class ProductController extends Controller
     {
         $categories = CategoryProduct::all();
         $brands = Brand::all();
-        $product = Product::find($id);
+        $product = Product::findOrFail($id); // Ganti Product dengan model yang sesuai
+
+        $options = CategoryProduct::whereHas('parent', function ($query) {
+            $query->whereNotNull('parent_id');
+        })->get();
+
+        $subcategories = CategoryProduct::whereNotNull('parent_id')->get();
 
         if (!$product) {
             return redirect()->route('index-product-admin')->with('error', 'Product not found');
@@ -394,7 +400,9 @@ class ProductController extends Controller
         return view('admin.product.edit', [
             'categories' => $categories,
             'brands' => $brands,
-            'product' => $product
+            'product' => $product,
+            'subcategories' => $subcategories,
+            'options' => $options,
         ]);
     }
 
@@ -549,58 +557,7 @@ class ProductController extends Controller
     }
 
 
-    // public function deleteProductAdmin($id)
-    // {
-    //     $product = Product::find($id);
 
-    //     if (!$product) {
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Product not found.'
-    //         ]);
-    //     }
-
-    //     // Hapus gambar utama dari storage (jika ada)
-    //     if (!empty($product->main_image) && Storage::disk('public')->exists($product->main_image)) {
-    //         Log::info('Deleting main image: ' . $product->main_image);
-    //         Storage::disk('public')->delete($product->main_image);
-    //     } else {
-    //         Log::info('Main image not found: ' . $product->main_image);
-    //     }
-
-    //     // Hapus multiple images (jika ada)
-    //     if (!empty($product->images)) {
-    //         // Decode JSON string to an array
-    //         $images = json_decode($product->images, true);
-
-    //         if (is_array($images)) {
-    //             foreach ($images as $image) {
-    //                 if (Storage::disk('public')->exists($image)) {
-    //                     Log::info('Deleting image: ' . $image);
-    //                     Storage::disk('public')->delete($image);
-    //                 } else {
-    //                     Log::info('Image not found: ' . $image);
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     // Hapus video dari storage (jika ada)
-    //     if (!empty($product->video) && Storage::disk('public')->exists($product->video)) {
-    //         Log::info('Deleting video: ' . $product->video);
-    //         Storage::disk('public')->delete($product->video);
-    //     } else {
-    //         Log::info('Video not found: ' . $product->video);
-    //     }
-
-    //     // Hapus produk dari database
-    //     $product->delete();
-
-    //     return response()->json([
-    //         'success' => true,
-    //         'message' => 'Product deleted successfully.'
-    //     ]);
-    // }
 
 
     public function deleteProductAdmin($id)
@@ -660,6 +617,38 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Product deleted successfully.'
+        ]);
+    }
+
+
+
+    public function storeVariantType(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:255|unique:variant_types,code'
+        ]);
+
+        $variantType = ProductVariations::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $variantType
+        ]);
+    }
+
+    public function storeVariantValue(Request $request)
+    {
+        $validated = $request->validate([
+            'value' => 'required|string|max:255',
+            'variant_type_id' => 'required|exists:variant_types,id'
+        ]);
+
+        $variantValue = ProductVariations::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'data' => $variantValue
         ]);
     }
 }

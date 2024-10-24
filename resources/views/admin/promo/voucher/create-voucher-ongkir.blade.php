@@ -46,7 +46,7 @@
                 </div>
 
                 <section class="section">
-                    <form action="{{ route('store-promo') }}" class="form form-vertical" method="POST"
+                    <form action="{{ route('store-promo-ongkir') }}" class="form form-vertical" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
@@ -58,7 +58,7 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     {{-- type --}}
-                                    <input type="hidden" name="type" value="promo">
+                                    <input type="hidden" name="type" value="product voucher">
 
                                     <div class="form-body">
                                         <div class="row">

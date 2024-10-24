@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo Diskon || Admin Glamoire</title>
+    <title>Discount - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
 </head>
 
@@ -88,17 +89,12 @@
                         </div>
                     </div>
                 </section>
-
             </div>
             @include('admin.layouts.footer')
-
         </div>
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <!-- Include jQuery (if not included already) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>

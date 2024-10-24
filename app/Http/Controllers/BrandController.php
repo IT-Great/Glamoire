@@ -10,6 +10,7 @@ use App\Models\Wishlist;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class BrandController extends Controller
 {
@@ -43,6 +44,36 @@ class BrandController extends Controller
         return view('admin.brand.create');
     }
 
+    // public function storeBrand(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'description' => 'required',
+    //         'brand_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //     ]);
+
+    //     // Generate unique brand code based on the brand name
+    //     $brandCode = $this->generateBrandCode($request->name);
+
+    //     if ($request->hasFile('brand_logo')) {
+    //         $image = $request->file('brand_logo');
+    //         $imageName = time() . '.' . $image->getClientOriginalExtension();
+    //         $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
+    //     }
+
+
+    //     Brand::create([
+    //         'name' => $request->name,
+    //         'description' => $request->description,
+    //         'brand_logo' => $imagePath,
+    //         'brand_code' => $brandCode, // Menyimpan kode merek
+
+    //     ]);
+
+    //     // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
+    //     return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
+    // }   
+
     public function storeBrand(Request $request)
     {
         $request->validate([
@@ -54,25 +85,32 @@ class BrandController extends Controller
         // Generate unique brand code based on the brand name
         $brandCode = $this->generateBrandCode($request->name);
 
+        $imagePath = null;
         if ($request->hasFile('brand_logo')) {
             $image = $request->file('brand_logo');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
             $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
         }
 
-
-        Brand::create([
+        $brand = Brand::create([
             'name' => $request->name,
             'description' => $request->description,
             'brand_logo' => $imagePath,
-            'brand_code' => $brandCode, // Menyimpan kode merek
-
+            'brand_code' => $brandCode,
         ]);
 
-        // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => $brand, // Return brand data including the new ID
+                'message' => 'Brand has been added successfully!',
+            ]);
+        }
+
+        // Fallback for non-AJAX requests (if needed)
         return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
     }
-
 
     private function generateBrandCode($brandName)
     {
@@ -96,6 +134,7 @@ class BrandController extends Controller
 
         return $brandCode;
     }
+
 
 
     public function detailBrand($id)
@@ -170,31 +209,32 @@ class BrandController extends Controller
     }
 
     // AKSES USER 
-    public function brands($name){
+    public function brands($name)
+    {
         $userId = session('id_user');
 
         if ($userId) {
             $cartId = Cart::where('user_id', $userId)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
             $wishlists = Wishlist::where('user_id', $userId)->get();
-            
+
             $brand = Brand::where('name', $name)
                 ->with(['products.ratingAndReviews']) // Load products and their reviews
                 ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
                 ->get();
-        
-            
+
+
             dd($brand);
             return view('user.component.brand', [
                 'brands'    => $brand,
                 'cartItems' => $cartItems,
                 'wishlists' => $wishlists,
             ]);
-        }else{
+        } else {
             $brand = Brand::where('name', $name)
-            ->with(['products'])
-            ->get();
-            
+                ->with(['products'])
+                ->get();
+
             // dd($brand);
             return view('user.component.brand', [
                 'brands' => $brand

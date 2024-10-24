@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('promo_name');
             $table->string('type');
-            $table->string('discount');            
+            $table->string('discount')->nullable();            
             $table->string('date_range')->nullable(); 
             $table->unsignedBigInteger('category_product_id')->nullable();
             $table->foreign('category_product_id')->references('id')->on('category_products')->cascadeOnDelete()->cascadeOnUpdate();
@@ -24,7 +24,6 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();            
             $table->string('min_transaction')->nullable();
-            $table->string('max_transaction')->nullable();
             $table->string('max_discount')->nullable();
             $table->string('terms_conditions')->nullable();
             $table->bigInteger('sale_price')->nullable();

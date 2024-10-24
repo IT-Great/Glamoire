@@ -9,15 +9,55 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+
+    <style>
+        .card {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }       
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-extrabold {
+            font-weight: 800;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .card-header .d-flex {
+                flex-direction: column;
+            }
+
+            .card-header .d-flex>div {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -43,36 +83,38 @@
             </div>
             <div class="page-content">
                 <section class="row">
-                    <div class="col-12 col-lg-9">
-                        <div class="row">
-                            {{-- <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
+                    <div class="col-12">
+                        <!-- Stats Cards Row 1 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
                                                 <div class="stats-icon purple">
                                                     <i class="iconly-boldShow"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">New Order</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Unpaid</h6>
                                                 <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div> --}}
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
                                                 <div class="stats-icon purple">
                                                     <i class="iconly-boldShow"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">New Order</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Shipment Needs Processing</h6>
                                                 <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
@@ -80,36 +122,17 @@
                                 </div>
                             </div>
 
-
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon blue">
-                                                    <i class="iconly-boldProfile"></i>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldShow"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">Out Of Stock</h6>
-                                                <h6 class="font-extrabold mb-0">183</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">Available Stock</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Processed Shipments</h6>
                                                 <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
@@ -117,17 +140,17 @@
                                 </div>
                             </div>
 
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldShow"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">canceled by the buyer.</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Canceled by Buyer</h6>
                                                 <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
@@ -136,54 +159,102 @@
                             </div>
                         </div>
 
-                        {{-- <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4>Sales Information</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <input type="text" id="filter-date-range" class="form-control"
-                                                    placeholder="Select Date Range">
+                        <!-- Stats Cards Row 2 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldShow"></i>
+                                                </div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <select id="filter-brand" class="form-select select2">
-                                                    <option value="">Select Brand</option>
-                                                    @foreach ($brands as $brand)
-                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">New Order</h6>
+                                                <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-body">
-                                        <div id="chart-sales-information"></div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon blue">
+                                                    <i class="iconly-boldProfile"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Out Of Stock</h6>
+                                                <h6 class="font-extrabold mb-0">183</h6>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> --}}
 
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon red">
+                                                    <i class="iconly-boldBookmark"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Available Stock</h6>
+                                                <h6 class="font-extrabold mb-0">112</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon red">
+                                                    <i class="iconly-boldBookmark"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Upcoming Promotion</h6>
+                                                <h6 class="font-extrabold mb-0">112</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sales Information Card -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
                                         <h4>Sales Information</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
+                                        <div class="row g-3">
+                                            <div class="col-12 col-md-6">
                                                 <input type="text" id="filter-date-range" class="form-control"
                                                     placeholder="Select Date Range">
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-12 col-md-6">
                                                 <select id="filter-brand" class="form-select select2">
                                                     <option value="">Select Brand</option>
                                                     @foreach ($brands as $brand)
-                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                        <option value="{{ $brand->id }}">{{ $brand->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-12">
+                                            <div class="col-12">
                                                 <button id="export-csv" class="btn btn-primary">Export to CSV</button>
                                             </div>
                                         </div>
@@ -195,119 +266,151 @@
                             </div>
                         </div>
 
-
+                        <!-- Add this section after your Weekly Income Chart section -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h4>Sales Ranking</h4>
-                                            <p>best-selling product across all brands</p>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="me-4">
-                                                <!-- Input untuk memilih range tanggal -->
-                                                <input type="text" id="filter-date-range" class="form-control"
-                                                    placeholder="Select Date Range">
+                                    <div class="card-header">
+                                        <h4>Performa Paket Diskon</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Kriteria Utama -->
+                                        <div class="row g-3 mb-2">
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Penjualan</h6>
+                                                            <h6 class="font-extrabold mb-0">Rp 77.200</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="me-4">
-                                                    <!-- Filter untuk memilih Brand -->
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-primary">Export</button>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Pesanan</h6>
+                                                            <h6 class="font-extrabold mb-0">3</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Produk Terjual</h6>
+                                                            <h6 class="font-extrabold mb-0">6</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Total Pembeli</h6>
+                                                            <h6 class="font-extrabold mb-0">2</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Jumlah Paket Diskon
+                                                                Dipesan</h6>
+                                                            <h6 class="font-extrabold mb-0">3</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="card-body">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Product</th>
-                                                    <th>quantity of items sold</th>
-                                                    <th>quantity available</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($products as $product)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>
-                                                            <img src="{{ Storage::url($product->main_image) }}"
-                                                                loading="lazy" class="lazyload" alt="Product Image"
-                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                            {{ $product->product_name }}
-                                                        </td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                        <!-- Grafik Setiap Kriteria -->
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Grafik Setiap Kriteria</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="discountPerformanceChart" style="height: 300px;"></canvas>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Pemasukan Mingguan</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="weeklyIncomeChart"></div>
-                            </div>
-                        </div>
-
-
-
+                        <!-- Sales Ranking Card -->
                         <div class="row">
-
-                            <div class="col-12 col-xl-8">
+                            <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Latest Comments</h4>
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                            <div>
+                                                <h4 class="mb-1">Sales Ranking</h4>
+                                                <p class="mb-0">Best-selling product across all brands</p>
+                                            </div>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <input type="text" id="filter-date-range" class="form-control"
+                                                    placeholder="Select Date Range">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-hover table-lg">
+                                            <table class="table table-striped">
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
-                                                        <th>Comment</th>
+                                                        <th>No.</th>
+                                                        <th>Product</th>
+                                                        <th>Quantity Sold</th>
+                                                        <th>Quantity Available</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td class="col-3">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-md">
-                                                                    <img src="assets/images/faces/5.jpg">
+                                                    @foreach ($products as $product)
+                                                        <tr>
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <img src="{{ Storage::url($product->main_image) }}"
+                                                                        loading="lazy" class="lazyload me-2"
+                                                                        alt="Product Image"
+                                                                        style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                                                                    <span>{{ $product->product_name }}</span>
                                                                 </div>
-                                                                <p class="font-bold ms-3 mb-0">Si Cantik</p>
-                                                            </div>
-                                                        </td>
-                                                        <td class="col-auto">
-                                                            <p class=" mb-0">Congratulations on your graduation!</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="col-3">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-md">
-                                                                    <img src="assets/images/faces/2.jpg">
-                                                                </div>
-                                                                <p class="font-bold ms-3 mb-0">Si Ganteng</p>
-                                                            </div>
-                                                        </td>
-                                                        <td class="col-auto">
-                                                            <p class=" mb-0">Wow amazing design! Can you make another
-                                                                tutorial for
-                                                                this design?</p>
-                                                        </td>
-                                                    </tr>
+                                                            </td>
+                                                            <td>{{ $product->stock_quantity }}</td>
+                                                            <td>{{ $product->stock_quantity }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -315,137 +418,20 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- <div class="col-12 col-lg-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Frequent Buyers</h4> <!-- Judul berubah menjadi Frequent Buyers -->
-                            </div>
-                            <div class="card-content pb-4">
-                                <!-- User 1 -->
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/4.jpg">
+                        <!-- Weekly Income Chart -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Pemasukan Mingguan</h4>
                                     </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">Hank Schrader</h5>
-                                        <h6 class="text-muted mb-0">@johnducky</h6>
-                                        <p class="mb-0 text-primary">Pembelian: 45</p>
-                                        <p class="mb-0">Total Transaksi: Rp 15.000.000</p> <!-- Total transaksi -->
-                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 12 Okt 2024</p> <!-- Terakhir diperbarui -->
+                                    <div class="card-body">
+                                        <div id="weeklyIncomeChart"></div>
                                     </div>
-                                </div>
-                                
-                                <!-- User 2 -->
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/5.jpg">
-                                    </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">Dean Winchester</h5>
-                                        <h6 class="text-muted mb-0">@imdean</h6>
-                                        <p class="mb-0 text-primary">Pembelian: 32</p>
-                                        <p class="mb-0">Total Transaksi: Rp 10.000.000</p> <!-- Total transaksi -->
-                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 10 Okt 2024</p> <!-- Terakhir diperbarui -->
-                                    </div>
-                                </div>
-                                
-                                <!-- User 3 -->
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/1.jpg">
-                                    </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">John Dodol</h5>
-                                        <h6 class="text-muted mb-0">@dodoljohn</h6>
-                                        <p class="mb-0 text-primary">Pembelian: 28</p>
-                                        <p class="mb-0">Total Transaksi: Rp 8.500.000</p> <!-- Total transaksi -->
-                                        <p class="mb-0 text-muted">Terakhir Diperbarui: 09 Okt 2024</p> <!-- Terakhir diperbarui -->
-                                    </div>
-                                </div>
-                    
-                                <div class="px-4">
-                                    <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>See All Buyers</button>
                                 </div>
                             </div>
                         </div>
-                    </div> --}}
-                    
-
-                    <div class="col-12 col-lg-3">
-
-                        {{-- <div class="card">
-                            <div class="card-header">
-                                <h4>Profile Visit</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-primary" width="32" height="32"
-                                                fill="blue" style="width:10px">
-                                                <use
-                                                    xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">Europe</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">862</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-europe"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-success" width="32" height="32"
-                                                fill="blue" style="width:10px">
-                                                <use
-                                                    xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">America</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">375</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-america"></div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="d-flex align-items-center">
-                                            <svg class="bi text-danger" width="32" height="32" fill="blue"
-                                                style="width:10px">
-                                                <use
-                                                    xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                            </svg>
-                                            <h5 class="mb-0 ms-3">Indonesia</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <h5 class="mb-0">1025</h5>
-                                    </div>
-                                    <div class="col-12">
-                                        <div id="chart-indonesia"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Visitors Profile</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="chart-visitors-profile"></div>
-                            </div>
-                        </div>
-
                     </div>
                 </section>
             </div>
@@ -456,16 +442,69 @@
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
     <script src="assets/vendors/apexcharts/apexcharts.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-
     <script src="assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dummy data for the chart
+            const dates = ['01/11', '02/11', '03/11', '04/11', '05/11', '06/11', '07/11',
+                '08/11', '09/11', '10/11', '11/11', '12/11', '13/11', '14/11'
+            ];
+
+            const salesData = [65000, 55000, 72000, 58000, 52000, 62000, 48000,
+                58000, 63000, 60000, 55000, 65000, 70000, 52000
+            ];
+
+            const buyersData = [15, 16, 15, 17, 14, 13, 16, 18, 17, 18, 15, 14, 19, 16];
+
+            const ctx = document.getElementById('discountPerformanceChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                            label: 'Sale',
+                            data: salesData,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            fill: false
+                        },
+                        {
+                            label: 'Buyers',
+                            data: buyersData,
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
     {{-- script sales information untuk bagian 7 hari terakhir --}}
     {{-- <script>
         // inisialisasi select2

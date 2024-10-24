@@ -252,7 +252,8 @@
                                         @elseif($order->status == 3)
                                             <span class="badge bg-danger">Canceled</span>
                                         @else
-                                            <span class="badge bg-warning">Pending</span>
+                                            {{-- <span class="badge bg-warning">Pending</span> --}}
+                                            <span class="badge bg-primary">Delivered</span>
                                         @endif
                                     </div>
 

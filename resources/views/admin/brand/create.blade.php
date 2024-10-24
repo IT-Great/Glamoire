@@ -83,7 +83,7 @@
                                                             <label for="brand-description">Description <span
                                                                     style="color: red">*</span></label>
                                                             <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" id="brand-description"
-                                                                rows="3" placeholder="Provide a brief description of the brand, its identity, and what it represents"
+                                                                rows="10" placeholder="Provide a brief description of the brand, its identity, and what it represents"
                                                                 name="description"></textarea>
                                                             @if ($errors->has('description'))
                                                                 <p style="color: red">
@@ -114,7 +114,7 @@
                                                                     <p>Drag and drop a file or select to add Image</p>
                                                                 </div>
 
-                                                            </div>                                                        
+                                                            </div>
 
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
@@ -126,10 +126,10 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('brand_logo') }}</p>
                                                             @else
-                                                                <small class="text-muted"
-                                                                    style="font-size: 14px;">Your
-                                                                    brand logo should be in
-                                                                    image format (e.g., .jpg, .png).</small>
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Your brand logo should be in image format (e.g.,
+                                                                    JPG, JPEG, PNG) and should not exceed 2MB in size.
+                                                                </small>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -145,31 +145,23 @@
                                                         Brand</button>
                                                 </div>
                                             </div>
+
+                                        </form>
                                     </div>
-                                    </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
             </div>
-            </section>
+            @include('admin.layouts.footer')
         </div>
-
-        @include('admin.layouts.footer')
-
-
-    </div>
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
-
     <script src="assets/js/main.js"></script>
-    <script src="assets/vendors/choices.js/choices.min.js"></script>
-
-    <!-- toastify -->
     <script src="assets/vendors/toastify/toastify.js"></script>
-
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
 
     <script>
@@ -192,45 +184,7 @@
         });
     </script>
 
-    {{-- Upload Single Image --}}
-    {{-- <script>
-        // Fungsi untuk mengunggah satu gambar
-        function readURLSingle(input) {
-            const singleUploadContent = document.getElementById('single-file-upload-content');
-            singleUploadContent.innerHTML = ''; // Kosongkan konten jika sudah ada gambar sebelumnya
-
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-
-                if (!file.type.match('image.*')) return; // Hanya file gambar
-
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    // Buat elemen gambar
-                    const imgBox = document.createElement('div');
-                    imgBox.classList.add('upload__img-box-single');
-
-                    const imgBg = document.createElement('div');
-                    imgBg.classList.add('img-bg');
-                    imgBg.style.backgroundImage = `url(${e.target.result})`;
-
-                    // Tambahkan tombol close
-                    const imgClose = document.createElement('div');
-                    imgClose.classList.add('upload__img-close');
-                    imgClose.onclick = function() {
-                        singleUploadContent.innerHTML = ''; // Hapus gambar jika tombol close diklik
-                        input.value = ''; // Reset input file
-                    };
-
-                    imgBg.appendChild(imgClose);
-                    imgBox.appendChild(imgBg);
-                    singleUploadContent.appendChild(imgBox);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-    </script> --}}
-
+    {{-- Upload Single Image --}}   
     <script>
         function readURLSingle(input) {
             const singleUploadContent = document.getElementById('single-file-upload-content');

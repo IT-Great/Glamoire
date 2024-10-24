@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
@@ -19,7 +18,19 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/product/createproduct.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
+    <style>
+        .flatpickr-calendar {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .flatpickr-day.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+    </style>
 </head>
 
 <body>
@@ -58,7 +69,7 @@
                                                     product.</p>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left mb-3">
+                                                        <div class="form-group has-icon-left mb-4">
                                                             <label for="first-name-icon">Product Name <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
@@ -75,13 +86,13 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('product_name') }}</p>
                                                             @else
-                                                                <small class="text-muted" style="font-size: 14px;">Give
-                                                                    your brand a distinct
-                                                                    name that users will recognize.</small>
+                                                                <small class="text-muted" style="font-size: 14px;">Enter
+                                                                    a unique and descriptive name for the product that
+                                                                    customers can easily identify.</small>
                                                             @endif
                                                         </div>
 
-                                                        <div class="form-group mb-3">
+                                                        <div class="form-group mb-4">
                                                             <label for="first-name-icon">List Sub Category <span
                                                                     style="color: red">*</span></label>
                                                             <div class="form-group">
@@ -91,7 +102,6 @@
                                                                     <option value="" disabled
                                                                         {{ old('category_product_id') ? '' : 'selected' }}>
                                                                         Select List Sub Category</option>
-                                                                    <!-- Placeholder -->
                                                                     @foreach ($subcategories as $subcategory)
                                                                         <option value="{{ $subcategory->id }}"
                                                                             {{ old('category_product_id') == $subcategory->id ? 'selected' : '' }}>
@@ -105,14 +115,13 @@
                                                                     </p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Select the
-                                                                        appropriate sub-category for your
-                                                                        product.</small>
+                                                                        style="font-size: 14px;">Select the appropriate
+                                                                        sub-category or add new one</small>
                                                                 @endif
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group mb-3">
+                                                        <div class="form-group mb-4">
                                                             <label for="first-name-icon">Brand <span
                                                                     style="color: red">*</span></label>
                                                             <div class="form-group">
@@ -121,7 +130,7 @@
                                                                     name="brand_id">
                                                                     <option value="" disabled
                                                                         {{ old('brand_id') ? '' : 'selected' }}>Select
-                                                                        Brand</option> <!-- Placeholder -->
+                                                                        Brand</option>
                                                                     @foreach ($brands as $brand)
                                                                         <option value="{{ $brand->id }}"
                                                                             {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
@@ -134,17 +143,18 @@
                                                                         {{ $errors->first('brand_id') }}</p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Choose the brand
-                                                                        associated with this product.</small>
+                                                                        style="font-size: 14px;">Choose the brand or add
+                                                                        new one</small>
                                                                 @endif
                                                             </div>
                                                         </div>
+
 
                                                         {{-- product code auto --}}
                                                         <input type="hidden" id="product-code-input"
                                                             name="product_code">
 
-                                                        <div class="mb-3">
+                                                        <div class="mb-4">
                                                             <label for="first-name-icon">Description <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
@@ -163,7 +173,7 @@
                                                             @endif
                                                         </div>
 
-                                                        <div class="mb-3">
+                                                        <div class="mb-4">
                                                             <label for="first-name-icon">Information Product <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
@@ -182,7 +192,7 @@
                                                             @endif
                                                         </div>
 
-                                                        <div class="mt-4">
+                                                        <div class="mb-4">
                                                             <h4 class="card-title">Variant Product</h4>
                                                             <p class="card-subtitle">Add variants so that buyers can
                                                                 choose the right product! You can enter up to 2 types of
@@ -192,27 +202,35 @@
                                                         <div class="mt-3">
                                                             <div id="variant-container">
                                                                 <div class="variant-type mb-4 p-3 border rounded">
-                                                                    <label>Tipe Variant</label>
-                                                                    <div class="d-flex align-items-center mb-2">
+                                                                    <label>Variant Type</label>
+                                                                    <div class="d-flex align-items-center">
                                                                         <select
                                                                             class="select2-add-option form-select me-2"
                                                                             name="variant_type[]">
-                                                                            <option value="warna">Warna</option>
-                                                                            <option value="aroma">Aroma</option>
-                                                                            <option value="rasa">Rasa</option>
-                                                                            <option value="ukuran">Ukuran</option>
+                                                                            <option value="warna">Color</option>
+                                                                            <option value="aroma">Scent</option>
+                                                                            <option value="rasa">Flavor</option>
+                                                                            <option value="ukuran">Size</option>
                                                                         </select>
                                                                     </div>
-                                                                    <label class="form-label">Variant Values</label>
+                                                                    <small class="text-muted">Select a variant type or
+                                                                        add a new one if you don't find a suitable
+                                                                        option.</small>
+
+                                                                    <label class="form-label mt-2">Variant
+                                                                        Values</label>
                                                                     <div class="variant-values">
                                                                         <select
                                                                             class="select2 form-select multiple-remove"
                                                                             name="variant_values[0][]"
                                                                             multiple="multiple"></select>
                                                                     </div>
+                                                                    <small class="text-muted">Select variant values or
+                                                                        add new ones if you don't find suitable
+                                                                        options.</small>
                                                                 </div>
                                                             </div>
-                                                            <!-- Area untuk upload gambar yang tersembunyi awalnya -->
+                                                            <!-- Hidden image upload area -->
                                                             <div class="variant-images mt-3" style="display: none;">
                                                                 <input type="file"
                                                                     class="form-control variant-image-upload"
@@ -221,11 +239,10 @@
                                                             <button type="button" class="btn btn-outline-primary"
                                                                 id="addVariantType">+ Add Product Variant</button>
                                                         </div>
-
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left mb-3">
+                                                        <div class="form-group has-icon-left mb-4">
                                                             <label for="first-name-icon">Stock Quantity <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
@@ -243,38 +260,36 @@
                                                                     {{ $errors->first('stock_quantity') }}</p>
                                                             @else
                                                                 <small class="text-muted"
-                                                                    style="font-size: 14px;">Give
-                                                                    your brand a distinct
-                                                                    name that users will recognize.</small>
+                                                                    style="font-size: 14px;">Enter the total quantity
+                                                                    of items in stock. This helps track inventory
+                                                                    levels.</small>
                                                             @endif
                                                         </div>
 
 
-                                                        <div class="form-group has-icon-left mb-3">
+                                                        <div class="mb-4">
                                                             <label for="first-name-icon">Regular Price <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="input-group">
+                                                                <span class="input-group-text">Rp.</span>
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('regular_price') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Regular Price"
-                                                                    id="regular-price" name="regular_price"
+                                                                    placeholder="x.xxx.xxx" id="regular-price"
+                                                                    name="regular_price"
                                                                     value="{{ old('regular_price') }}">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cash-stack"></i>
-                                                                </div>
+
                                                             </div>
                                                             @if ($errors->has('regular_price'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('regular_price') }}</p>
                                                             @else
-                                                                <small class="text-muted"
-                                                                    style="font-size: 14px;">Give
-                                                                    your brand a distinct
-                                                                    name that users will recognize.</small>
+                                                                <small class="text-muted" style="font-size: 14px;">Set
+                                                                    the regular selling price for the product in the
+                                                                    format x.xxx.xxx (Rupiah).</small>
                                                             @endif
                                                         </div>
 
-                                                        <div class="mb-3">
+                                                        <div class="mb-4">
                                                             <label for="">Weight Product</label>
                                                             <div class="input-group">
                                                                 <input type="text" class="form-control"
@@ -288,38 +303,64 @@
                                                                 the product for shipping calculations.</small>
                                                         </div>
 
-                                                        <label for="">Dimension Product</label>
-                                                        <div class="row mb-3">
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        placeholder="Length" name="length"
-                                                                        value="{{ old('length') }}">
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon1">cm</span>
+                                                        <div class="mb-4">
+                                                            <label for="">Dimension Product</label>
+                                                            <div class="row">
+                                                                <div class="col">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control"
+                                                                            placeholder="Length" name="length"
+                                                                            value="{{ old('length') }}">
+                                                                        <span class="input-group-text"
+                                                                            id="basic-addon1">cm</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control"
+                                                                            placeholder="Width" name="width"
+                                                                            value="{{ old('width') }}">
+                                                                        <span class="input-group-text"
+                                                                            id="basic-addon2">cm</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control"
+                                                                            placeholder="Height" name="height"
+                                                                            value="{{ old('height') }}">
+                                                                        <span class="input-group-text"
+                                                                            id="basic-addon3">cm</span>
+                                                                    </div>
+                                                                </div>
+                                                                <small class="form-text text-muted">Enter the
+                                                                    dimensions of
+                                                                    your
+                                                                    product for accurate shipping estimates.</small>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="date_expired">Date Expired</label>
+                                                            <div class="position-relative">
+                                                                <input type="text"
+                                                                    class="datepicker form-control {{ $errors->has('date_expired') ? 'is-invalid' : '' }}"
+                                                                    id="date_expired" name="date_expired"
+                                                                    placeholder="Enter expiration date" required>
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-calendar"></i>
                                                                 </div>
                                                             </div>
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        placeholder="Width" name="width"
-                                                                        value="{{ old('width') }}">
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon2">cm</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        placeholder="Height" name="height"
-                                                                        value="{{ old('height') }}">
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon3">cm</span>
-                                                                </div>
-                                                            </div>
-                                                            <small class="form-text text-muted">Enter the dimensions of
-                                                                your
-                                                                product for accurate shipping estimates.</small>
+
+                                                            @if ($errors->has('date_expired'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('date_expired') }}</p>
+                                                            @else
+                                                                <small class="form-text text-muted"
+                                                                    style="font-size: 14px;">Please enter the
+                                                                    expiration
+                                                                    date of the product.</small>
+                                                            @endif
                                                         </div>
 
                                                         {{-- single image --}}
@@ -331,7 +372,6 @@
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
                                                                 <input type="file" name="main_image"
                                                                     class="file-upload-input"
-                                                                    {{ $errors->has('main_image') ? 'is-invalid' : '' }}
                                                                     onchange="readURLSingle(this);" accept="image/*"
                                                                     style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                                                 <div class="drag-text"
@@ -339,8 +379,11 @@
                                                                     <p>Drag and drop a file or select to add Image
                                                                     </p>
                                                                 </div>
-
                                                             </div>
+
+                                                            <span id="main-image-error"
+                                                                style="color: red; display: none;"></span>
+                                                            <!-- Unik untuk Single Image -->
 
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
@@ -356,8 +399,8 @@
                                                                     high-quality image that best represents your
                                                                     product. This will be the main image shown in search
                                                                     results. For file formats, please use JPG, JPEG, or
-                                                                    PNG, and ensure the size is no more than
-                                                                    2MB.</small>
+                                                                    PNG, and ensure the size is no more than 2MB. The
+                                                                    image size should be 235x235px.</small>
                                                             @endif
                                                         </div>
 
@@ -398,8 +441,9 @@
                                                                     images to showcase different angles or features of
                                                                     your product. You can upload multiple images at
                                                                     once. For image format, use JPG, JPEG, or PNG, with
-                                                                    a file size not exceeding 2MB, and a maximum of 6
-                                                                    images can be uploaded.</small>
+                                                                    a file size not exceeding 2MB. The image size should
+                                                                    be 235x235px, and a maximum of 6 images can be
+                                                                    uploaded.</small>
                                                             @endif
                                                         </div>
 
@@ -460,20 +504,135 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-12 d-flex justify-content-end">
+                                                    <div class="col-12 d-flex justify-content-end mt-4">
                                                         <button type="reset"
                                                             class="btn btn-sm btn-light-secondary me-2 mb-1"
                                                             style="border-radius: 5px;">Reset Product</button>
                                                         <button type="submit"
                                                             class="btn btn-sm btn-primary me-1 mb-1"
                                                             id="submitButton">Submit Product</button>
-
                                                     </div>
                                                 </div>
-
                                             </div>
-
                                         </form>
+
+                                        <!-- Modal untuk Add New Subcategory -->
+                                        <div class="modal fade" id="addSubcategoryModal" tabindex="-1"
+                                            aria-labelledby="addSubcategoryModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="addSubcategoryModalLabel">Add New
+                                                            Subcategory</h5>
+
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-3">
+                                                            <label>Select Category <span
+                                                                    style="color: red">*</span></label>
+                                                            <select class="form-control select2-category-modal"
+                                                                id="categorySelect">
+                                                                <option value="">Select Category</option>
+                                                                @foreach ($categories as $category)
+                                                                    <option value="{{ $category->id }}">
+                                                                        {{ $category->name }}</option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            <small class="text-muted" style="font-size: 14px;">
+                                                                Please select a category first before adding a
+                                                                subcategory.
+                                                            </small>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>Subcategory Name <span
+                                                                    style="color: red">*</span></label>
+                                                            <input type="text" class="form-control"
+                                                                id="newSubcategoryName">
+
+                                                            <small class="text-muted" style="font-size: 14px;">
+                                                                Please enter a unique Subcategory
+                                                                name to help organize your
+                                                                products efficiently.
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="saveNewSubcategory">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal untuk Add New Brand -->
+                                        <div class="modal fade" id="addBrandModal" tabindex="-1"
+                                            aria-labelledby="addBrandModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="addBrandModalLabel">Add New Brand
+                                                        </h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form id="brandForm" enctype="multipart/form-data">
+                                                            <div class="form-group mb-3">
+                                                                <label>Brand Name <span
+                                                                        style="color: red">*</span></label>
+                                                                <input type="text" class="form-control"
+                                                                    id="newBrandName" name="name">
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Give
+                                                                    your brand a distinct
+                                                                    name that users will recognize.</small>
+                                                            </div>
+                                                            <div class="form-group mb-3">
+                                                                <label>Description <span
+                                                                        style="color: red">*</span></label>
+                                                                <textarea class="form-control" id="newBrandDescription" name="description"></textarea>
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Describe what makes your
+                                                                    brand
+                                                                    stand out and its mission.</small>
+                                                            </div>
+                                                            <div class="form-group mb-3">
+                                                                <label>Brand Logo <span
+                                                                        style="color: red">*</span></label>
+                                                                <input type="file" class="form-control"
+                                                                    id="newBrandLogo" name="brand_logo"
+                                                                    accept="image/*">
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Your brand logo should be in image format (e.g.,
+                                                                    JPG, JPEG, PNG) and should not exceed 2MB in size.
+                                                                </small>
+                                                            </div>
+
+                                                            <div id="imagePreview" class="mt-2"
+                                                                style="display: none;">
+                                                                <img id="preview" src="" alt="Preview"
+                                                                    style="max-width: 200px; max-height: 200px;">
+
+
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="button" class="btn btn-primary"
+                                                            id="saveNewBrand">Save</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -486,12 +645,393 @@
 
         </div>
     </div>
-
+    <!-- Include jQuery dan jQuery UI CSS dan JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/js/product/createproduct.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // handle brand
+        $(document).ready(function() {
+            // Inisialisasi Select2 untuk brand
+            $('.select2-basic-brand').select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: "Select a Brand",
+                allowClear: true,
+                dropdownParent: $('.select2-basic-brand').parent(),
+                tags: true,
+                createTag: function(params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    }
+                },
+                templateResult: function(data) {
+                    var $result = $("<span></span>");
+                    $result.text(data.text);
+
+                    if (data.newOption) {
+                        $result.append(" <em>(Press Enter to Add New)</em>");
+                    }
+
+                    return $result;
+                }
+            }).on('select2:select', function(e) {
+                var data = e.params.data;
+
+                if (data.newOption) {
+                    // Reset selection
+                    $('.select2-basic-brand').val(null).trigger('change');
+
+                    // Reset modal form dan error states
+                    $('#brandForm')[0].reset();
+                    $('#newBrandName').val(data.text);
+                    $('#imagePreview').hide();
+                    clearErrors();
+
+                    // Show modal
+                    $('#addBrandModal').modal('show');
+                }
+            });
+
+            // Preview image before upload
+            $('#newBrandLogo').change(function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#preview').attr('src', e.target.result);
+                        $('#imagePreview').show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Function to clear errors
+            function clearErrors() {
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+                $('.error-message').remove();
+            }
+
+            // Function to show errors
+            function showErrors(errors) {
+                clearErrors();
+
+                Object.keys(errors).forEach(function(field) {
+                    const element = $(`#new${field.charAt(0).toUpperCase() + field.slice(1)}`);
+                    const errorMessage = errors[field][0];
+
+                    // Add error class
+                    element.addClass('is-invalid');
+
+                    // Add error message
+                    element.after(`<div class="invalid-feedback error-message">${errorMessage}</div>`);
+                });
+
+                // Show toast message for first error
+                const firstError = Object.values(errors)[0][0];
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: `Error: ${firstError}`,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            }
+
+            // Handle save new brand
+            $('#saveNewBrand').click(function() {
+                clearErrors();
+
+                var formData = new FormData();
+                formData.append('name', $('#newBrandName').val());
+                formData.append('description', $('#newBrandDescription').val());
+                formData.append('brand_logo', $('#newBrandLogo')[0].files[0]);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                if (!$('#newBrandName').val() || !$('#newBrandDescription').val() || !$('#newBrandLogo')[0]
+                    .files[0]) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true,
+                        icon: 'error',
+                        title: 'Please fill in all required fields',
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route('store-brand-admin') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.success) {
+                            // Add new option to select2
+                            var newOption = new Option($('#newBrandName').val(), response.data
+                                .id, true, true);
+                            $('.select2-basic-brand').append(newOption).trigger('change');
+
+                            // Close modal
+                            $('#addBrandModal').modal('hide');
+
+                            // Reset form
+                            $('#brandForm')[0].reset();
+                            $('#imagePreview').hide();
+                            clearErrors();
+
+                            // Show success message
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 4000,
+                                timerProgressBar: true,
+                                icon: 'success',
+                                title: 'Brand has been added successfully!',
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal
+                                        .stopTimer)
+                                    toast.addEventListener('mouseleave', Swal
+                                        .resumeTimer)
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            // Validation errors
+                            showErrors(xhr.responseJSON.errors);
+                        } else {
+                            // Other errors
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 4000,
+                                timerProgressBar: true,
+                                icon: 'error',
+                                title: xhr.responseJSON?.message ||
+                                    'Failed to add brand',
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal
+                                        .stopTimer)
+                                    toast.addEventListener('mouseleave', Swal
+                                        .resumeTimer)
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // handle category
+        $(document).ready(function() {
+            // Inisialisasi Select2 untuk category di modal
+            $('.select2-category-modal').select2({
+                width: '100%',
+                dropdownParent: $('#addSubcategoryModal')
+            });
+
+            // Function to clear errors
+            function clearErrors() {
+                $('.is-invalid').removeClass('is-invalid');
+                $('.invalid-feedback').remove();
+                $('.error-message').remove();
+            }
+
+            // Function to show errors
+            function showErrors(errors) {
+                clearErrors();
+
+                Object.keys(errors).forEach(function(field) {
+                    const element = $(`#${field}`);
+                    const errorMessage = errors[field][0];
+
+                    // Add error class
+                    element.addClass('is-invalid');
+
+                    // Add error message
+                    element.after(`<div class="invalid-feedback error-message">${errorMessage}</div>`);
+                });
+
+                // Show toast message for first error
+                const firstError = Object.values(errors)[0][0];
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: `Error: ${firstError}`,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            }
+
+            // Inisialisasi Select2 untuk subcategory
+            $('.select2-basic-category').select2({
+                width: '100%',
+                dropdownAutoWidth: true,
+                placeholder: "Select a subcategory",
+                allowClear: true,
+                dropdownParent: $('.select2-basic-category').parent(),
+                tags: true,
+                createTag: function(params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    }
+                },
+                templateResult: function(data) {
+                    var $result = $("<span></span>");
+                    $result.text(data.text);
+
+                    if (data.newOption) {
+                        $result.append(" <em>(Press Enter to Add New)</em>");
+                    }
+
+                    return $result;
+                }
+            }).on('select2:select', function(e) {
+                var data = e.params.data;
+
+                if (data.newOption) {
+                    // Reset selection
+                    $('.select2-basic-category').val(null).trigger('change');
+
+                    // Reset modal form dan error states
+                    $('#categorySelect').val('').trigger('change');
+                    $('#newSubcategoryName').val(data.text);
+                    clearErrors();
+
+                    // Show modal
+                    $('#addSubcategoryModal').modal('show');
+                }
+            });
+
+            // Handle save new subcategory
+            $('#saveNewSubcategory').click(function() {
+                clearErrors();
+
+                var categoryId = $('#categorySelect').val();
+                var subcategoryName = $('#newSubcategoryName').val();
+
+                if (!categoryId || !subcategoryName) {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true,
+                        icon: 'error',
+                        title: 'Please fill in all required fields',
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+                    return;
+                }
+
+                $.ajax({
+                    url: '{{ route('create-category-product') }}',
+                    method: 'POST',
+                    data: {
+                        name: subcategoryName,
+                        parent_id: categoryId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            // Add new option to select2
+                            var newOption = new Option(subcategoryName, response.data.id, true,
+                                true);
+                            $('.select2-basic-category').append(newOption).trigger('change');
+
+                            // Close modal
+                            $('#addSubcategoryModal').modal('hide');
+
+                            // Reset form
+                            $('#categorySelect').val('').trigger('change');
+                            $('#newSubcategoryName').val('');
+                            clearErrors();
+
+                            // Show success message
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 4000,
+                                timerProgressBar: true,
+                                icon: 'success',
+                                title: 'Subcategory has been added successfully!',
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal
+                                        .stopTimer)
+                                    toast.addEventListener('mouseleave', Swal
+                                        .resumeTimer)
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            // Validation errors
+                            showErrors(xhr.responseJSON.errors);
+                        } else {
+                            // Other errors
+                            Swal.fire({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 4000,
+                                timerProgressBar: true,
+                                icon: 'error',
+                                title: xhr.responseJSON?.message ||
+                                    'Failed to add subcategory',
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal
+                                        .stopTimer)
+                                    toast.addEventListener('mouseleave', Swal
+                                        .resumeTimer)
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             @if ($errors->any())

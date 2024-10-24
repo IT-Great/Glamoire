@@ -51,4 +51,11 @@ class Order extends Model
     {
         return $this->hasMany(ratingAndReview::class);
     }
+
+
+    // new update
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
 }

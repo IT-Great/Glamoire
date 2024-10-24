@@ -8,7 +8,6 @@ use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -24,6 +23,7 @@ use App\Http\Controllers\ContactusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 
 // VERIFIKASI EMAIL REGISTER
@@ -32,7 +32,7 @@ Route::get('/', [ProductController::class, 'index'])->name('home.glamoire');
 
 
 Route::get('/{user}_account', [UserController::class, 'account'])
-->name('account');
+    ->name('account');
 
 // Rute untuk memverifikasi email
 // Route::get('/email-verify', function () {
@@ -148,7 +148,7 @@ Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity
 
 // ADD & REMOVE WISHLIST
 Route::post('/wishlist', [UserController::class, 'addToWishlist'])->name('add.to.wishlist');
-Route::post('/remove-wishlist', [UserController::class,'removeFromWishlist'])->name('remove.from.wishlist');
+Route::post('/remove-wishlist', [UserController::class, 'removeFromWishlist'])->name('remove.from.wishlist');
 
 
 // BUY NOW
@@ -218,7 +218,6 @@ Route::post('/logout', [AuthenticateController::class, 'logout'])->name('logout'
 
 Route::get('/forgot-password', [AuthenticateController::class, 'forgotPassword'])->name('index-forgotpassword');
 
-
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
@@ -236,6 +235,9 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/detail-product-admin/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
 
     // product-variant
+    Route::post('/admin/variant-types', [ProductController::class, 'storeVariantType'])->name('store-variant-type');
+    Route::post('/admin/variant-values', [ProductController::class, 'storeVariantValue'])->name('store-variant-value');
+
     Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');
     Route::get('/create-product-variant', [ProductController::class, 'createProductVariantAdmin'])->name('create-product-variant-admin');
     Route::post('/store-product-variant', [ProductController::class, 'storeProductVariantAdmin'])->name('store-product-variant-admin');
@@ -248,13 +250,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::delete('/category-product/{id}', [CategoryController::class, 'deleteCategoryProduct'])->name('delete-category-product');
 
     // order
-    Route::get('/order-list', function () {
-        return view('admin.order.index');
-    });
-
-    Route::get('/order-detail', function () {
-        return view('admin.order.detail');
-    });
+    Route::get('/order-admin', [OrderController::class, 'indexOrder'])->name('index-admin-order');
+    Route::get('/order-sent-admin', [OrderController::class, 'sentAdmin'])->name('index-admin-order-sent');
+    Route::get('/order-need-sent-admin', [OrderController::class, 'needSentAdmin'])->name('index-admin-order-need-sent');
+    Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
 
     // brand
     Route::get('/brand-admin', [BrandController::class, 'indexbrand'])->name('index-brand-admin');
@@ -287,31 +286,47 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // promo voucher toko
     Route::get('/create-promo-shop-voucher', [PromoController::class, 'createPromoShopVoucher'])->name('create-promo-shop-voucher');
     Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
-   
+
+    // routes/web.php
+    // web.php atau routes file Anda
+    Route::get('/get-products-by-brand/{brand}', [PromoController::class, 'getProductsByBrand'])->name('get.products.by.brand');
+
     // promo voucher produk tertentu
     Route::get('/create-promo-product-voucher', [PromoController::class, 'createPromoProductVoucher'])->name('create-promo-product-voucher');
     Route::post('/create-promo-product-voucher', [PromoController::class, 'storePromoProductVoucher'])->name('store-promo-product-voucher');
-   
+
     // promo voucher terbatas
     Route::get('/promo-voucher', [PromoController::class, 'indexPromoVoucher'])->name('index-promo-voucher');
     Route::get('/create-promo-voucher', [PromoController::class, 'createPromoVoucher'])->name('create-promo-voucher');
     Route::post('/create-promo-voucher', [PromoController::class, 'storePromoVoucher'])->name('store-promo-voucher');
-    
+
+    // detail promo voucher
+    Route::get('/detail-promo-voucher/{id}', [PromoController::class, 'detailPromoVoucher'])->name('detail-promo-voucher');
+
+    // edit promo voucher
+    Route::get('edit-promo-voucher/{id}', [PromoController::class, 'editPromoVoucher'])->name('edit-promo-voucher');
+    Route::put('update-promo-brand-voucher/{id}', [PromoController::class, 'updatePromoBrandVoucher'])->name('update-promo-brand-voucher');
+    Route::put('update-promo-product-voucher/{id}', [PromoController::class, 'updatePromoProductVoucher'])->name('update-promo-product-voucher');
+    Route::put('update-promo-voucher/{id}', [PromoController::class, 'updatePromoVoucher'])->name('update-promo-voucher');
+
+
     Route::get('/promo-ongkir', [PromoController::class, 'indexPromoOngkir'])->name('index-promo-ongkir');
     Route::get('/create-promo-ongkir', [PromoController::class, 'createPromoOngkir'])->name('create-promo-ongkir');
     Route::post('/create-promo-ongkir', [PromoController::class, 'storePromoOngkir'])->name('store-promo-ongkir');
-    
+
+    // diskon
     Route::get('/promo-diskon', [PromoController::class, 'indexPromoDiskon'])->name('index-promo-diskon');
     Route::get('/create-promo-diskon', [PromoController::class, 'createPromoDiskon'])->name('create-promo-diskon');
     Route::post('/create-promo-diskon', [PromoController::class, 'storePromoDiskon'])->name('store-promo-diskon');
-    
+
+    // new user
     Route::get('/promo-new-user', [PromoController::class, 'indexPromoNewUser'])->name('index-promo-new-user');
     Route::get('/create-promo-new-user', [PromoController::class, 'createPromoNewUser'])->name('create-promo-new-user');
     Route::post('/create-promo-new-user', [PromoController::class, 'storePromoNewUser'])->name('store-promo-new-user');
-    
+
     Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
     Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
-    
+
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 
     // AFFILIATE
@@ -334,13 +349,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/create-shipping-fee', function () {
         return view('admin.shippingfee.create');
     });
-    
+
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
     Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
 
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
-
-
 });
 
 Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product || Admin Glamoire</title>
+    <title>Product - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -12,14 +12,13 @@
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/product/index.css">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 </head>
 
 <body>
@@ -32,13 +31,13 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 mb-3">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" >
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/brand-admin">Products</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Products</li>
                                 </ol>
                             </nav>
-                        </div>                       
+                        </div>
                     </div>
                 </div>
 
@@ -89,20 +88,6 @@
                                                         <span style="font-size: 3.6mm;">Category :
                                                             {{ $item->categoryProduct ? $item->categoryProduct->name : 'No Category' }}
                                                         </span><br>
-                                                        <!-- Display color_text if it exists -->
-                                                        @if ($item->color_text)
-                                                            <span style="font-size: 3.6mm;">
-                                                                Color : {{ $item->color_text }}
-                                                            </span><br>
-                                                        @endif
-
-                                                        <!-- Display color if it exists -->
-                                                        @if ($item->color)
-                                                            <div
-                                                                style="width: 20px; height: 20px; border-radius: 50%; background-color: {{ $item->color }}; margin-top: 5px;">
-                                                            </div>
-                                                        @endif
-
                                                     </div>
                                                 </div>
                                             </td>
@@ -116,7 +101,7 @@
                                                         class="badge bg-info">
                                                         View</span></a>
                                                 <a href="{{ url('edit-product-admin/' . $item->id) }}"><span
-                                                        class="badge bg-warning">Edit</span></a>
+                                                        class="badge bg-warning">Update</span></a>
                                                 <a href="javascript:void(0);" class="delete-product"
                                                     data-id="{{ $item->id }}"><span
                                                         class="badge bg-danger">Delete</span></a>
@@ -139,19 +124,21 @@
                     </div>
                 </section>
             </div>
-
             @include('admin.layouts.footer')
-
         </div>
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="assets/js/main.js"></script>
+
     <script>
         // Fungsi untuk membuka gambar di tab baru
         function openImageInNewTab(url) {
@@ -219,10 +206,7 @@
             });
         });
     </script>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-    <script src="assets/js/main.js"></script>
+
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>

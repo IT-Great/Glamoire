@@ -4,18 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Update Voucher - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-    <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/product/createproduct.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
         .upload__img-wrap {
@@ -81,7 +85,6 @@
                                             Voucher</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Add Promo Limited Voucher
                                     </li>
-
                                 </ol>
                             </nav>
                         </div>
@@ -90,25 +93,21 @@
 
                 <!-- Basic Horizontal form layout section start -->
                 <section id="multiple-column-form">
-                    <h3 class="mb-2">Create Voucher</h3>
-                    <p class="mb-3">
-                        Create a Limited Voucher, Product Voucher, or Brand Voucher now to attract Buyers.
-                        <a href="#" class="text-blue">Learn More</a>
-                    </p>
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('store-promo-voucher') }}" class="form form-vertical"
-                                            method="POST" enctype="multipart/form-data">
+                                        <form action="{{ route('update-promo-voucher', $promo->id) }}"
+                                            class="form form-vertical" method="POST" enctype="multipart/form-data">
                                             @csrf
+                                            @method('PUT')
                                             <input type="hidden" name="type" value="voucher">
 
                                             <div class="form-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left mb-4">
+                                                        <div class="form-group has-icon-left">
                                                             <label for="first-name-icon">Voucher Name <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
@@ -116,13 +115,14 @@
                                                                     class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
                                                                     placeholder="Enter Voucher Name"
                                                                     id="first-name-icon" name="promo_name"
-                                                                    value="{{ old('promo_name') }}">
+                                                                    value="{{ $promo->promo_name }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-bag"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('promo_name'))
-                                                                <p style="color: red">{{ $errors->first('promo_name') }}
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('promo_name') }}
                                                                 </p>
                                                             @else
                                                                 <small class="form-text text-muted"
@@ -132,20 +132,21 @@
                                                             @endif
                                                         </div>
 
-                                                        <div class="form-group has-icon-left mb-4">
+                                                        <div class="form-group has-icon-left">
                                                             <label for="daterange">Date Range <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
                                                                     id="daterange" name="date_range"
-                                                                    value="{{ old('date_range') }}">
+                                                                    value="{{ $promo->date_range }}">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-calendar"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('date_range'))
-                                                                <p style="color: red">{{ $errors->first('date_range') }}
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('date_range') }}
                                                                 </p>
                                                             @else
                                                                 <small class="form-text text-muted"
@@ -155,25 +156,22 @@
                                                             @endif
                                                         </div>
 
-                                                        <div class="mb-4">
-                                                            <label for="promo_code" class="form-label">Voucher Code
-                                                                <span class="text-danger">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <span class="input-group-text">Glamo</span>
-                                                                <input type="text" class="form-control"
-                                                                    id="promo_code" name="promo_code"
-                                                                    value="{{ strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5)) }}">
+                                                        <label for="promo_code" class="form-label">Voucher Code <span
+                                                                class="text-danger">*</span></label>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <span class="input-group-text">Glam</span>
+                                                            <input type="text" class="form-control" id="promo_code"
+                                                                name="promo_code"
+                                                                value="{{ $promo->promo_code }}">
 
-                                                                <small class="form-text text-muted"
-                                                                    style="font-size: 14px;">
-                                                                    Enter a combination of numbers and letters from 0-9
-                                                                    and
-                                                                    a-z, and it should only be 5 digits long.
-                                                                </small>
-                                                            </div>
+                                                            <small class="form-text text-muted"
+                                                                style="font-size: 14px;">
+                                                                Enter a combination of numbers and letters from 0-9 and
+                                                                a-z, and it should only be 5 digits long.
+                                                            </small>
                                                         </div>
 
-                                                        <div class="row mb-4">
+                                                        <div class="row">
                                                             <div class="col">
                                                                 <label for="usage_quota">Max Usage Quota <span
                                                                         style="color: red">*</span></label>
@@ -181,7 +179,7 @@
                                                                     class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
                                                                     placeholder="e.g., 100 times" name="usage_quota"
                                                                     id="usage_quota" style="margin-bottom: 4px;"
-                                                                    value="{{ old('usage_quota') }}">
+                                                                    value="{{ $promo->usage_quota }}">
                                                                 <small class="form-text text-muted">Enter the maximum
                                                                     number of times this item can be used (e.g., 100,
                                                                     200).</small>
@@ -199,7 +197,7 @@
                                                                     placeholder="e.g., 5 items per buyer"
                                                                     name="max_quantity_buyer" id="max_quantity_buyer"
                                                                     style="margin-bottom: 4px;"
-                                                                    value="{{ old('max_quantity_buyer') }}">
+                                                                    value="{{ $promo->max_quantity_buyer }}">
                                                                 <small class="form-text text-muted">Specify the maximum
                                                                     number of items a single buyer can purchase (e.g.,
                                                                     1, 5, 10).</small>
@@ -212,43 +210,61 @@
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <div class="row mb-4">
+                                                        <div class="row">
                                                             <div class="col">
-                                                                <label for="first-name-icon">Discount <span
-                                                                        style="color: red">*</span></label>
-                                                                <div class="input-group">
-                                                                    <button class="btn btn-primary dropdown-toggle"
-                                                                        type="button" id="dropdownType"
-                                                                        data-bs-toggle="dropdown"
-                                                                        aria-expanded="false">
-                                                                        Nominal
-                                                                    </button>
-                                                                    <ul class="dropdown-menu">
-                                                                        <li><a class="dropdown-item" href="#"
-                                                                                data-type="nominal">Nominal</a>
-                                                                        </li>
-                                                                        <li><a class="dropdown-item" href="#"
-                                                                                data-type="percentage">Persentase</a>
-                                                                        </li>
-                                                                    </ul>
-                                                                    <input type="text" class="form-control"
-                                                                        id="discountInput" name="discount">
-                                                                    <span class="input-group-text"
-                                                                        id="formatSymbol">Rp</span>
+                                                                <div class="form-group has-icon-left">
+                                                                    <label for="first-name-icon">Discount <span
+                                                                            style="color: red">*</span></label>
+                                                                    <div class="position-relative">
+                                                                        <input type="text"
+                                                                            class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
+                                                                            placeholder="Enter Discount"
+                                                                            id="first-name-icon" name="discount"
+                                                                            value="{{ $promo->discount }}">
+                                                                        <div class="form-control-icon">
+                                                                            <i class="bi bi-percent"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    @if ($errors->has('discount'))
+                                                                        <p style="color: red">
+                                                                            {{ $errors->first('discount') }}</p>
+                                                                    @else
+                                                                        <small class="form-text text-muted"
+                                                                            style="font-size: 14px;">Enter the
+                                                                            discount amount (e.g., 10 for 10%
+                                                                            off).</small>
+                                                                    @endif
                                                                 </div>
-                                                                @if ($errors->has('discount'))
-                                                                    <p style="color: red">
-                                                                        {{ $errors->first('discount') }}</p>
-                                                                @else
-                                                                    <small class="form-text text-muted"
-                                                                        style="font-size: 14px;">Enter the
-                                                                        discount amount (e.g., 10 for 10%
-                                                                        off).</small>
-                                                                @endif
+                                                            </div>
+
+                                                            <div class="col">
+                                                                <div class="form-group has-icon-left">
+                                                                    <label for="first-name-icon">Max Discount <span
+                                                                            style="color: red">*</span></label>
+                                                                    <div class="position-relative">
+                                                                        <input type="text"
+                                                                            class="form-control {{ $errors->has('max_discount') ? 'is-invalid' : '' }}"
+                                                                            placeholder="Enter Max Discount"
+                                                                            id="first-name-icon" name="max_discount"
+                                                                            value="{{ $promo->max_discount }}">
+                                                                        <div class="form-control-icon">
+                                                                            <i class="bi bi-percent"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    @if ($errors->has('max_discount'))
+                                                                        <p style="color: red">
+                                                                            {{ $errors->first('max_discount') }}</p>
+                                                                    @else
+                                                                        <small class="form-text text-muted"
+                                                                            style="font-size: 14px;">Specify the
+                                                                            maximum discount amount that can be applied
+                                                                            (e.g., 50).</small>
+                                                                    @endif
+                                                                </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group mb-4">
+                                                        <div class="form-group">
                                                             <label for="min_transaction">Minimum Transaction <span
                                                                     style="color: red">*</span></label>
                                                             <div class="input-group">
@@ -257,7 +273,7 @@
                                                                     class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
                                                                     id="min_transaction" placeholder="x.xxx.xxx"
                                                                     name="min_transaction"
-                                                                    value="{{ old('min_transaction') }}">
+                                                                    value="{{ $promo->min_transaction }}">
                                                             </div>
                                                             @if ($errors->has('min_transaction'))
                                                                 <p style="color: red">
@@ -300,8 +316,8 @@
                                                                     high-quality image that best represents your
                                                                     product. This will be the main image shown in search
                                                                     results. For file formats, please use JPG, JPEG, or
-                                                                    PNG, and ensure the size is no more than 2MB. The
-                                                                    image size should be 270x107px.</small>
+                                                                    PNG, and ensure the size is no more than
+                                                                    2MB.</small>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -324,54 +340,21 @@
                     </div>
                 </section>
             </div>
-
             @include('admin.layouts.footer')
-
         </div>
     </div>
 
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-    <script src="assets/vendors/choices.js/choices.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropdownItems = document.querySelectorAll('.dropdown-item');
-            const dropdownButton = document.getElementById('dropdownType');
-            const formatSymbol = document.getElementById('formatSymbol');
-            const discountInput = document.getElementById('discountInput');
-
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const type = this.dataset.type;
-                    dropdownButton.textContent = type === 'nominal' ? 'Nominal' : 'Persentase';
-                    formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                    discountInput.value = ''; // Reset input when changing type
-                });
-            });
-
-            // Optional: Format input for nominal (Rupiah)
-            discountInput.addEventListener('input', function(e) {
-                if (dropdownButton.textContent === 'Nominal') {
-                    // Remove non-numeric characters
-                    let value = this.value.replace(/\D/g, '');
-                    // Format as currency
-                    if (value !== '') {
-                        value = parseInt(value).toLocaleString('id-ID');
-                    }
-                    this.value = value;
-                }
-            });
-        });
-    </script>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/js/product/createproduct.js') }}"></script>
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -476,9 +459,7 @@
             }
         }
     </script>
-
-    <script src="assets/js/main.js"></script>
-
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

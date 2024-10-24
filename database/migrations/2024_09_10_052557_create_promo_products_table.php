@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('promo_id')->references('id')->on('promos')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->string('discount_product_voucher_item')->nullable(); 
+            $table->string('discount_type')->default('nominal')->nullable(); // 'nominal' atau 'percentage'
             $table->timestamps();
         });
     }

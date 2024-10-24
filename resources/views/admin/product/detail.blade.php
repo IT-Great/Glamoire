@@ -85,12 +85,15 @@
                                         @endif
                                     </p>
                                 @endif
-                                <p><strong>Weight:</strong> {{ $product->weight_product }} gram</p>
-                                <p><strong>Dimensions:</strong>
+                                <p><strong>Weight : </strong> {{ $product->weight_product }} gram</p>
+                                <p><strong>Dimensions : </strong>
                                     {{ $product->dimensions['length'] ?? 'N/A' }} x
                                     {{ $product->dimensions['width'] ?? 'N/A' }} x
                                     {{ $product->dimensions['height'] ?? 'N/A' }} cm
                                 </p>
+                                <p><strong>Date Expired : </strong>{{ \Carbon\Carbon::parse($product->date_expired)->translatedFormat('d F Y') }}</p> 
+                                {{-- <td>{{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }} --}}
+                               
 
                                 <!-- Product Variants Section -->
                                 @if ($product->productVariations->isNotEmpty())

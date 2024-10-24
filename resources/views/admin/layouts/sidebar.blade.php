@@ -22,17 +22,29 @@
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
-                    </li>
+                    </li>                
 
-                    <li class="sidebar-item {{ Request::is('product-admin') ? 'active' : '' }}">
+                    <li class="sidebar-item has-sub {{ Request::is('product-admin*') ? 'active' : '' }} ">
                         <a href="/product-admin" class='sidebar-link'>
                             <i class="bi bi-bag-fill"></i>
                             <span>Product</span>
                         </a>
+
+                        <ul class="submenu">
+                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">                                
+                                <a href="/product-admin">
+                                    Product
+                                </a>
+                            </li>
+                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">
+                                <a href="/product-admin">Stock Product</a>
+                            </li>                          
+                        </ul>
+
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('order-list') ? 'active' : '' }}">
-                        <a href="/order-list" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('order-admin') ? 'active' : '' }}">
+                        <a href="/order-admin" class='sidebar-link'>
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
                         </a>
@@ -63,11 +75,11 @@
                             </li>
                             <li class="submenu-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
                                 <a href="/promo-voucher">Voucher</a>
-                            </li>                          
-                            <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                                <a href="/promo-diskon">Diskon</a>
                             </li>
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                                <a href="/promo-diskon">Discount</a>
+                            </li>
+                            <li class="submenu-item {{ Request::is('promo-new-user') ? 'active' : '' }}">
                                 <a href="/promo-new-user">Promo New User</a>
                             </li>
                         </ul>

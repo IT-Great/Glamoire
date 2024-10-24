@@ -4,21 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo Voucher New User || Admin Glamoire</title>
+    <title>Promo New User - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
     <style>
         .action-buttons a {
@@ -47,10 +46,7 @@
                                     <li class="breadcrumb-item active" aria-current="page">All Promo New User</li>
                                 </ol>
                             </nav>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-
-                        </div>
+                        </div>                      
                     </div>
                 </div>
                 <section class="section">
@@ -83,7 +79,7 @@
                                 <tbody>
                                     @foreach ($promo as $item)
                                         <tr id="promo-item-{{ $item->id }}">
-                                            <td>{{ $item->promo_name }}</td>                                           
+                                            <td>{{ $item->promo_name }}</td>
                                             <td>{{ $item->discount }}%</td>
                                             <td>{{ $item->max_discount }}%</td>
                                             <td>{{ $item->min_transaction }}</td>
@@ -110,15 +106,11 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <!-- Include jQuery (if not included already) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
-
 
     <script>
         // Fungsi untuk membuka gambar di tab baru

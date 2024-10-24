@@ -45,4 +45,11 @@ class Product extends Model
         return $this->hasMany(RatingAndReview::class);
     }
 
+    // discount product
+    public function applyDiscount($discountPercentage)
+    {
+        $discountAmount = $this->regular_price * ($discountPercentage / 100);
+        $this->discounted_price = $this->regular_price - $discountAmount;
+        $this->save();
+    }
 }

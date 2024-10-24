@@ -15,21 +15,39 @@ class CategoryController extends Controller
         return view('admin.category.index', compact('categories'));
     }
 
+    // public function createCategoryProduct(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required|string|max:255',
+    //         'parent_id' => 'nullable|exists:category_products,id'
+    //     ]);
+
+    //     CategoryProduct::create([
+    //         'name' => $request->name,
+    //         'parent_id' => $request->parent_id
+    //     ]);
+
+    //     return response()->json(['success' => true]);
+    // }
+
     public function createCategoryProduct(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:category_products,id'
+            'parent_id' => 'required|exists:category_products,id' // Memastikan parent_id ada dan valid
         ]);
 
-        CategoryProduct::create([
+        $subcategory = CategoryProduct::create([
             'name' => $request->name,
-            'parent_id' => $request->parent_id
+            'parent_id' => $request->parent_id // Ini akan menjadi subcategory karena memiliki parent_id
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'data' => $subcategory
+        ]);
     }
-
+    
     public function deleteCategoryProduct($id)
     {
         $category = CategoryProduct::find($id);

@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Create Promo New User - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -90,10 +89,7 @@
                                     <li class="breadcrumb-item active" aria-current="page">Add Voucher New User</li>
                                 </ol>
                             </nav>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-
-                        </div>
+                        </div>                       
                     </div>
                 </div>
 
@@ -233,13 +229,9 @@
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-
-    <script src="assets/vendors/choices.js/choices.min.js"></script>
-
+    <script src="assets/js/pages/dashboard.js"></script>    
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/toastify/toastify.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
@@ -261,9 +253,7 @@
         });
     </script>
 
-    <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>
-
+    
     {{-- Upload Single Image --}}
     <script>
         // Fungsi untuk mengunggah satu gambar
