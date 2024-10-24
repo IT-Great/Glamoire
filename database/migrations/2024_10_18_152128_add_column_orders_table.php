@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('file_partners', function (Blueprint $table) {
-            $table->id();
-            $table->string('file_name');
-            $table->string('file_path');
-            $table->string('type');
-            $table->timestamps();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->unsignedBigInteger('total_item')->after('shipping_address_id');
+            $table->unsignedBigInteger('total_item_price')->after('total_item');
         });
     }
 
@@ -25,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('file_partner');
+        //
     }
 };

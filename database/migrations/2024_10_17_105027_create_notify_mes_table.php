@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subscribes', function (Blueprint $table) {
+        Schema::create('notify_mes', function (Blueprint $table) {
             $table->id();
+            $table->uuid('user_id'); 
+            $table->unsignedBigInteger('product_id');
             $table->string('email');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });
     }
 
@@ -23,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subscribe');
+        Schema::dropIfExists('notify_mes');
     }
 };

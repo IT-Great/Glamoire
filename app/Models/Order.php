@@ -14,6 +14,8 @@ class Order extends Model
         'payment_id',
         'invoice_id',
         'shipping_address_id',
+        'total_item',
+        'total_item_price',
         'shipping_cost',
         'voucher_promo',
         'discount_amount',

@@ -70,7 +70,7 @@
 </footer>
 
 <!-- Bottom Navbar for Mobile (Shop, Brand, Newsletter, Promotion) -->
-<div class="d-lg-none fixed-bottom">
+<div class="d-lg-none fixed-bottom mt-8">
     <div id="categories" class="container d-none w-full h-[83vh] bg-white px-0">
       <div class="col-12 px-0 py-2 border-bottom border-dark">
         <p class="text-[12px] mx-3 text-[#183018] font-semibold">Belanja Berdasarkan Kategori</p>
@@ -155,7 +155,7 @@
         <div>
           <a href="/newsletter" class="d-flex flex-column justify-content-center align-items-center p-0 text-decoration-none" href="/">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 512 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#ffffff" d="M96 96c0-35.3 28.7-64 64-64l288 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L80 480c-44.2 0-80-35.8-80-80L0 128c0-17.7 14.3-32 32-32s32 14.3 32 32l0 272c0 8.8 7.2 16 16 16s16-7.2 16-16L96 96zm64 24l0 80c0 13.3 10.7 24 24 24l112 0c13.3 0 24-10.7 24-24l0-80c0-13.3-10.7-24-24-24L184 96c-13.3 0-24 10.7-24 24zm208-8c0 8.8 7.2 16 16 16l48 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-48 0c-8.8 0-16 7.2-16 16zm0 96c0 8.8 7.2 16 16 16l48 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-48 0c-8.8 0-16 7.2-16 16zM160 304c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-256 0c-8.8 0-16 7.2-16 16zm0 96c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-256 0c-8.8 0-16 7.2-16 16z"/></svg>
-            <p class="p-0 text-white text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]" role="button" data-bs-toggle="dropdown" aria-expanded="false">Newsletter</p>
+            <p class="p-0 text-white text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]" role="button">Newsletter</p>
           </a>
         </div>
   
@@ -182,7 +182,7 @@
         </div>
   
         <!-- AKUN -->
-        <div class="dropdown">
+        <div class="dropdown-akun">
             <a class="d-flex flex-column justify-content-center align-items-center p-0 text-decoration-none" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 448 512">
                     <path fill="#ffffff" d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z"/>
@@ -203,8 +203,8 @@
                       </a>  
                     </li>
                     @else
-                    <li><a class="text-white dropdown-item hover:cursor-pointer text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#login">Masuk</a></li>
-                    <li><a class="text-white dropdown-item hover:cursor-pointer text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#register">Daftar</a></li>
+                    <li><a class="text-white dropdown-item hover:cursor-pointer text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</a></li>
+                    <li><a class="text-white dropdown-item hover:cursor-pointer text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#registerUser1">Daftar</a></li>
                     @endif
                 </div>
             </ul>

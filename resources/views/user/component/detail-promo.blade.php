@@ -3,7 +3,7 @@
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 py-2">
 
-  <div class="container-fluid py-4">
+  <div class="container-fluid">
     @foreach ($promo as $promo)
       <div class="col my-2 p-0">
         <p class="font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
@@ -16,13 +16,13 @@
       <img src="{{ Storage::url($promo->image) }}"  class="img-fluid py-1" alt="{{ $promo->promo_name }}" title="{{ $promo->promo_name }}">
     </div>
 
-    <div class="grid-container">
+    <div class="grid-container p-0">
       @if (session('id_user'))
         @foreach ($promo->products as $product)
-          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl" style="min-height:355px; max-height:355px;">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                 <div class="position-relative overflow-hidden bg-transparent p-0">
-                    <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
                 </div>
                 <div class="grid gap-1 text-left p-2">
                     <div class="flex">
@@ -34,8 +34,10 @@
                           @php
                               $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                           @endphp
-                          <a href="javascript:void(0);" class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
-                              <i class="fas fa-heart text-center"></i>
+                          <a href="javascript:void(0);" 
+                            class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                            onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
+                            <i class="fas fa-heart text-center"></i>
                           </a>
                         </div>
                     </div>
@@ -61,7 +63,7 @@
                             <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
                             @else
                             <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
-                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                              Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}
                             </p>
                           @endif
                         </div>
@@ -128,7 +130,7 @@
                           <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
                           @else
                           <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
-                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                            Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}
                           </p>
                         @endif
                     </div>

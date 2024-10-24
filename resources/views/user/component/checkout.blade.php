@@ -4,7 +4,7 @@
 
 <div class="md:px-20 lg:px-24 xl:px-24 pt-2">
     <div class="container-fluid">
-        <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-2 my-md-3">
+        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
             <div class="col-12">
                 <div class="d-flex gap-2">
                     <a href="/home" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
@@ -20,7 +20,7 @@
             @if (count($data['address']) !== 0)
                 @foreach ($data['address'] as $checkout_address)
                     @if($checkout_address->is_use)
-                        <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                        <div class="col-12 p-0 md:shadow-md md:rounded py-1 py-md-0 p-md-3 border-bottom border-top md:border-none">
                             <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Alamat Pengiriman</h1>
                             <div class="grid gap-1 gap-md-2 mb-md-2">
                                 <div class="d-flex gap-1 gap-md-2 align-items-center">
@@ -38,7 +38,7 @@
                                     </p>
                                 </div>
                                 <div class="d-flex">
-                                    <button type="button" class="btn btn-primary rounded-md text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#change_address" style="background-color: #183018">
+                                    <button type="button" class="btn btn-primary rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#change_address" style="background-color: #183018">
                                         Ubah Alamat
                                     </button>
                                 </div>
@@ -48,7 +48,7 @@
                 @endforeach
             @else
             <!-- MODAL TAMBAH ALAMAT -->
-            <div class="modal fade" id="form-address" tabindex="-1" aria-labelledby="form-address" aria-hidden="true">
+            <div class="modal fade" id="form-address-new" tabindex="-1" aria-labelledby="form-address-new" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
                     <div class="modal-header" style="background-color: #183018">
@@ -63,11 +63,11 @@
                                 <div class="col-md-6">
                                     <div class="col-12 p-0">
                                         <label for="label" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
-                                        <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
+                                        <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
                                     </div>
                                     <div class="col-12 p-0">
                                         <label for="receiver" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
-                                        <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
+                                        <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
                                     </div>
                                     <div class="col-12 p-0">
                                         <label for="handphone" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
@@ -118,7 +118,7 @@
 
                             <!-- BUTTON SUBMIT -->
                             <div class="col-12 p-0">
-                            <button class="btn btn-primary w-full rounded-md text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
+                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
                             </div>
 
                         </div>
@@ -131,9 +131,9 @@
             <!-- END MODAL TAMBAH ALAMAT -->
             @endif
             
-        <form action="{{ route('order.payment')}}" method="POST">
+        <form action="{{ route('order.payment')}}" method="POST" class="grid gap-2">
                 @csrf
-                <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 border-bottom border-top md:border-none">
                     <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Rincian Pengiriman</h1>
                     <div class="grid gap-1 gap-md-2 mb-md-2">
                         <div class="flex gap-1 align-items-center">
@@ -159,7 +159,7 @@
                     </div>
                 </div>
     
-                <!-- <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                <!-- <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 border-bottom border-top md:border-none">
                     <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Metode Pembayaran</h1>
                     <div class="grid gap-md-2 mb-md-2">
                         <div class="col-sm-10">
@@ -183,38 +183,38 @@
                 </div> -->
         
                 @foreach ($data['cartItems'] as $cart => $product)
-                    <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
-                        <div class="grid mb-2">
-                            <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
-                        </div>  
-        
-                        <div class="flex">
-                            <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
-                                <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-md border">
+                <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
+                    <div class="grid mb-2">
+                        <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
+                    </div>  
+    
+                    <div class="flex">
+                        <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                            <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
+                        </div>
+                        <div class="col p-0">
+                            <div class="d-flex col-12 gap-1 gap-md-2 mb-2 h-[20px] h-md-[20px]">
+                                <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
                             </div>
-                            <div class="col p-0">
-                                <div class="d-flex col-12 gap-1 gap-md-2 mb-2 h-[20px] h-md-[20px]">
-                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
+                            <div class="grid lg:flex">
+                                <div class="col-lg-10">
+                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
                                 </div>
-                                <div class="grid lg:flex">
-                                    <div class="col-lg-10">
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
-                                    </div>
-                                    <div class="col-lg-2 p-lg-0">
-                                        <div class="d-flex gap-1 font-semibold">
-                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
-                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
-                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
-                                        </div>
+                                <div class="col-lg-2 p-lg-0">
+                                    <div class="d-flex gap-1 font-semibold">
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-    
-                    <input type="number" name="product[]" id="product-id-{{$product->product_id}}" value="{{ $product->product_id }}" hidden>
-                    <input type="number" name="product_quantity[{{ $product->product_id }}]" id="product-quantity-{{$product->product_id}}" value="{{ $product->quantity }}" hidden>
-                    <input type="number" name="product_price[{{ $product->product_id }}]" id="product-price-{{$product->product_id}}" value="{{ $product->price }}" hidden>
+                </div>
+
+                <input type="number" name="product[]" id="product-id-{{$product->product_id}}" value="{{ $product->product_id }}" hidden>
+                <input type="number" name="product_quantity[{{ $product->product_id }}]" id="product-quantity-{{$product->product_id}}" value="{{ $product->quantity }}" hidden>
+                <input type="number" name="product_price[{{ $product->product_id }}]" id="product-price-{{$product->product_id}}" value="{{ $product->price }}" hidden>
                 @endforeach
         </div>
     
@@ -227,7 +227,9 @@
                     <div class="grid">
                         <div class="d-flex">
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Harga ({{ $data['totalProduct'] }} Barang)</p>
+                            <input type="number" name="total_item" value="{{ $data['totalProduct'] }}" hidden>
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto">(Rp{{ number_format($data['totalPrice'], 0, ',', '.') }})</p>
+                            <input type="number" name="total_item_price" value="{{ $data['totalPrice'] }}" hidden>
                         </div>
                         <div class="d-none" id="discount-use">
                             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Diskon</p>
@@ -241,28 +243,28 @@
                     </div>
                     <div class="d-flex py-2 border-bottom border-top align-items-center">
                         <p class="text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
-                        <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[16px] xl:text-[18px] ml-auto" id="total-shopping">Rp{{ number_format($data['totalPrice'], 0, ',', '.') }}</p>
+                        <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[16px] xl:text-[18px] ml-auto" id="total-shopping">Rp{{ number_format(($data['totalPrice'] + 20000), 0, ',', '.') }}</p>
                         <input type="number" name="subtotal" id="subtotal-price" value="{{$data['totalPrice']}}" hidden>
                     </div>
                     <div>
                         <div class="relative flex gap-1 items-center">
-                            <input type="text" class="form-control pl-5 w-full rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code-voucher" name="code_voucher" placeholder="Masukkan kode promo">
+                            <input type="text" class="form-control pl-5 w-full rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code-voucher" name="code_voucher" placeholder="Masukkan kode promo">
                             <div class="spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
                                 <span class="visually-hidden"></span>
                             </div>
-                            <button type="button" id="button-code-voucher" class="btn border rounded-md w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
+                            <button type="button" id="button-code-voucher" class="btn border rounded-sm w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
                                 Pakai
                             </button>
                         </div>
                         <div id="validationVoucher" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                         </div>
                     </div>
-                    <button type="button" class="d-flex align-items-center btn btn-primary rounded-md text-black text-[6px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#promo" style="background-color: #FFFFFF" id="show-voucher">
+                    <button type="button" class="d-flex align-items-center btn btn-primary rounded-sm text-black text-[6px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#promo" style="background-color: #FFFFFF" id="show-voucher">
                         <i class="fas fa-solid fa-tag mr-2"></i>
                         <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Gunakan Promo</p>
                         <i class="fas fa-solid fa-arrow-right ml-auto"></i>
                     </button>
-                    <button class="btn w-full rounded-md text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" style="background-color: #183018" type="submit" id="paynow">
+                    <button class="btn w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" style="background-color: #183018" type="submit" id="paynow">
                         Bayar Sekarang
                     </button>
                 </div>
@@ -387,7 +389,7 @@
 @if(count($data['address']) == 0)
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var myModal = new bootstrap.Modal(document.getElementById('form-address'), {
+            var myModal = new bootstrap.Modal(document.getElementById('form-address-new'), {
                 backdrop: 'static', // Prevent closing when clicking outside the modal
                 keyboard: false     // Prevent closing when pressing Esc
             });
@@ -406,30 +408,30 @@
       </div>
 
       <div class="modal-body">
-        <button type="button" class="btn border btn-light d-flex align-items-center rounded-md mb-2" id="open-add-address-modal">
+        <button type="button" class="btn border btn-light d-flex align-items-center rounded-sm mb-2"  data-bs-dismiss="modal" id="open-add-address-modal">
             <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
             <p class="text-black mb-0 text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Tambahkan Alamat</p>
         </button>
         @foreach ($data['address'] as $address)
             @if ($address->is_use)
                 <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
-                    <div class="p-2 rounded-md border border-dark">
+                    <div class="p-2 rounded-sm border border-dark">
                         <div class="d-flex align-items-center">
-                            <p class="text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
+                            <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
                             @if ($address->is_main)
                                 <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                                text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
+                                text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
                             @endif
                         </div>
 
                         <div class="flex">
                             <div class="col-10 p-0">
                                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black">{{ $address->recipient_name }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
+                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
+                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
+                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
                                 @if ($address->benchmark)
-                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
+                                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
                                 @endif
                             </div>
                             <div class="col-2 p-0 d-flex flex-column align-items-start justify-content-center">
@@ -440,25 +442,25 @@
                 </div>
             @else
             <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
-                <div class="p-2 rounded-md custom-shadow">
+                <div class="p-2 rounded-sm custom-shadow">
                     <div class="d-flex align-items-center">
-                        <p class="text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
+                        <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
                         @if ($address->is_main)
                             <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                            text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
+                            text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
                         @endif
                     </div>
                     
                     <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black">{{ $address->recipient_name }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
                     @if ($address->benchmark)
-                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
+                        <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
                     @endif
     
                     <div class="d-flex gap-2 input-group-btn mt-2">
-                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-md text-[#183018] text-[9px] md:text-11px lg:text-[13px] xl:text-[15px]" name="useAddress" data-id="{{ $address->id }}">
+                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]" name="useAddress" data-id="{{ $address->id }}">
                             Gunakan
                         </button>
                     </div>
@@ -473,114 +475,13 @@
 </div>
 <!-- END MODAL CHANGE ADDRESS -->
 
-<!-- MODAL USE PROMO -->
-<div class="modal fade" id="promo" tabindex="-1" aria-labelledby="promo" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-            <div class="modal-header border-none pb-0">
-                <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Gunakan Voucher Promo</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body p-1 p-md-3">
-                <div class="col-12 p-0">
-                    @foreach ($data['vouchers'] as $voucher)
-                        <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
-                            <div class="grid gap-1 p-2 border rounded-md bg-light cursor-pointer">
-                                <div class="d-flex">
-                                    <div class="col-10 p-0">
-                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
-                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
-                                    </div>
-                                    <div class="col-2 d-flex flex-column align-items-start justify-content-center">
-                                        <i class="fas fa-check hidden"></i>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                    <i class="fas fa-regular fa-clock"></i>
-                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
-                                    <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
-                                </div>
-
-                                <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                    <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
-                                        <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
-                                            <span class=""></span> <!-- Nomor list -->
-                                            <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
-                                        </li>
-                                    </ol>
-                                </div>
-
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <div class="d-flex justify-content-between align-items-center w-100">
-                    <div>
-                        <p class="mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Yey, kamu hemat</p>
-                        <p class="mb-0 text-black font-semibold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp10.000</p>
-                    </div>
-                    <button type="button" id="button-use-voucher" class="btn border rounded-md text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
-                        Pakai Voucher
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- CHECK KODE VOUCHER TERSEDIA ATAU TIDAK -->
-<script>
-     $('#code-voucher').on('keyup', function () {
-        var code = $(this).val();
-        if (code) {
-            $.ajax({
-                url: "{{ route('check.code.voucher') }}",
-                method: "POST",
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    code: code
-                },
-                beforeSend: function() {
-                    // Tampilkan spinner sebelum request dimulai
-                    $('.spinner-border').show();
-                },
-                success: function (response) {
-                    if (response.exists) {
-                        $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
-                        $('#button-code-voucher').prop('disabled', false);
-                    } else {
-                        $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-danger').show();
-                        $('#button-code-voucher').prop('disabled', true);
-                    }
-                },
-                complete: function() {
-                    // Sembunyikan spinner setelah request selesai
-                    $('.spinner-border').hide();
-                },
-                error: function() {
-                    console.log(error);
-                    // Jika ada error, tetap sembunyikan spinner
-                    $('.spinner-border').hide();
-                }
-            });
-        }
-    });
-</script>
-
-
 <!-- MODAL TAMBAH ADDRESS -->
-<div class="modal fade" id="form-address" tabindex="-1" aria-labelledby="form-address" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-        <div class="modal-header" style="background-color: #183018">
-            <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
+<div class="modal fade" id="add_address" tabindex="-1" aria-labelledby="add_address" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+        <div class="modal-header border-none pb-0">
+            <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
+            <button type="button" class="btn-close" id="close-modal-add-address" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body overflow-y-auto" style="max-height:100vh;">
@@ -591,11 +492,11 @@
                     <div class="col-md-6">
                         <div class="col-12 p-0">
                             <label for="label" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
-                            <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
                         </div>
                         <div class="col-12 p-0">
                             <label for="receiver" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
-                            <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
                         </div>
                         <div class="col-12 p-0">
                             <label for="handphone" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
@@ -646,14 +547,115 @@
 
                 <!-- BUTTON SUBMIT -->
                 <div class="col-12 p-0">
-                <button class="btn btn-primary w-full rounded-md text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
+                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
                 </div>
             </div>
             </form>
         </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USE PROMO -->
+<div class="modal fade" id="promo" tabindex="-1" aria-labelledby="promo" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+            <div class="modal-header border-none pb-0">
+                <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Gunakan Voucher Promo</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-1 p-md-3">
+                <div class="col-12 p-0">
+                    @foreach ($data['vouchers'] as $voucher)
+                        <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
+                            <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                <div class="d-flex">
+                                    <div class="col-10 p-0">
+                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
+                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
+                                    </div>
+                                    <div class="col-2 d-flex flex-column align-items-start justify-content-center">
+                                        <i class="fas fa-check hidden"></i>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-1 gap-md-2 align-items-center">
+                                    <i class="fas fa-regular fa-clock"></i>
+                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
+                                    <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
+                                </div>
+
+                                <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
+                                    <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                        <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
+                                            <span class=""></span> <!-- Nomor list -->
+                                            <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
+                                        </li>
+                                    </ol>
+                                </div>
+
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                        <p class="mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Yey, kamu hemat</p>
+                        <p class="mb-0 text-black font-semibold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp10.000</p>
+                    </div>
+                    <button type="button" id="button-use-voucher" class="btn border rounded-sm text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
+                        Pakai Voucher
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
+
+<!-- CHECK KODE VOUCHER TERSEDIA ATAU TIDAK -->
+<script>
+     $('#code-voucher').on('keyup', function () {
+        var code = $(this).val();
+        if (code) {
+            $.ajax({
+                url: "{{ route('check.code.voucher') }}",
+                method: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    code: code
+                },
+                beforeSend: function() {
+                    // Tampilkan spinner sebelum request dimulai
+                    $('.spinner-border').show();
+                },
+                success: function (response) {
+                    if (response.exists) {
+                        $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
+                        $('#button-code-voucher').prop('disabled', false);
+                    } else {
+                        $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-danger').show();
+                        $('#button-code-voucher').prop('disabled', true);
+                    }
+                },
+                complete: function() {
+                    // Sembunyikan spinner setelah request selesai
+                    $('.spinner-border').hide();
+                },
+                error: function() {
+                    console.log(error);
+                    // Jika ada error, tetap sembunyikan spinner
+                    $('.spinner-border').hide();
+                }
+            });
+        }
+    });
+</script>
 
 <!-- GUNAKAN KODE VOUCHER -->
 <script>
@@ -739,7 +741,7 @@
         promoElement.querySelector('.grid').classList.add('border', 'border-dark');
         promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
 
-        
+
     }
 
     function selectAddress(addressElement) {
@@ -801,10 +803,10 @@
 <!-- MENGATUR POP -->
 <script>
     $('#open-add-address-modal').on('click', function() {
-    $('#change_address').modal('hide');  // Gunakan jQuery untuk menutup modal
-    setTimeout(function() {
-        $('#form-address').modal('show'); // Tampilkan modal setelah modal pertama tertutup
-    }, 500);
+        $('#change_address').modal('toggle');  // Gunakan jQuery untuk menutup modal
+        setTimeout(function() {
+            $('#add_address').modal('show'); // Tampilkan modal setelah modal pertama tertutup
+        }, 500);
     });
 </script>
 

@@ -114,25 +114,68 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        // dd($request);
         $product_search = $request->product_search; // Get the search query
-        $products = Product::where('product_name', 'like', '%' . $product_search . '%')->get(); // Search products
+        $brand = Brand::where('name', $request->brand)->value('id');
+        $minPrice = $request->min_price;
+        $maxPrice = $request->max_price;
+        $rating = $request->rating;
+        $brandName = $request->brand;
+        $sort = $request->sort;
+        // dd($request);
+
+        $products = Product::where('product_name', 'like', '%' . $product_search . '%')
+            ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
+                return $query->where('brand_id', $brand);
+            })
+            ->when($minPrice !== null, function ($query) use ($minPrice) {
+                return $query->where('regular_price', '>=', $minPrice);
+            })
+            ->when($maxPrice !== null, function ($query) use ($maxPrice) {
+                return $query->where('regular_price', '<=', $maxPrice);
+            });
+
+        // Apply sorting
+        switch ($request->sort) {
+            case 'latest':
+                $products->orderBy('created_at', 'desc');
+                $sort = "Terbaru";
+                break;
+            case 'popular':
+                // Assuming you have a 'popularity' field
+                $products->orderBy('popularity', 'desc');
+                break;
+            case 'high_price':
+                $products->orderBy('regular_price', 'desc');
+                $sort = "Harga Tertinggi";
+                break;
+            case 'low_price':
+                $products->orderBy('regular_price', 'asc');
+                $sort = "Harga Terendah";
+                break;
+        }
+
+        $products = $products->get();
         $userId = session('id_user');
 
         if ($userId) {
             $wishlists = Wishlist::where('user_id', $userId)->get();
             $cartId = Cart::where('user_id', $userId)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            $brands = Brand::get();
 
             if (count($products) !== 0) {
-                $products = Product::where('product_name', 'like', '%' . $product_search . '%')->get(); // Search products
-
                 $data = [
                     'products'    => $products,
                     'keyword'     => $product_search,
                     'count'       => count($products),
                     'wishlists'   => $wishlists,
-                    'cartItems' => $cartItems,
+                    'cartItems'   => $cartItems,
+                    'brands'      => $brands,
+                    'brand'       => $brandName,
+                    'minPrice'    => $minPrice,
+                    'maxPrice'    => $maxPrice,
+                    'rating'      => $rating,
+                    'sort'        => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $data); // Return results to a view
@@ -145,11 +188,53 @@ class ProductController extends Controller
                     'min_price' => $request->min_price,
                     'max_price' => $request->max_price,
                     'rating' => $request->rating,
+                    'brands'      => $brands,
+                    'brand'       => $brandName,
+                    'minPrice'    => $minPrice,
+                    'maxPrice'    => $maxPrice,
+                    'rating'      => $rating,
+                    'sort'        => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $products);
             }
-        } else {
+        }
+        else{
+            $brands = Brand::get();
+
+            if (count($products) !== 0) {
+                $data = [
+                    'products'    => $products,
+                    'keyword'     => $product_search,
+                    'count'       => count($products),
+                    'brands'      => $brands,
+                    'brand'       => $brandName,
+                    'minPrice'    => $minPrice,
+                    'maxPrice'    => $maxPrice,
+                    'rating'      => $rating,
+                    'sort'        => $sort,
+                ];
+    
+                return view('user.component.search')->with('data', $data); // Return results to a view
+            } else {
+                $products = [
+                    'products' => [],
+                    'keyword' => $product_search,
+                    'count'   => 0,
+                    'brand'   => $request->brand,
+                    'min_price' => $request->min_price,
+                    'max_price' => $request->max_price,
+                    'rating' => $request->rating,
+                    'brands'      => $brands,
+                    'brand'       => $brandName,
+                    'minPrice'    => $minPrice,
+                    'maxPrice'    => $maxPrice,
+                    'rating'      => $rating,
+                    'sort'        => $sort,
+                ];
+    
+                return view('user.component.search')->with('data', $products);
+            }
         }
     }
 

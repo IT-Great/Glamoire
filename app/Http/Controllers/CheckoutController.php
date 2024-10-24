@@ -104,7 +104,7 @@ class CheckoutController extends Controller
                     $discount = $totalPrice * 10 / 100;
 
                     // Hitung total belanja setelah diskon
-                    $totalShopping = $totalPrice - $discount;
+                    $totalShopping = $totalPrice - $discount + 20000;
 
                     $data = [
                         'address'       => Shipping_address::where('user_id', $userId)->orderBy('is_main', 'DESC')->get(),
@@ -308,6 +308,8 @@ class CheckoutController extends Controller
             'user_id'             => $userId,
             'invoice_id'          => $invoiceCreate->id,
             'shipping_address_id' => $request->shipping_address_id,
+            'total_item'          => $request->total_item,
+            'total_item_price'    => $request->total_item_price,
             'shipping_cost'       => $shipping_cost,
             'voucher_promo'       => $request->code_voucher,
             'discount_amount'     => $request->discount_amount,
