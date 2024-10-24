@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('user_id');
             $table->unsignedBigInteger('shipping_address_id');
-            $table->unsignedBigInteger('payment_id');
+            // $table->unsignedBigInteger('payment_id');
             $table->bigInteger('shipping_cost');
             $table->string('voucher_promo')->nullable();
             $table->bigInteger('discount_amount')->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses')->onDelete('cascade');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
+            // $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
         });
     }
 

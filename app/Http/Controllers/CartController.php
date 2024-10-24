@@ -16,8 +16,16 @@ class CartController extends Controller
 
         if ($userId) {
             $data = Cart::where('user_id', $userId)
-                ->with('cartItems.product')
-                ->get();
+            ->with('cartItems.product') // Ambil relasi cartItems dengan produk
+            ->get()
+            ->map(function ($cart) {
+                // Urutkan cartItems berdasarkan stock_quantity dari produk
+                $cart->cartItems = $cart->cartItems->sortByDesc(function ($cartItem) {
+                    return $cartItem->product->stock_quantity;
+                });
+                return $cart;
+            });
+
             
             $total = $data->sum(function($cart) {
                 return $cart->cartItems->sum('total'); // Menjumlahkan total setiap cartItems dalam setiap cart

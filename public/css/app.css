@@ -60,12 +60,18 @@
     border-radius: 0; /* Tidak ada lengkungan */
 }
 
+.border-top-dashed {
+    border-top: 1px dashed #183018;
+  }
+  .border-bottom-dashed {
+    border-bottom: 1px dashed #183018;
+  }
   
 
 .grid-container-category {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 25px;
+    grid-gap: 5px;
     padding: 5px;
 }
 
@@ -140,6 +146,7 @@
     width: 100vw;
     height: 100%;
 }
+
 
 @media (max-width: 768px) {
     .swiper-button-next,
@@ -395,6 +402,117 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     right: 0; /* Align the dropdown to the right edge of the container */
     left: auto; /* Prevents it from overflowing to the left */
 }
+
+.product-image-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px; /* Adjust as needed */
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+}
+
+/* Darken the product image when stock is 0 */
+.dark-overlay {
+    filter: brightness(40%); /* Reduces brightness to make the image darker */
+}
+
+/* Sold out overlay */
+.sold-out-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the sold out image covers the main image */
+    opacity: 1; /* Optional: makes the overlay slightly transparent */
+}
+
+/* Default for desktop */
+
+
+/* Tablet styles (768px to 1024px) */
+@media (max-width: 2560px) {
+    .product-item {
+        min-height: 445px;
+        max-height: 445px;
+    }
+    .product-item-except {
+        min-height: 430px;
+        max-height: 430px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .product-item {
+        min-height: 360px;
+        max-height: 360px;
+    }
+    .product-item-except {
+        min-height: 335px;
+        max-height: 335px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .product-item {
+        min-height: 275px;
+        max-height: 275px;
+    }
+    .product-item-except {
+        min-height: 275px;
+        max-height: 275px;
+    }
+}
+
+/* Mobile styles (up to 768px) */
+@media (max-width: 768px) {
+    .product-item {
+        min-height: 310px;
+        max-height: 310px;
+    }
+    .product-item-except {
+        min-height: 260px;
+        max-height: 260px;
+    }
+}
+
+/* Mobile small screens (up to 480px) */
+@media (max-width: 480px) {
+    .product-item {
+        min-height: 220px;
+        max-height: 220px;
+    }
+    .product-item-except {
+        min-height: 225px;
+        max-height: 225px;
+    }
+}
+
+@media (max-width: 375px) {
+    .product-item {
+        min-height: 215px;
+        max-height: 215px;
+    }
+    .product-item-except {
+        min-height: 210px;
+        max-height: 210px;
+    }
+}
+
+@media (max-width: 320px) {
+    .product-item {
+        min-height: 205px;
+        max-height: 205px;
+    }
+    .product-item-except {
+        min-height: 205px;
+        max-height: 205px;
+    }
+}
+
 
 /* Dropdown Shop on hover */
 .dropdown-shop.dropdown:hover .dropdown-menu {

@@ -3,7 +3,7 @@
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-24 mb-12 mb-md-0 py-2">
   <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-2 my-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
         <div class="d-flex gap-2 pl-2">
             <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
             <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
@@ -16,7 +16,7 @@
             <div class="container border border-[#183018] rounded shadow-md">
                 <div class="form-check py-2 py-md-3 border-bottom border-[#183018]">
                     <input class="form-check-input" type="checkbox" value="" id="select-all" onclick="toggleCheckboxes(this)" onchange="toggleSelectAll()">
-                    <label class="form-check-label text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="checkAll">
+                    <label class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" for="checkAll">
                         Pilih Semua 
                     </label>
                 </div>
@@ -24,36 +24,43 @@
                 @foreach ($data as $cart)
                     @foreach ($cart->cartItems as $product)
     
-                        <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3">
+                        <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
                             <div class="d-flex">
                                 <div class="col-lg-2 col-md-4 col-4 pl-1">
+                                    @if ($product->product->stock_quantity > 0)
                                     <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{ $product->product_id }}" data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
-                                    <img src="{{ Storage::url($product->product->main_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-md">
+                                    @else
+                                    @endif
+                                    <img src="{{ Storage::url($product->product->main_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-sm">
                                 </div>
                                 <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                    <h1 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->product->product_name }}</h1>
-                                    <h1 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ 'Rp' . number_format($product->product->regular_price, 0, ',', '.') }}</h1>
+                                    @if ($product->product->stock_quantity == 0)
+                                    <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
+                                        Stok Habis
+                                    </p>
+                                    @endif
+                                    <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ $product->product->product_name }}</p>
+                                    <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ 'Rp' . number_format($product->product->regular_price, 0, ',', '.') }}</p>
                                     <!-- BUTTON PLUS & MINUS & DELETE -->
-                                    <div class="d-flex mt-auto bottom">
-                                        <div class="d-flex ml-auto">
+                                    <div class="flex mt-auto bottom">
+                                        <div class="flex ml-auto">
                                             <button class="btn btn-delete" name="delete-product-cart" title="Hapus product dari keranjang" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" data-id="{{ $product->product_id }}"> 
-                                                <i class="fas fa-trash text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                                                <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
                                             </button>
-    
-                                            <!-- <div class="input-group quantity rounded-sm shadow-sm max-w-[100px] md:max-w-[115px]">
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart">
-                                                        <i class="fa fa-minus text-xs"></i>
-                                                    </button>
-                                                </div>
-                                                <input type="text" name="total_product" class="text-xs form-control bg-secondary text-center" id="product-quantity-{{ $product->product_id }}" value="{{ $product->quantity }}">
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-plus" data-id="{{$product->product_id}}" data-quantity="{{$product->quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart">
-                                                        <i class="fa fa-plus text-xs"></i>
-                                                    </button>
-                                                </div>
-                                            </div> -->
-                                            <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 130px;">
+
+                                            @if ($product->product->stock_quantity == 0)
+                                                <button
+                                                    class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Beritahu Saya Jika Stok Sudah Ada" 
+                                                    type="button" 
+                                                    id="notify-me-{{$product->product->id}}"
+                                                    onclick="notifyMe({{$product->product->id}})">
+                                                    Beritahu Saya
+                                                </button>   
+                                            @else
+                                            <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
                                                 <div class="input-group-btn">
                                                     <button class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
                                                         <i class="fa fa-minus text-xs"></i>
@@ -76,6 +83,7 @@
                                                     </button>
                                                 </div>
                                             </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -91,13 +99,12 @@
             <div class="position-sticky" style="top: 4rem">
                 <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
                     <div class="d-flex py-2">
-                        <p class="text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[16px]">Total Harga</p>
-                        <p id="totalPrice" class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]">Total Harga</p>
+                        <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
                     </div>
                     <div class="border-top border-[#183018] pt-2">
-                        <a href="/checkout">
-                            <button class="btn w-full rounded-sm text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[16px]" style="background-color: #183018" type="submit" id="paynow" disabled>
-                                Bayar Sekarang
+                            <button class="btn w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" style="background-color: #183018" type="submit" id="paynow" onclick="checkout()" disabled>
+                                Beli
                             </button>
                         </a>
                     </div>
@@ -115,7 +122,7 @@
         <p id="totalPriceMobile" class="text-[12px] ml-auto text-white">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
     </div>
     <a href="/checkout">
-        <button class="btn w-fit h-fit font-semibold rounded-sm text-[#183018] text-[12px]" style="background-color: #ffffff" type="submit" id="paynowmobile" disabled>
+        <button class="btn px-8 w-full h-fit font-semibold rounded-sm text-[#183018] text-[12px]" style="background-color: #ffffff" type="submit" id="paynowmobile" disabled>
             Beli
         </button>
     </a>
@@ -163,6 +170,10 @@
 <!-- FUNCTION FOR DATABASE -->
 <!-- CHOOSE PRODUCT -->
 <script>
+    function checkout(){
+        window.location.href = '/checkout';
+    }
+    
     // Fungsi untuk memeriksa status checkbox "Pilih Semua"
     function updateSelectAllStatus() {
         let totalCheckboxes = $('.item-checkbox').length;  // Jumlah semua checkbox item

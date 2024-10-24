@@ -3,21 +3,21 @@
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-24 py-2">
   <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-1 my-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-1 my-md-3">
       <div class="d-flex gap-2 pl-2">
-        <a href="/" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-        <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-        <a href="/newsletter" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Artikel</a>
-        <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-        <a href="#" class="text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $article->title }}</a>
+        <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="/newsletter" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Artikel</a>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $article->title }}</a>
       </div>
     </div>
 
     <div class="row">
-      <div class="col-md-8 col-12 border-right border-bottom">
+      <div class="col-md-8 col-12 border-right border-bottom mt-3 mt-md-0">
         <div class="pb-2 mb-2 border-bottom">
           <div class="d-flex gap-2 mb-2">
-            <h3 class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{ $article->category->name }}</h3>
+            <h3 class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{ $article->categoryArticle->name }}</h3>
             <h3 class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">|</h3>
             <h3 class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('d F Y') }}</h3>
           </div>
@@ -25,7 +25,7 @@
             <h1 class="font-bold">{{ $article->title }}</h1>
           </div>
           <div class="d-flex">
-            <h6  class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">by <a class="font-bold">Admin Glamoire</a></h6>
+            <h6 class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Admin Glamoire</h6>
           </div>
         </div>
       
@@ -53,7 +53,7 @@
         </div>
 
 
-        <div class="py-4">
+        <!-- <div class="py-4">
           <h6 class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Comments</h6>
 
           @if (session('id_user'))
@@ -81,7 +81,7 @@
               <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ligula nibh, interdum non enim sit amet, iaculis aliquet nunc.</p>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="col-md-4 pt-2 pt-md-0">
@@ -98,7 +98,7 @@
             </nav>
         
             <div class="tab-content p-1 md:p-4 lg:md-4 xl:md-4 m-0">
-              <div class="tab-pane fade show active overflow-y-auto overflow-x-hidden  custom-scroll" style="max-height:100vh;" id="all">
+              <div class="tab-pane fade show active overflow-y-auto overflow-x-hidden custom-scroll" style="max-height:100vh;" id="all">
                 <div class="row gap-2">
                   <!-- Card Items -->
 
@@ -107,17 +107,17 @@
                       <img class="w-1/4" src="{{ Storage::url($article->image) }}" alt="{{ $article->title }}">
                       <div>
                         <div class="d-flex gap-2 mb-2">
-                          <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ $article->category->name }}</h3>
+                          <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ $article->categoryArticle->name }}</h3>
                           <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">|</h3>
                           <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('d F Y') }}</h3>
                         </div>
                         <div class="mb-2">
-                          <a href="/blog">
+                          <a href="/{{ $article->title }}_detailnewsletter">
                             <h1 class="font-bold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ Str::limit($article->title, 70) }}</h1>
                           </a>
                         </div>
                         <div class="d-flex">
-                          <h6 class="text-[10px] md:text-[6px] lg:text-[8px] xl:text-[10px]">by <span class="font-bold">Admin Glamoire</span></h6>
+                          <h6 class="text-[10px] md:text-[6px] lg:text-[8px] xl:text-[10px] font-semibold">Admin Glamoire</h6>
                         </div>
                       </div>
                     </div>
@@ -132,24 +132,35 @@
                 <div class="tab-pane fade overflow-y-auto overflow-x-hidden" id="{{ Str::slug($category->name) }}">
                   <div class="row gap-4">
                     <!-- Card Items -->
-                    @foreach ($category->articles as $article)
-                      <div class="border-bottom pb-3 d-flex gap-2">
-                        <img  class="w-1/4" src="{{ Storage::url($article->image) }}" alt="{{$article->title}}">
-                        <div>
-                          <div class="d-flex gap-2 mb-2">
-                            <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ $article->category->name }}</h3>
-                            <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">|</h3>
-                            <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('d F Y') }}</h3>
-                          </div>
-                          <div class="mb-2">
-                            <h1 class="font-bold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ Str::limit($article->title, 70) }}</h1>
-                          </div>
-                          <div class="d-flex">
-                            <h6  class="text-[10px] md:text-[6px] lg:text-[8px] xl:text-[10px]">by <a class="font-bold">Admin Glamoire</a></h6>
+                    @if (count($category->articles) !== 0)
+                      @foreach ($category->articles as $article)
+                        <div class="border-bottom pb-3 d-flex gap-2">
+                          <img  class="w-1/4" src="{{ Storage::url($article->image) }}" alt="{{$article->title}}">
+                          <div>
+                            <div class="d-flex gap-2 mb-2">
+                              <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ $article->categoryArticle->name }}</h3>
+                              <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">|</h3>
+                              <h3 class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">{{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('d F Y') }}</h3>
+                            </div>
+                            <div class="mb-2">
+                              <a href="/{{ $article->title }}_detailnewsletter">
+                                <h1 class="font-bold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ Str::limit($article->title, 70) }}</h1>
+                              </a>
+                            </div>
+                            <div class="d-flex">
+                              <h6  class="font-semibold text-[10px] md:text-[6px] lg:text-[8px] xl:text-[10px]">Admin Glamoire</h6>
+                            </div>
                           </div>
                         </div>
+                      @endforeach
+                    @else
+                      <div style="display:flex; align-items:center; justify-content:center;">
+                        <img src="images/about-1.png" class="img-fluid" style="width:30%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                       </div>
-                     @endforeach
+                      <div style="display:flex; align-items:center; justify-content:center;">
+                        <p class="text-danger text-md">Maaf belum ada artikel tersedia</p>
+                      </div>
+                    @endif
                     <!-- End Card Items -->
                   </div>
                 </div>

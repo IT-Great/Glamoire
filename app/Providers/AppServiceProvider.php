@@ -24,9 +24,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer('user.layouts.navbar', function ($view) {
-            $categories = CategoryProduct::all();
+            $categories = CategoryProduct::where('parent_id', '=', NULL)->get();
+            $subCategories =  CategoryProduct::where('parent_id', '!=', NULL)->get();
             $brands     = Brand::all();
-            $view->with('categories', $categories)->with('brands', $brands);
+
+            // dd($subCategories);
+            $view->with('categories', $categories)->with('brands', $brands)->with('subCategories', $subCategories);
         });
     }
 }

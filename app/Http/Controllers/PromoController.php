@@ -40,7 +40,7 @@ class PromoController extends Controller
                 // Pastikan products adalah koleksi
                 foreach ($promoItem->products as $product) {
                     // Hitung diskon untuk setiap produk
-                    $priceDiscount = ($product->regular_price * $promoItem->diskon) / 100;
+                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
                     $priceAfterDiscount = $product->regular_price - $priceDiscount;
                     
                     // Masukkan hasil diskon ke objek promo
@@ -69,7 +69,7 @@ class PromoController extends Controller
                 // Pastikan products adalah koleksi 
                 foreach ($promoItem->products as $product) {
                     // Hitung diskon untuk setiap produk
-                    $priceDiscount = ($product->regular_price * $promoItem->diskon) / 100;
+                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
                     $priceAfterDiscount = $product->regular_price - $priceDiscount;
                     
                     // Masukkan hasil diskon ke objek promo

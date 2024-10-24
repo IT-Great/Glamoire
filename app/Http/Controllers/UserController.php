@@ -136,7 +136,7 @@ class UserController extends Controller
         
         $cartId = Cart::where('user_id', session('id_user'))->value('id');
         foreach ($request->product_id as $productId) {
-            $checkStockProduct = Produk::where('id', $producId)->value('stock_quantity');
+            $checkStockProduct = Product::where('id', $productId)->value('stock_quantity');
 
             if ($checkStockProduct !== 0) {
                 $cartItem = Cart_item::where('cart_id', $cartId)
@@ -507,7 +507,6 @@ class UserController extends Controller
             dd($err);
         }
     }
-
 
     // ADMIN PAGE
     public function indexUserAdmin()

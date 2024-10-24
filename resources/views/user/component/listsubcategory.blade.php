@@ -51,14 +51,14 @@
                <h5 class="font-weight-semi-bold text-[#183018] my-4">Brand</h5>
                <div class="max-h-[150px] overflow-y-auto custom-scroll">
  
-               @for ($a=1; $a <= 19; $a++)
-               <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="brand" id="namebrand-{{$a}}" value="brand-{{$a}}">
-                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="namebrand-{{$a}}">
-                       Brand {{ $a }}
-                   </label>
-               </div>
-               @endfor
+               @foreach ($brands as $brand)
+                  <div class="form-check ml-2">
+                      <input class="form-check-input" type="checkbox" name="brand" id="{{ $brand->name}}-{{$brand->id}}" value="{{ $brand->name}}">
+                      <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                        {{ $brand->name}}
+                      </label>
+                  </div>
+                @endforeach
                  
                </div>
              </div>

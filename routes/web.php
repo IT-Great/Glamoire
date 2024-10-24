@@ -8,7 +8,6 @@ use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -25,6 +24,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
 use Illuminate\Support\Facades\Auth;
+
+use App\Models\NotifyMe;
+use App\Models\User;
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -79,6 +81,23 @@ Route::post('/email/verification-notification', function (Request $request) {
     // return back()->with('message', 'Link verifikasi telah dikirim ulang!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+// NOTIFY ME
+Route::post('/notify-me', function (Request $request) {
+    $userId = session('id_user');
+    $email = User::where('id', $userId)->value('email');
+
+    if ($userId) {
+        NotifyMe::create([
+            'user_id' => $userId,
+            'product_id' => $request->product_id,
+            'email' => $email,
+        ]);
+        return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+    }
+    return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+})->name('notify.me');
+
+Route::get('/invoice-user_{noinvoice}', [InvoiceController::class, 'viewInvoiceUser'])->name('invoice.user');
 
 // SEARCH
 Route::get('/search', [ProductController::class, 'search'])->name('search.product');
@@ -120,12 +139,13 @@ Route::post('/partnership', [FormController::class, 'files'])->name('partnership
 Route::post('/comment', [FormController::class, 'comment'])->name('comment.article');
 
 // SHOP
-Route::get('/belanja-{category}-{subcategory}-{listsubcategory}', [ShopController::class, 'listSubCategory'])->name('shop.category.sub.list');
+// Route::get('/belanja-{category}-{subcategory}-{listsubcategory}', [ShopController::class, 'listSubCategory'])->name('shop.category.sub.list');
 Route::get('/belanja-{category}-{subcategory}', [ShopController::class, 'subCategory'])->name('shop.category.sub');
 Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('shop.category');
 
 // DETAIL PRODUCT
 Route::get('/{id}_product', [ProductController::class, 'detail'])->name('detail.product');
+
 
 Route::get('/contact', function () {
     return view('user.component.contact');
@@ -140,7 +160,7 @@ Route::get('/{id}_product', [ProductController::class, 'detail'])->name('detail.
 // DETAIL BRAND
 Route::get('/{nameBrand}_brand', [BrandController::class, 'brands'])->name('detail.brand.user');
 
-// ADD $ REMOVE CART ITEMS
+// ADD REMOVE CART ITEMS
 Route::post('/chart', [UserController::class, 'addToChart'])->name('add.to.chart');
 Route::post('/chart-with-quantity', [UserController::class, 'addToChartWithQuantity'])->name('add.to.chart.with.quantity');
 Route::post('/remove-product-cart', [CartController::class, 'deleteProductItem'])->name('delete.product.cart');
@@ -158,6 +178,7 @@ Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'update
 
 // BUY AGAIN
 Route::post('/buy-again', [UserController::class, 'addToCartBuyNow'])->name('buy.again');
+
 
 Route::get('/help', function () {
     return view('user.component.help');

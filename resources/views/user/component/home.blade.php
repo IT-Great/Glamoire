@@ -6,7 +6,7 @@
     $wishlist = session('id_user') && $data['wishlist'] !== null ? $data['wishlist'] : [];
 @endphp
 
-<div class="md:px-20 lg:px-24 xl:px-24 py-2">
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
     <!-- PROMO FIRST USER -->
     @if (session('id_user'))
     <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
@@ -64,9 +64,8 @@
     @endif
     <!-- END PROMO FIRST USER-->
 
-
     <!-- CAROUSEL -->
-    <div class="container-fluid p-0">
+    <div class="container-fluid p-0 mx-12 md:mx-0">
         <div class="swiper mySwiperCarousel">
             <div class="swiper-wrapper">
                 @foreach ($data['promos'] as $promo)
@@ -90,8 +89,8 @@
 
     <!-- TOP SELLING Start -->
     <div class="container-fluid">
-        <div class="text-center md:mb-4 lg:mb-4 xl:mb-4 pt-1 md:pt-4 lg:pt-4 xl:pt-4">
-            <h2 class="section-title px-5  text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terlaris</span></h2>
+        <div class="text-center mb-2 md:mb-4 lg:mb-4 xl:mb-4 pt-1 md:pt-4 lg:pt-4 xl:pt-4">
+            <h2 class="section-title px-5  text-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terlaris</span></h2>
         </div>
 
         <div class="swiper mySwiper">
@@ -101,9 +100,10 @@
                     <div class="swiper-slide p-0">
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
                             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                <div class="position-relative overflow-hidden bg-transparent p-0">
-                                    <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                                <div class="product-image-container">
+                                    <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                 </div>
+
                                 <div class="grid gap-1 text-left p-2">
                                     <div class="flex">
                                         <div class="flex gap-1">
@@ -114,7 +114,9 @@
                                             @php
                                                 $inWishlist = collect($wishlist)->contains('product_id', $product->id);
                                             @endphp
-                                            <a href="javascript:void(0);" class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
+                                            <a href="javascript:void(0);" 
+                                                class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
                                                 <i class="fas fa-heart text-center"></i>
                                             </a>
                                         </div>
@@ -129,15 +131,23 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="flex justify-content-between px-2">
+                                <div class="px-1 px-md-2">
                                     @if ($product->stock_quantity == 0)
-                                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                            Maaf Stok Habis
+                                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Beritahu Saya Jika Stok Sudah Ada" 
+                                            type="button" 
+                                            style="color:#183018"
+                                            id="notify-me-{{$product->id}}"
+                                            onclick="notifyMe({{$product->id}})"
+                                        >
+                                            Stok Habis
                                         </a>
                                     @else
                                         @php
@@ -145,11 +155,11 @@
                                         @endphp
 
                                         @if($inCart)
-                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                                Cek Keranjang Belanjamu
+                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                                Cek Keranjangmu
                                             </a>
                                         @else
-                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
@@ -164,18 +174,19 @@
             @else
                 @foreach ($data['product'] as $product)
                     <div class="swiper-slide p-0">
-                        <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300" style="min-height:365px; max-height:365px;">
-                            <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
-
-                            <div class="grid text-left content-card px-3 py-2 flex-grow-1">
+                        <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300">
+                            <div class="product-image-container">
+                                <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                            </div>
+                            <div class="grid text-left content-card px-1 px-md-3 py-2 flex-grow-1">
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
-                                        <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating,1) }}</p>
+                                        <i class="text-decoration-none fas fa-star text-[9px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating,1) }}</p>
                                     </div>
 
                                     <div class="ml-auto">
-                                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
+                                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
                                             <i class="fas fa-heart text-center"></i>
                                         </a>
                                     </div>
@@ -191,20 +202,28 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex justify-content-between px-2 mt-auto add-wishlist">
+                            <div class="px-1 px-md-2 mt-auto add-wishlist">
                                 @if ($product->stock_quantity == 0)
-                                    <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                        Maaf Stok Habis
+                                    <a class="mb-2 py-2 btn w-full h-full btn-danger rounded-sm shadow-sm text-white text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Beritahu Saya Jika Stok Sudah Ada" 
+                                        type="button" 
+                                        style="color:#183018"
+                                        id="notify-me-{{$product->id}}"
+                                        onclick="notifyMe({{$product->id}})"
+                                    >
+                                    Stok Habis
                                     </a>
                                 @else
-                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                    <a href="javascript:void(0);" class="gap-1 mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
                                         + <i class="fas fa-shopping-cart"></i> Keranjang
                                     </a>
                                 @endif
@@ -225,8 +244,8 @@
 
     <!-- NEW ARRIVAL Start -->
     <div class="container-fluid my-8 md:my-10 lg:my-12 xl:my-14">
-        <div class="text-center md:mb-4 lg:mb-4 xl:mb-4 pt-1 md:pt-4 lg:pt-4 xl:pt-4">
-            <h2 class="section-title px-5  text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terbaru</span></h2>
+        <div class="text-center mb-2 md:mb-4 lg:mb-4 xl:mb-4 pt-1 md:pt-4 lg:pt-4 xl:pt-4">
+            <h2 class="section-title px-5 text-[18px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terbaru</span></h2>
         </div>
 
         <div class="swiper mySwiper">
@@ -236,8 +255,8 @@
                     <div class="swiper-slide p-0">
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
                             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                <div class="position-relative overflow-hidden bg-transparent p-0">
-                                    <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                                <div class="product-image-container">
+                                    <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                 </div>
                                 <div class="grid gap-1 text-left p-2">
                                     <div class="flex">
@@ -249,12 +268,14 @@
                                             @php
                                                 $inWishlist = collect($wishlist)->contains('product_id', $product->id);
                                             @endphp
-                                            <a href="javascript:void(0);" class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
+                                            <a href="javascript:void(0);" 
+                                                class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
                                                 <i class="fas fa-heart text-center"></i>
                                             </a>
                                         </div>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                         <a href="/{{ $product->product_code }}_product" 
                                         class="text-decoration-none" 
                                         data-bs-toggle="tooltip" 
@@ -264,27 +285,44 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="flex justify-content-between px-2">
+                                <div class="px-1 px-md-2">
                                     @if ($product->stock_quantity == 0)
-                                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                            Maaf Stok Habis
-                                        </a>
+                                    <div class="flex">
+                                            <div class="col-12 p-0">
+                                                <a class="mb-2 py-2 btn w-full h-full btn-danger rounded-sm shadow-sm text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]">
+                                                Stok Habis
+                                                </a>
+                                            </div>
+                                            <!-- <div class="col-3 p-0">
+                                                <i class="fa fa-solid fa-bell"
+                                                    class="text-md w-full mb-2 py-2 h-full hover-red rounded-sm ml-auto text-[#183018] flex align-items-center justify-content-center" 
+                                                    data-bs-toggle="tooltip" 
+                                                    data-bs-placement="top" 
+                                                    title="Beritahu Saya Jika Stok Sudah Ada" 
+                                                    type="button" 
+                                                    style="color:#183018"
+                                                    id="notify-me-{{$product->id}}"
+                                                    onclick="notifyMe({{$product->id}})"
+                                                >
+                                                </i>
+                                            </div> -->
+                                        </div>
                                     @else
                                         @php
                                             $inCart = collect($data['cartItems'])->contains('product_id', $product->id);
                                         @endphp
 
                                         @if($inCart)
-                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                                Cek Keranjang Belanjamu
+                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                                Cek Keranjangmu
                                             </a>
                                         @else
-                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
@@ -299,10 +337,11 @@
             @else
                 @foreach ($data['product'] as $product)
                     <div class="swiper-slide p-0">
-                        <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300" style="min-height:365px; max-height:365px;">
-                            <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
-
-                            <div class="grid text-left content-card px-3 py-2 flex-grow-1">
+                        <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300">
+                            <div class="product-image-container">
+                                <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                            </div>
+                            <div class="grid text-left content-card px-0 py-0 px-md-3 py-md-2 md:flex-grow-1">
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
@@ -317,7 +356,7 @@
                                 </div>
                                 
                                 <div class="grid name-price hover:cursor-pointer">
-                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> 
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> 
                                         <a href="/{{ $product->product_code }}_product" class="text-decoration-none"
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
@@ -326,20 +365,37 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             
-                            <div class="flex justify-content-between px-2 mt-auto add-wishlist">
+                            <div class="px-2 mt-auto add-wishlist">
                                 @if ($product->stock_quantity == 0)
-                                    <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                        Maaf Stok Habis
-                                    </a>
+                                    <div class="flex">
+                                        <div class="col-9 p-0">
+                                            <a class="mb-2 py-2 btn w-full h-full btn-danger rounded-sm shadow-sm text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]">
+                                            Stok Habis
+                                            </a>
+                                        </div>
+                                        <div class="col-3 p-0">
+                                            <i class="fa fa-solid fa-bell"
+                                                class="text-md w-full mb-2 py-2 h-full hover-red rounded-sm ml-auto text-[#183018] flex align-items-center justify-content-center" 
+                                                data-bs-toggle="tooltip" 
+                                                data-bs-placement="top" 
+                                                title="Beritahu Saya Jika Stok Sudah Ada" 
+                                                type="button" 
+                                                style="color:#183018"
+                                                id="notify-me-{{$product->id}}"
+                                                onclick="notifyMe({{$product->id}})"
+                                            >
+                                            </i>
+                                        </div>
+                                    </div>
                                 @else
-                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
                                         + <i class="fas fa-shopping-cart"></i> Keranjang
                                     </a>
                                 @endif
@@ -378,7 +434,7 @@
     <!-- LANGGANAN INFORMASI/SUBSCRIBE -->
     <div class="container-fluid mb-4">
         <div class="d-flex gap-2">
-        <div class="py-3 grid md:flex col-12 align-items-center justify-content-center rounded-md" style="background-color: #475136">
+        <div class="py-3 grid md:flex col-12 align-items-center justify-content-center rounded-sm" style="background-color: #475136">
             <div class="col-12 col-md-8 mb-2 mb-md-0 p-0 p-md-2">
                 <p class="text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[24px]">Langganan Untuk Mendapatkan Informasi Terbaru Dari Kami</p>
             </div>  
@@ -387,7 +443,7 @@
                     @csrf
                     <div class="relative flex items-center">
                         <i class="fas fa-envelope text-gray-400 absolute left-3 text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]"></i> <!-- Ikon Email -->
-                        <input type="email" class="form-control pl-10 pr-10 rounded-md text-[8px] md:text-[9px] lg:text-[10px] xl:text-[11px]" id="subscribe_email" placeholder="Masukkan email" required>
+                        <input type="email" class="form-control pl-10 pr-10 rounded-sm text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" id="subscribe_email" placeholder="Masukkan email" autocomplete="off" required>
                         <div class="spinner-border text-[#183018] absolute right-3" role="status" style="width:15px; height:15px;display:none;"> <!-- Spinner -->
                             <span class="visually-hidden"></span>
                         </div>
@@ -395,7 +451,7 @@
 
                     <div id="validationEmailSubscribe" class="text-[12px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                     </div>
-                    <button class="py-2 w-full rounded-md text-white bg-[#183018] text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" type="submit" id="subscribe-btn" disabled>Berlangganan Sekarang</button>
+                    <button class="py-2 w-full rounded-sm text-white bg-[#183018] text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" type="submit" id="subscribe-btn" disabled>Berlangganan Sekarang</button>
                 </form>
             </div>
         </div>  
@@ -525,7 +581,7 @@
     });
 </script>
 
-@if (session('id_user'))
+@if(session('id_user'))
 <!-- MENGATUR POP-UP PROMO  -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -541,5 +597,6 @@
     });
 </script>
 @endif
+
 
 @endsection

@@ -5,10 +5,12 @@
   </head>
 
   <body>
-    @include('user.layouts.navbar')
+    @if (!Request::routeIs('invoice.user'))
+      @include('user.layouts.navbar')
+    @endif
 
     <!-- Modal Login -->
-    <div class="modal fade" id="login" tabindex="-1" aria-labelledby="login" aria-hidden="true">
+    <div class="modal fade" id="loginUser1" tabindex="-1" aria-labelledby="loginUser" aria-hidden="true" z-index="9999">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background-color: #183018">
           <div class="modal-header border-none">
@@ -22,13 +24,13 @@
               <form method="POST" action="" class="mb-2 px-0 px-md-4">
                 @csrf
                 <div>
-                    <label for="exampleFormControlInput1" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email </label>
-                    <input type="email" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="email" id="login_email" placeholder="nama@gmail.com" required>
+                    <label for="login_email" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email </label>
+                    <input type="email" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="email" id="login_email" placeholder="nama@gmail.com" autocomplete="off" required>
                     <div id="validationEmailLogin" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                     </div>
                 
                     <div class="mb-3">
-                    <label for="inputPassword5" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Kata Sandi </label>
+                    <label for="login_password" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Kata Sandi </label>
                     <input type="password" name="password" id="login_password" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" aria-describedby="passwordHelpBlock" placeholder="******" required>
                     <div id="validationPasswordLogin" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                     </div>
@@ -56,7 +58,7 @@
     </div>
 
     <!-- Modal Sign Up -->
-    <div class="modal fade" id="register" tabindex="-1" aria-labelledby="register" aria-hidden="true">
+    <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true" >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background-color: #183018">
           <div class="modal-header border-none">
@@ -72,45 +74,45 @@
                 @csrf
                 <div class="col-12 mb-2">
                   <div>
-                      <label for="name" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Nama Lengkap </label>
+                      <label for="register_fullname" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Nama Lengkap </label>
                       <input type="text" class="form-control rounded-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="fullname" id="register_fullname" placeholder="Masukkan Nama Lengkap" required>
 
-                      <label for="name" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Tanggal Lahir </label>
+                      <label for="register_date" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Tanggal Lahir </label>
                       <input type="date" class="form-control rounded-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="date" id="register_date" required>
                   
-                      <label for="exampleFormControlInput1" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email </label>
-                      <input type="email" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="email" id="register_email" placeholder="contoh@gmail.com" required>
+                      <label for="register_email" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email </label>
+                      <input type="email" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="email" id="register_email" placeholder="contoh@gmail.com" autocomplete="off" required>
                       <div id="validationEmail" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                       </div>
                   
-                      <label for="handphone" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Handphone </label>
+                      <label for="register_handphone" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Handphone </label>
                       <div class="input-group">
                         <span class="input-group-text text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" id="basic-addon1">+62</span>
                         <input type="number" class="form-control rounded-end-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" name="handphone" id="register_handphone" placeholder="Nomor Handphone" pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
                       </div>
                       <div id="validationHandphone" class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;"></div>
                     
-                      <label for="inputPassword5" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Password </label>
+                      <label for="register_password" class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Password </label>
                       <input type="password" name="password" id="register_password" class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" aria-describedby="passwordHelpBlock" placeholder="******" required>
                   
-                      <label for="Gender" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Jenis Kelamin </label>
-                      <div>
+                      <label for="register_gender" class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Jenis Kelamin </label>
+                      <div id="register_gender">
                         <div class="form-check form-check-inline">
                           <input class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" type="radio" name="gender" id="register_gender_male" value="male" required>
-                          <label class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" for="genderMale">Pria </label>
+                          <label class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" for="register_gender_male">Pria </label>
                         </div>
                         <div class="form-check form-check-inline">
                           <input class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" type="radio" name="gender" id="register_gender_female" value="female" required>
-                          <label class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" for="genderFemale">Wanita </label>
+                          <label class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" for="register_gender_male">Wanita </label>
                         </div>
                       </div>
 
                     
                     <div class="form-check">
                       <input class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" type="checkbox" value="" id="privacy_policy_agreement" required>
-                      <label class="form-check-label text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px] text-white" for="privacy_policy_agreement">
-                        By registering you have agreed to the <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>
-                        </label>
+                      <label for="privacy_policy" class="form-check-label text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px] text-white">
+                        By registering you have agreed to the <a href="/privacy" id="privacy_policy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>
+                      </label>
                       <div class="invalid-feedback text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
                         You must agree before submitting.
                       </div>
@@ -185,7 +187,7 @@
       @yield('content')
     </div>
 
-    @if (!Request::is('cart') && !Request::is('checkout') && !Request::is('account') && !Request::is('shop') && !Request::is('detail') && !Request::routeIs('detail.product') && !Request::routeIs('buy.now'))
+    @if (!Request::is('cart') && !Request::is('checkout') && !Request::is('account') && !Request::is('shop') && !Request::is('detail') && !Request::routeIs('detail.product') && !Request::routeIs('buy.now') && !Request::routeIs('invoice.user'))
       @include('user.layouts.footer')
     @endif
 
@@ -200,6 +202,7 @@
     <!-- UNTUK MENGATUR JUMLAH CARD MENGGUNAKAN SWIPERJS PADA HALAMAN HOME -->
     <script>
       var swiper = new Swiper(".mySwiper", {
+        loop: true,
         slidesPerView: 5,
         spaceBetween: 15,
         cssMode: true,
@@ -336,9 +339,6 @@
 
         document.getElementById("min-price-value").textContent = `Rp${formatRupiah(minPrice)}`;
         document.getElementById("max-price-value").textContent = `Rp${formatRupiah(maxPrice)}`;
-
-        // Optionally, update the product list based on the selected range
-        // Example: filterProducts(minPrice, maxPrice);
       }
 
       function formatRupiah(value) {
@@ -576,7 +576,7 @@
 
     <!-- Register -->
     <script>
-      $(document).on("submit", "#register", function (e) {
+      $(document).on("submit", "#registerUser1", function (e) {
         e.preventDefault();
 
         let fullname = $("#register_fullname").val();
@@ -703,7 +703,7 @@
 
     <!-- Login -->
     <script>
-      $(document).on("submit", "#login", function (e) {
+      $(document).on("submit", "#loginUser1", function (e) {
         e.preventDefault();
 
         let email = $("#login_email").val();
@@ -1017,12 +1017,75 @@
       });
     </script>
 
+    <!-- NOITFY ME -->
+    <script>
+      function notifyMe(produkId) {
+        $.ajax({
+            url: "{{ route('notify.me') }}", // Route register di Laravel
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
+                product_id: produkId,
+            },
+            success: function (response) {
+              if (response.success) {
+                Toast.fire({
+                  icon: "success",
+                  text: response.message,
+                  title: "Berhasil",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                }).then(function () {
+                  window.location.reload(); // Redirect ke halaman utama atau halaman lain
+                });
+              } else {
+                let errors = response.errors;
+                let errorMessages = response.message;
+                for (const key in errors) {
+                    if (errors.hasOwnProperty(key)) {
+                        errorMessages += errors[key][0] + "<br>";
+                    }
+                }
+                Toast.fire({
+                  icon: "error",
+                  text: errorMessages,
+                  title: "Error",
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                });
+              }
+            },
+            error: function (response) {
+              Toast.fire({
+                icon: "error",
+                text: "Kesalahan Sistem",
+                title: "Error",
+                willOpen: () => {
+                  const title = document.querySelector('.swal2-title');
+                  const content = document.querySelector('.swal2-html-container');
+                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+              });
+            },
+        });
+      }
+    </script>
+
     <!-- Reset Form Masuk & Daftar -->
     <script>
       document.addEventListener('DOMContentLoaded', function() {
         // Tangkap modal elemen
-        const loginModal = document.getElementById('login');
-        const registerModal = document.getElementById('register');
+        const loginModal = document.getElementById('loginUser1');
+        const registerModal = document.getElementById('registerUser1');
         
         // Deteksi saat modal ditutup
         loginModal.addEventListener('hidden.bs.modal', function () {
@@ -1053,8 +1116,6 @@
           });
       });
     </script>
-
-    
 
     @if (session('register_or_login_first'))
       <script>

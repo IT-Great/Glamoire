@@ -10,7 +10,7 @@
 
 <div class="md:px-20 lg:px-24 xl:px-24 py-2">
   <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-2 my-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
       <div class="d-flex gap-2 pl-2">
         <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
@@ -250,7 +250,7 @@
                   @foreach ($order->items as $item)
                     <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
                       <div class="col-2 col-md-1 p-0 m-0">
-                        <img class="border border-[#183018] rounded-md" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
+                        <img class="border border-[#183018] rounded-sm" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
                       </div>
                       <div class="col-6 col-md-8 gap-4">
                         <p class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
@@ -328,7 +328,7 @@
                             <div class="col-12 p-0 pb-2 border-bottom">
                               <div class="d-flex">
                                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">No. Invoice</p>
-                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">{{ $order->invoice->no_invoice }}</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-danger hover:cursor-pointer hover:text-decoration-underlined" onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">{{ $order->invoice->no_invoice }}</p>
                               </div>
                               <div class="d-flex">
                                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Tanggal Pembelian</p>
@@ -366,12 +366,20 @@
                               <div class="d-flex mb-1 mb-md-2">
                                 <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Kurir</p>
                                 <p class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">:</p>
+                                @if ($order->status == 'in delivery' || $order->status == 'done')
                                 <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">JNE</p>
+                                @else
+                                <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">-</p>
+                                @endif
                               </div>
                               <div class="d-flex mb-1 mb-md-2">
                                 <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">No.Resi</p>
                                 <p class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">:</p>
+                                @if ($order->status == 'in delivery' || $order->status == 'done')
                                 <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">082723615</p>
+                                @else
+                                <p class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">-</p>
+                                @endif
                               </div>
                               <div class="d-flex mb-1 mb-md-2">
                                 <p class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Alamat</p>
@@ -397,8 +405,8 @@
                                 <div class="p-3 bg-light grid gap-2 gap-md-3">
                                     <div class="grid">
                                         <div class="d-flex">
-                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Harga ({{ count($order->items) }} Barang)</p>
-                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">Rp{{ number_format($order->total_amount, 0, ',', '.') }}</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Harga ({{ $order->total_item }} Barang)</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">Rp{{ number_format($order->total_item_price, 0, ',', '.') }}</p>
                                         </div>
                                         @if ($order->voucher_promo !== NULL)
                                         <div class="d-flex">
@@ -413,7 +421,7 @@
                                     </div>
                                     <div class="d-flex py-2 border-bottom border-top align-items-center">
                                         <p class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
-                                        <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto">Rp{{ number_format(($order->total_amount+$order->shipping_cost), 0, ',', '.') }}</p>
+                                        <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto">Rp{{ number_format(($order->total_amount), 0, ',', '.') }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -548,13 +556,13 @@
               <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl" style="min-height:325px; max-height:325px;">
                 <a href="/{{ $wp->product->product_code }}_product" class="text-decoration-none">
                     <div class="position-relative overflow-hidden bg-transparent p-0">
-                        <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
+                        <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
                     </div>
                     <div class="grid gap-1 text-left p-2">
                         <div class="flex">
                             <div class="flex gap-1">
-                                <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                <i class="text-decoration-none fas fa-star text-[14px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
+                                <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
                             </div>
                             <div class="ml-auto">
                               <a href="javascript:void(0);" class="col-4 text-decoration-none text-[#183018] p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid hover-[#183018] text-center" onclick="removeFromWishlist({{$wp->product->id}})">
@@ -563,7 +571,7 @@
                             </div>
                         </div>
                           <div class="grid name-price hover:cursor-pointer">
-                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" 
+                            <p class="text-decoration-none text-black text-[14px] md:text-[10px] lg:text-[12px] xl:text-[14px]" 
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 title="{{ $wp->product->product_name }}">
@@ -575,7 +583,7 @@
                             </p>
 
                             <div class="flex justify-content-start gap-1">
-                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                <p class="text-decoration-none text-black text-[14px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                     Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}
                                 </p>
                             </div>
@@ -583,7 +591,7 @@
                     </div>
                     <div class="flex justify-content-between px-2">
                       @if ($wp->product->stock_quantity == 0)
-                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                           Maaf Stok Habis
                         </a>
                       @else
@@ -591,11 +599,11 @@
                           $inCart = collect($profile->cartItems)->contains('product_id', $wp->product->id);
                         @endphp
                         @if($inCart)
-                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
+                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
                               Cek Keranjang Belanjamu
                           </a>
                         @else
-                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
+                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
                               + <i class="fas fa-shopping-cart"></i> Keranjang
                           </a>
                         @endif
@@ -1654,9 +1662,19 @@
                         });
                     },
                     error: function(error) {
+                        console.log(error); // Cek struktur objek error
+                        let errorMessage = "Terjadi kesalahan, silakan coba lagi."; // Pesan default
+
+                        // Cek apakah error memiliki pesan spesifik
+                        if (error.response && error.response.data) {
+                            errorMessage = error.response.data.message || error.response.data.error || error.message;
+                        } else if (error.message) {
+                            errorMessage = error.message;
+                        }
+
                         Toast.fire({
                             icon: "error",
-                            text: "Kesalahan Sistem",
+                            text: errorMessage,
                             title: "Oops...",
                             willOpen: () => {
                                 const title = document.querySelector('.swal2-title');
@@ -1672,5 +1690,12 @@
     });
 </script>
 
+<!-- INVOICE -->
+<script>
+  function invoice(invoiceId){
+    console.log(invoiceId);
+    window.location.href = "/invoice-user_" + invoiceId;
+  }
+</script>
 
 @endsection

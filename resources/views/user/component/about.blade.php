@@ -51,7 +51,7 @@
   <div class="d-flex">
     <div class="col-6 col-md-6 p-0">
       <div class="d-flex justify-content-center align-items-center">
-        <img src="images/about_glamoire.png" class="img-fluid" alt="">
+        <img src="images/about-1.png" class="img-fluid" alt="">
       </div>
     </div>
 
@@ -75,7 +75,7 @@
   
     <div class="col-6 col-md-6 p-0">
       <div class="d-flex justify-content-center align-items-center">
-        <img src="images/visi-misi.png" class="img-fluid" alt="">
+        <img src="images/about-2.png" class="img-fluid" alt="">
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@
   <div class="d-flex">
     <div class="col-6 col-md-6 p-0">
       <div class="d-flex justify-content-center align-items-center">
-        <img src="images/about_glamoire.png" class="img-fluid" alt="">
+        <img src="images/about-3.png" class="img-fluid" alt="">
       </div>
     </div>
   
