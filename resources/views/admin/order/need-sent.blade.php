@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order - Admin Glamoire</title>
+    <title>Order - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <style>
         /* Custom styles for the shipping options */
         .card:hover {
@@ -40,7 +41,7 @@
 
         .nav-tabs .nav-link.active {
             background: none;
-            color: #dc3545;
+            /* color: #dc3545; */
         }
 
         .nav-tabs .nav-link.active::after {
@@ -50,7 +51,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background-color: #dc3545;
+            /* background-color: #dc3545; */
         }
 
         .gap-2 {
@@ -113,15 +114,15 @@
                             href="{{ route('index-admin-order', ['status' => 'unpaid']) }}">Belum Bayar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->get('status') === 'pending' ? 'active' : '' }} text-danger"
+                        <a class="nav-link {{ request()->get('status') === 'pending' ? 'active' : '' }} text-primary"
                             href="{{ route('index-admin-order', ['status' => 'pending']) }}">
-                            Perlu Dikirim <span class="badge bg-danger rounded-pill">3</span>
+                            Perlu Dikirim
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('index-admin-order-sent', ['status' => 'shipping']) }}"
-                            class="nav-link {{ request()->get('status') === 'shipping' ? 'active text-danger' : 'text-secondary' }}">
-                            Dikirim <span class="badge bg-secondary rounded-pill ms-1">98</span>
+                            class="nav-link {{ request()->get('status') === 'shipping' ? 'active text-primary' : 'text-secondary' }}">
+                            Dikirim
                         </a>
                     </li>
                     <li class="nav-item">
@@ -134,52 +135,68 @@
                     </li>
                 </ul>
 
+                <!-- Info Alert -->
+                <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"></i>
+                    Untuk memfasilitasi Penjual dalam mengatur stok produk, kolom Lokasi akan ditambahkan untuk
+                    mengidentifikasi lokasi produk dan kolom Batas Aman Stok akan ditambahkan sebagai pengingat untuk
+                    memperbarui stok.
+                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
+
                 <!-- Search and Date Filter -->
-                <div class="row align-items-center mb-4">
-                    <div class="col-md-4">
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Cari Pesanan">
-                            <button class="btn btn-outline-secondary" type="button">
-                                <i class="bi bi-search"></i>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Cari Pesanan">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">Waktu Pesanan Dibuat</span>
+                                    <input type="date" class="form-control" style="max-width: 150px;">
+                                    <span class="mx-2">-</span>
+                                    <input type="date" class="form-control" style="max-width: 150px;">
+                                </div>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <button class="btn btn-outline-secondary">
+                                    Export <i class="bi bi-three-dots-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Order Status Pills -->
+                        <div class="d-flex gap-2 mb-4">
+                            <button class="btn btn-sm btn-primary">Semua 3</button>
+                            <button class="btn btn-sm btn-outline-secondary">Perlu diproses 3</button>
+                            <button class="btn btn-sm btn-outline-secondary">Telah diproses 0</button>
+                        </div>
+
+                        <!-- Order Count and Mass Shipping -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0 me-3">3 Pesanan</h5>
+                            <div class="d-flex align-items-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button">
+                                        Urutkan: Tanggal Pesanan
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary">
+                                <i class="bi bi-box-seam"></i> Pengiriman Massal
                             </button>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="d-flex align-items-center">
-                            <span class="me-2">Waktu Pesanan Dibuat</span>
-                            <input type="date" class="form-control" style="max-width: 150px;">
-                            <span class="mx-2">-</span>
-                            <input type="date" class="form-control" style="max-width: 150px;">
-                        </div>
-                    </div>
-                    <div class="col-md-2 text-end">
-                        <button class="btn btn-outline-secondary">
-                            Export <i class="bi bi-three-dots-vertical"></i>
-                        </button>
+
                     </div>
                 </div>
 
-                <!-- Order Status Pills -->
-                <div class="d-flex gap-2 mb-4">
-                    <button class="btn btn-danger rounded-pill">Semua 3</button>
-                    <button class="btn btn-outline-secondary rounded-pill">Perlu diproses 3</button>
-                    <button class="btn btn-outline-secondary rounded-pill">Telah diproses 0</button>
-                </div>
-
-                <!-- Order Count and Mass Shipping -->
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0 me-3">3 Pesanan</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button">
-                                Urutkan: Tanggal Pesanan
-                            </button>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger">
-                        <i class="bi bi-box-seam"></i> Pengiriman Massal
-                    </button>
-                </div>
 
                 <!-- Orders Card -->
                 <div class="card">
@@ -339,6 +356,7 @@
             window.open(url, '_blank');
         }
     </script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

@@ -36,8 +36,8 @@
                                     Product
                                 </a>
                             </li>
-                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">
-                                <a href="/product-admin">Stock Product</a>
+                            <li class="submenu-item {{ Request::is('stock-product-admin') ? 'active' : '' }}">
+                                <a href="/stock-product-admin">Stock Product</a>
                             </li>                          
                         </ul>
 
@@ -100,12 +100,12 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('shipping-fee') ? 'active' : '' }}">
+                    {{-- <li class="sidebar-item {{ Request::is('shipping-fee') ? 'active' : '' }}">
                         <a href="/shipping-fee" class='sidebar-link'>
                             <i class="bi bi-mailbox2"></i>
                             <span>Shipping Fee</span>
                         </a>
-                    </li>
+                    </li> --}}
 
                     <li class="sidebar-item {{ Request::is('affiliate-admin') ? 'active' : '' }}">
                         <a href="/affiliate-admin" class='sidebar-link'>

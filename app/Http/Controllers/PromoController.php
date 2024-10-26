@@ -174,7 +174,7 @@ class PromoController extends Controller
     // PROMO VOUCHER
     public function indexPromoVoucher()
     {
-        $promo = Promo::whereIn('type', ['voucher', 'brand voucher', 'product voucher'])->get();
+        $promo = Promo::whereIn('type', ['voucher', 'brand voucher', 'product voucher', 'shipping fee voucher'])->get();
         $products = Product::all();
         $brands = Brand::all();
         return view('admin.promo.voucher.index', [
@@ -252,13 +252,13 @@ class PromoController extends Controller
 
 
     // PROMO BRAND VOUCHER
-    public function createPromoShopVoucher()
+    public function createPromoBrandVoucher()
     {
         $brands = Brand::with('products')->get();
-        return view('admin.promo.voucher.create-voucher-toko', compact('brands'));
+        return view('admin.promo.voucher.create-voucher-brand', compact('brands'));
     }
 
-    public function storePromoShopVoucher(Request $request)
+    public function storePromoBrandVoucher(Request $request)
     {
         try {
             $request->validate([
@@ -364,64 +364,6 @@ class PromoController extends Controller
         $products = Product::all(); // Pastikan kamu menggunakan model Product
         return view('admin.promo.voucher.create-voucher-product', compact('products'));
     }
-
-    // public function storePromoProductVoucher(Request $request)
-    // {
-    //     try {
-
-    //         $request->validate([
-    //             'promo_name' => 'required|string|max:255',
-    //             'date_range' => 'required|string|max:255',
-    //             'min_transaction' => 'required',
-    //             'usage_quota' => 'required',
-    //             'max_quantity_buyer' => 'required',
-    //             'promo_code' => 'required',
-    //             'discount' => 'required',
-    //             'product_ids' => 'required|array',
-    //             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
-    //         ]);
-
-    //         // Hapus format rupiah dari regular_price
-    //         $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
-
-    //         // Generate kode promo otomatis
-    //         $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
-    //         $promoCode = 'Glamo' . $randomCode;
-
-
-    //         // Simpan single image
-    //         $imagePath = null;
-    //         if ($request->hasFile('image')) {
-    //             $image = $request->file('image');
-    //             $imageName = time() . '_' . $image->getClientOriginalName();
-    //             // Simpan file ke storage/app/public/uploads/promo
-    //             $imagePath = $image->storeAs('promo', $imageName, 'public');
-    //         }
-
-    //         // Simpan data promo
-    //         $promo = Promo::create([
-    //             'promo_name' => $request->promo_name,
-    //             'date_range' => $request->date_range, // Tidak perlu explode, mutator akan menangani
-    //             'min_transaction' => $minTransaction,
-    //             'promo_code' => $promoCode,
-    //             'usage_quota' => $request->usage_quota,
-    //             'max_quantity_buyer' => $request->max_quantity_buyer,
-    //             'discount' => $request->discount,
-    //             'image' => $imagePath ?? null,
-    //             'type' => $request->type, // Isi field 'type' dari input tersembunyi
-    //         ]);
-
-    //         $promo->products()->attach($request->product_ids);
-
-    //         // Redirect dengan pesan sukses
-    //         return redirect()->route('index-promo-voucher')->with('success', 'Promo Product Voucher created successfully!');
-    //     } catch (\Illuminate\Validation\ValidationException $e) {
-    //         return redirect()->back()->withErrors($e->errors())->withInput();
-    //     } catch (\Exception $e) {
-    //         Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
-    //         return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
-    //     }
-    // }
 
     public function storePromoProductVoucher(Request $request)
     {
@@ -716,59 +658,76 @@ class PromoController extends Controller
 
 
     // PROMO ONGKIR   
-    public function createPromoOngkir()
+    public function createPromoVoucherShippingFee()
     {
         $products = Product::all(); // Pastikan kamu menggunakan model Product
         return view('admin.promo.voucher.create-voucher-ongkir', compact('products'));
     }
 
-    public function storePromoOngkir(Request $request)
+    public function storePromoVoucherShippingFee(Request $request)
     {
         try {
-
             $request->validate([
                 'promo_name' => 'required|string|max:255',
-                'start_date' => 'required',
-                'end_date' => 'required',
+                'date_range' => 'required|string|max:255',
                 'min_transaction' => 'required',
+                'usage_quota' => 'required',
+                'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'description' => 'required',
-                'terms_conditions' => 'required',
-                'diskon' => 'required',
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'discount' => 'required',
+                'product_ids' => 'required|array',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
 
+            // Hapus format rupiah dari regular_price
+            $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+            // Generate kode promo otomatis
+            $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
+            $promoCode = 'Glamo' . $randomCode;
+
             // Simpan single image
-            $image = null;
+            $imagePath = null;
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/promo'), $imageName);
-                $imagePath = 'uploads/promo/' . $imageName;
+                $imagePath = $image->storeAs('promo', $imageName, 'public');
             }
 
             // Simpan data promo
-            Promo::create([
+            $promo = Promo::create([
                 'promo_name' => $request->promo_name,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'min_transaction' => $request->min_transaction,
-                'promo_code' => $request->promo_code,
-                'description' => $request->description,
-                'terms_conditions' => $request->terms_conditions,
-                'diskon' => $request->diskon,
+                'date_range' => $request->date_range,
+                'min_transaction' => $minTransaction,
+                'promo_code' => $promoCode,
+                'usage_quota' => $request->usage_quota,
+                'max_quantity_buyer' => $request->max_quantity_buyer,
+                'discount' => $request->discount, // Diskon All
                 'image' => $imagePath ?? null,
-                'type' => $request->type, // Isi field 'type' dari input tersembunyi
+                'type' => $request->type,
             ]);
 
+            // Loop melalui produk terpilih untuk simpan diskon per produk
+            foreach ($request->product_ids as $productId) {
+                $discountProduct = $request->product_discount[$productId] ?? null; // Ambil diskon per produk
+                $promo->products()->attach($productId, [
+                    'discount_product_voucher_item' => $discountProduct ?: $promo->discount, // Gunakan diskon all jika tidak ada input
+                ]);
+            }
+
             // Redirect dengan pesan sukses
-            return redirect()->route('index-promo')->with('success', 'Promo Voucher created successfully!');
+            return redirect()->route('index-promo-voucher')->with('success', 'Promo Shipping Fee Voucher created successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            // Tangani error
-            Log::error($e->getMessage()); // Tulis log
-            return back()->withErrors(['error' => 'Something went wrong: ' . $e->getMessage()]);
+            Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
+
+
+
+    
 
     public function detailPromo($id)
     {
@@ -795,12 +754,12 @@ class PromoController extends Controller
             ]);
         }
 
-        // Hapus gambar utama dari folder
-        if (!empty($promo->image) && file_exists(public_path($promo->image))) {
-            unlink(public_path($promo->image));
+        // Hapus gambar utama dari folder storage
+        if (!empty($promo->image) && Storage::disk('public')->exists($promo->image)) {
+            Storage::disk('public')->delete($promo->image);
         }
 
-        // Hapus produk dari database
+        // Hapus promo dari database
         $promo->delete();
 
         return response()->json([
@@ -808,6 +767,7 @@ class PromoController extends Controller
             'message' => 'Promo deleted successfully.'
         ]);
     }
+
 
 
 

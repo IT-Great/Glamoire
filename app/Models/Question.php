@@ -9,12 +9,5 @@ class Question extends Model
 {
     use HasFactory;
     protected $table = 'questions';  // Tambahkan baris ini
-    protected $fillable = [
-        'id',
-        'fullname',
-        'email',
-        'question',
-        'created_at',
-        'updated_at',
-    ];
+    protected $fillable = ['id'];
 }

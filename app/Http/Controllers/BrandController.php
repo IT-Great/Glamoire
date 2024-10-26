@@ -10,6 +10,7 @@ use App\Models\Wishlist;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class BrandController extends Controller
@@ -194,9 +195,9 @@ class BrandController extends Controller
             ]);
         }
 
-        // Hapus gambar utama dari folder
-        if (!empty($brand->brand_logo) && file_exists(public_path($brand->brand_logo))) {
-            unlink(public_path($brand->brand_logo));
+        // Hapus logo brand dari folder storage
+        if (!empty($brand->brand_logo) && Storage::disk('public')->exists($brand->brand_logo)) {
+            Storage::disk('public')->delete($brand->brand_logo);
         }
 
         // Hapus produk dari database

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Product - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -52,7 +52,13 @@
                         </div>
                     </div>
                 </div>
-
+                {{-- <!-- Info Alert -->
+                <div class="alert alert-info mt-3">
+                    <i class="fa fa-info-circle me-2"></i>
+                    Untuk memfasilitasi Penjual dalam mengatur stok produk, kolom Lokasi akan ditambahkan untuk
+                    mengidentifikasi lokasi produk dan kolom Batas Aman Stok akan ditambahkan sebagai pengingat untuk
+                    memperbarui stok.
+                </div> --}}
                 <!-- Basic Horizontal form layout section start -->
                 <section id="multiple-column-form">
                     <div class="row match-height">
@@ -143,7 +149,8 @@
                                                                         {{ $errors->first('brand_id') }}</p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Choose the brand or add
+                                                                        style="font-size: 14px;">Choose the brand or
+                                                                        add
                                                                         new one</small>
                                                                 @endif
                                                             </div>

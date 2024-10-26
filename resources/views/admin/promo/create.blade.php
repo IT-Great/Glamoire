@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Create Promo - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -33,11 +33,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Shipping
-                                            Fee
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
                                             Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Shipping Fee
-                                        Voucher
+                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Voucher
                                     </li>
                                 </ol>
                             </nav>
@@ -50,9 +48,9 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
-                            <h3 class="mb-2">Create Voucher</h3>
+                            <h3 class="mb-2">Create Promo</h3>
                             <p class="mb-3">
-                                Create a Shipping Fee Voucher or Product Voucher now to attract Buyers.
+                                Create a Promo now to attract Buyers.
                                 <a href="#" class="text-blue">Learn More</a>
                             </p>
                             <div class="card mb-4">

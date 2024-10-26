@@ -19,7 +19,6 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/css/product/index.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
     <style>
         .product-item-container {
             display: flex;
@@ -112,7 +111,6 @@
                             </nav>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -143,7 +141,7 @@
                                         <div class="voucher-icon">🛒</div>
                                         <h4>Brand Voucher</h4>
                                         <p>Voucher for your brand to increase sales.</p>
-                                        <a href="{{ route('create-promo-shop-voucher') }}"
+                                        <a href="{{ route('create-promo-brand-voucher') }}"
                                             class="btn btn-primary">Create</a>
                                     </div>
                                 </div>
@@ -163,7 +161,7 @@
                                         <p>Shipping Fee Voucher applicable on selected products as part of specific
                                             promotions
                                         </p>
-                                        <a href="{{ route('create-promo-ongkir') }}"
+                                        <a href="{{ route('create-promo-voucher-shippingfee') }}"
                                             class="btn btn-primary">Create</a>
                                     </div>
                                 </div>
@@ -258,13 +256,7 @@
                         console.log('Deleting promo with ID:', promoId);
                     }
                 });
-            });
-
-            // // Show more functionality (placeholder)
-            // document.getElementById('showMore').addEventListener('click', function(e) {
-            //     e.preventDefault();
-            //     alert('Show more functionality to be implemented');
-            // });
+            });    
         });
     </script>
 

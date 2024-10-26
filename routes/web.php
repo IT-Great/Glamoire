@@ -233,7 +233,6 @@ Route::get('/error-403', function () {
 
 
 // DASHBOARD
-
 Route::get('/login-admin', [AuthenticateController::class, 'indexlogin'])->name('index-login');
 Route::post('/login-admin', [AuthenticateController::class, 'login'])->name('login-admin');
 Route::post('/logout', [AuthenticateController::class, 'logout'])->name('logout');
@@ -253,6 +252,13 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/store-product', [ProductController::class, 'storeProductAdmin'])->name('store-product-admin');
     Route::get('/edit-product-admin/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
+
+    Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
+    Route::get('/outof-stock-product-admin', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
+    Route::get('/low-stock-product-admin', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
+
+    Route::put('/update-stock/{id}', [ProductController::class, 'updateStock'])->name('update-stock');
+
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
     Route::get('/detail-product-admin/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
 
@@ -306,8 +312,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/create-promo', [PromoController::class, 'storePromo'])->name('store-promo');
 
     // promo voucher toko
-    Route::get('/create-promo-shop-voucher', [PromoController::class, 'createPromoShopVoucher'])->name('create-promo-shop-voucher');
-    Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
+    Route::get('/create-promo-brand-voucher', [PromoController::class, 'createPromoBrandVoucher'])->name('create-promo-brand-voucher');
+    Route::post('/create-promo-brand-voucher', [PromoController::class, 'storePromoBrandVoucher'])->name('store-promo-brand-voucher');
+    // Route::get('/create-promo-shop-voucher', [PromoController::class, 'createPromoShopVoucher'])->name('create-promo-shop-voucher');
+    // Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
 
     // routes/web.php
     // web.php atau routes file Anda
@@ -331,10 +339,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::put('update-promo-product-voucher/{id}', [PromoController::class, 'updatePromoProductVoucher'])->name('update-promo-product-voucher');
     Route::put('update-promo-voucher/{id}', [PromoController::class, 'updatePromoVoucher'])->name('update-promo-voucher');
 
-
-    Route::get('/promo-ongkir', [PromoController::class, 'indexPromoOngkir'])->name('index-promo-ongkir');
-    Route::get('/create-promo-ongkir', [PromoController::class, 'createPromoOngkir'])->name('create-promo-ongkir');
-    Route::post('/create-promo-ongkir', [PromoController::class, 'storePromoOngkir'])->name('store-promo-ongkir');
+    // shiping fee voucher promo
+    Route::get('/create-promo-voucher-shippingfee', [PromoController::class, 'createPromoVoucherShippingFee'])->name('create-promo-voucher-shippingfee');
+    Route::post('/create-promo-voucher-shippingfee', [PromoController::class, 'storePromoVoucherShippingFee'])->name('store-promo-voucher-shippingfee');
+    // Route::get('/promo-ongkir', [PromoController::class, 'indexPromoOngkir'])->name('index-promo-ongkir');
 
     // diskon
     Route::get('/promo-diskon', [PromoController::class, 'indexPromoDiskon'])->name('index-promo-diskon');
@@ -374,6 +382,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
     Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
+
+    // SEND EMAIL RESPONSE
+    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
+    Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
 
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
 });

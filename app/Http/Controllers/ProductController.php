@@ -198,8 +198,7 @@ class ProductController extends Controller
 
                 return view('user.component.search')->with('data', $products);
             }
-        }
-        else{
+        } else {
             $brands = Brand::get();
 
             if (count($products) !== 0) {
@@ -214,7 +213,7 @@ class ProductController extends Controller
                     'rating'      => $rating,
                     'sort'        => $sort,
                 ];
-    
+
                 return view('user.component.search')->with('data', $data); // Return results to a view
             } else {
                 $products = [
@@ -232,7 +231,7 @@ class ProductController extends Controller
                     'rating'      => $rating,
                     'sort'        => $sort,
                 ];
-    
+
                 return view('user.component.search')->with('data', $products);
             }
         }
@@ -640,6 +639,89 @@ class ProductController extends Controller
             return redirect()->route('index-product-admin')->with('error', 'An error occurred while updating the product: ' . $e->getMessage());
         }
     }
+
+
+
+    public function indexStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.index', [
+            'products' => $products,
+        ]);
+    }
+
+    public function outOfStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.outofstock', [
+            'products' => $products,
+        ]);
+    }
+
+    public function lowStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.lowstock', [
+            'products' => $products,
+        ]);
+    }
+
+
+    public function updateStock(Request $request, $id)
+    {
+        try {
+            // Validasi data
+            $validated = $request->validate([
+                'stock_quantity' => 'required|integer|min:0',
+                'date_expired' => 'required|date',
+            ]);
+
+            // Cari produk berdasarkan ID
+            $product = Product::findOrFail($id);
+
+            // Update data produk
+            $product->update($validated);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product stock and expired date updated successfully!',
+                'data' => $product
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error updating product stock: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update product'
+            ], 500);
+        }
+    }
+
+
+
+    // // Method untuk mendapatkan data produk dengan variannya
+    // public function getProducts()
+    // {
+    //     $products = Product::with(['variants' => function ($query) {
+    //         $query->select('id', 'product_id', 'variant_name', 'stock_quantity', 'expired_date');
+    //     }])->get();
+
+    //     return view('products.index', compact('products'));
+    // }
 
 
 
