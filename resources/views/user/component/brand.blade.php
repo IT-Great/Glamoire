@@ -5,7 +5,7 @@
   <div class="md:px-20 lg:px-24 xl:px-24 py-2">
     <div class="container-fluid py-4">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
           <div class="position-sticky mb-3 rounded-md shadow-md p-2 border border-[#183018]" style="top: 4rem">
             <div class="d-flex justify-content-center text-align-center">
               <p class="font-semibold text-black px-5 text-[10px] md:text-[14px] lg:text-[18px] xl:text-[22px]">Deskripsi</p>
@@ -23,7 +23,7 @@
           </div>
         </div>
   
-        <div class="col-md-9 col-12 p-md-0">
+        <div class="col-md-10 col-12 p-md-0">
           <!-- PRODUK TERBARU -->
           <div>
             <div class="text-center">
@@ -63,7 +63,7 @@
                                                             data-bs-toggle="tooltip" 
                                                             data-bs-placement="top" 
                                                             title="{{ $product->product_name }}">
-                                                                {{ Str::limit($product->product_name, 18) }}
+                                                                {{ Str::limit($product->product_name, 40) }}
                                                             </a>
                                                         </p>
                                                         <div class="flex justify-content-start gap-1">
@@ -124,7 +124,7 @@
                                                         data-bs-toggle="tooltip" 
                                                         data-bs-placement="top" 
                                                         title="{{ $product->product_name }}">
-                                                            {{ Str::limit($product->product_name, 18) }}
+                                                            {{ Str::limit($product->product_name, 40) }}
                                                         </a>
                                                     </p>
                                                     <div class="flex justify-content-start gap-1">
@@ -206,7 +206,7 @@
                                                             data-bs-toggle="tooltip" 
                                                             data-bs-placement="top" 
                                                             title="{{ $product->product_name }}">
-                                                                {{ Str::limit($product->product_name, 18) }}
+                                                                {{ Str::limit($product->product_name, 40) }}
                                                             </a>
                                                         </p>
                                                         <div class="flex justify-content-start gap-1">
@@ -267,7 +267,7 @@
                                                         data-bs-toggle="tooltip" 
                                                         data-bs-placement="top" 
                                                         title="{{ $product->product_name }}">
-                                                            {{ Str::limit($product->product_name, 18) }}
+                                                            {{ Str::limit($product->product_name, 40) }}
                                                         </a>
                                                     </p>
                                                     <div class="flex justify-content-start gap-1">

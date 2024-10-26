@@ -187,13 +187,16 @@
       @yield('content')
     </div>
 
-    @if (!Request::is('cart') && !Request::is('checkout') && !Request::is('account') && !Request::is('shop') && !Request::is('detail') && !Request::routeIs('detail.product') && !Request::routeIs('buy.now') && !Request::routeIs('invoice.user'))
+    @if (
+      !Request::is('cart') && !Request::is('checkout') && !Request::is('account') && !Request::is('shop') && !Request::is('detail') 
+      && !Request::routeIs('detail.product') && !Request::routeIs('buy.now') && !Request::routeIs('invoice.user')
+      && !Request::routeIs('shop.category') && !Request::routeIs('shop.category.sub')
+      )
       @include('user.layouts.footer')
     @endif
 
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
@@ -339,6 +342,14 @@
 
         document.getElementById("min-price-value").textContent = `Rp${formatRupiah(minPrice)}`;
         document.getElementById("max-price-value").textContent = `Rp${formatRupiah(maxPrice)}`;
+      }
+
+      function updatePriceRangeMobile() {
+        const minPrice = document.getElementById("min-price-mobile").value;
+        const maxPrice = document.getElementById("max-price-mobile").value;
+
+        document.getElementById("min-price-value-mobile").textContent = `Rp${formatRupiah(minPrice)}`;
+        document.getElementById("max-price-value-mobile").textContent = `Rp${formatRupiah(maxPrice)}`;
       }
 
       function formatRupiah(value) {

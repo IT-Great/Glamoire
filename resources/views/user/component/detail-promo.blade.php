@@ -19,7 +19,7 @@
     <div class="grid-container p-0">
       @if (session('id_user'))
         @foreach ($promo->products as $product)
-          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-promo border border-xl">
             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                 <div class="position-relative overflow-hidden bg-transparent p-0">
                     <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
@@ -27,15 +27,21 @@
                 <div class="grid gap-1 text-left p-2">
                     <div class="flex">
                         <div class="flex gap-1">
-                            <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                            <i class="text-decoration-none fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></i>
+                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                            @if ($product->rating !== NULL)
+                            {{ $product->rating }}
+                            @else
+                            0
+                            @endif
+                            </p>
                         </div>
                         <div class="ml-auto">
                           @php
                               $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                           @endphp
                           <a href="javascript:void(0);" 
-                            class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                            class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex align-items-center justify-content-center hover-red" 
                             onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
                             <i class="fas fa-heart text-center"></i>
                           </a>
@@ -55,7 +61,7 @@
 
                         <div class="flex justify-content-start gap-1">
                           @if ($product->price_after_discount)
-                            <p class="text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[7px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
                               <del>
                                 Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                               </del>
@@ -94,42 +100,48 @@
         @endforeach ($promo->products)
       @else
         @foreach ($promo->products as $product)
-          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-promo border border-xl">
             <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
 
-            <div class="grid text-left content-card px-3 py-2 flex-grow-1">
+            <div class="grid text-left content-card px-1 px-md-3 py-2 flex-grow-1">
                 <div class="flex rating-wishlist">
                     <div class="flex gap-1">
-                        <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                        <i class="text-decoration-none fas fa-star text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></i>
+                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                          @if ($product->rating !== NULL)
+                            {{ $product->rating }}
+                          @else
+                          0
+                          @endif
+                        </p>
                     </div>
 
                     <div class="ml-auto">
-                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
+                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
                             <i class="fas fa-heart text-center"></i>
                         </a>
                     </div>
                 </div>
                 
                 <div class="grid name-price hover:cursor-pointer">
-                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]"> 
+                    <p class="text-decoration-none text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]"> 
                         <a href="/{{ $product->product_code }}_product" class="text-decoration-none"
                         data-bs-toggle="tooltip" 
                         data-bs-placement="top" 
                         title="{{ $product->product_name }}">
-                            {{ Str::limit($product->product_name, 24) }}
+                            {{ Str::limit($product->product_name, 18) }}
                         </a>
                     </p>
                     <div class="flex justify-content-start gap-1">
                         @if ($product->price_after_discount)
-                          <p class="text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                          <p class="text-decoration-none text-muted text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
                             <del>
                               Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                             </del>
                           </p>
-                          <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
+                          <p class="text-decoration-none text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
                           @else
-                          <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                          <p class="text-decoration-none text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px] text-primary">
                             Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}
                           </p>
                         @endif
@@ -137,13 +149,13 @@
                 </div>
             </div>
             
-            <div class="flex justify-content-between px-2 mt-auto add-wishlist">
+            <div class="flex justify-content-between px-1 mt-auto add-wishlist">
               @if ($product->stock_quantity == 0)
-                  <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                  <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                     Maaf Stok Habis
                   </a>
               @else
-                  <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                  <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
                       + <i class="fas fa-shopping-cart"></i> Keranjang
                   </a>
               @endif

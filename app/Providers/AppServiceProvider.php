@@ -31,5 +31,13 @@ class AppServiceProvider extends ServiceProvider
             // dd($subCategories);
             $view->with('categories', $categories)->with('brands', $brands)->with('subCategories', $subCategories);
         });
+        View::composer('user.layouts.footer', function ($view) {
+            $categories = CategoryProduct::where('parent_id', '=', NULL)->get();
+            $subCategories =  CategoryProduct::where('parent_id', '!=', NULL)->get();
+            $brands     = Brand::all();
+
+            // dd($subCategories);
+            $view->with('categories', $categories)->with('brands', $brands)->with('subCategories', $subCategories);
+        });
     }
 }

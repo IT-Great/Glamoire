@@ -14,5 +14,7 @@ class NotifyMe extends Model
         'user_id',
         'product_id',
         'email',
+        'status',
+        'send_at',
     ];
 }

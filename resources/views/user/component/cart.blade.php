@@ -39,7 +39,7 @@
                                         Stok Habis
                                     </p>
                                     @endif
-                                    <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ $product->product->product_name }}</p>
+                                    <p class="hover:cursor-pointer text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
                                     <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ 'Rp' . number_format($product->product->regular_price, 0, ',', '.') }}</p>
                                     <!-- BUTTON PLUS & MINUS & DELETE -->
                                     <div class="flex mt-auto bottom">
@@ -71,7 +71,7 @@
                                                     id="product-quantity-{{ $product->product->id }}" 
                                                     value="{{ $product->quantity }}"
                                                     name="total_product"
-                                                    class="text-xs form-control bg-secondary text-center" 
+                                                    class="text-xs form-control bg-secondary text-center no-spinner" 
                                                     min="1" 
                                                     max="{{ $product->product->stock_quantity}}" 
                                                     oninput="validateInput(this, {{ $product->product->stock_quantity }})">
@@ -487,7 +487,11 @@
     }
 </script>
 
-
+<script>
+    function detailProduct(productCode) {
+        window.location.href = productCode+"_product";
+    }
+</script>
 
 
 

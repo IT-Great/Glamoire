@@ -16,9 +16,9 @@
     <div class="col">
       <nav class="tabbable custom-scroll">
         <div class="nav nav-tabs mb-2 mb-md-4" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link active text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-toggle="tab" href="#all">All</a>
+          <a class="nav-item nav-link active text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#all">All</a>
           @foreach ($categoryArticles as $category)
-          <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#{{ Str::slug($category->name) }}">{{ $category->name }}</a>  
+          <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="tab" href="#{{ Str::slug($category->name) }}">{{ $category->name }}</a>  
           @endforeach</div>
       </nav>
 

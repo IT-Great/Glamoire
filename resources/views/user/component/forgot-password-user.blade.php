@@ -33,20 +33,21 @@
 
 <body>
   <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: 100vh;">
-      <div class="rounded-md shadow-xl border border-[#183018] p-8 width min-w-[80vh]">
-          <div class="auth-logo text-center">
-              <h4 class="text-2xl md:text-2xl lg:text-3xl text-[#183018] mb-3">Glamoire</h4>
+      <div class="rounded-md shadow-xl border border-[#183018] bg-[#183018] p-8 width min-w-[80vh]">
+          <div class="auth-logo text-center flex justify-content-center text-align-center">
+                <img src="/images/l-1.png" alt="logo glamoire">
+              <!-- <h4 class="text-2xl md:text-2xl lg:text-3xl text-[#183018] mb-3">Glamoire</h4> -->
           </div>
-          <h1 class="text-sm text-gray-600 mb-3">Atur Ulang Kata Sandi Baru</h1>
+          <h1 class="text-sm text-white mb-3">Atur Ulang Kata Sandi Baru</h1>
           <form action="{{ route('reset.password') }}" method="POST">
               @csrf
               <div class="form-group mb-3 text-sm">
                   <input type="hidden" name="token" value="{{ encrypt($token) }}">
                   <input type="hidden" name="email" value="{{ encrypt($email) }}">
-                  <label for="password">Password Baru</label>
+                  <label for="password" class="text-white">Password Baru</label>
                   <input type="password" class="form-control text-sm" id="password" name="password" placeholder="Password baru" required>
               </div>
-              <button class="py-2 w-full rounded-md text-white bg-[#183018] text-sm" type="submit" id="forgot-btn">Ubah Password</button>
+              <button class="py-2 btn btn-light w-full rounded-md text-[#183018]" type="submit" id="forgot-btn">Ubah Password</button>
           </form>
       </div>
   </div>

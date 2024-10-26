@@ -158,29 +158,6 @@
                         </div>
                     </div>
                 </div>
-    
-                <!-- <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 border-bottom border-top md:border-none">
-                    <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Metode Pembayaran</h1>
-                    <div class="grid gap-md-2 mb-md-2">
-                        <div class="col-sm-10">
-                            <form>
-                                <div class="form-check d-flex align-items-center justify-content-start">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="qris" value="qris" checked>
-                                    <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="qris">
-                                        QRIS
-                                    </label>
-                                </div>
-                                <div class="form-check d-flex align-items-center justify-content-start">
-                                    <input class="form-check-input" type="radio" name="gridRadios" id="bca_va" value="bca_va">
-                                    <label class="form-check-label text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" for="bca_va">
-                                        BCA Virtual Account
-                                    </label>
-                                </div>
-                            </form>         
-                                    
-                        </div>
-                    </div>
-                </div> -->
         
                 @foreach ($data['cartItems'] as $cart => $product)
                 <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
@@ -248,8 +225,11 @@
                     </div>
                     <div>
                         <div class="relative flex gap-1 items-center">
+                            <div class="cancel-code-voucher text-[#183018] absolute" role="status" style="display:none;" id="cancel-code-voucher" title="Hapus Kode">
+                                <button type="button" class="btn rounded-sm w-fit font-semibold text-sm text-danger" onclick="cancelCode()">X</button>
+                            </div>
                             <input type="text" class="form-control pl-5 w-full rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code-voucher" name="code_voucher" placeholder="Masukkan kode promo">
-                            <div class="spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
+                            <div class="ml-2 spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
                                 <span class="visually-hidden"></span>
                             </div>
                             <button type="button" id="button-code-voucher" class="btn border rounded-sm w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
@@ -477,7 +457,7 @@
 
 <!-- MODAL TAMBAH ADDRESS -->
 <div class="modal fade" id="add_address" tabindex="-1" aria-labelledby="add_address" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
         <div class="modal-header border-none pb-0">
             <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
@@ -567,46 +547,53 @@
 
             <div class="modal-body p-1 p-md-3">
                 <div class="col-12 p-0">
-                    @foreach ($data['vouchers'] as $voucher)
-                        <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
-                            <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
-                                <div class="d-flex">
-                                    <div class="col-10 p-0">
-                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
-                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
+                    @if (count($data['vouchers']) !== 0)
+                        @foreach ($data['vouchers'] as $voucher)
+                            <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
+                                <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                    <div class="d-flex">
+                                        <div class="col-10 p-0">
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
+                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
+                                        </div>
+                                        <div class="col-2 d-flex flex-column align-items-start justify-content-center">
+                                            <i class="fas fa-check hidden"></i>
+                                        </div>
                                     </div>
-                                    <div class="col-2 d-flex flex-column align-items-start justify-content-center">
-                                        <i class="fas fa-check hidden"></i>
+
+                                    <div class="d-flex gap-1 gap-md-2 align-items-center">
+                                        <i class="fas fa-regular fa-clock"></i>
+                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
+                                        <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
                                     </div>
-                                </div>
 
-                                <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                    <i class="fas fa-regular fa-clock"></i>
-                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
-                                    <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
-                                </div>
+                                    <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
+                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
+                                        <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                            <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
+                                                <span class=""></span> <!-- Nomor list -->
+                                                <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
+                                            </li>
+                                        </ol>
+                                    </div>
 
-                                <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                    <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
-                                        <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
-                                            <span class=""></span> <!-- Nomor list -->
-                                            <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
-                                        </li>
-                                    </ol>
                                 </div>
-
                             </div>
+                        @endforeach
+                    @else
+                        <div style="display:flex; align-items:center; justify-content:start;">
+                            <img src="images/voucher-empty.png" class="img-fluid" style="width:10%; height:100%; object-fit: cover;" alt=Voucher kosong">
+                            <p class="text-danger text-md">Maaf tidak ada voucher tersedia</p>
                         </div>
-                    @endforeach
+                    @endif
                 </div>
             </div>
 
-            <div class="modal-footer">
+            <div class="modal-footer" hidden>
                 <div class="d-flex justify-content-between align-items-center w-100">
                     <div>
                         <p class="mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Yey, kamu hemat</p>
-                        <p class="mb-0 text-black font-semibold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp10.000</p>
+                        <p class="mb-0 text-black font-semibold text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"></p>
                     </div>
                     <button type="button" id="button-use-voucher" class="btn border rounded-sm text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
                         Pakai Voucher
@@ -638,6 +625,7 @@
                     if (response.exists) {
                         $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
                         $('#button-code-voucher').prop('disabled', false);
+                        $('.cancel-code-voucher').show();
                     } else {
                         $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-danger').show();
                         $('#button-code-voucher').prop('disabled', true);
@@ -808,6 +796,10 @@
             $('#add_address').modal('show'); // Tampilkan modal setelah modal pertama tertutup
         }, 500);
     });
+
+    function cancelCode() {
+        location.reload();
+    }
 </script>
 
 <!-- API WILAYAH FOR ADDRESS -->
@@ -928,60 +920,4 @@
         });
     </script>  
 @endif
-
-<!-- PEMBAYARAN -->
-<!-- <script>
-    $(document).on("click", "#paynow", function (e) {
-        e.preventDefault();
-
-        let shipping_address_id = $("input[name='shippingAddressId']").val();
-        let shipping_cost = $("input[name='shippingCost']").val();
-        let code_voucher = $("input[name='codeVoucher']").val();
-        let discount_amount = $("input[name='discountAmount']").val();
-        let subtotal = $("input[name='subtotal']").val();
-
-        let product_quantity = {};
-        $("input[name^='productQuantity']").each(function() {
-            let id = $(this).attr('id'); // Dapatkan id atau kunci dari input
-            product_quantity[id] = $(this).val(); // Simpan nilai berdasarkan id
-        });
-        let product_price = $("input[name^='productPrice']").map(function() {
-            return $(this).val(); // Mengambil nilai dari setiap input
-        }).get();
-
-
-        console.log({
-            'shippingAddressId': shipping_address_id,
-            'shippingCost': shipping_cost,
-            'codeVoucher': code_voucher,
-            'discountAmount': discount_amount,
-            'subtotal': subtotal,
-            'productQuantity': product_quantity,
-            'productPrice': product_price,
-        });
-
-
-        // Simpan atau kirim data email dan password ke server
-        // Misal menggunakan AJAX:
-
-        /*
-        $.ajax({
-            url: '/your-endpoint',
-            method: 'POST',
-            data: {email: email, password: password},
-            success: function(response) {
-                Swal.close();  // Tutup loading
-                // Lakukan sesuatu setelah sukses
-            },
-            error: function(error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Terjadi kesalahan!',
-                });
-            }
-        });
-        */
-    });
-</script> -->
 @endsection

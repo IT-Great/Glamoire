@@ -85,9 +85,17 @@
 
     @if (count($promos) !== 0)
       @foreach ($promos as $promo)
-        <div class="col mb-2 mt-8">
+        <div class="col flex mb-2 mt-8">
           <p class="font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
             {{ $promo->promo_name }}
+          </p>
+          @php
+            $dateRange = explode(' - ', $promo->date_range);
+            $startDate = \Carbon\Carbon::parse($dateRange[0])->translatedFormat('d F Y');
+            $endDate = \Carbon\Carbon::parse($dateRange[1])->translatedFormat('d F Y');
+          @endphp
+          <p class="flex justify-content-center align-items-center ml-auto font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pr-1 pl-3" style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
+            {{ $startDate }} sampa {{ $endDate }}
           </p>
         </div>
         
