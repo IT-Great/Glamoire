@@ -13,6 +13,105 @@ use App\Models\CategoryProduct;
 
 class ShopController extends Controller
 {
+    public function allProduct(Request $request){
+        try {
+            $brand = Brand::where('name', $request->brand)->value('id');
+            $minPrice = $request->min_price;
+            $maxPrice = $request->max_price;
+            $rating = $request->rating;
+            $brandName = $request->brand;
+            $sort = $request->sort;
+
+            // dd($rating);
+            $userId = session('id_user');
+
+            $query = Product::where('product_name', '!=', 'NULL')
+            ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
+                return $query->where('brand_id', $brand);
+            })
+            ->when($minPrice !== null, function ($query) use ($minPrice) {
+                return $query->where('regular_price', '>=', $minPrice);
+            })
+            ->when($maxPrice !== null, function ($query) use ($maxPrice) {
+                return $query->where('regular_price', '<=', $maxPrice);
+            })
+            ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
+                return $query->where('rating', '=', $rating);
+            });
+            
+    
+            // Sort products based on request
+            switch ($request->sort) {
+                case 'latest':
+                    $query->orderBy('created_at', 'desc');
+                    $sort = "Terbaru";
+                    break;
+                case 'popular':
+                    // Assuming you have a 'popularity' field
+                    $query->orderBy('popularity', 'desc');
+                    break;
+                case 'high_price':
+                    $query->orderBy('regular_price', 'desc');
+                    $sort = "Harga Tertinggi";
+                    break;
+                case 'low_price':
+                    $query->orderBy('regular_price', 'asc');
+                    $sort = "Harga Terendah";
+                    break;
+            }
+    
+            // Execute query and get filtered products
+            $products = $query->get();
+    
+            $totalProduct = $products->count();
+            $categories = CategoryProduct::whereNull('parent_id')->get();
+
+            // Fetch subcategories grouped by parent_id
+            $subCategories = CategoryProduct::whereNotNull('parent_id')->get()->groupBy('parent_id');
+            $brands = Brand::get();
+    
+            // dd($subCategories);
+
+            if ($userId) {
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $cartItems = Cart_item::where('cart_id', $cartId)->get();
+                $wishlists = Wishlist::where('user_id', $userId)->get();
+    
+                return view('user.component.listsubcategory', [
+                    'products'      => $products,
+                    'totalProduct'  => $totalProduct,
+                    'cartItems'     => $cartItems,
+                    'wishlists'     => $wishlists,
+                    'categories'    => $categories,
+                    'brands'        => $brands,
+                    'subCategories' => $subCategories,
+                    'brandName'     => $brandName,
+                    'minPrice'      => $minPrice,
+                    'maxPrice'      => $maxPrice,
+                    'rating'        => $rating,
+                    'sort'          => $sort,
+                ]);
+            }
+    
+            return view('user.component.listsubcategory', [
+                'products'      => $products,
+                'categories'    => $categories,
+                'subCategories' => $subCategories,
+                'brands'        => $brands,
+                'totalProduct'  => $totalProduct,
+                'brandName'     => $brandName,
+                'minPrice'      => $minPrice,
+                'maxPrice'      => $maxPrice,
+                'rating'        => $rating,
+                'sort'          => $sort,
+            ]);
+
+
+        } catch (Exception $err) {
+            dd($err);
+        }
+    }
+
     public function category(Request $request, $category)
     {
         try {
@@ -24,7 +123,7 @@ class ShopController extends Controller
             $brandName = $request->brand;
             $sort = $request->sort;
 
-            // dd($brandName);
+            // dd($rating);
     
             $userId = session('id_user');
             $categoryId = CategoryProduct::where('name', $category)->value('id');
@@ -41,6 +140,9 @@ class ShopController extends Controller
             })
             ->when($maxPrice !== null, function ($query) use ($maxPrice) {
                 return $query->where('regular_price', '<=', $maxPrice);
+            })
+            ->when($rating !== null, function ($query) use ($rating) {
+                return $query->where('rating', '=', $rating);
             });
     
             // Sort products based on request
@@ -83,7 +185,7 @@ class ShopController extends Controller
                     'category'      => $category,
                     'brands'        => $brands,
                     'subCategories' => $subCategories,
-                    'brandName'         => $brandName,
+                    'brandName'     => $brandName,
                     'minPrice'      => $minPrice,
                     'maxPrice'      => $maxPrice,
                     'rating'        => $rating,
@@ -97,7 +199,7 @@ class ShopController extends Controller
                 'subCategories' => $subCategories,
                 'brands'        => $brands,
                 'totalProduct'  => $totalProduct,
-                'brandName'         => $brandName,
+                'brandName'     => $brandName,
                 'minPrice'      => $minPrice,
                 'maxPrice'      => $maxPrice,
                 'rating'        => $rating,
@@ -109,8 +211,6 @@ class ShopController extends Controller
         }
     }
     
-
-
     public function subCategory(Request $request, $category, $subcategory){
         try {
             $brand = Brand::where('name', $request->brand)->value('id');
@@ -136,6 +236,9 @@ class ShopController extends Controller
                     })
                     ->when($maxPrice !== null, function ($query) use ($maxPrice) {
                         return $query->where('regular_price', '<=', $maxPrice);
+                    })
+                    ->when($rating !== null, function ($query) use ($rating) {
+                        return $query->where('rating', '=', $rating);
                     });
 
                 switch ($request->sort) {
@@ -239,17 +342,6 @@ class ShopController extends Controller
                 ]);
             }
 
-        } catch (Exception $th) {
-            //throw $th;
-        }
-    }
-
-    public function listSubCategory($category, $subcategory, $listsubcategory){
-        try {
-            $brand = Brand::get();
-            return view('user.component.listsubcategory',[
-                'brands' => $brand,
-            ], compact('category', 'subcategory', 'listsubcategory'));
         } catch (Exception $th) {
             //throw $th;
         }

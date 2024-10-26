@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\sendMailNotifyMe;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\CategoryProduct;
@@ -13,13 +14,14 @@ use App\Models\Wishlist;
 use App\Models\Cart;
 use App\Models\Cart_item;
 use App\Models\Promo;
-
+use App\Models\NotifyMe;
 
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 
 
 class ProductController extends Controller
@@ -126,6 +128,9 @@ class ProductController extends Controller
         $products = Product::where('product_name', 'like', '%' . $product_search . '%')
             ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                 return $query->where('brand_id', $brand);
+            })
+            ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
+                return $query->where('rating', $rating);
             })
             ->when($minPrice !== null, function ($query) use ($minPrice) {
                 return $query->where('regular_price', '>=', $minPrice);
@@ -235,6 +240,42 @@ class ProductController extends Controller
                 return view('user.component.search')->with('data', $products);
             }
         }
+    }
+
+    public function notify($id){
+        $product  = Product::where('id', $id)->first();
+        $emails   = NotifyMe::where('product_id', $id)
+        ->where('status', 0)
+        ->get();
+        
+        if(count($emails) !== 0){
+            foreach ($emails as $email) {
+                $fullName = User::where('id', $email->user_id)->value('fullname');
+                $email_target = $email->email;
+                
+                $data = [
+                    'fullname'     => $fullName,
+                    'product_name' => $product->product_name,
+                    'product_link' => url("http://127.0.0.1:8000/{$product->product_code}_product")
+                ];
+    
+                Mail::to($email_target)->send(new sendMailNotifyMe($data));
+                NotifyMe::where('email', $email_target)->update([
+                    'status' => 1,
+                    'send_at' => now(),
+                ]);
+            }
+    
+            return response()->json([
+                'success' => true, 
+                'message' => 'Berhasil mengirimkan notifikasi broooo'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false, 
+            'message' => 'Tidak ada email yang tersimpan'
+        ]);
     }
 
     // START PRODUCT ADMIN

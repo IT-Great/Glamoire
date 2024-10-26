@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedBigInteger('payment_id')->nullable()->after('shipping_address_id');
-            $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
+        Schema::table('products', function (Blueprint $table) {
+            $table->integer('rating')->nullable()->after('stock_quantity');
         });
     }
 
@@ -22,8 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            //
-        });
+        //
     }
 };

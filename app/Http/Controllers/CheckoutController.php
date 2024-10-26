@@ -32,7 +32,6 @@ class CheckoutController extends Controller
 
                 $vouchers = Promo::whereIn('type', ['voucher', 'ongkir'])->get();
 
-
                 // dd($vouchers);
 
                 $address = Shipping_address::where('user_id', session('id_user'))
@@ -45,6 +44,11 @@ class CheckoutController extends Controller
                     ->where('is_choose', TRUE)
                     ->with(['product.brand'])
                     ->get();
+
+                // dd($cartItems);
+                if (count($cartItems) == 0) {
+                    return redirect('/');
+                }
 
                 $totalProduct = $cartItems->sum('quantity');
                 // Hitung total harga
@@ -101,7 +105,13 @@ class CheckoutController extends Controller
                     $totalPrice = $cartItems->sum('total');
 
                     // Hitung diskon dari voucher
-                    $discount = $totalPrice * 10 / 100;
+                    $percent = Promo::where('promo_name', '=', 'new user')->value('discount');
+                    $maxDiscountAmount = Promo::where('promo_name', '=', 'new user')->value('max_discount');
+                    $discount = $totalPrice * ($percent / 100);
+                    
+                    if ($discount >= $maxDiscountAmount) {
+                       $discount = $maxDiscountAmount;
+                    }
 
                     // Hitung total belanja setelah diskon
                     $totalShopping = $totalPrice - $discount + 20000;
@@ -210,11 +220,14 @@ class CheckoutController extends Controller
                     $totalPrice = $prod->total;
                 }
 
+                $vouchers = Promo::whereIn('type', ['voucher', 'ongkir'])->get();
+
                 $data = [
                     'product'       => $product,
                     'address'       => $address,
                     'totalProduct'  => $totalProduct,
                     'totalPrice'    => $totalPrice,
+                    'vouchers'      => $vouchers,
                 ];
                 return view('user.component.buynow')->with('data', $data);
             }
@@ -251,10 +264,16 @@ class CheckoutController extends Controller
                     }
 
                     // Hitung diskon dari voucher
-                    $discount = $totalPrice * 10 / 100;
+                    $percent = Promo::where('promo_name', '=', 'new user')->value('discount');
+                    $maxDiscountAmount = Promo::where('promo_name', '=', 'new user')->value('max_discount');
+                    $discount = $totalPrice * ($percent / 100);
+                    
+                    if ($discount >= $maxDiscountAmount) {
+                       $discount = $maxDiscountAmount;
+                    }
 
                     // Hitung total belanja setelah diskon
-                    $totalShopping = $totalPrice - $discount;
+                    $totalShopping = $totalPrice - $discount + 20000;
 
                     return response()->json([
                         'success' => true, 

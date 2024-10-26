@@ -21,14 +21,24 @@ class PromoController extends Controller
     // USER
     public function index()
     {
+        try {
+            $date = now()->format('Y-m-d');
+            $promos = Promo::where('type', '=', 'promo')
+            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+            ->with(['products'])
+            ->get();
+            
+            $vouchers = Promo::where('type', '=', 'voucher')->get();
+    
+            return view('user.component.promo', [
+                'promos' => $promos,
+                'vouchers' => $vouchers,
+            ]);
+        } catch (Exception $err) {
+            dd($err);
+        }
 
-        $promos = Promo::with(['products'])->where('type', '=', 'promo')->get();
-        $vouchers = Promo::with(['products'])->where('type', '=', 'voucher')->get();
-
-        return view('user.component.promo', [
-            'promos' => $promos,
-            'vouchers' => $vouchers,
-        ]);
     }
 
     public function detailPromoUser($name)
@@ -41,9 +51,8 @@ class PromoController extends Controller
                 ->get();
 
             foreach ($promo as $promoItem) {
-                // Pastikan products adalah koleksi
                 foreach ($promoItem->products as $product) {
-                    // Hitung diskon untuk setiap produk
+                    
                     $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
                     $priceAfterDiscount = $product->regular_price - $priceDiscount;
 

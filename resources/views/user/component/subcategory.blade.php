@@ -8,6 +8,8 @@
       <div class="d-flex gap-2 pl-2">
         <a href="/" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="/shop" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Belanja</a>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="/belanja-{{$category}}" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ ucwords(strtolower($category)) }}</a>
         <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="/belanja-{{$category}}-{{$subcategory}}" class="text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $subcategory }}</a>
@@ -148,6 +150,9 @@
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-md mb-2" type="submit" id="useFilter"  style="background-color: #183018">
                 Gunakan Filter
               </button>
+              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilter"  style="background-color: #183018">
+                Reset Filter
+              </button>
             </div>
         </div>
         <!-- Filter End -->
@@ -166,8 +171,8 @@
                   <div class="dropdown flex ml-auto">
                     <input type="hidden" name="sort" id="sort" value="">
 
-                    <button class="btn rounded-md border dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
-                      type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn rounded-md border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                      type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {{ $sort !== null ? $sort : 'Urut Berdasarkan' }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
@@ -191,7 +196,7 @@
                   @if (count($products) !== 0)
                     <div class="grid-container-shop" style="min-height:48vh;">
                       @foreach ($products as $product)
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-except border border-xl">
                             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                                 <div class="position-relative overflow-hidden bg-transparent p-0">
                                     <img class="img-fluid w-100 rounded-md pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
@@ -200,7 +205,12 @@
                                     <div class="flex">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                              @if ($product->rating !== NULL)
+                                              {{ $product->rating }}</p>
+                                              @else
+                                              0
+                                              @endif
                                         </div>
                                         <div class="ml-auto">
                                             @php
@@ -221,7 +231,7 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
@@ -267,14 +277,19 @@
                   @if (count($products) !== 0)
                     <div class="grid-container-shop" style="min-height:48vh;">
                       @foreach ($products as $product)
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-except border border-xl">
                             <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
 
-                            <div class="grid text-left content-card px-3 py-2 flex-grow-1">
+                            <div class="grid text-left content-card px-1 px-md-3 py-2 flex-grow-1">
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                          @if ($product->rating !== NULL)
+                                          {{ $product->rating }}</p>
+                                          @else
+                                          0
+                                          @endif
                                     </div>
 
                                     <div class="ml-auto">
@@ -294,7 +309,7 @@
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                             Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>

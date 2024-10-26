@@ -220,12 +220,12 @@ class BrandController extends Controller
             $wishlists = Wishlist::where('user_id', $userId)->get();
 
             $brand = Brand::where('name', $name)
-                ->with(['products.ratingAndReviews']) // Load products and their reviews
-                ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
+                // ->with(['products.ratingAndReviews']) // Load products and their reviews
+                // ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
                 ->get();
 
 
-            dd($brand);
+            // dd($brand);
             return view('user.component.brand', [
                 'brands'    => $brand,
                 'cartItems' => $cartItems,

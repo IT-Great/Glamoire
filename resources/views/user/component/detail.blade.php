@@ -130,68 +130,78 @@
                     <p class="font-weight-semi-bold text-black text-[14px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Rp{{ number_format($product->regular_price, 0, ',', '.') }}</p>
                 </div>
                 
-                @if ($product->stock_quantity != 0)
-                <div class="align-items-center gap-2 d-none d-lg-flex">
-                    <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 130px;">
-                        <div class="input-group-btn">
-                            <button class="btn btn-minus">
-                                <i class="fa fa-minus"></i>
-                            </button>
-                        </div>
-                        <input type="number" 
-                            class="form-control bg-secondary text-center px-2" 
-                            id="total-detail-product-quantity-{{$product->id}}" 
-                            value="1" 
-                            min="1" 
-                            max="{{ $product->stock_quantity }}" 
-                            oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})">
-                        <div class="input-group-btn">
-                            <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
+                @if ($product->stock_quantity == 0)
+                    <div class="flex">
+                        <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong.</span>
+                        <span
+                            class="text-danger rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
+                            data-bs-toggle="tooltip" 
+                            data-bs-placement="top" 
+                            title="Beritahu Saya Jika Stok Sudah Ada" 
+                            type="button" 
+                            id="notify-me-{{$product->id}}"
+                            onclick="notifyMe({{$product->id}})">
+                            Beritahu Saya
+                        </span>
                     </div>
-                    
-                    <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                    <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
-                </div>
-                <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                 @else
-                <div class="flex">
-                    <span class="text-danger text-[14px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Stok kosong.</span>
-                    <span
-                        class="text-danger rounded-sm ml-auto text-[14px] md:text-[18px] lg:text-[20px] xl:text-[24px]" 
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        title="Beritahu Saya Jika Stok Sudah Ada" 
-                        type="button" 
-                        id="notify-me-{{$product->id}}"
-                        onclick="notifyMe({{$product->id}})">
-                        Beritahu Saya
-                    </span>
-                </div>
+                    @php
+                        $inCart = collect($cartItems)->contains('product_id', $product->id);
+                    @endphp
+
+                    @if ($inCart)
+                        <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex align-items-center justify-content-center hover-red">
+                            Cek Keranjangmu
+                        </a>
+                    @else
+                        <div class="align-items-center gap-2 d-none d-lg-flex">
+                            <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-minus">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="number" 
+                                    class="form-control bg-secondary text-center px-2  no-spinner" 
+                                    id="total-detail-product-quantity-{{$product->id}}" 
+                                    value="1" 
+                                    min="1"
+                                    max="{{ $product->stock_quantity }}"
+                                    oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
+                                >
+                                <div class="input-group-btn">
+                                    <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                            <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                        </div>
+                        <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
+                    @endif
 
                 @endif
                 
                 
                 <div class="row">
-                    <div class="col">
+                    <div class="col tabbable">
                         <div class="nav nav-tabs justify-content-start border-secondary mb-4">
-                            <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-toggle="tab" href="#tab-pane-1">Deskripsi</a>
-                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-toggle="tab" href="#tab-pane-2">Informasi</a>
-                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-toggle="tab" href="#tab-pane-3">Ulasan ({{ $product->rating_and_reviews_count }})</a>
+                            <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
+                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
+                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#ulasan">Ulasan ({{ $product->rating_and_reviews_count }})</a>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane fade show active" id="tab-pane-1">
+                            <div class="tab-pane fade show active" id="deskripsi">
                                 <h4 class="mb-3">Deskripsi Produk</h4>
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->description }}</p>
                             </div>
-                            <div class="tab-pane fade" id="tab-pane-2">
+                            <div class="tab-pane fade" id="informasi">
                                 <h4 class="mb-3">Informasi terkait produk</h4>
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->information_product }}</p>
-                                
                             </div>
-                            <div class="tab-pane fade" id="tab-pane-3">
+                            <div class="tab-pane fade" id="ulasan">
                                 <div class="row">
                                     <div class="col-12 overflow-y-auto custom-scroll" style="max-height:60vh;">
                                         <h4 class="mb-4 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
@@ -272,48 +282,48 @@
         <div class="swiper mySwiper">
             <div class="swiper-wrapper"> 
             @if (session('id_user'))
-                @foreach ($youlike as $product)
+                @foreach ($youlike as $yl)
                     <div class="swiper-slide p-0">
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
-                            <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
+                            <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
-                                    <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                    <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                 </div>
 
                                 <div class="grid gap-1 text-left p-2">
                                     <div class="flex">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[10px] md:text-[14px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating,1) }}</p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $yl->rating }}</p>
                                         </div>
                                         <div class="ml-auto">
                                             @php
-                                                $inWishlist = collect($wishlists)->contains('product_id', $product->id);
+                                                $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
                                             @endphp
                                             <a href="javascript:void(0);" 
                                                 class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
-                                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
+                                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}">
                                                 <i class="fas fa-heart text-center"></i>
                                             </a>
                                         </div>
                                     </div>
                                     <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
-                                        <a href="/{{ $product->product_code }}_product" 
+                                        <a href="/{{ $yl->product_code }}_product" 
                                         class="text-decoration-none" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="{{ $product->product_name }}">
-                                            {{ Str::limit($product->product_name, 20) }}
+                                        title="{{ $yl->product_name }}">
+                                            {{ Str::limit($yl->product_name, 20) }}
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
                                         <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
-                                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                            Rp {{ number_format($yl->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
                                 <div class="px-1 px-md-2">
-                                    @if ($product->stock_quantity == 0)
+                                    @if ($yl->stock_quantity == 0)
                                     <div class="flex">
                                             <div class="col-12 p-0">
                                                 <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
@@ -322,29 +332,16 @@
                                                     title="Beritahu Saya Jika Stok Sudah Ada" 
                                                     type="button" 
                                                     style="color:#183018"
-                                                    id="notify-me-{{$product->id}}"
-                                                    onclick="notifyMe({{$product->id}})"
+                                                    id="notify-me-{{$yl->id}}"
+                                                    onclick="notifyMe({{$yl->id}})"
                                                 >
                                                     Stok Habis
                                                 </a>
                                             </div>
-                                            <!-- <div class="col-3 p-0">
-                                                <i class="fa fa-solid fa-bell"
-                                                    class="text-md w-full mb-2 py-2 h-full hover-red rounded-sm ml-auto text-[#183018] flex align-items-center justify-content-center" 
-                                                    data-bs-toggle="tooltip" 
-                                                    data-bs-placement="top" 
-                                                    title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                    type="button" 
-                                                    style="color:#183018"
-                                                    id="notify-me-{{$product->id}}"
-                                                    onclick="notifyMe({{$product->id}})"
-                                                >
-                                                </i>
-                                            </div> -->
                                         </div>
                                     @else
                                         @php
-                                            $inCart = collect($cartItems)->contains('product_id', $product->id);
+                                            $inCart = collect($cartItems)->contains('product_id', $yl->id);
                                         @endphp
 
                                         @if($inCart)
@@ -352,7 +349,7 @@
                                                 Cek Keranjangmu
                                             </a>
                                         @else
-                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$yl->id}})">
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
@@ -365,67 +362,63 @@
 
             <!-- MUNCULKAN DATA PRODUK JIKA USER BELUM LOGIN -->
             @else
-                @foreach ($youlike as $product)
+                @foreach ($youlike as $yl)
                     <div class="swiper-slide p-0">
                         <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300">
                             <div class="product-image-container">
-                                <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                             </div>
                             <div class="grid text-left content-card px-3 py-2 flex-grow-1">
                                 <div class="flex rating-wishlist">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating,1) }}</p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                        @if ($yl->rating !== NULL)
+                                        {{ $yl->rating }}</p>
+                                        @else
+                                        0
+                                        @endif    
                                     </div>
 
                                     <div class="ml-auto">
-                                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
+                                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$yl->id}})">
                                             <i class="fas fa-heart text-center"></i>
                                         </a>
                                     </div>
                                 </div>
                                 
                                 <div class="grid name-price hover:cursor-pointer">
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]"> 
-                                        <a href="/{{ $product->product_code }}_product" class="text-decoration-none"
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[14px]"> 
+                                        <a href="/{{ $yl->product_code }}_product" class="text-decoration-none"
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="{{ $product->product_name }}">
-                                            {{ Str::limit($product->product_name, 20) }}
+                                        title="{{ $yl->product_name }}">
+                                            {{ Str::limit($yl->product_name, 20) }}
                                         </a>
                                     </p>
                                     <div class="flex justify-content-start gap-1">
                                         <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
-                                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                            Rp {{ number_format($yl->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="px-2 mt-auto add-wishlist">
-                                @if ($product->stock_quantity == 0)
-                                <div class="flex">
-                                            <div class="col-9 p-0">
-                                                <a class="mb-2 py-2 btn w-full h-full btn-danger rounded-sm shadow-sm text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]">
-                                                Stok Habis
-                                                </a>
-                                            </div>
-                                            <div class="col-3 p-0">
-                                                <i class="fa fa-solid fa-bell"
-                                                    class="text-md w-full mb-2 py-2 h-full hover-red rounded-sm ml-auto text-[#183018] flex align-items-center justify-content-center" 
-                                                    data-bs-toggle="tooltip" 
-                                                    data-bs-placement="top" 
-                                                    title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                    type="button" 
-                                                    style="color:#183018"
-                                                    id="notify-me-{{$product->id}}"
-                                                    onclick="notifyMe({{$product->id}})"
-                                                >
-                                                </i>
-                                            </div>
-                                        </div>
+                                @if ($yl->stock_quantity == 0)
+                                    <a class="mb-2 py-2 btn w-full h-full text-white btn-danger rounded-sm shadow-sm text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]"
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="Beritahu Saya Jika Stok Sudah Ada" 
+                                        type="button" 
+                                        style="color:#183018"
+                                        id="notify-me-{{$yl->id}}"
+                                        onclick="notifyMe({{$yl->id}})"
+                                    >
+                                        Stok Habis
+                                    </a>
                                 @else
-                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
+                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$yl->id}})">
                                         + <i class="fas fa-shopping-cart"></i> Keranjang
                                     </a>
                                 @endif
@@ -510,11 +503,6 @@
     function addCartWithQuantity(productId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
 
-        // console.log({
-        //     productId,
-        //     currentQuantity,
-        // });
-
         $.ajax({
             url: "{{ route('add.to.chart.with.quantity') }}", // Route register di Laravel
             type: "POST",
@@ -535,7 +523,10 @@
                         if (title) title.style.color = '#ffffff'; // Ubah warna judul
                         if (content) content.style.color = '#ffffff'; // Ubah warna konten
                       }
-                    });
+                    })
+                    .then(function () {
+                        window.location.reload(); // Redirect ke halaman utama atau halaman lain
+                        });
                 } else {
                     let errors = response.errors;
                     let errorMessages = response.message;
@@ -555,11 +546,6 @@
 
     function buyNow(productId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
-
-        // console.log({
-        //     productId,
-        //     currentQuantity,
-        // });
 
         $.ajax({
             url: "{{ route('add.product.buy.now') }}", // Route register di Laravel
@@ -595,6 +581,7 @@
         var input = button.parent().parent().find("input");
         var oldValue = input.val();
         var maxQuantity = {{ $product->stock_quantity }};
+
         var newVal;
 
         if (button.hasClass("btn-plus")) {
@@ -605,8 +592,7 @@
 
         // Set the new value to the input
         input.val(newVal);
-        
-        // Call checkMaxQuantity to handle warning message and button state
+
         checkMaxQuantity(input[0], maxQuantity);
     });
 

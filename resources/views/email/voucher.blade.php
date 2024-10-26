@@ -73,7 +73,7 @@
             <li>Enter your promo code at checkout and watch the magic happen!</li>
         </ul>
 
-        <a href="https://www.yourwebsite.com" class="btn">Shop Now</a>
+        <a href="https://www.glamoire.com" class="btn">Shop Now</a>
 
         <p>But hurry! This offer is <strong>valid only for a limited time</strong>. Don't miss out on the chance to treat yourself!</p>
 

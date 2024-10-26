@@ -8,7 +8,7 @@
   $wishlist          = $profile->wishlist;
 @endphp
 
-<div class="md:px-20 lg:px-24 xl:px-24 py-2">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 py-2">
   <div class="container-fluid">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
       <div class="d-flex gap-2 pl-2">
@@ -119,25 +119,18 @@
                     
                     <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white">{{ $sa->recipient_name }}</p>
                     <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-primary">{{ $sa->handphone }}</p>
-                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-primary">{{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }} (61258)</p>
+                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-primary">{{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
                     <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-primary">{{ $sa->address }}</p>
                     @if ($sa->benchmark)
-                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-primary">({{ $sa->benchmark }})</p>
+                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">({{ $sa->benchmark }})</p>
+                    @else
+                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">(Patokan Belum Ditambahkan)</p>
                     @endif
 
       
                     <div class="input-group-btn mt-2">
                       <button type="button" class="btn border text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]"
-                        data-bs-toggle="modal" data-bs-target="#form-edit-address"
-                        data-id="{{ $sa->id }}"
-                        data-label="{{ $sa->label }}"
-                        data-recipient_name="{{ $sa->recipient_name }}"
-                        data-handphone="{{ $sa->handphone }}"
-                        data-province="{{ $sa->province }}"
-                        data-regency="{{ $sa->regency }}"
-                        data-district="{{ $sa->district }}"
-                        data-address="{{ $sa->address }}"
-                        data-benchmark="{{ $sa->benchmark }}"
+                        data-bs-toggle="modal" data-bs-target="#form-edit-address-{{$sa->id}}"
                         >
                         Ubah Alamat
                       </button>
@@ -164,17 +157,8 @@
       
                     <div class="d-flex gap-2 input-group-btn mt-2">
                       <button type="button" class="btn border text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]"
-                              data-bs-toggle="modal" data-bs-target="#form-edit-address"
-                              data-id="{{ $sa->id }}"
-                              data-label="{{ $sa->label }}"
-                              data-recipient_name="{{ $sa->recipient_name }}"
-                              data-handphone="{{ $sa->handphone }}"
-                              data-province="{{ $sa->province }}"
-                              data-regency="{{ $sa->regency }}"
-                              data-district="{{ $sa->district }}"
-                              data-address="{{ $sa->address }}"
-                              data-benchmark="{{ $sa->benchmark }}"
-                              >
+                        data-bs-toggle="modal" data-bs-target="#form-edit-address-{{$sa->id}}"
+                        >
                         Ubah Alamat
                       </button>
 
@@ -194,8 +178,88 @@
                   </div>
                 </div>
               @endif
-            @endforeach
 
+              <div class="modal fade" id="form-edit-address-{{$sa->id}}" tabindex="-1" aria-labelledby="form-edit-address-{{$sa->id}}" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+                    <div class="modal-header">
+                      <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Ubah Data Alamatmu</h1>
+                      <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+
+                    <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                      <form id="editShippingAddressForm{{ $sa->id }}" method="POST" action="{{route('edit.shipping.address')}}">
+                        @csrf
+                        @method('PUT')
+                        <input type="number" class="form-control d-none rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address-id" value="{{$sa->id}}">
+                        <div class="grid gap-1 gap-md-2">
+                          <div class="col-12 p-0">
+                            <label for="label" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" placeholder="Masukkan Nama Label Untuk Alamatmu" name="label" value="{{$sa->label}}">
+                          </div>
+                          <div class="col-12 p-0">
+                            <label for="receiver" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  placeholder="Masukkan Nama Penerima" name="recipient_name" value="{{$sa->recipient_name}}">
+                          </div>
+                          <div class="col-12 p-0">
+                            <label for="handphone" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
+                            <div class="input-group">
+                              <span class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
+                              <input type="number" class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" placeholder="Contoh : 8979254301" pattern="[0]{1}[8]{1}[0-9]{9,10}" name="handphone" value="{{$sa->handphone}}">
+                            </div>
+                          </div>
+
+                          <div class="col-12 p-0">
+                            <label for="provinsi" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
+                            <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province_change">
+                              <option value="{{$sa->id_province}}" selected>{{ strtolower(ucwords($sa->province)) }}</option>
+                              <option class="text-primary text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
+                            </select>
+                            <input type="hidden" name="province_name" id="change_province_name"">
+                          </div>
+
+                          <div class="col-12 p-0">
+                            <label for="kabupaten/kota" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
+                            <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kabupaten/Kota" name="regency_change">
+                              <option value="{{$sa->regency}}" selected>{{ strtolower(ucwords($sa->regency)) }}</option>
+                              <option class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kabupaten/Kota</option>
+                            </select>
+                            <input type="hidden" name="regency_name" id="change_regency_name"">
+                          </div>
+
+                          <div class="col-12 p-0">
+                            <label for="kecamatan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
+                            <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kecamatan" name="district_change">
+                            <option value="{{$sa->district}}" selected>{{ strtolower($sa->district) }}</option>
+                              <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kecamatan</option>
+                            </select>
+                            <input type="hidden" name="district_name" id="change_district_name">
+                          </div>
+
+                          <!-- ALAMAT -->
+                          <div class="col-12 p-0">
+                            <label for="alamat" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Alamat</label>
+                            <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address" rows="3" placeholder="Masukkan Alamatmu">{{ $sa->address }}</textarea>
+                          </div>
+
+                          <!-- PATOKAN -->
+                          <div class="col-12 p-0">
+                            <label for="patokan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan (Opsional)</label>
+                            <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="benchmark" rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang">{{ $sa->benchmark }}</textarea>
+                          </div>
+                        
+                          <!-- BUTTON SUBMIT -->
+                          <div class="col-12 p-0">
+                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit" style="background-color: #183018">Perbarui</button>
+                          </div>
+                        </div>
+                      </form>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            @endforeach
           </div>
         </div>
       </div>
@@ -248,7 +312,8 @@
                   </div>
 
                   @foreach ($order->items as $item)
-                    <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                  <div class="flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                    <div class="flex hover:cursor-pointer hover:text-italic" onclick="detailProduct('{{$item->product->product_code}}')">
                       <div class="col-2 col-md-1 p-0 m-0">
                         <img class="border border-[#183018] rounded-sm" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
                       </div>
@@ -257,11 +322,12 @@
                         <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->product_name }}</p>
                         <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
                       </div>
-                      <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                        <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
-                        <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
-                      </div>
                     </div>
+                    <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                      <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
+                      <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
+                    </div>
+                  </div>  
                   @endforeach
                   
 
@@ -294,6 +360,11 @@
               <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}" tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                   <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+
+                    <div class="modal-header">
+                      <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Detail Transaksi</h1>
+                      <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
                     <div class="modal-body overflow-y-auto" style="max-height:100vh;">
                       <div class="row gap-2 gap-lg-0">
@@ -553,7 +624,7 @@
           <div class="row">
             @foreach ($profile->wishlist as $wp)
             <div class="col-lg-2 col-md-3 col-6 p-1">
-              <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl" style="min-height:325px; max-height:325px;">
+              <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-wishlist border border-xl">
                 <a href="/{{ $wp->product->product_code }}_product" class="text-decoration-none">
                     <div class="position-relative overflow-hidden bg-transparent p-0">
                         <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
@@ -561,17 +632,17 @@
                     <div class="grid gap-1 text-left p-2">
                         <div class="flex">
                             <div class="flex gap-1">
-                                <i class="text-decoration-none fas fa-star text-[14px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[12px] xl:text-[16px]" style="color:orange;"></i>
+                                <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">5</p>
                             </div>
                             <div class="ml-auto">
-                              <a href="javascript:void(0);" class="col-4 text-decoration-none text-[#183018] p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid hover-[#183018] text-center" onclick="removeFromWishlist({{$wp->product->id}})">
+                              <a href="javascript:void(0);" class="col-4 text-decoration-none text-[#183018] p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] grid hover-[#183018] text-center" onclick="removeFromWishlist({{$wp->product->id}})">
                                 <i class="fas fa-heart"></i> Hapus
                               </a>
                             </div>
                         </div>
                           <div class="grid name-price hover:cursor-pointer">
-                            <p class="text-decoration-none text-black text-[14px] md:text-[10px] lg:text-[12px] xl:text-[14px]" 
+                            <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" 
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 title="{{ $wp->product->product_name }}">
@@ -583,7 +654,7 @@
                             </p>
 
                             <div class="flex justify-content-start gap-1">
-                                <p class="text-decoration-none text-black text-[14px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                     Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}
                                 </p>
                             </div>
@@ -591,7 +662,7 @@
                     </div>
                     <div class="flex justify-content-between px-2">
                       @if ($wp->product->stock_quantity == 0)
-                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                           Maaf Stok Habis
                         </a>
                       @else
@@ -599,11 +670,11 @@
                           $inCart = collect($profile->cartItems)->contains('product_id', $wp->product->id);
                         @endphp
                         @if($inCart)
-                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
+                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                               Cek Keranjang Belanjamu
                           </a>
                         @else
-                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
+                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
                               + <i class="fas fa-shopping-cart"></i> Keranjang
                           </a>
                         @endif
@@ -676,8 +747,8 @@
 <div class="modal fade" id="form-address" tabindex="-1" aria-labelledby="form-address" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header" style="background-color: #183018">
-        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
+      <div class="modal-header">
+        <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
         <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -754,8 +825,8 @@
 <div class="modal fade" id="form-edit-address" tabindex="-1" aria-labelledby="form-edit-address" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header" style="background-color: #183018">
-        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Ubah Data Alamatmu</h1>
+      <div class="modal-header">
+        <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Ubah Data Alamatmu</h1>
         <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
@@ -784,6 +855,7 @@
             <div class="col-12 p-0">
               <label for="provinsi" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
               <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province">
+                <option value="" id="provinceSelect"></option>
                 <option class="text-primary text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
                 <option value="Jawa Barat" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jawa Barat</option>
                 <option value="Jawa Tengah" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jawa Tengah</option>
@@ -992,7 +1064,7 @@
   </script>
 
   <!-- EDIT FORM ADDRESS -->
-  <script>
+  <!-- <script>
     document.addEventListener('DOMContentLoaded', function () {
       var editAddressModal = document.getElementById('form-edit-address');
       editAddressModal.addEventListener('show.bs.modal', function (event) {
@@ -1006,6 +1078,9 @@
         var district = button.getAttribute('data-district');
         var address = button.getAttribute('data-address');
         var benchmark = button.getAttribute('data-benchmark') == null ? "" : button.getAttribute('data-benchmark');
+        var provinceId = button.getAttribute('data-province-id');
+        var regencyId = button.getAttribute('data-regency-id');
+        var districtId = button.getAttribute('data-district-id');
 
         var modalBody = editAddressModal.querySelector('.modal-body');
 
@@ -1020,7 +1095,7 @@
         modalBody.querySelector('[name="address-id"]').value = id;
       });
     });
-  </script>
+  </script> -->
 
   <!-- PERBARUI ALAMAT -->
   <!-- <script>
@@ -1201,29 +1276,6 @@
 </script>  
 @endif
 
-
-<!-- 
-@if(session('after_update_address'))
-  <script>
-    Swal.fire({
-      title: "Success",
-      text: "Berhasil Mengubah Data Alamat Pengiriman",
-      icon: "success",
-    });
-</script>  
-@endif
-
-@if(session('after_delete_address'))
-  <script>
-    Swal.fire({
-      title: "Success",
-      text: "Berhasil Menghapus Data Alamat Pengiriman",
-      icon: "success",
-    });
-</script>  
-@endif
-
--->
 @if(session('after_update_profile'))
 <script>
   var Toast = Swal.mixin({
@@ -1688,6 +1740,10 @@
             });
         });
     });
+
+    function detailProduct(productCode) {
+      window.location.href = productCode+"_product";
+    }
 </script>
 
 <!-- INVOICE -->

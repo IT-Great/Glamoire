@@ -26,7 +26,8 @@ class Promo extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'promo_products', 'promo_id', 'product_id')
-            ->withPivot('discounted_price');
+            // ->withPivot('discounted_price')
+            ;
     }
 
     // Mutator untuk date_range

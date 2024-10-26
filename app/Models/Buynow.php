@@ -10,8 +10,6 @@ class Buynow extends Model
     use HasFactory;
     protected $table = 'buy_nows';  // Tambahkan baris ini
 
-    protected $table ='buy_nows';
-
     protected $fillable = [
         'id',
         'user_id',

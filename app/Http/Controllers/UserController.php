@@ -497,6 +497,18 @@ class UserController extends Controller
                     'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
                     'video' => $videoPath,
                 ]);
+
+                $product = Product::where('id', $productId)
+                    ->withCount('ratingAndReviews')   // Hitung jumlah total ulasan
+                    ->withAvg('ratingAndReviews', 'rating') // Hitung rata-rata rating
+                    ->first();
+
+                $averageRating = round($product->rating_and_reviews_avg_rating, 1);
+                
+                // Update rating dan total ulasan di tabel produk
+                Product::where('id', $productId)->update([
+                    'rating' => $averageRating,
+                ]);
             }
 
             session()->flash('rating_and_review_success');

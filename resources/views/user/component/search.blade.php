@@ -24,33 +24,31 @@
           <form action="{{ route('search.product') }}" method="GET" id="form-filter-product">
             <input type="hidden" name="product_search" value="{{ request('product_search', '') }}">
             <!-- Brands Start -->
-             <div class="border-bottom mb-4">
-               <h5 class="font-weight-semi-bold text-[#183018] my-2">Brand</h5>
-               <div class="overflow-y-auto custom-scroll">
-                <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
-                    Semua Brand
-                  </label>
-                </div>
-
-                @foreach ($data['brands'] as $brand)
+              <div class="border-bottom mb-4">
+                <h5 class="font-weight-semi-bold text-[#183018] my-2">Brand</h5>
+                <div class="overflow-y-auto custom-scroll">
                   <div class="form-check ml-2">
-                    <input class="form-check-input" type="checkbox" 
-                    name="brand" 
-                    id="{{ $brand->name}}-{{$brand->id}}" 
-                    value="{{ $brand->name}}" 
-                    {{ $data['brand'] == $brand->name ? 'checked' : '' }}>
-
-                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
-                      {{ $brand->name}}
+                    <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
+                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
+                      Semua Brand
                     </label>
                   </div>
-                @endforeach
 
-                 
+                  @foreach ($data['brands'] as $brand)
+                    <div class="form-check ml-2">
+                      <input class="form-check-input" type="checkbox" 
+                      name="brand" 
+                      id="{{ $brand->name}}-{{$brand->id}}" 
+                      value="{{ $brand->name}}" 
+                      {{ $data['brand'] == $brand->name ? 'checked' : '' }}>
+
+                      <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                        {{ $brand->name}}
+                      </label>
+                    </div>
+                  @endforeach
+                </div>
               </div>
-             </div>
             <!-- Brands End -->
   
             <!-- Price Start -->
@@ -82,11 +80,11 @@
                <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
                <div class="mb-4">
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" checked>
+                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5"  {{ $data['rating'] == 5 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating5">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -96,7 +94,7 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4" {{ $data['rating'] == 4 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating4">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -105,7 +103,7 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3" {{ $data['rating'] == 3 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating3">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -113,14 +111,14 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2" {{ $data['rating'] == 2 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating2">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating1 " value="1">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating1 " value="1" {{ $data['rating'] == 1 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating1">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                    </label>
@@ -134,6 +132,9 @@
             <div>
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="useFilter" style="background-color: #183018">
                 Gunakan Filter
+              </button>
+              <button class="btn btn-danger text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilter">
+                Reset Filter
               </button>
             </div>
          
@@ -154,8 +155,8 @@
                   <div class="dropdown ml-auto"> <!-- Menambahkan inline style -->
                       <input type="hidden" name="sort" id="sort" value="">
 
-                      <button class="btn rounded-sm border dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
-                        type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                        type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ $data['sort'] !== null ? $data['sort'] : 'Urut Berdasarkan' }}
                       </button>
                       
@@ -189,7 +190,12 @@
                                     <div class="flex">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                            @if ($product->rating)
+                                            {{ $product->rating }}</p>
+                                            @else
+                                            0
+                                            @endif  
                                         </div>
                                         <div class="ml-auto">
                                             @php
@@ -262,7 +268,12 @@
                               <div class="flex rating-wishlist">
                                   <div class="flex gap-1">
                                       <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ number_format($product->rating_and_reviews_avg_rating, 1) }}</p>
+                                      <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                      @if ($product->rating)
+                                      {{ $product->rating }}</p>
+                                      @else
+                                      0
+                                      @endif  
                                   </div>
 
                                   <div class="ml-auto">
@@ -351,6 +362,103 @@
     </div>
   </div>
   <!-- Shop End -->
+
+  <!-- MODAL FILTER -->
+  <div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content overflow-y-auto fixed bottom-0 w-full" style="max-height:90vh; z-index: 1050;">
+        <div class="modal-header" style="background-color: #183018">
+          <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Form Filter Produk</h1>
+          <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+          <form action="{{ route('search.product') }}" method="GET" id="form-filter-product-mobile">
+            <!-- Brands Start -->
+            <div class="border-bottom">
+              <h5 class="font-weight-semi-bold my-2">Brand</h5>
+              <div class="form-check ml-2">
+                <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
+                <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
+                  Semua Brand
+                </label>
+              </div>
+
+              @foreach ($data['brands'] as $brand)
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" 
+                    name="brand" 
+                    id="{{ $brand->name}}-{{$brand->id}}" 
+                    value="{{ $brand->name}}" 
+                    {{ $data['brand'] == $brand->name ? 'checked' : '' }}>
+
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                    {{ $brand->name}}
+                  </label>
+                </div>
+              @endforeach
+            </div>
+            <!-- Brands End -->
+  
+            <!-- Price Start -->
+            <div class="border-bottom mb-4 pb-4">
+              <h5 class="font-weight-semi-bold text-[#183018] my-2">Kisaran Harga</h5>
+              <div class="price-range-container">
+                <div>
+                  <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Harga Terendah: </label><br>
+                  <input class="w-full" type="range" id="min-price-mobile" name="min_price" min="0" max="500000" step="10000" 
+                    value="{{ $data['minPrice'] !== null ? $data['minPrice'] : 0 }}" 
+                    oninput="updatePriceRangeMobile()"/>
+                  <span id="min-price-value-mobile" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ $data['minPrice'] !== null ?  number_format($data['minPrice'], 0, ',', '.') : 0 }}</span>
+                </div>
+
+                <div>
+                  <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Harga Tertinggi: </label><br>
+                  <input class="w-full" type="range" id="max-price-mobile" name="max_price" min="100000" max="1000000" step="50000" value="{{ $data['minPrice'] !== null ? $data['maxPrice'] : 1000000 }}" 
+                  oninput="updatePriceRangeMobile()"/>
+                  <span id="max-price-value-mobile" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ $data['minPrice'] !== null ?  number_format($data['maxPrice'], 0, ',', '.') : '1.000.000' }}</span>
+                </div>
+
+              </div>
+            </div>
+            <!-- Price End -->
+  
+            <!-- Rating Start -->
+            <div class="border-bottom mb-2 mb-md-3">
+              <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
+              <div class="mb-4">
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" checked>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
+                </div>
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5">
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating5">
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                  </label>
+                </div>
+                <!-- Repeat for other ratings -->
+              </div>
+            </div>
+            <!-- Rating End -->
+  
+            <div>
+              <button class="btn text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white border w-full rounded-sm mb-2" type="submit" id="useFilterMobile" style="background-color: #183018">
+                Gunakan Filter
+              </button>
+              <button class="btn btn-danger text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilterMobile">
+                Reset Filter
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 @if (count($data['products']) !== 0)
@@ -362,141 +470,7 @@
 </div>
 @endif
 
-<!-- MODAL FILTER -->
-<div class="modal fade" id="filter" tabindex="-1" aria-labelledby="filter" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header" style="background-color: #183018">
-        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Form Filter Produk</h1>
-        <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
 
-      <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-        <form action="" id="form-filter-mobile">
-           <!-- Brands Start -->
-           <div class="border-bottom">
-             <h5 class="font-weight-semi-bold my-2">Brand</h5>
-             <div class="max-h-[150px] overflow-y-auto">
-
-                @for ($j=1;$j <= 8; $j++)
-                  <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-1">
-                    <input type="checkbox" class="custom-control-input text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="brand-all-mobile-{{$j}}"/>
-                    <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="brand-all">Brand {{ $j }}</label>
-                  </div>
-                @endfor
-               
-             </div>
-           </div>
-           <!-- Brands End -->
- 
-           <!-- Categories Start -->
-           <div class="border-bottom">
-             <h5 class="font-weight-semi-bold my-2">Categories</h5>
-             <div class="max-h-[150px] overflow-y-auto pb-2">
-              
-                @for ($k=1;$k <= 8; $k++)
-                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                  <input type="checkbox" class="custom-control-input" id="categories-{{$k}}"/>
-                  <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="makeup">Kategori {{ $k }}</label>
-                </div>
-                @endfor
-             
-            </div>
-           </div>
-           <!-- Categories End -->
- 
-           <!-- Price Start -->
-           <div class="border-bottom">
-             <h5 class="font-weight-semi-bold my-2">Filter by price</h5>
-             <div>
-               <div class="price-range-container">
-                 <div class="grid gap-1">
-                   <label for="min-price" class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Harga Terendah: </label>
-                   <input class="w-full" type="range" id="min-price-mobile" name="min-price" min="0" max="500000" step="10000" value="0" oninput="updatePriceRange()"/>
-                   <span id="min-price-value" class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp0</span>
-                 </div>
- 
-                 <div class="grid gap-1">
-                   <label for="max-price" class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Harga Tertinggi: </label>
-                   <input class="w-full" type="range" id="max-price-mobile" name="max-price" min="500000" max="1000000" step="10000" value="1000000" oninput="updatePriceRange()"/>
-                   <span id="max-price-value" class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rp1,000,000</span>
-                 </div>
- 
-               </div>
-             </div>
-           </div>
-           <!-- Price End -->
- 
-           <!-- Rating Start -->
-           <div class="border-bottom mb-2">
-             <h5 class="font-weight-semi-bold my-2">Ratings</h5>
-             <div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" checked id="all-rating-mobile"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="rating-all">All Rating</label>
-               </div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-5" value="5"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="5">
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small>5</small>
-                 </label>
-               </div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-4" value="4"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="4">
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small>4</small>
-                 </label>
-               </div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-3" value="3"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="3">
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small>3</small>
-                 </label>
-               </div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-2" value="2"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="2">
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small>2</small>
-                 </label>
-               </div>
-               <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-1" value="1"/>
-                 <label class="custom-control-label text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" for="2">
-                   <small class="fas fa-star text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></small>
-                   <small>1</small>
-                 </label>
-               </div>
-             </div>
-           </div>
-           <!-- Rating End -->
- 
-           <div>
-              <button class="btn text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white border w-full rounded-sm mb-2" type="submit" id="useFilterMobile"  style="background-color: #183018">
-                Gunakan Filter
-              </button>
-              <button class="btn text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilterMobile"  style="background-color: #183018">
-                Reset Filter
-              </button>
-           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 <!-- END MODAL FILTER -->
 
 <script>

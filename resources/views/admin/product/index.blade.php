@@ -105,6 +105,9 @@
                                                 <a href="javascript:void(0);" class="delete-product"
                                                     data-id="{{ $item->id }}"><span
                                                         class="badge bg-danger">Delete</span></a>
+                                                <a href="javascript:void(0);" class="notify-product"
+                                                    data-id="{{ $item->id }}"><span
+                                                        class="badge bg-primary">Notify</span></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -200,6 +203,56 @@
                                     }
                                 })
                                 .catch(error => console.error('Error:', error));
+                        }
+                    });
+                }
+
+                if (event.target.closest('.notify-product')) {
+                    let productId = event.target.closest('.notify-product').getAttribute('data-id');
+
+                    // SweetAlert2 confirmation dialog
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Send it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Send AJAX request
+                            fetch(`/send-notify/${productId}`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire(
+                                        'Sent!',
+                                        'Notification has been sent successfully.',
+                                        'success'
+                                    );
+                                } else {
+                                    Swal.fire(
+                                        'Error!',
+                                        data.message || 'Failed to send notification.',
+                                        'error'
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                console.log('Error:', error);
+                                Swal.fire(
+                                    'Error!',
+                                    'An error occurred while sending notification.',
+                                    'error'
+                                );
+                            });
                         }
                     });
                 }

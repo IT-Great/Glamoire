@@ -105,6 +105,7 @@ class AuthController extends Controller
                     'fullname' => $userLogin->fullname,
                 ];
                 $email_target = $userLogin->email;
+                
                 Mail::to($email_target)->send(new sendMailCodeNewUser($data));
 
                 session()->put([
