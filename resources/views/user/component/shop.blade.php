@@ -96,11 +96,11 @@
               <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
               <div class="mb-4">
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" checked>
+                  <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $rating === null ||  $rating === 'all' ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5" {{ $rating == 5 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating5">
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -110,7 +110,7 @@
                   </label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4" {{ $rating == 4 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating4">
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -119,7 +119,7 @@
                   </label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3" {{ $rating == 3 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating3">
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -127,14 +127,14 @@
                   </label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2" {{ $rating == 2 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating2">
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                   </label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating1 " value="1">
+                  <input class="form-check-input" type="checkbox" name="rating" id="rating1 " value="1" {{ $rating == 1 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating1">
                     <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                   </label>
@@ -148,7 +148,7 @@
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="useFilter"  style="background-color: #183018">
                 Gunakan Filter
               </button>
-              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilter"  style="background-color: #183018">
+              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="button" id="resetFilter"  style="background-color: #183018" onclick="resetFilters()">
                 Reset Filter
               </button>
             </div>
@@ -253,7 +253,7 @@
                                       @endphp
 
                                       @if($inCart)
-                                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
+                                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                                               Cek Keranjang Belanjamu
                                           </a>
                                       @else
@@ -520,7 +520,7 @@
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="useFilterMobile"  style="background-color: #183018">
                 Gunakan Filter
               </button>
-              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilterMobile"  style="background-color: #183018">
+              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="button" id="resetFilterMobile"  style="background-color: #183018" onclick="resetFilters()">
                 Reset Filter
               </button>
            </div>
@@ -581,10 +581,14 @@
 </script>
 
 <script>
-    function setSort(sortValue) {
-        document.getElementById('sort').value = sortValue;
-        document.getElementById('form-filter-category').submit();
-    }
+  function setSort(sortValue) {
+    document.getElementById('sort').value = sortValue;
+    document.getElementById('form-filter-category').submit();
+  }
+
+  function resetFilters() {
+    window.location.href = "/belanja-" + @json($category);
+  }
 </script>
 
 @endsection

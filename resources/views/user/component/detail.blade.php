@@ -294,7 +294,13 @@
                                     <div class="flex">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[10px] md:text-[14px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $yl->rating }}</p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                @if ($yl->rating)
+                                                {{ $yl->rating }}
+                                                @else
+                                                0    
+                                                @endif
+                                            </p>
                                         </div>
                                         <div class="ml-auto">
                                             @php

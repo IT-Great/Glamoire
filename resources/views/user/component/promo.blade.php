@@ -95,7 +95,7 @@
             $endDate = \Carbon\Carbon::parse($dateRange[1])->translatedFormat('d F Y');
           @endphp
           <p class="flex justify-content-center align-items-center ml-auto font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pr-1 pl-3" style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
-            {{ $startDate }} sampa {{ $endDate }}
+            {{ $startDate }} sampai {{ $endDate }}
           </p>
         </div>
         
