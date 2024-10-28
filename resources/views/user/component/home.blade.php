@@ -64,6 +64,26 @@
     @endif
     <!-- END PROMO FIRST USER-->
 
+    <!-- SKELETON LOADER -->
+    <div id="skeletonLoader" class="d-none">
+        <div class="swiper mySwiperCarousel">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide skeleton-slide"></div>
+                <div class="swiper-slide skeleton-slide"></div>
+                <div class="swiper-slide skeleton-slide"></div>
+            </div>
+        </div>
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide skeleton-slide"></div>
+                <div class="swiper-slide skeleton-slide"></div>
+                <div class="swiper-slide skeleton-slide"></div>
+            </div>
+        </div>
+    </div>
+    <!-- SKELETON LOADER END -->
+
+
     <!-- CAROUSEL -->
     <div class="container-fluid p-0 mx-12 md:mx-0">
         <div class="swiper mySwiperCarousel">
@@ -435,14 +455,14 @@
         <div class="d-flex gap-2">
         <div class="py-3 grid md:flex col-12 align-items-center justify-content-center rounded-sm" style="background-color: #475136">
             <div class="col-12 col-md-8 mb-2 mb-md-0 p-0 p-md-2">
-                <p class="text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[24px]">Langganan Untuk Mendapatkan Informasi Terbaru Dari Kami</p>
+                <p class="text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[18px]">Langganan Untuk Mendapatkan Informasi Terbaru Dari Kami</p>
             </div>  
             <div class="col-12 col-md-4 p-0 p-md-2">
                 <form class="grid gap-1 gap-md-2 m-0" id="subscribe-form">
                     @csrf
                     <div class="relative flex items-center">
-                        <i class="fas fa-envelope text-gray-400 absolute left-3 text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]"></i> <!-- Ikon Email -->
-                        <input type="email" class="form-control pl-10 pr-10 rounded-sm text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" id="subscribe_email" placeholder="Masukkan email" autocomplete="off" required>
+                        <i class="fas fa-envelope text-gray-400 absolute left-3 text-[10px] md:text-[9px] lg:text-[10px] xl:text-[12px]"></i> <!-- Ikon Email -->
+                        <input type="email" class="form-control pl-10 pr-10 rounded-sm text-[10px] md:text-[9px] lg:text-[10px] xl:text-[12px]" id="subscribe_email" placeholder="Masukkan email" autocomplete="off" required>
                         <div class="spinner-border text-[#183018] absolute right-3" role="status" style="width:15px; height:15px;display:none;"> <!-- Spinner -->
                             <span class="visually-hidden"></span>
                         </div>
@@ -450,7 +470,7 @@
 
                     <div id="validationEmailSubscribe" class="text-[12px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
                     </div>
-                    <button class="py-2 w-full rounded-sm text-white bg-[#183018] text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" type="submit" id="subscribe-btn" disabled>Berlangganan Sekarang</button>
+                    <button class="py-2 w-full rounded-sm text-white bg-[#183018] text-[10px] md:text-[9px] lg:text-[10px] xl:text-[12px]" type="submit" id="subscribe-btn" disabled>Berlangganan Sekarang</button>
                 </form>
             </div>
         </div>  
@@ -596,6 +616,7 @@
     });
 </script>
 @endif
+
 
 
 @endsection

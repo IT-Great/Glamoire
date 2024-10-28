@@ -99,11 +99,11 @@
                <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
                <div class="mb-4">
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" checked>
+                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $rating === null ||  $rating === 'all' ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5" {{ $rating == 5 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating5">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -113,7 +113,7 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating4" value="4" {{ $rating == 4 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating4">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -122,7 +122,7 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating3" value="3" {{ $rating == 3 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating3">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
@@ -130,14 +130,14 @@
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating2" value="2" {{ $rating == 2 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating2">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                    </label>
                  </div>
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="rating1" value="1">
+                   <input class="form-check-input" type="checkbox" name="rating" id="rating1" value="1" {{ $rating == 1 ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating1">
                      <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
                    </label>
@@ -150,7 +150,7 @@
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-md mb-2" type="submit" id="useFilter"  style="background-color: #183018">
                 Gunakan Filter
               </button>
-              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="submit" id="resetFilter"  style="background-color: #183018">
+              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-sm mb-2" type="button" id="resetFilter"  style="background-color: #183018" onclick="resetFilters()">
                 Reset Filter
               </button>
             </div>
@@ -457,11 +457,11 @@
              <h5 class="font-weight-semi-bold text-[#183018] my-2">Ratings</h5>
              <div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" checked id="all-rating-mobile"/>
+                 <input type="checkbox" class="custom-control-input" id="all-rating-mobile" {{ $rating == 5 ? 'checked' : '' }}/>
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="rating-all">All Rating</label>
                </div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-5" value="5"/>
+                 <input type="checkbox" class="custom-control-input" id="mobile-rating-5" value="5" {{ $rating == 5 ? 'checked' : '' }}/>
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="5">
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
@@ -472,7 +472,7 @@
                  </label>
                </div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-4" value="4"/>
+                 <input type="checkbox" class="custom-control-input" id="mobile-rating-4" value="4" {{ $rating == 4 ? 'checked' : '' }} />
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="4">
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
@@ -482,7 +482,7 @@
                  </label>
                </div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-3" value="3"/>
+                 <input type="checkbox" class="custom-control-input" id="mobile-rating-3" value="3" {{ $rating == 3 ? 'checked' : '' }}/>
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="3">
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
@@ -491,7 +491,7 @@
                  </label>
                </div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-2" value="2"/>
+                 <input type="checkbox" class="custom-control-input" id="mobile-rating-2" value="2" {{ $rating == 2 ? 'checked' : '' }}/>
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="2">
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
@@ -499,7 +499,7 @@
                  </label>
                </div>
                <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                 <input type="checkbox" class="custom-control-input" id="mobile-rating-1" value="1"/>
+                 <input type="checkbox" class="custom-control-input" id="mobile-rating-1" value="1" {{ $rating == 1 ? 'checked' : '' }}/>
                  <label class="custom-control-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="2">
                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                    <small>1</small>
@@ -513,7 +513,7 @@
               <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-md mb-2" type="submit" id="useFilterMobile"  style="background-color: #183018">
                 Gunakan Filter
               </button>
-              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-md mb-2" type="submit" id="resetFilterMobile"  style="background-color: #183018">
+              <button class="btn text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white border w-full rounded-md mb-2" type="button" id="resetFilterMobile"  style="background-color: #183018" onclick="resetFilters()">
                 Reset Filter
               </button>
            </div>
@@ -565,10 +565,14 @@
 </script>
 
 <script>
-    function setSort(sortValue) {
-        document.getElementById('sort').value = sortValue;
-        document.getElementById('form-filter-subcategory').submit();
-    }
+  function setSort(sortValue) {
+    document.getElementById('sort').value = sortValue;
+    document.getElementById('form-filter-subcategory').submit();
+  }
+
+  function resetFilters() {
+    window.location.href = "/belanja-" + @json($category) + "-" + @json($subcategory);
+  }
 </script>
 
 @endsection

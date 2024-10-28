@@ -46,7 +46,13 @@
                                                         <div class="flex">
                                                             <div class="flex gap-1">
                                                                 <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                                                <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                                                <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                                                @if ($product->rating)
+                                                                {{ $product->rating }}
+                                                                @else
+                                                                0
+                                                                @endif
+                                                                </p>
                                                             </div>
                                                             <div class="ml-auto">
                                                                 @php
@@ -110,7 +116,13 @@
                                                     <div class="flex">
                                                         <div class="flex gap-1">
                                                             <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                                            @if ($product->rating)
+                                                            {{ $product->rating }}
+                                                            @else
+                                                            0
+                                                            @endif
+                                                            </p>
                                                         </div>
                                                         <div class="ml-auto">
                                                             <a href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
@@ -189,7 +201,13 @@
                                                         <div class="flex">
                                                             <div class="flex gap-1">
                                                                 <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                                                <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                                                <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                                                @if ($product->rating)
+                                                                {{ $product->rating }}
+                                                                @else
+                                                                0
+                                                                @endif
+                                                                </p>
                                                             </div>
                                                             <div class="ml-auto">
                                                                 @php
@@ -253,7 +271,13 @@
                                                     <div class="flex">
                                                         <div class="flex gap-1">
                                                             <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">5</p>
+                                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
+                                                            @if ($product->rating)
+                                                            {{ $product->rating }}
+                                                            @else
+                                                            0
+                                                            @endif
+                                                            </p>
                                                         </div>
                                                         <div class="ml-auto">
                                                             <a href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">

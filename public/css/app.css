@@ -30,6 +30,54 @@
         "Liberation Mono", "Courier New", monospace;
 }
 
+.skeleton-loader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px; /* Adjust as needed */
+}
+
+.skeleton-card {
+    background: #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    width: calc(25% - 16px); /* 4 items per row */
+    position: relative;
+}
+
+.skeleton-image {
+    height: 150px;
+    background: #c0c0c0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.skeleton-text {
+    height: 10px;
+    background: #c0c0c0;
+    margin-bottom: 4px;
+    border-radius: 4px;
+}
+
+.skeleton-text.small {
+    width: 50%;
+}
+
+.skeleton-price {
+    height: 10px;
+    background: #c0c0c0;
+    width: 30%;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
 /* Chrome, Safari, Edge, Opera */
 .no-spinner::-webkit-outer-spin-button,
 .no-spinner::-webkit-inner-spin-button {
@@ -470,8 +518,8 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 
 @media (max-width: 1440px) {
     .product-item {
-        min-height: 350px;
-        max-height: 350px;
+        min-height: 360px;
+        max-height: 360px;
     }
     .product-item-except {
         min-height: 325px;
