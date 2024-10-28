@@ -9,5 +9,5 @@ class Question extends Model
 {
     use HasFactory;
     protected $table = 'questions';  // Tambahkan baris ini
-    protected $fillable = ['id'];
+    protected $guarded = ['id'];
 }

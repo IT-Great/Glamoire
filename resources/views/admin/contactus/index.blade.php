@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 
     <style>
         .list-group-item {
@@ -32,6 +34,11 @@
             transform: scale(1.02);
             /* Sedikit memperbesar item saat hover */
         }
+
+        .flatpickr-calendar {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0);
+            border-radius: 8px;
+        }      
     </style>
 </head>
 
@@ -56,76 +63,90 @@
                         </div>
                     </div>
                 </div>
-        
+
                 <section class="section">
                     <div class="card">
+                        <!-- Header untuk section Contact Us Messages -->
                         <div class="card-header">
                             <h4>Contact Us Messages</h4>
-                            <p class="text-muted">Review all incoming messages and click on a message to view or respond.</p>
+                            <p class="text-muted">
+                                Review all incoming messages and click on a message to view or respond.
+                            </p>
                         </div>
-                        <div class="card-body">
-                            {{-- <!-- Search Bar (Optional) -->
-                            <form action="" method="GET" class="mb-4">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" name="search" placeholder="Search messages by name or email..." value="{{ request('search') }}">
-                                    <button type="submit" class="btn btn-primary">Search</button>
-                                </div>
-                            </form> --}}
 
-                            <div class="row align-items-center mb-4">
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search messages by name or email...">
-                                        <button class="btn btn-outline-secondary" type="button">
-                                            <i class="bi bi-search"></i>
-                                        </button>
+                        <div class="card-body">
+                            <!-- Search Bar untuk mencari pesan -->
+                            <form action="{{ url()->current() }}" method="GET" class="mb-4">
+                                <div class="row align-items-center">
+                                    <!-- Input untuk pencarian berdasarkan nama atau email -->
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="search"
+                                                placeholder="Search messages by name or email..."
+                                                value="{{ request('search') }}">
+                                            <button type="submit" class="btn btn-primary">Search</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Input untuk pencarian berdasarkan tanggal -->
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">Search By Date</span>
+                                            <input type="text"
+                                                class="datepicker me-3 form-control {{ $errors->has('date_expired') ? 'is-invalid' : '' }}"
+                                                id="date_expired" name="date_expired"
+                                                value="{{ request('date_expired') }}"
+                                                placeholder="Enter expiration date" style="max-width: 300px;">
+                                            <button type="submit" class="btn btn-secondary">Filter</button>
+                                            <!-- Clear Filter Button -->
+                                            <a href="{{ url()->current() }}?search={{ request('search') }}"
+                                                class="btn btn-outline-secondary ms-2">Reset Date</a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">Search By Date</span>
-                                        <input type="date" class="form-control" style="max-width: 150px;">
-                                        {{-- <span class="mx-2">-</span>
-                                        <input type="date" class="form-control" style="max-width: 150px;"> --}}
-                                    </div>
-                                </div>
-                                
-                            </div>
-        
-                            <!-- Contact Messages List -->
+                            </form>
+
+                            <!-- Daftar pesan dari kontak -->
                             <ul class="list-group">
                                 @foreach ($contacts as $contact)
-                                    <li class="list-group-item list-group-item-action" style="cursor: pointer;"
+                                    <li class="list-group-item list-group-item-action"
                                         onclick="window.location='{{ route('show-contactus-admin', $contact->id) }}'">
                                         <div class="d-flex align-items-center">
+                                            <!-- Gambar profil pengguna -->
                                             <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Image"
-                                                class="rounded-circle" style="width: 50px; height: 50px; margin-right: 10px;">
+                                                class="rounded-circle"
+                                                style="width: 50px; height: 50px; margin-right: 10px;">
+
+                                            <!-- Informasi pesan -->
                                             <div>
-                                                <strong>{{ $contact->name }} ({{ $contact->email }}):</strong>
+                                                <strong>{{ $contact->fullname }} ({{ $contact->email }}):</strong>
                                                 <p class="mb-1">{{ Str::limit($contact->question, 100, '...') }}</p>
-                                                <small class="text-muted">Received on: {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}</small>
+                                                <small class="text-muted">
+                                                    Received on:
+                                                    {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
+                                                </small>
                                             </div>
                                         </div>
                                     </li>
                                 @endforeach
                             </ul>
-        
-                            <!-- Pagination Links -->
+
+                            <!-- Navigasi pagination -->
                             <div class="d-flex justify-content-between mt-4 px-3" id="pagination-container">
                                 <div class="mb-3">
                                     Showing {{ $contacts->firstItem() }} to {{ $contacts->lastItem() }}
-                                    of
-                                    {{ $contacts->total() }} results
+                                    of {{ $contacts->total() }} results
                                 </div>
                                 <div class="pagination-container">
-                                    {{ $contacts->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
+                                    {{ $contacts->appends(request()->query())->links('pagination::bootstrap-4') }}
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>        
+                </section>
+
             </div>
-        </div>        
+        </div>
     </div>
     </div>
 
@@ -134,9 +155,22 @@
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+
+    <script>
+        // HANDLE FORMAT DATE PICKER
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#date_expired", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                time_24hr: true,
+                minuteIncrement: 1
+            });
+        });
+    </script>
 
     @if (session('toast_success'))
         <script>
