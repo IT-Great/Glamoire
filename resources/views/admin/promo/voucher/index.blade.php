@@ -19,77 +19,90 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/css/product/index.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
     <style>
-        .product-item-container {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            /* Allows items to wrap on smaller screens */
-        }
-
-        .product-item-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            object-fit: cover;
-            margin-right: 15px;
-        }
-
-        @media (max-width: 768px) {
-            .product-item-container {
-                flex-direction: column;
-                /* Stack items vertically on smaller screens */
-                align-items: flex-start;
-            }
-
-            .product-item-container img {
-                margin-bottom: 10px;
-                width: 80px;
-                height: 80px;
-                /* Reduce image size on smaller screens */
-            }
-        }
-
         .action-buttons a {
             display: block;
-            /* Set to block so each link appears on a new line */
             margin-bottom: 5px;
-            /* Add some space between the buttons */
+        }
+
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .promo-nav {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .promo-nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .promo-nav-item.active {
+            background: #435ebe;
+            color: white;
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background: #e9ecef;
         }
 
         .voucher-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             height: 100%;
             display: flex;
             flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .voucher-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
         }
 
         .voucher-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .voucher-card h3 {
-            margin-bottom: 10px;
-        }
-
-        .voucher-card p {
-            flex-grow: 1;
-        }
-
-        .voucher-card .btn {
-            align-self: flex-start;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
         .voucher-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
             object-fit: cover;
-            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .voucher-image:hover {
+            transform: scale(1.1);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: green;
+        }
+
+        .status-expired {
+            background-color: #f44336;
         }
     </style>
 </head>
@@ -103,121 +116,228 @@
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header me-3">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="#">Promo Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Promo Voucher</li>
-                                </ol>
-                            </nav>
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Voucher Management</h3>
+                            <p class="text-subtitle text-muted">Create and manage your store vouchers effectively</p>
                         </div>
                     </div>
-
                 </div>
-            </div>
 
-            <section class="section">
-                <div class="container">
-                    <h3 class="mb-2">Create Voucher</h3>
-                    <p class="mb-3">
-                        Create a Store Voucher or Product Voucher now to attract Buyers.
-                        <a href="#" class="text-blue">Learn More</a>
-                    </p>
-
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h3>Overall Vouchers</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <div class="voucher-card">
-                                        <div class="voucher-icon">🎫</div>
-                                        <h4>Limited Voucher</h4>
-                                        <p>Voucher for specific Buyers that can only be shared through a code</p>
-                                        <a href="{{ route('create-promo-voucher') }}" class="btn btn-primary">Create</a>
+                <!-- Stats Cards -->
+                <div class="row">
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon blue mb-2">
+                                            <i class="bi bi-ticket-detailed"></i>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="voucher-card">
-                                        <div class="voucher-icon">🛒</div>
-                                        <h4>Brand Voucher</h4>
-                                        <p>Voucher for your brand to increase sales.</p>
-                                        <a href="{{ route('create-promo-shop-voucher') }}"
-                                            class="btn btn-primary">Create</a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="voucher-card">
-                                        <div class="voucher-icon">📦</div>
-                                        <h4>Product Voucher</h4>
-                                        <p>Voucher for selected products as part of specific promotions</p>
-                                        <a href="{{ route('create-promo-product-voucher') }}"
-                                            class="btn btn-primary">Create</a>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
-                                    <div class="voucher-card">
-                                        <div class="voucher-icon">🚌</div>
-                                        <h4>Shipping Fee Voucher</h4>
-                                        <p>Shipping Fee Voucher applicable on selected products as part of specific
-                                            promotions
-                                        </p>
-                                        <a href="{{ route('create-promo-ongkir') }}"
-                                            class="btn btn-primary">Create</a>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Active Vouchers</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $activeVouchers ?? 0 }}</h6>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card mt-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h4>Promo Voucher List</h4>
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon green mb-2">
+                                            <i class="bi bi-people"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Voucher Usage</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $voucherUsage ?? 0 }}</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <table class="table" id="table1">
+                    </div>
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-danger">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon red mb-2">
+                                            <i class="bi bi-clock-history"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Expired Vouchers</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $expiredVouchers ?? 0 }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
+                        <i class="bi bi-grid-fill me-2"></i>All Promos
+                    </a>
+                    <a href="/promo-voucher" class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
+                        <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
+                    </a>
+                    <a href="/promo-diskon" class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                        <i class="bi bi-percent me-2"></i>Discounts
+                    </a>
+                </div>
+
+                <!-- Voucher Types Grid -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title">Create New Voucher</h4>
+                        <p class="text-muted">Choose the type of voucher you want to create</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="voucher-card">
+                                    <div class="voucher-icon">🎫</div>
+                                    <h4>Limited Voucher</h4>
+                                    <p class="flex-grow-1">Voucher for specific Buyers that can only be shared through a
+                                        code</p>
+                                    <a href="{{ route('create-promo-voucher') }}"
+                                        class="btn btn-primary mt-3">Create</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="voucher-card">
+                                    <div class="voucher-icon">🛒</div>
+                                    <h4>Brand Voucher</h4>
+                                    <p class="flex-grow-1">Voucher for your brand to increase sales</p>
+                                    <a href="{{ route('create-promo-brand-voucher') }}"
+                                        class="btn btn-primary mt-3">Create</a>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="voucher-card">
+                                    <div class="voucher-icon">📦</div>
+                                    <h4>Product Voucher</h4>
+                                    <p class="flex-grow-1">Voucher for selected products as part of specific promotions
+                                    </p>
+                                    <a href="{{ route('create-promo-product-voucher') }}"
+                                        class="btn btn-primary mt-3">Create</a>
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-4 mb-3">
+                                <div class="voucher-card">
+                                    <div class="voucher-icon">🚌</div>
+                                    <h4>Shipping Fee Voucher</h4>
+                                    <p>Shipping Fee Voucher applicable on selected products as part of specific
+                                        promotions
+                                    </p>
+                                    <a href="{{ route('create-promo-voucher-shippingfee') }}"
+                                        class="btn btn-primary">Create</a>
+                                </div>
+                            </div> --}}
+                            <div class="col-md-4 mb-3">
+                                <div class="voucher-card">
+                                    <div class="voucher-icon">👨‍💼</div>
+                                    <h4>New User Voucher</h4>
+                                    <p>New User Voucher applicable on selected products as part of specific
+                                        promotions
+                                    </p>
+                                    <a href="{{ route('create-promo-voucher-new-user') }}"
+                                        class="btn btn-primary">Create</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voucher List -->
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Active Vouchers</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Promo</th>
+                                        <th>Voucher Details</th>
                                         <th>Type</th>
-                                        <th>Periode</th>
+                                        <th>Period</th>
                                         <th>Discount</th>
-                                        <th>Code</th>
-                                        <th>Action</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($promo as $item)
                                         <tr id="promo-item-{{ $item->id }}">
                                             <td>
-                                                <div class="product-item-container">
-                                                    <img src="{{ Storage::url($item->image) }}" alt="Product Image"
-                                                        class="lazyload"
-                                                        style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <img src="{{ Storage::url($item->image) }}"
+                                                        alt="{{ $item->promo_name }}" class="voucher-image"
                                                         onclick="openImageInNewTab('{{ Storage::url($item->image) }}')">
                                                     <div>
-                                                        <strong style="font-size: 14px;">
-                                                            {{ Str::limit($item->promo_name, 20, '...') }}
-                                                        </strong>
+                                                        <h6 class="mb-0">
+                                                            {{ Str::limit($item->promo_name, 40, '...') }}</h6>
+                                                        <small class="text-muted">Code:
+                                                            {{ $item->promo_code }}</small>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>{{ $item->type }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->start_date)->format('d/m/Y') }}
-                                                -
-                                                {{ \Carbon\Carbon::parse($item->end_date)->format('d/m/Y') }}
+                                            <td>
+                                                <div>
+                                                    <div class="mb-1">
+                                                        <i class="bi bi-calendar-event me-2"></i>
+                                                        {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }}
+                                                    </div>
+                                                    <div>
+                                                        <i class="bi bi-calendar-event-fill me-2"></i>
+                                                        {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}
+                                                    </div>
+                                                </div>
                                             </td>
-                                            <td>{{ $item->discount }}%</td>
-                                            <td>{{ $item->promo_code }}</td>
-                                            <td class="action-buttons">
-                                                <a href="{{ url('edit-promo-voucher/' . $item->id) }}"><span
-                                                        class="badge bg-warning">Edit</span></a>
-                                                <a href="{{ url('detail-promo-voucher/' . $item->id) }}"><span
-                                                        class="badge bg-info">Review</span></a>
-                                                <a href="javascript:void(0);" class="delete-promo"
-                                                    data-id="{{ $item->id }}"><span
-                                                        class="badge bg-danger">Delete</span></a>
+
+                                            <td>
+                                                @if ($item->discount_type === 'nominal')
+                                                    Rp
+                                                    @php
+                                                        $discount = str_replace('.', '', $item->discount); // Hapus titik untuk konversi angka
+                                                    @endphp
+                                                    {{ is_numeric($discount) ? number_format($discount, 0, ',', '.') : '0' }}
+                                                @else
+                                                    {{ is_numeric($item->discount) ? $item->discount : '0' }}%
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                @php
+                                                    $isActive = \Carbon\Carbon::parse($item->end_date)->isFuture();
+                                                @endphp
+                                                <span
+                                                    class="badge {{ $isActive ? 'status-active' : 'status-expired' }}">
+                                                    {{ $isActive ? 'Active' : 'Expired' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ url('edit-promo-voucher/' . $item->id) }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i> Edit
+                                                    </a>
+                                                    <a href="{{ url('detail-promo-voucher/' . $item->id) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    <a href="javascript:void(0);" class="badge bg-danger delete-promo"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -226,7 +346,7 @@
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
             @include('admin.layouts.footer')
         </div>
     </div>
@@ -259,12 +379,6 @@
                     }
                 });
             });
-
-            // // Show more functionality (placeholder)
-            // document.getElementById('showMore').addEventListener('click', function(e) {
-            //     e.preventDefault();
-            //     alert('Show more functionality to be implemented');
-            // });
         });
     </script>
 

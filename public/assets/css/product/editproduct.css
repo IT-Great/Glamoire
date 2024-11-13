@@ -1,0 +1,213 @@
+.upload__img-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+}
+
+.upload__img-box-multiple {
+    width: 170px;
+    padding: 0 10px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.upload__img-box-single {
+    width: 450px;
+    padding: 0 10px;
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.upload__img-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 36px; /* Sesuaikan posisi dari atas, nilai ini dihitung dari tinggi preview-label + margin */
+    right: 5px; /* Sesuaikan jarak dari kanan */
+    text-align: center;
+    line-height: 24px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.upload__img-close:after {
+    content: '\2716';
+    font-size: 14px;
+    color: white;
+}
+
+/* Styling ikon close khusus untuk multiple image */
+.upload__img-close-multiple {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 7px; /* Atur jarak dari atas sesuai kebutuhan */
+    right: 5px; /* Atur jarak dari kanan sesuai kebutuhan */
+    text-align: center;
+    line-height: 24px;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 14px; /* Ukuran font lebih kecil */
+    color: white;
+}
+
+/* Teks 'X' untuk ikon close multiple image */
+.upload__img-close-multiple:after {
+    content: '\2716'; /* Unicode karakter 'X' */
+    font-size: 14px;
+    color: white;
+}
+
+/* Tambahkan atau update CSS berikut */
+.image-preview-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.image-preview-box {
+    width: 100%;
+    max-width: 150px;
+    position: relative;
+    /* Tambahkan ini */
+}
+
+.preview-label {
+    display: block;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.preview-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    position: relative; /* Tambahkan ini */
+}
+
+
+.img-bg {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    padding-bottom: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.video-upload-wrap {
+    border: 2px dashed #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    background: #f8f8f8;
+    margin-bottom: 15px;
+    height: auto;
+}
+
+
+.file-upload-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+.upload__video-box {
+    position: relative;
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    padding: 5px;
+    width: 320px;
+    /* Atur lebar sesuai kebutuhan */
+    height: 240px;
+    /* Atur tinggi sesuai kebutuhan */
+}
+
+.upload__video-close {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    line-height: 24px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+
+.upload__video-close:after {
+    content: '\2716';
+    /* Unicode character for 'X' */
+    font-size: 14px;
+    color: white;
+}
+
+
+/* product variant */
+.variant-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.variant-image-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.drag-drop-area {
+    width: 94px;
+    height: 94px;
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    overflow: hidden;
+    position: relative;
+}
+
+.drag-drop-area.highlight {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.drag-drop-area img {
+    width: 84px;
+    height: 84px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+
+.upload-icon {
+    font-size: 25px;
+    /* Reduced size for better balance with image */
+    color: #007bff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.variant-label {
+    margin-top: 5px;
+    font-size: 14px;
+    text-align: center;
+}

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Product - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -22,7 +22,7 @@
 
     <style>
         .flatpickr-calendar {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
             border-radius: 8px;
         }
 
@@ -46,14 +46,13 @@
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/product-admin">Product</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add New Product</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Buat Product</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
                 </div>
 
-                <!-- Basic Horizontal form layout section start -->
                 <section id="multiple-column-form">
                     <div class="row match-height">
                         <div class="col-12">
@@ -64,18 +63,18 @@
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
-                                                <h3 class="mb-3">Create a New Product</h3>
-                                                <p class="text-muted">Please fill in the details below to create a new
-                                                    product.</p>
+                                                <h3 class="mb-3">Buat Product Baru</h3>
+                                                <p class="text-muted">Silahkan isi detail dibawah ini untuk membuat
+                                                    Produk baru</p>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="first-name-icon">Product Name <span
+                                                            <label for="first-name-icon">Nama Produk <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Product Name"
+                                                                    placeholder="Masukan Nama Produk"
                                                                     id="first-name-icon" name="product_name"
                                                                     value="{{ old('product_name') }}">
                                                                 <div class="form-control-icon">
@@ -86,22 +85,23 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('product_name') }}</p>
                                                             @else
-                                                                <small class="text-muted" style="font-size: 14px;">Enter
-                                                                    a unique and descriptive name for the product that
-                                                                    customers can easily identify.</small>
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Masukkan nama yang unik dan
+                                                                    deskriptif untuk produk yang mudah diidentifikasi
+                                                                    oleh pelanggan.</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="first-name-icon">List Sub Category <span
+                                                            <label for="first-name-icon">Sub Kategori <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="form-group">
+                                                            <div class="form-group mt-2">
                                                                 <select
                                                                     class="form-control select2-basic-category {{ $errors->has('category_product_id') ? 'is-invalid' : '' }}"
                                                                     name="category_product_id">
                                                                     <option value="" disabled
                                                                         {{ old('category_product_id') ? '' : 'selected' }}>
-                                                                        Select List Sub Category</option>
+                                                                        Pilih Sub Kategori</option>
                                                                     @foreach ($subcategories as $subcategory)
                                                                         <option value="{{ $subcategory->id }}"
                                                                             {{ old('category_product_id') == $subcategory->id ? 'selected' : '' }}>
@@ -115,8 +115,9 @@
                                                                     </p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Select the appropriate
-                                                                        sub-category or add new one</small>
+                                                                        style="font-size: 14px;">Pilih Sub Kategori yang
+                                                                        sesuai atau tambahkan Sub Kategori yang baru
+                                                                    </small>
                                                                 @endif
                                                             </div>
                                                         </div>
@@ -124,12 +125,12 @@
                                                         <div class="form-group mb-4">
                                                             <label for="first-name-icon">Brand <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="form-group">
+                                                            <div class="form-group mt-2">
                                                                 <select
                                                                     class="form-control select2-basic-brand {{ $errors->has('brand_id') ? 'is-invalid' : '' }}"
                                                                     name="brand_id">
                                                                     <option value="" disabled
-                                                                        {{ old('brand_id') ? '' : 'selected' }}>Select
+                                                                        {{ old('brand_id') ? '' : 'selected' }}>Pilih 
                                                                         Brand</option>
                                                                     @foreach ($brands as $brand)
                                                                         <option value="{{ $brand->id }}"
@@ -143,21 +144,20 @@
                                                                         {{ $errors->first('brand_id') }}</p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Choose the brand or add
-                                                                        new one</small>
+                                                                        style="font-size: 14px;">Pilih Brand yang sesuai
+                                                                        atau tambahkan Brand yang baru</small>
                                                                 @endif
                                                             </div>
                                                         </div>
-
 
                                                         {{-- product code auto --}}
                                                         <input type="hidden" id="product-code-input"
                                                             name="product_code">
 
                                                         <div class="mb-4">
-                                                            <label for="first-name-icon">Description <span
+                                                            <label for="first-name-icon">Deskripsi Produk <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2">
                                                                 <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description"
                                                                     id="description" cols="30" rows="10">{{ old('description') }}</textarea>
                                                             </div>
@@ -166,17 +166,16 @@
                                                                     {{ $errors->first('description') }}</p>
                                                             @else
                                                                 <small class="text-muted"
-                                                                    style="font-size: 14px;">Provide a detailed
-                                                                    description of your product, focusing on key
-                                                                    features, benefits, and unique selling
-                                                                    points.</small>
+                                                                    style="font-size: 14px;">Berikan secara rinci
+                                                                    deskripsi produk Anda, dengan fokus pada fitur,
+                                                                    manfaat, dan keunikan penjualan poin.</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="mb-4">
-                                                            <label for="first-name-icon">Information Product <span
+                                                            <label for="first-name-icon">Informasi Produk <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2">
                                                                 <textarea class="form-control {{ $errors->has('information_product') ? 'is-invalid' : '' }}"
                                                                     name="information_product" id="information_product" cols="30" rows="10">{{ old('information_product') }}</textarea>
                                                             </div>
@@ -185,49 +184,59 @@
                                                                     {{ $errors->first('information_product') }}</p>
                                                             @else
                                                                 <small class="text-muted"
-                                                                    style="font-size: 14px;">Provide detailed technical
-                                                                    or specific product information such as
-                                                                    specifications, materials, warranty, or usage
-                                                                    instructions.</small>
+                                                                    style="font-size: 14px;">Berikan teknis rinci
+                                                                    atau informasi produk tertentu seperti
+                                                                    spesifikasi, bahan, garansi, atau penggunaan
+                                                                    instruksi.</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="mb-4">
-                                                            <h4 class="card-title">Variant Product</h4>
-                                                            <p class="card-subtitle">Add variants so that buyers can
-                                                                choose the right product! You can enter up to 2 types of
-                                                                variants.</p>
+                                                            <h4 class="card-title">Variasi Produk</h4>
+                                                            <p class="card-subtitle">Tambahkan variasi agar pembeli
+                                                                bisa
+                                                                memilih produk yang tepat! Anda dapat memasukkan hingga
+                                                                2 jenis
+                                                                varian.</p>
                                                         </div>
 
                                                         <div class="mt-3">
                                                             <div id="variant-container">
                                                                 <div class="variant-type mb-4 p-3 border rounded">
-                                                                    <label>Variant Type</label>
-                                                                    <div class="d-flex align-items-center">
+                                                                    <label>Tipe Variasi</label>
+                                                                    <div class="d-flex align-items-center mt-2">
                                                                         <select
                                                                             class="select2-add-option form-select me-2"
                                                                             name="variant_type[]">
-                                                                            <option value="warna">Color</option>
-                                                                            <option value="aroma">Scent</option>
-                                                                            <option value="rasa">Flavor</option>
-                                                                            <option value="ukuran">Size</option>
+                                                                            <option value="warna">Warna</option>
+                                                                            <option value="aroma">Aroma</option>
+                                                                            <option value="rasa">Rasa</option>
+                                                                            <option value="ukuran">Ukuran</option>
+                                                                            <option value="bahan">Bahan</option>
+                                                                            <option value="tekstur">Tekstur</option>
+                                                                            <option value="desain">Desain</option>
+                                                                            <option value="durabilitas">Durabilitas</option>
+                                                                            <option value="fungsionalitas">Fungsionalitas</option>
                                                                         </select>
                                                                     </div>
-                                                                    <small class="text-muted">Select a variant type or
-                                                                        add a new one if you don't find a suitable
-                                                                        option.</small>
+                                                                    <small class="text-muted">Pilih jenis variasi atau
+                                                                        tambahkan yang baru jika Anda tidak menemukan
+                                                                        yang cocok dengan
+                                                                        pilihan.</small>
 
-                                                                    <label class="form-label mt-2">Variant
-                                                                        Values</label>
                                                                     <div class="variant-values">
+                                                                        <label class="form-label mt-4">Nilai
+                                                                            Variasi</label>
+
                                                                         <select
                                                                             class="select2 form-select multiple-remove"
                                                                             name="variant_values[0][]"
                                                                             multiple="multiple"></select>
                                                                     </div>
-                                                                    <small class="text-muted">Select variant values or
-                                                                        add new ones if you don't find suitable
-                                                                        options.</small>
+                                                                    <small class="text-muted">Pilih nilai varian atau
+                                                                        tambahkan yang baru jika menurut Anda tidak
+                                                                        cocok dengan
+                                                                        pilihan.</small>
                                                                 </div>
                                                             </div>
                                                             <!-- Hidden image upload area -->
@@ -237,18 +246,18 @@
                                                                     accept="image/*">
                                                             </div>
                                                             <button type="button" class="btn btn-outline-primary"
-                                                                id="addVariantType">+ Add Product Variant</button>
+                                                                id="addVariantType">+ Tambah Produk Variasi</button>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="first-name-icon">Stock Quantity <span
+                                                            <label for="first-name-icon">Stock Produk <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Stock Quantity"
+                                                                    placeholder="Masukan Stock Produk"
                                                                     id="first-name-icon" name="stock_quantity"
                                                                     value="{{ old('stock_quantity') }}">
                                                                 <div class="form-control-icon">
@@ -259,18 +268,18 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('stock_quantity') }}</p>
                                                             @else
-                                                                <small class="text-muted"
-                                                                    style="font-size: 14px;">Enter the total quantity
-                                                                    of items in stock. This helps track inventory
-                                                                    levels.</small>
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Masukkan jumlah total
+                                                                    item dalam stok. Hal Ini dapat membantu melacak
+                                                                    inventaris
+                                                                    tingkat.</small>
                                                             @endif
                                                         </div>
-
 
                                                         <div class="mb-4">
                                                             <label for="first-name-icon">Regular Price <span
                                                                     style="color: red">*</span></label>
-                                                            <div class="input-group">
+                                                            <div class="input-group mt-2">
                                                                 <span class="input-group-text">Rp.</span>
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('regular_price') ? 'is-invalid' : '' }}"
@@ -283,29 +292,30 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('regular_price') }}</p>
                                                             @else
-                                                                <small class="text-muted" style="font-size: 14px;">Set
-                                                                    the regular selling price for the product in the
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px;">Mengatur
+                                                                    harga jual produk dengan
                                                                     format x.xxx.xxx (Rupiah).</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="mb-4">
-                                                            <label for="">Weight Product</label>
-                                                            <div class="input-group">
+                                                            <label for="">Berat Produk</label>
+                                                            <div class="input-group mt-2">
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="Weight Product" name="weight_product"
+                                                                    placeholder="Masukkan Berat Produk" name="weight_product"
                                                                     value="{{ old('weight_product') }}">
                                                                 <span class="input-group-text"
                                                                     id="basic-addon2">gram</span>
 
                                                             </div>
-                                                            <small class="form-text text-muted">Specify the weight of
-                                                                the product for shipping calculations.</small>
+                                                            <small class="form-text text-muted">Tentukan berat
+                                                                produk untuk perhitungan pengiriman.</small>
                                                         </div>
 
                                                         <div class="mb-4">
-                                                            <label for="">Dimension Product</label>
-                                                            <div class="row">
+                                                            <label for="">Dimensi Produk</label>
+                                                            <div class="row mt-2">
                                                                 <div class="col">
                                                                     <div class="input-group">
                                                                         <input type="text" class="form-control"
@@ -333,20 +343,19 @@
                                                                             id="basic-addon3">cm</span>
                                                                     </div>
                                                                 </div>
-                                                                <small class="form-text text-muted">Enter the
-                                                                    dimensions of
-                                                                    your
-                                                                    product for accurate shipping estimates.</small>
+                                                                <small class="form-text text-muted">Masukkan
+                                                                    dimensi dari produk untuk perkiraan pengiriman yang
+                                                                    akurat.</small>
                                                             </div>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
                                                             <label for="date_expired">Date Expired</label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2">
                                                                 <input type="text"
                                                                     class="datepicker form-control {{ $errors->has('date_expired') ? 'is-invalid' : '' }}"
                                                                     id="date_expired" name="date_expired"
-                                                                    placeholder="Enter expiration date" required>
+                                                                    placeholder="Masukan Expired Produk" required>
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-calendar"></i>
                                                                 </div>
@@ -357,9 +366,8 @@
                                                                     {{ $errors->first('date_expired') }}</p>
                                                             @else
                                                                 <small class="form-text text-muted"
-                                                                    style="font-size: 14px;">Please enter the
-                                                                    expiration
-                                                                    date of the product.</small>
+                                                                    style="font-size: 14px;">Silakan masukkan
+                                                                    tanggal kadaluwarsa produk</small>
                                                             @endif
                                                         </div>
 
@@ -367,7 +375,7 @@
                                                         <div class="card">
                                                             <label for="first-name-icon">Product Thumbnail<span
                                                                     style="color: red"> *</span></label>
-                                                            <div class="image-upload-wrap"
+                                                            <div class="image-upload-wrap mt-2"
                                                                 id="single-image-upload-wrap"
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
                                                                 <input type="file" name="main_image"
@@ -395,12 +403,13 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('main_image') }}</p>
                                                             @else
-                                                                <small class="form-text text-muted">Upload a clear,
-                                                                    high-quality image that best represents your
-                                                                    product. This will be the main image shown in search
-                                                                    results. For file formats, please use JPG, JPEG, or
-                                                                    PNG, and ensure the size is no more than 2MB. The
-                                                                    image size should be 235x235px.</small>
+                                                                <small class="form-text text-muted">Unggah gambar yang
+                                                                    jelas dan berkualitas tinggi yang paling mewakili
+                                                                    produk Anda. Gambar ini akan menjadi gambar utama
+                                                                    yang ditampilkan dalam hasil pencarian. Gunakan
+                                                                    format file JPG, JPEG, atau PNG, dan pastikan ukuran
+                                                                    file tidak lebih dari 2MB. Ukuran gambar sebaiknya
+                                                                    1024x1024 piksel.</small>
                                                             @endif
                                                         </div>
 
@@ -408,7 +417,7 @@
                                                         <div class="card">
                                                             <label for="first-name-icon">Product Gallery multiple
                                                                 <span style="color: red">*</span></label>
-                                                            <div class="image-upload-wrap" id="image-upload-wrap"
+                                                            <div class="image-upload-wrap mt-2" id="image-upload-wrap"
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
                                                                 <input type="file" id="images" name="images[]"
                                                                     class="file-upload-input"
@@ -437,19 +446,20 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('images') }}</p>
                                                             @else
-                                                                <small class="form-text text-muted">Add additional
-                                                                    images to showcase different angles or features of
-                                                                    your product. You can upload multiple images at
-                                                                    once. For image format, use JPG, JPEG, or PNG, with
-                                                                    a file size not exceeding 2MB. The image size should
-                                                                    be 235x235px, and a maximum of 6 images can be
-                                                                    uploaded.</small>
+                                                                <small class="form-text text-muted">Tambahkan gambar
+                                                                    tambahan untuk menampilkan sudut atau fitur berbeda
+                                                                    dari produk Anda. Anda dapat mengunggah beberapa
+                                                                    gambar sekaligus. Gunakan format gambar JPG, JPEG,
+                                                                    atau PNG, dengan ukuran file tidak melebihi 2MB.
+                                                                    Ukuran gambar sebaiknya 1024x1024 piksel, dan
+                                                                    maksimal 6 gambar dapat diunggah.</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="card">
                                                             <label for="video-upload">Upload Video</label>
-                                                            <div class="video-upload-wrap" id="video-upload-wrap">
+                                                            <div class="video-upload-wrap mt-2"
+                                                                id="video-upload-wrap">
                                                                 <input type="file" id="video" name="video"
                                                                     class="file-upload-input"
                                                                     onchange="readURLVideo(this);" accept="video/*"
@@ -469,23 +479,23 @@
                                                                 <!-- Video that is uploaded will be added here -->
                                                             </div>
 
-                                                            <small class="form-text text-muted">Upload a short video to
-                                                                demonstrate your product in action. This can
-                                                                significantly increase buyer interest. The uploaded
-                                                                video format must be MP4, and the file size should not
-                                                                exceed 5MB</small>
+                                                            <small class="form-text text-muted">Unggah video singkat
+                                                                untuk menunjukkan produk Anda sedang digunakan. Ini
+                                                                dapat secara signifikan meningkatkan minat pembeli.
+                                                                Format video yang diunggah harus MP4, dan ukuran file
+                                                                tidak boleh melebihi 5MB.</small>
                                                         </div>
 
                                                     </div>
 
                                                     <div class="col-12">
                                                         <div class="mt-5">
-                                                            <h4 class="card-title">Table Variant</h4>
-                                                            <p class="card-subtitle">Manage variant details including
-                                                                price, stock, weight, and status for each variant.
+                                                            <h4 class="card-title">Tabel Variasi Produk</h4>
+                                                            <p class="card-subtitle">Kelola detail variasi termasuk
+                                                                harga, stok, berat, dan status untuk setiap varian.
                                                             </p>
                                                             <div class="table-responsive">
-                                                                <table class="table table-bordered variant-table">
+                                                                <table class="table table-bordered variant-table mt-3">
                                                                     <thead class="table-light">
                                                                         <tr>
                                                                             <th>Image</th>
@@ -1030,7 +1040,6 @@
             });
         });
     </script>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {

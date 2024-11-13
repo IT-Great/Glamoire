@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order || Admin Glamoire</title>
+    <title>Order - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <style>
         .nav-tabs .nav-link {
             border: none;
@@ -25,7 +26,7 @@
 
         .nav-tabs .nav-link.active {
             background: none;
-            color: #dc3545;
+            /* color: #dc3545; */
         }
 
         .nav-tabs .nav-link.active::after {
@@ -35,7 +36,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background-color: #dc3545;
+            /* background-color: #dc3545; */
         }
 
         .gap-2 {
@@ -73,7 +74,20 @@
         @include('admin.layouts.navbar')
 
         <div id="main">
-            <div class="container-fluid p-4">
+            <div class="container-fluid">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/brand-admin">Order</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Sent</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h4 mb-0">Pesanan Saya</h1>
@@ -92,92 +106,107 @@
                     <ul class="nav nav-tabs border-0">
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order') }}"
-                                class="nav-link {{ request()->get('status') === null ? 'active text-danger' : 'text-secondary' }}">
+                                class="nav-link {{ request()->get('status') === null ? 'active text-primary' : 'text-secondary' }}">
                                 Semua
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order', ['status' => 'unpaid']) }}"
-                                class="nav-link {{ request()->get('status') === 'unpaid' ? 'active text-danger' : 'text-secondary' }}">
+                                class="nav-link {{ request()->get('status') === 'unpaid' ? 'active text-primary' : 'text-secondary' }}">
                                 Belum Bayar
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order-need-sent', ['status' => 'pending']) }}"
-                                class="nav-link {{ request()->get('status') === 'pending' ? 'active text-danger' : 'text-secondary' }}">
-                                Perlu Dikirim <span class="badge bg-danger rounded-pill ms-1">63</span>
+                                class="nav-link {{ request()->get('status') === 'pending' ? 'active text-primary' : 'text-secondary' }}">
+                                Perlu Dikirim
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order-sent', ['status' => 'shipping']) }}"
-                                class="nav-link {{ request()->get('status') === 'shipping' ? 'active text-danger' : 'text-secondary' }}">
-                                Dikirim <span class="badge bg-secondary rounded-pill ms-1">98</span>
+                                class="nav-link {{ request()->get('status') === 'shipping' ? 'active text-primary' : 'text-secondary' }}">
+                                Dikirim
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order', ['status' => 'completed']) }}"
-                                class="nav-link {{ request()->get('status') === 'completed' ? 'active text-danger' : 'text-secondary' }}">
+                                class="nav-link {{ request()->get('status') === 'completed' ? 'active text-primary' : 'text-secondary' }}">
                                 Selesai
                             </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('index-admin-order', ['status' => 'returned']) }}"
                                 class="nav-link {{ request()->get('status') === 'returned' ? 'active text-danger' : 'text-secondary' }}">
-                                Pengembalian/Pembatalan <span class="badge bg-secondary rounded-pill ms-1">3</span>
+                                Pengembalian/Pembatalan
                             </a>
                         </li>
                     </ul>
                 </div>
 
+                <!-- Info Alert -->
+                <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                    <i class="fa fa-info-circle me-2"></i>
+                    Ini adalah halaman pesanan yang sedang dalam proses pengiriman. Anda dapat memantau status pengiriman dan memastikan 
+                    pesanan sampai kepada pelanggan sesuai jadwal.
+                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+
                 <!-- Status Filters -->
-                <div class="mb-4">
-                    <div class="text-secondary mb-2">Status Pesanan</div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <button class="btn btn-outline-danger btn-sm rounded-pill">
-                            Perlu diproses (28)
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                            Telah diproses (18)
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                            Tertunda (17)
-                        </button>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-4">
+                            <div class="text-secondary mb-2">Status Pesanan</div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-outline-primary btn-sm rounded-pill">
+                                    Perlu diproses (28)
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    Telah diproses (18)
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    Tertunda (17)
+                                </button>
+                            </div>
+                        </div>
+
+
+                        <form action="{{ route('index-admin-order') }}" method="GET" class="mb-4">
+                            <div class="row g-3">
+                                <div class="col-12 col-lg-6">
+                                    <div class="input-group">
+                                        <select name="search_type" class="form-select" style="max-width: 150px;">
+                                            <option value="order_number">No. Pesanan</option>
+                                            <option value="product">Produk</option>
+                                            <option value="customer">Pelanggan</option>
+                                        </select>
+                                        <input type="text" name="search" value="{{ request()->get('search') }}"
+                                            class="form-control" placeholder="Masukkan no. pesanan">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-6">
+                                    <div class="d-flex gap-2 flex-wrap">
+                                        <select name="shipping_method" class="form-select" style="max-width: 180px;">
+                                            <option value="">Semua Jasa Kirim</option>
+                                        </select>
+                                        <select name="action" class="form-select" style="max-width: 180px;">
+                                            <option value="">Semua Tindakan</option>
+                                            <option value="process">Proses</option>
+                                            <option value="cancel">Batalkan</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            Terapkan
+                                        </button>
+                                        <a href="{{ route('index-admin-order') }}"
+                                            class="btn btn-outline-secondary">Reset</a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+
                     </div>
                 </div>
-
-                <!-- Search and Filters -->
-                <form action="{{ route('index-admin-order') }}" method="GET" class="mb-4">
-                    <div class="row g-3">
-                        <div class="col-12 col-lg-6">
-                            <div class="input-group">
-                                <select name="search_type" class="form-select" style="max-width: 150px;">
-                                    <option value="order_number">No. Pesanan</option>
-                                    <option value="product">Produk</option>
-                                    <option value="customer">Pelanggan</option>
-                                </select>
-                                <input type="text" name="search" value="{{ request()->get('search') }}"
-                                    class="form-control" placeholder="Masukkan no. pesanan">
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-6">
-                            <div class="d-flex gap-2 flex-wrap">
-                                <select name="shipping_method" class="form-select" style="max-width: 200px;">
-                                    <option value="">Semua Jasa Kirim</option>
-                                </select>
-                                <select name="action" class="form-select" style="max-width: 200px;">
-                                    <option value="">Semua Tindakan</option>
-                                    <option value="process">Proses</option>
-                                    <option value="cancel">Batalkan</option>
-                                </select>
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    Terapkan
-                                </button>
-                                <a href="{{ route('index-admin-order') }}" class="btn btn-outline-secondary">Reset</a>
-                            </div>
-                            
-                        </div>
-                    </div>
-                </form>
 
                 <!-- Order Count and Actions -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -186,7 +215,7 @@
                         <button class="btn btn-outline-secondary btn-sm">
                             <i class="bi bi-arrow-down-up me-1"></i> Urutkan
                         </button>
-                        <button class="btn btn-danger btn-sm">
+                        <button class="btn btn-primary btn-sm">
                             <i class="bi bi-send me-1"></i> Pengiriman Massal
                         </button>
                     </div>
@@ -211,7 +240,8 @@
                                 <!-- Order Header -->
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-person-fill"></i><span class="fw-medium">{{ $order->user->fullname }}</span>
+                                        <i class="bi bi-person-fill"></i><span
+                                            class="fw-medium">{{ $order->user->fullname }}</span>
                                     </div>
                                     <div class="text-secondary">No. Pesanan {{ $order->order_number }}</div>
                                 </div>
@@ -304,6 +334,7 @@
             window.open(url, '_blank');
         }
     </script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

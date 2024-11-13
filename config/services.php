@@ -36,8 +36,9 @@ return [
     ],
 
     'doku' => [
-        'client_id' => env('API_CLIENT_ID'),
-        'api_key' => env('API_KEY'),
-        'environment' => env('DOKU_ENV', 'sandbox'), // or 'production' for live
+        'client_id' => env('DOKU_CLIENT_ID'),
+        'secret_key' => env('DOKU_SECRET_KEY'),
+        'environment' => env('DOKU_ENVIRONMENT', 'sandbox'),
     ],
+
 ];

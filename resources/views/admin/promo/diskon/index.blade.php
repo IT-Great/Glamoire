@@ -17,7 +17,110 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <style>
+        .action-buttons .btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
 
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .discount-nav {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .discount-nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .discount-nav-item.active {
+            background: #435ebe;
+            color: white;
+        }
+
+        .discount-nav-item:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .discount-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .discount-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #4CAF50;
+        }
+
+        .status-expired {
+            background-color: #f44336;
+        }
+
+        .discount-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .discount-tier {
+            border-left: 4px solid #435ebe;
+            padding-left: 10px;
+            margin: 5px 0;
+        }
+
+        .promo-nav {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .promo-nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .promo-nav-item.active {
+            background: #435ebe;
+            color: white;
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background: white;
+        }
+    </style>
 </head>
 
 <body>
@@ -27,60 +130,150 @@
 
         <div id="main">
             <div class="page-heading">
+                <!-- Breadcrumb and Title -->
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="#">Promo Discount</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Promo Discount</li>
-                                </ol>
-                            </nav>
-                        </div>                       
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Discount Management</h3>
+                            <p class="text-subtitle text-muted">Manage all your discount campaigns effectively</p>
+                        </div>
                     </div>
                 </div>
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <h4>List Promo Discount</h4>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="{{ route('create-promo-diskon') }}" type="submit"
-                                        class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Data
-                                    </a>
+
+                <!-- Stats Cards -->
+                <div class="row mb-2">
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon blue mb-2">
+                                            <i class="bi bi-percent"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Active Discounts</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $activeDiscounts ?? 0 }}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <table class="table" id="table1">
+                    </div>
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon green mb-2">
+                                            <i class="bi bi-graph-up"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Total Sales with Discount</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $totalDiscountSales ?? 0 }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-4 mb-3">
+                        <div class="card stats-card bg-light-info">
+                            <div class="card-body px-4 py-4-5">
+                                <div class="row">
+                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
+                                        <div class="stats-icon blue mb-2">
+                                            <i class="bi bi-calendar-check"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                        <h6 class="text-muted font-semibold">Upcoming Discounts</h6>
+                                        <h6 class="font-extrabold mb-0">{{ $upcomingDiscounts ?? 0 }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
+                        <i class="bi bi-grid-fill me-2"></i>All Promos
+                    </a>
+                    <a href="/promo-voucher" class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
+                        <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
+                    </a>
+                    <a href="/promo-diskon" class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                        <i class="bi bi-percent me-2"></i>Discounts
+                    </a>
+                </div>
+
+                <!-- Main Content -->
+                <div class="card discount-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">All Discount Campaigns</h5>
+                        <a href="{{ route('create-promo-diskon') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Create New Discount
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="table1">
                                 <thead>
                                     <tr>
                                         <th>Discount Name</th>
-                                        <th>Periode</th>
-                                        <th>Discount</th>
-                                        <th>Action</th>
+                                        <th>Period</th>
+                                        <th>Discount Details</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($promo as $item)
                                         <tr id="promo-item-{{ $item->id }}">
-                                            <td>{{ $item->promo_name }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }}
-                                                -
-                                                {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}
+                                            <td>
+                                                <div class="d-flex flex-column">
+                                                    <h6 class="mb-1">{{ $item->promo_name }}</h6>
+                                                    <small class="text-muted">ID: #{{ $item->id }}</small>
+                                                </div>
                                             </td>
-                                            <td>{{ $item->discount }}% </td>
-                                            <td class="action-buttons">
-                                                <a href="{{ url('detail-promo/' . $item->id) }}">
-                                                    <span class="badge bg-info"> Review</span>
-                                                </a>
-                                                <a href="javascript:void(0);" class="delete-promo"
-                                                    data-id="{{ $item->id }}">
-                                                    <span class="badge bg-danger">Delete</span>
-                                                </a>
+                                            <td>
+                                                <div>
+                                                    <div class="mb-1">
+                                                        <i class="bi bi-calendar-event me-2"></i>
+                                                        {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }}
+                                                    </div>
+                                                    <div>
+                                                        <i class="bi bi-calendar-event-fill me-2"></i>
+                                                        {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="discount-info">
+                                                    {!! $item->all_discount_tiers !!}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @php
+                                                    $isActive = \Carbon\Carbon::parse($item->end_date)->isFuture();
+                                                @endphp
+                                                <span
+                                                    class="badge {{ $isActive ? 'status-active' : 'status-expired' }}">
+                                                    {{ $isActive ? 'Active' : 'Expired' }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-2">
+                                                    <a href="{{ url('detail-promo/' . $item->id) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i> View Details
+                                                    </a>
+                                                    <button class="btn btn-sm btn-danger delete-promo"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -88,10 +281,11 @@
                             </table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
             @include('admin.layouts.footer')
         </div>
+
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>

@@ -23,6 +23,52 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <style>
+        .custom-dropdown-menu {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+            min-width: 180px;
+        }
+
+        .custom-dropdown-item-all,
+        .custom-dropdown-item-product {
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .custom-dropdown-item-all:hover,
+        .custom-dropdown-item-product:hover {
+            background-color: #f8f9fa;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            color: #444;
+            font-weight: 500;
+            padding: 8px 16px;
+            min-width: 140px;
+        }
+
+        .dropdown-toggle:hover,
+        .dropdown-toggle:focus {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #2563eb;
+        }
+
         .upload__img-wrap {
             display: flex;
             flex-wrap: wrap;
@@ -235,7 +281,7 @@
                                                                         {{ old('brand_id') ? '' : 'selected' }}>
                                                                         Select
                                                                         Brand</option>
-                                                                    @foreach ($brands as $brand)                                                                    
+                                                                    @foreach ($brands as $brand)
                                                                         <option value="{{ $brand->id }}"
                                                                             {{ $promo->brand && $promo->brand->id == $brand->id ? 'selected' : '' }}>
                                                                             {{ $brand->name }}
@@ -256,57 +302,59 @@
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <div class="row">
+                                                        <div class="row mb-4">
                                                             <div class="col">
-                                                                <div class="form-group has-icon-left">
-                                                                    <label for="first-name-icon">Discount <span
-                                                                            style="color: red">*</span></label>
-                                                                    <div class="position-relative">
-                                                                        <input type="text"
-                                                                            class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
-                                                                            placeholder="Enter Discount"
-                                                                            id="first-name-icon" name="discount"
-                                                                            value="{{ $promo->discount }}">
-                                                                        <div class="form-control-icon">
-                                                                            <i class="bi bi-percent"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                    @if ($errors->has('discount'))
-                                                                        <p style="color: red">
-                                                                            {{ $errors->first('discount') }}</p>
-                                                                    @else
-                                                                        <small class="form-text text-muted"
-                                                                            style="font-size: 14px;">Enter the
-                                                                            discount amount (e.g., 10 for 10%
-                                                                            off).</small>
-                                                                    @endif
+                                                                <label class="form-label fw-medium"
+                                                                    for="first-name-icon">
+                                                                    Diskon <span class="text-danger">*</span>
+                                                                </label>
+                                                                <div class="input-group">
+                                                                    <button class="btn dropdown-toggle" type="button"
+                                                                        id="dropdownTypeAll" data-bs-toggle="dropdown"
+                                                                        aria-expanded="false">
+                                                                        <i class="bi bi-tag-fill me-1"></i>
+                                                                        Tipe Diskon<i class="bi bi-chevron-down"></i>
+                                                                    </button>
+                                                                    <ul class="dropdown-menu custom-dropdown-menu">
+                                                                        <li>
+                                                                            <a class="custom-dropdown-item-all"
+                                                                                href="#" data-type="nominal">
+                                                                                <i class="bi bi-cash"></i>
+                                                                                Nominal
+                                                                            </a>
+                                                                        </li>
+                                                                        <li>
+                                                                            <a class="custom-dropdown-item-all"
+                                                                                href="#" data-type="percentage">
+                                                                                <i class="bi bi-percent"></i>
+                                                                                Persentase
+                                                                            </a>
+                                                                        </li>
+                                                                    </ul>
+                                                                    <input type="text"
+                                                                        class="form-control border-start-0"
+                                                                        id="discountInputAll" name="discount"
+                                                                        placeholder="Masukkan nilai diskon">
+                                                                    <span class="input-group-text bg-light"
+                                                                        id="formatSymbolAll">Rp</span>
                                                                 </div>
-                                                            </div>
 
-                                                            <div class="col">
-                                                                <div class="form-group has-icon-left">
-                                                                    <label for="first-name-icon">Max Discount <span
-                                                                            style="color: red">*</span></label>
-                                                                    <div class="position-relative">
-                                                                        <input type="text"
-                                                                            class="form-control {{ $errors->has('max_discount') ? 'is-invalid' : '' }}"
-                                                                            placeholder="Enter Max Discount"
-                                                                            id="first-name-icon" name="max_discount"
-                                                                            value="{{ $promo->max_discount }}">
-                                                                        <div class="form-control-icon">
-                                                                            <i class="bi bi-percent"></i>
-                                                                        </div>
+                                                                <!-- Tambahkan hidden input di sini -->
+                                                                <input type="hidden" id="globalDiscountType"
+                                                                    name="global_discount_type" value="nominal">
+
+                                                                @if ($errors->has('discount'))
+                                                                    <div class="invalid-feedback d-block mt-1">
+                                                                        <i class="bi bi-exclamation-circle me-1"></i>
+                                                                        {{ $errors->first('discount') }}
                                                                     </div>
-                                                                    @if ($errors->has('max_discount'))
-                                                                        <p style="color: red">
-                                                                            {{ $errors->first('max_discount') }}</p>
-                                                                    @else
-                                                                        <small class="form-text text-muted"
-                                                                            style="font-size: 14px;">Specify the
-                                                                            maximum discount amount that can be applied
-                                                                            (e.g., 50).</small>
-                                                                    @endif
-                                                                </div>
+                                                                @else
+                                                                    <small class="form-text text-muted mt-1">
+                                                                        <i class="bi bi-info-circle me-1"></i>
+                                                                        Masukkan jumlah diskon (misalnya, 10 untuk 10%
+                                                                        diskon).
+                                                                    </small>
+                                                                @endif
                                                             </div>
                                                         </div>
 
@@ -320,7 +368,7 @@
                                                                     id="min_transaction" placeholder="x.xxx.xxx"
                                                                     name="min_transaction"
                                                                     value="{{ number_format($promo->min_transaction, 0, ',', '.') }}">
-                                                                    
+
                                                             </div>
                                                             @if ($errors->has('min_transaction'))
                                                                 <p style="color: red">
@@ -659,6 +707,182 @@
                     }
                 });
             });
+        });
+    </script>
+
+    {{-- handle dropdown discount --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountInput = document.getElementById('discountInputAll');
+            const globalDiscountTypeInput = document.getElementById('globalDiscountType');
+            const checkboxes = document.querySelectorAll('.select-item');
+
+            function calculateDiscountedPrice(originalPrice, discount, discountType) {
+                if (!discount || isNaN(discount)) return originalPrice;
+
+                if (discountType === 'percentage') {
+                    return originalPrice - (originalPrice * (discount / 100));
+                } else {
+                    return originalPrice - discount;
+                }
+            }
+
+            function formatPrice(price) {
+                return price.toLocaleString('id-ID');
+            }
+
+            function updateDiscountedPrices() {
+                // Get discount value and remove non-numeric characters
+                const discountValue = discountInput.value.replace(/[^\d]/g, '');
+                const discount = parseFloat(discountValue);
+                const discountType = globalDiscountTypeInput.value;
+
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const priceCell = row.querySelector('td:nth-child(4)');
+                    const originalPriceText = priceCell.innerText.split('After discount')[
+                        0]; // Get only the original price
+                    const originalPrice = parseFloat(originalPriceText.replace(/[^\d]/g, ''));
+
+                    // Remove any existing discounted price display
+                    const existingDiscountSpan = priceCell.querySelector('.discounted-price');
+                    if (existingDiscountSpan) {
+                        existingDiscountSpan.remove();
+                    }
+
+                    // Only show discount if checkbox is checked
+                    if (checkbox.checked && !isNaN(discount) && discount > 0) {
+                        const discountedPrice = calculateDiscountedPrice(originalPrice, discount,
+                            discountType);
+
+                        // Create and append discounted price element
+                        const discountSpan = document.createElement('div');
+                        discountSpan.className = 'discounted-price text-danger mt-1';
+                        discountSpan.innerHTML = `
+                <small class="text-muted">After discount: </small>
+                <span class="fw-bold">Rp ${formatPrice(discountedPrice)}</span>
+            `;
+                        priceCell.appendChild(discountSpan);
+                    }
+                });
+            }
+
+            // Event listeners
+            discountInput.addEventListener('input', updateDiscountedPrices);
+
+            document.querySelectorAll('.custom-dropdown-item-all').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = this.dataset.type;
+                    const dropdownButton = document.getElementById('dropdownTypeAll');
+                    const formatSymbol = document.getElementById('formatSymbolAll');
+
+                    dropdownButton.innerHTML = type === 'nominal' ?
+                        '<i class="bi bi-cash me-1"></i>Nominal' :
+                        '<i class="bi bi-percent me-1"></i>Persentase';
+                    formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
+                    globalDiscountTypeInput.value = type;
+                    discountInput.value = '';
+
+                    updateDiscountedPrices();
+                });
+            });
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateDiscountedPrices);
+            });
+
+            // Handle "Select All" checkbox
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    updateDiscountedPrices();
+                });
+            }
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format number to Indonesian Rupiah
+            const formatRupiah = (number) => {
+                const formatted = number.toString().replace(/\D/g, '');
+                if (!formatted) return ''; // Jika input kosong, tidak perlu pemrosesan lebih lanjut
+
+                let parsedValue = parseInt(formatted);
+
+                // Jika parsedValue tidak valid, kembalikan string kosong
+                if (isNaN(parsedValue)) {
+                    return '';
+                }
+
+                return parsedValue.toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0, // Menghapus digit desimal
+                    maximumFractionDigits: 0
+                }).replace("IDR", "").trim(); // Menghapus IDR dari string hasil
+            };
+
+            // Convert formatted string back to number
+            const getNumericValue = (formattedString) => {
+                return parseInt(formattedString.replace(/\D/g, '')) || 0;
+            };
+
+            // Handle All Products discount
+            const initializeAllProductsDiscount = () => {
+                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-all');
+                const dropdownButton = document.getElementById('dropdownTypeAll');
+                const formatSymbol = document.getElementById('formatSymbolAll');
+                const discountInput = document.getElementById('discountInputAll');
+                const globalDiscountTypeInput = document.getElementById('globalDiscountType');
+                const form = discountInput.closest('form');
+
+                let currentType = 'nominal';
+
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        currentType = this.dataset.type;
+                        dropdownButton.innerHTML = currentType === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase';
+                        formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
+                        discountInput.value = '';
+                        globalDiscountTypeInput.value = currentType;
+                    });
+                });
+
+                discountInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (currentType === 'nominal') {
+                        this.value = value ? formatRupiah(value) : '';
+                    } else {
+                        this.value = value ? value : '';
+                    }
+                });
+
+                // Add hidden input for storing numeric value
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = discountInput.name;
+                discountInput.name = discountInput.name + '_display';
+                discountInput.after(hiddenInput);
+
+                // Update hidden input before form submission
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        const numericValue = getNumericValue(discountInput.value);
+                        hiddenInput.value = numericValue;
+                    });
+                }
+            };
+
+            // Initialize both handlers
+            initializeAllProductsDiscount();
         });
     </script>
 

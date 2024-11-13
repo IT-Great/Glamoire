@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('fullname');
             $table->string('email');
             $table->text('question');
+            $table->text('response')->nullable();
+            $table->timestamp('responded_at')->nullable();
             $table->timestamps();
         });
     }

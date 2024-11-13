@@ -18,6 +18,64 @@
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/css/promo/create-edit-voucher.css">
+    <style>
+        .custom-dropdown-menu {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+            min-width: 180px;
+        }
+
+        .custom-dropdown-item-all,
+        .custom-dropdown-item-product {
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            color: #444;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .custom-dropdown-item-all:hover,
+        .custom-dropdown-item-product:hover {
+            background-color: #f8f9fa;
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            color: #444;
+            font-weight: 500;
+            padding: 8px 16px;
+            min-width: 140px;
+        }
+
+        .dropdown-toggle:hover,
+        .dropdown-toggle:focus {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #2563eb;
+        }
+
+        /* Style for the input when it has a value */
+        .form-control:not(:placeholder-shown) {
+            border-color: #dee2e6;
+        }
+
+        /* Adjust input padding to accommodate the formatted values */
+        .form-control {
+            padding-right: 8px;
+            /* text-align: right; */
+        }
+    </style>
 
 </head>
 
@@ -33,11 +91,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Shipping
-                                            Fee
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Shipping Fee
                                             Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Shipping Fee
-                                        Voucher
+                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Shipping Fee Voucher
                                     </li>
                                 </ol>
                             </nav>
@@ -46,7 +102,7 @@
                 </div>
 
                 <section class="section">
-                    <form action="{{ route('store-promo-ongkir') }}" class="form form-vertical" method="POST"
+                    <form action="{{ route('store-promo-voucher-shippingfee') }}" class="form form-vertical" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
@@ -58,7 +114,7 @@
                             <div class="card mb-4">
                                 <div class="card-body">
                                     {{-- type --}}
-                                    <input type="hidden" name="type" value="product voucher">
+                                    <input type="hidden" name="type" value="shipping fee voucher">
 
                                     <div class="form-body">
                                         <div class="row">
@@ -166,34 +222,48 @@
                                             <div class="col-md-6 mb-4">
                                                 <div class="row mb-4">
                                                     <div class="col">
-                                                        <label for="first-name-icon">Discount <span
-                                                                style="color: red">*</span></label>
+                                                        <label class="form-label fw-medium" for="first-name-icon">
+                                                            Diskon <span class="text-danger">*</span>
+                                                        </label>
                                                         <div class="input-group">
-                                                            <button class="btn btn-primary dropdown-toggle"
-                                                                type="button" id="dropdownType"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                Nominal
+                                                            <button class="btn dropdown-toggle" type="button"
+                                                                id="dropdownTypeAll" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <i class="bi bi-tag-fill me-1"></i>
+                                                                Tipe Diskon<i class="bi bi-chevron-down"></i>
                                                             </button>
-                                                            <ul class="dropdown-menu">
-                                                                <li><a class="dropdown-item" href="#"
-                                                                        data-type="nominal">Nominal</a>
+                                                            <ul class="dropdown-menu custom-dropdown-menu">
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-all" href="#"
+                                                                        data-type="nominal">
+                                                                        <i class="bi bi-cash"></i>
+                                                                        Nominal
+                                                                    </a>
                                                                 </li>
-                                                                <li><a class="dropdown-item" href="#"
-                                                                        data-type="percentage">Persentase</a>
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-all" href="#"
+                                                                        data-type="percentage">
+                                                                        <i class="bi bi-percent"></i>
+                                                                        Persentase
+                                                                    </a>
                                                                 </li>
                                                             </ul>
-                                                            <input type="text" class="form-control"
-                                                                id="discountInput" name="discount">
-                                                            <span class="input-group-text" id="formatSymbol">Rp</span>
+                                                            <input type="text" class="form-control border-start-0"
+                                                                id="discountInputAll" name="discount"
+                                                                placeholder="Masukkan nilai diskon">
+                                                            <span class="input-group-text bg-light"
+                                                                id="formatSymbolAll">Rp</span>
                                                         </div>
                                                         @if ($errors->has('discount'))
-                                                            <p style="color: red">
-                                                                {{ $errors->first('discount') }}</p>
+                                                            <div class="invalid-feedback d-block mt-1">
+                                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                                {{ $errors->first('discount') }}
+                                                            </div>
                                                         @else
-                                                            <small class="form-text text-muted"
-                                                                style="font-size: 14px;">Enter the
-                                                                discount amount (e.g., 10 for 10%
-                                                                off).</small>
+                                                            <small class="form-text text-muted mt-1">
+                                                                <i class="bi bi-info-circle me-1"></i>
+                                                                Masukkan jumlah diskon (misalnya, 10 untuk 10% diskon).
+                                                            </small>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -250,7 +320,7 @@
                                                             will be the main image shown in search results. For file
                                                             formats, please use JPG, JPEG, or PNG, and ensure the size
                                                             is no more than 2MB. The image size should be
-                                                            270x107px.</small>
+                                                            256x64px.</small>
                                                     @endif
                                                 </div>
                                             </div>
@@ -281,6 +351,7 @@
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Discount Per Product</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -294,15 +365,50 @@
                                                         <img src="{{ Storage::url($product->main_image) }}"
                                                             loading="lazy" class="lazyload" alt="Product Image"
                                                             style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ $product->product_name }}
+                                                        {{ Str::limit($product->product_name, 30, '...') }}
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm">
+                                                            <button class="btn dropdown-toggle" type="button"
+                                                                id="dropdownTypeProduct-{{ $product->id }}"
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="bi bi-tag-fill me-1"></i>
+                                                                Tipe Diskon <i class="bi bi-chevron-down"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu custom-dropdown-menu">
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-product"
+                                                                        href="#" data-type="nominal"
+                                                                        data-product-id="{{ $product->id }}">
+                                                                        <i class="bi bi-cash"></i>
+                                                                        Nominal
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-product"
+                                                                        href="#" data-type="percentage"
+                                                                        data-product-id="{{ $product->id }}">
+                                                                        <i class="bi bi-percent"></i>
+                                                                        Persentase
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                            <input type="text"
+                                                                class="form-control form-control-sm border-start-0"
+                                                                id="discountInputProduct-{{ $product->id }}"
+                                                                name="product_discount[{{ $product->id }}]"
+                                                                placeholder="Masukkan diskon">
+                                                            <span class="input-group-text bg-light"
+                                                                id="formatSymbolProduct-{{ $product->id }}">Rp</span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
+
                                     </table>
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
@@ -311,7 +417,6 @@
                                             Voucher</button>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </form>
@@ -329,7 +434,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
 
     <script>
         // Simple Datatable
@@ -337,35 +441,91 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+    {{-- handle input group discount --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const dropdownItems = document.querySelectorAll('.dropdown-item');
-            const dropdownButton = document.getElementById('dropdownType');
-            const formatSymbol = document.getElementById('formatSymbol');
-            const discountInput = document.getElementById('discountInput');
+            // Format number to Indonesian Rupiah
+            const formatRupiah = (number) => {
+                const formatted = number.toString().replace(/\D/g, '');
+                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
+            };
 
-            dropdownItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const type = this.dataset.type;
-                    dropdownButton.textContent = type === 'nominal' ? 'Nominal' : 'Persentase';
-                    formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                    discountInput.value = ''; // Reset input when changing type
+            // Handle All Products discount
+            const initializeAllProductsDiscount = () => {
+                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-all');
+                const dropdownButton = document.getElementById('dropdownTypeAll');
+                const formatSymbol = document.getElementById('formatSymbolAll');
+                const discountInput = document.getElementById('discountInputAll');
+                let currentType = 'nominal';
+
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        currentType = this.dataset.type;
+                        dropdownButton.innerHTML = currentType === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase';
+                        formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
+                        discountInput.value = ''; // Reset input when changing type
+                    });
                 });
-            });
 
-            // Optional: Format input for nominal (Rupiah)
-            discountInput.addEventListener('input', function(e) {
-                if (dropdownButton.textContent === 'Nominal') {
-                    // Remove non-numeric characters
+                discountInput.addEventListener('input', function() {
                     let value = this.value.replace(/\D/g, '');
-                    // Format as currency
-                    if (value !== '') {
-                        value = parseInt(value).toLocaleString('id-ID');
+                    if (currentType === 'nominal') {
+                        this.value = value ? formatRupiah(value) : '';
+                    } else {
+                        // Untuk persentase, hanya tambahkan % di belakang angka
+                        this.value = value ? value : '';
                     }
-                    this.value = value;
-                }
-            });
+                });
+            };
+
+            // Handle individual product discounts
+            const initializeProductDiscounts = () => {
+                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-product');
+                const productTypes = {};
+
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const type = this.dataset.type;
+                        const productId = this.dataset.productId;
+                        const dropdownButton = document.getElementById(
+                            `dropdownTypeProduct-${productId}`);
+                        const formatSymbol = document.getElementById(
+                            `formatSymbolProduct-${productId}`);
+                        const discountInput = document.getElementById(
+                            `discountInputProduct-${productId}`);
+
+                        productTypes[productId] = type;
+                        dropdownButton.innerHTML = type === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase';
+                        formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
+                        discountInput.value = ''; // Reset input when changing type
+                    });
+                });
+
+                document.querySelectorAll('input[id^="discountInputProduct-"]').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const productId = this.id.split('-')[1];
+                        const type = productTypes[productId] || 'nominal';
+                        let value = this.value.replace(/\D/g, '');
+
+                        if (type === 'nominal') {
+                            this.value = value ? formatRupiah(value) : '';
+                        } else {
+                            // Untuk persentase, hanya tambahkan % di belakang angka
+                            this.value = value ? value : '';
+                        }
+                    });
+                });
+            };
+
+            // Initialize both handlers
+            initializeAllProductsDiscount();
+            initializeProductDiscounts();
         });
     </script>
 

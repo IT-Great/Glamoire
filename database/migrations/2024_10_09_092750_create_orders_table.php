@@ -17,10 +17,12 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('shipping_address_id');
             $table->foreign('shipping_address_id')->references('id')->on('shipping_addresses')->onDelete('cascade');
-            $table->unsignedBigInteger('total_item');
-            $table->unsignedBigInteger('total_item_price');
+            $table->unsignedBigInteger('total_item')->nullable();
+            $table->unsignedBigInteger('total_item_price')->nullable();
+            // relation payment
             // $table->unsignedBigInteger('payment_id');
             // $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
+
             $table->bigInteger('shipping_cost');
             $table->string('voucher_promo')->nullable();
             $table->string('voucher_ongkir')->nullable();
@@ -28,10 +30,16 @@ return new class extends Migration
             $table->bigInteger('discount_amount')->nullable();
             $table->bigInteger('total_amount');
             $table->date('order_date');
+
+            // relation invoice
             // $table->unsignedBigInteger('invoice_id')->nullable();
-            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
-            $table->enum('status', ['waiting confirm', 'in process', 'in delivery', 'done'])
-                ->default('waiting confirm');
+            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');    
+
+            // doku_order_id di tabel orders untuk menyimpan ID yang digenerate untuk DOKU
+            $table->string('doku_order_id')->nullable(); // Simpan order ID dari DOKU sebagai string
+
+            $table->enum('status', ['pending', 'processing', 'completed', 'cancelled', 'failed'])
+                ->default('pending');
             $table->string('kurir')->nullable();
             $table->string('resi')->nullable();
             $table->timestamps();

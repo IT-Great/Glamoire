@@ -252,8 +252,7 @@ class ProductController extends Controller
 
                 return view('user.component.search')->with('data', $products);
             }
-        }
-        else{
+        } else {
             $brands = Brand::get();
 
             if (count($products) !== 0) {
@@ -268,7 +267,7 @@ class ProductController extends Controller
                     'rating'      => $rating,
                     'sort'        => $sort,
                 ];
-    
+
                 return view('user.component.search')->with('data', $data); // Return results to a view
             } else {
                 $products = [
@@ -286,44 +285,45 @@ class ProductController extends Controller
                     'rating'      => $rating,
                     'sort'        => $sort,
                 ];
-    
+
                 return view('user.component.search')->with('data', $products);
             }
         }
     }
 
-    public function notify($id){
+    public function notify($id)
+    {
         $product  = Product::where('id', $id)->first();
         $emails   = NotifyMe::where('product_id', $id)
-        ->where('status', 0)
-        ->get();
-        
-        if(count($emails) !== 0){
+            ->where('status', 0)
+            ->get();
+
+        if (count($emails) !== 0) {
             foreach ($emails as $email) {
                 $fullName = User::where('id', $email->user_id)->value('fullname');
                 $email_target = $email->email;
-                
+
                 $data = [
                     'fullname'     => $fullName,
                     'product_name' => $product->product_name,
                     'product_link' => url("http://127.0.0.1:8000/{$product->product_code}_product")
                 ];
-    
+
                 Mail::to($email_target)->send(new sendMailNotifyMe($data));
                 NotifyMe::where('email', $email_target)->update([
                     'status' => 1,
                     'send_at' => now(),
                 ]);
             }
-    
+
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Berhasil mengirimkan notifikasi broooo'
             ]);
         }
 
         return response()->json([
-            'success' => false, 
+            'success' => false,
             'message' => 'Tidak ada email yang tersimpan'
         ]);
     }
@@ -331,10 +331,13 @@ class ProductController extends Controller
     // START PRODUCT ADMIN
     public function indexProductAdmin()
     {
-        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
-        $products = Product::with(['categoryProduct', 'brand'])
-            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
-            ->paginate(100); // Eager load kategori dan brand
+        $products = Product::with(['categoryProduct', 'brand', 'promos' => function ($query) {
+            $query->select('promos.*', 'promo_products.discounted_price')
+                ->wherePivot('discounted_price', '>', 0);
+        }])
+            ->orderBy('created_at', 'desc')
+            ->paginate(100);
+
         return view('admin.product.index', [
             'products' => $products,
         ]);
@@ -542,12 +545,11 @@ class ProductController extends Controller
     }
 
 
-
     public function editProductAdmin($id)
     {
         $categories = CategoryProduct::all();
         $brands = Brand::all();
-        $product = Product::findOrFail($id); // Ganti Product dengan model yang sesuai
+        $product = Product::with('productVariations')->findOrFail($id);
 
         $options = CategoryProduct::whereHas('parent', function ($query) {
             $query->whereNotNull('parent_id');
@@ -563,14 +565,28 @@ class ProductController extends Controller
         if (is_string($product->images)) {
             $product->images = json_decode($product->images, true);
         } else {
-            $product->images = []; // Atau sesuaikan dengan kebutuhan Anda
+            $product->images = [];
         }
 
         if (is_string($product->dimensions)) {
             $product->dimensions = json_decode($product->dimensions, true);
         } else {
-            $product->dimensions = []; // Atau sesuaikan dengan kebutuhan Anda
+            $product->dimensions = [];
         }
+
+        // Format variant data untuk JavaScript
+        $variants = $product->productVariations->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'type' => $variant->variant_type,
+                'value' => $variant->variant_value,
+                'image' => $variant->variant_image ? asset('storage/' . $variant->variant_image) : null,  // Add asset() helper
+                'price' => $variant->variant_price,
+                'stock' => $variant->variant_stock,
+                'weight' => $variant->weight_variant,
+                'use_variant_image' => $variant->use_variant_image
+            ];
+        })->values()->all();
 
         return view('admin.product.edit', [
             'categories' => $categories,
@@ -578,16 +594,169 @@ class ProductController extends Controller
             'product' => $product,
             'subcategories' => $subcategories,
             'options' => $options,
+            'variants' => $variants
         ]);
     }
 
 
 
+    // public function updateProductAdmin(Request $request, $id)
+    // {
+    //     try {
+    //         // Temukan produk berdasarkan ID
+    //         $product = Product::find($id);
+
+    //         if (!$product) {
+    //             return redirect()->route('admin.product.index')->with('error', 'Product not found');
+    //         }
+
+    //         // Validasi data yang dikirim
+    //         $validatedData = $request->validate([
+    //             'product_name' => 'required|string|max:255',
+    //             'stock_quantity' => 'required',
+    //             'regular_price' => 'required',
+    //             'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //             'images' => 'nullable|array|max:6',
+    //             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //             'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
+    //             'weight_product' => 'required',
+    //             'description' => 'required',
+    //             'information_product' => 'required',
+    //             'category_product_id' => 'required', // Menambahkan validasi ini
+    //             'brand_id' => 'required', // Menambahkan validasi ini
+
+    //             // 'variant_type' => 'required|array',
+    //             // 'variant_type.*' => 'required|string',
+    //             // 'variant_values' => 'required|array',
+    //             // 'variant_values.*' => 'array',
+    //             // 'use_variant_image' => 'array',
+    //             // 'variant_images' => 'array',
+    //             // 'variant_images.*.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //         ]);
+
+    //         // Hapus format rupiah dari regular_price
+    //         $regularPrice = str_replace(['Rp. ', '.'], '', $validatedData['regular_price']);
+
+    //         // Handle Main Image Upload (Single Image)
+    //         if ($request->hasFile('main_image')) {
+    //             // Hapus gambar lama jika ada
+    //             if (!empty($product->main_image) && file_exists(public_path($product->main_image))) {
+    //                 unlink(public_path($product->main_image));
+    //             }
+
+    //             // Simpan gambar baru
+    //             $mainImage = $request->file('main_image');
+    //             $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
+    //             $mainImagePath = $mainImage->storeAs('product_images', $mainImageName, 'public');
+    //             $product->main_image = $mainImagePath;
+    //         }
+
+    //         // Handle Product Gallery Upload (Multiple Images)
+    //         if ($request->hasFile('images')) {
+    //             // Hapus gambar lama jika ada
+    //             if (!empty($product->images)) {
+    //                 $existingImages = json_decode($product->images, true);
+
+    //                 // Hapus gambar lama
+    //                 foreach ($existingImages as $existingImage) {
+    //                     if (file_exists(public_path($existingImage))) {
+    //                         unlink(public_path($existingImage));
+    //                     }
+    //                 }
+    //             }
+
+    //             // Simpan gambar baru
+    //             $newImages = [];
+    //             foreach ($request->file('images') as $image) {
+    //                 $imageName = time() . '_' . $image->getClientOriginalName();
+    //                 $imagePath = $image->storeAs('product_images', $imageName, 'public');
+    //                 $newImages[] = $imagePath;
+    //             }
+
+    //             $product->images = json_encode($newImages);
+    //         }
+
+    //         // Handle Video Upload
+    //         if ($request->hasFile('video')) {
+    //             // Hapus video lama jika ada
+    //             if (!empty($product->video) && file_exists(public_path($product->video))) {
+    //                 unlink(public_path($product->video));
+    //             }
+
+    //             // Simpan video baru
+    //             $video = $request->file('video');
+    //             $videoName = time() . '_' . $video->getClientOriginalName();
+    //             $videoPath = $video->storeAs('product_videos', $videoName, 'public');
+    //             $product->video = $videoPath;
+    //         }
+
+    //         // Update informasi produk lainnya
+    //         $product->product_name = $validatedData['product_name'];
+    //         $product->category_product_id = $validatedData['category_product_id'];
+    //         $product->brand_id = $validatedData['brand_id'];
+    //         $product->description = $validatedData['description'];
+    //         $product->information_product = $validatedData['information_product'];
+    //         $product->stock_quantity = $validatedData['stock_quantity'];
+    //         $product->weight_product = $validatedData['weight_product'];
+    //         $product->regular_price = $regularPrice; // Simpan harga dalam format angka
+
+    //         // Simpan data dimensi sebagai array JSON jika diperlukan
+    //         if ($request->has('length') && $request->has('width') && $request->has('height')) {
+    //             $dimensions = [
+    //                 'length' => $request->input('length'),
+    //                 'width' => $request->input('width'),
+    //                 'height' => $request->input('height'),
+    //             ];
+    //             $product->dimensions = json_encode($dimensions);
+    //         }
+
+    //         // Update Variations
+    //         if ($request->has('variant_type') && $request->has('variant_values')) {
+    //             // Hapus variasi lama jika diperlukan
+    //             ProductVariations::where('product_id', $product->id)->delete();
+
+    //             foreach ($request->variant_type as $typeIndex => $variantType) {
+    //                 if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
+    //                     foreach ($request->variant_values[$typeIndex] as $valueIndex => $variantValue) {
+    //                         $useVariantImage = isset($request->use_variant_image[$typeIndex][$valueIndex]) && $request->use_variant_image[$typeIndex][$valueIndex] == '1';
+    //                         $variantImage = null;
+
+    //                         if ($useVariantImage && $request->hasFile("variant_images.$typeIndex.$valueIndex")) {
+    //                             $variantImageFile = $request->file("variant_images")[$typeIndex][$valueIndex];
+    //                             $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
+    //                             $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
+    //                         }
+
+    //                         ProductVariations::create([
+    //                             'product_id' => $product->id,
+    //                             'variant_type' => $variantType,
+    //                             'variant_value' => $variantValue,
+    //                             'use_variant_image' => $useVariantImage,
+    //                             'variant_image' => $variantImage,
+    //                             'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
+    //                             'variant_price' => $request->variant_price[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
+    //                             'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
+    //                         ]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         // Simpan produk yang diperbarui
+    //         $product->save();
+
+    //         return redirect()->route('index-product-admin')->with('success', 'Product updated successfully');
+    //     } catch (\Exception $e) {
+    //         Log::error('Error updating product', ['exception' => $e->getMessage()]);
+    //         return redirect()->route('index-product-admin')->with('error', 'An error occurred while updating the product: ' . $e->getMessage());
+    //     }
+    // }
+
     public function updateProductAdmin(Request $request, $id)
     {
         try {
             // Temukan produk berdasarkan ID
-            $product = Product::find($id);
+            $product = Product::with('productVariations')->find($id);
 
             if (!$product) {
                 return redirect()->route('admin.product.index')->with('error', 'Product not found');
@@ -602,19 +771,26 @@ class ProductController extends Controller
                 'images' => 'nullable|array|max:6',
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
+                'weight_product' => 'required',
                 'description' => 'required',
-                'category_product_id' => 'required', // Menambahkan validasi ini
-                'brand_id' => 'required', // Menambahkan validasi ini
+                'information_product' => 'required',
+                'category_product_id' => 'required',
+                'brand_id' => 'required',
 
-                // 'variant_type' => 'required|array',
-                // 'variant_type.*' => 'required|string',
-                // 'variant_values' => 'required|array',
-                // 'variant_values.*' => 'array',
-                // 'use_variant_image' => 'array',
-                // 'variant_images' => 'array',
-                // 'variant_images.*.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                // Variant validation
+                'variant_ids' => 'nullable|array',
+                'variant_ids.*' => 'exists:product_variations,id',
+                'variant_price' => 'nullable|array',
+                'variant_stock' => 'nullable|array',
+                'variant_weight' => 'nullable|array',
+                'use_variant_image' => 'nullable|array',
+                'variant_images' => 'nullable|array',
+                'existing_variant_images' => 'nullable|array',
             ]);
 
+            // Handle basic product updates
+            // [Previous image, video, and basic product info handling remains the same]
+            
             // Hapus format rupiah dari regular_price
             $regularPrice = str_replace(['Rp. ', '.'], '', $validatedData['regular_price']);
 
@@ -676,7 +852,9 @@ class ProductController extends Controller
             $product->category_product_id = $validatedData['category_product_id'];
             $product->brand_id = $validatedData['brand_id'];
             $product->description = $validatedData['description'];
+            $product->information_product = $validatedData['information_product'];
             $product->stock_quantity = $validatedData['stock_quantity'];
+            $product->weight_product = $validatedData['weight_product'];
             $product->regular_price = $regularPrice; // Simpan harga dalam format angka
 
             // Simpan data dimensi sebagai array JSON jika diperlukan
@@ -689,39 +867,80 @@ class ProductController extends Controller
                 $product->dimensions = json_encode($dimensions);
             }
 
-            // Update Variations
-            if ($request->has('variant_type') && $request->has('variant_values')) {
-                // Hapus variasi lama jika diperlukan
-                ProductVariations::where('product_id', $product->id)->delete();
+            // Handle variant updates
+            if ($request->has('variant_ids')) {
+                foreach ($request->variant_ids as $index => $variantId) {
+                    $variant = ProductVariations::find($variantId);
 
-                foreach ($request->variant_type as $typeIndex => $variantType) {
-                    if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
-                        foreach ($request->variant_values[$typeIndex] as $valueIndex => $variantValue) {
-                            $useVariantImage = isset($request->use_variant_image[$typeIndex][$valueIndex]) && $request->use_variant_image[$typeIndex][$valueIndex] == '1';
-                            $variantImage = null;
+                    if ($variant) {
+                        $useVariantImage = isset($request->use_variant_image[$index]) && $request->use_variant_image[$index] == '1';
+                        $variantImage = $variant->variant_image; // Keep existing image by default
 
-                            if ($useVariantImage && $request->hasFile("variant_images.$typeIndex.$valueIndex")) {
-                                $variantImageFile = $request->file("variant_images")[$typeIndex][$valueIndex];
-                                $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
-                                $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
+                        // Handle new image upload if provided
+                        if ($useVariantImage && isset($request->file('variant_images')[$index])) {
+                            // Delete old image if exists
+                            if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+                                Storage::delete('public/' . $variant->variant_image);
                             }
 
-                            ProductVariations::create([
-                                'product_id' => $product->id,
-                                'variant_type' => $variantType,
-                                'variant_value' => $variantValue,
-                                'use_variant_image' => $useVariantImage,
-                                'variant_image' => $variantImage,
-                                'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
-                                'variant_price' => $request->variant_price[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
-                                'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex] ?? 0, // Sesuaikan
-                            ]);
+                            $variantImageFile = $request->file('variant_images')[$index];
+                            $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
+                            $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
+                        } elseif (!$useVariantImage) {
+                            // If variant image is not used anymore, delete it
+                            if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+                                Storage::delete('public/' . $variant->variant_image);
+                            }
+                            $variantImage = null;
                         }
+
+                        // Update variant with new or existing data
+                        $variant->update([
+                            'use_variant_image' => $useVariantImage,
+                            'variant_image' => $variantImage,
+                            'variant_stock' => $request->variant_stock[$index] ?? $variant->variant_stock,
+                            'variant_price' => $request->variant_price[$index] ?? $variant->variant_price,
+                            'weight_variant' => $request->variant_weight[$index] ?? $variant->weight_variant,
+                        ]);
                     }
                 }
             }
 
-            // Simpan produk yang diperbarui
+            // Handle new variants if any
+            if ($request->has('variant_type') && $request->has('variant_values')) {
+                foreach ($request->variant_type as $typeIndex => $variantType) {
+                    if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
+                        $existingVariantValues = $product->productVariations()
+                            ->where('variant_type', $variantType)
+                            ->pluck('variant_value')
+                            ->toArray();
+
+                        foreach ($request->variant_values[$typeIndex] as $value) {
+                            // Only create new variant if it doesn't exist
+                            if (!in_array($value, $existingVariantValues)) {
+                                ProductVariations::create([
+                                    'product_id' => $product->id,
+                                    'variant_type' => $variantType,
+                                    'variant_value' => $value,
+                                    'use_variant_image' => false,
+                                    'variant_image' => null,
+                                    'variant_stock' => 0,
+                                    'variant_price' => $product->regular_price,
+                                    'weight_variant' => $product->weight_product,
+                                ]);
+                            }
+                        }
+
+                        // Remove variants that are no longer in the values array
+                        $product->productVariations()
+                            ->where('variant_type', $variantType)
+                            ->whereNotIn('variant_value', $request->variant_values[$typeIndex])
+                            ->delete();
+                    }
+                }
+            }
+
+            // Save the updated product
             $product->save();
 
             return redirect()->route('index-product-admin')->with('success', 'Product updated successfully');
@@ -731,6 +950,75 @@ class ProductController extends Controller
         }
     }
 
+
+    public function indexStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.index', [
+            'products' => $products,
+        ]);
+    }
+
+    public function outOfStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.outofstock', [
+            'products' => $products,
+        ]);
+    }
+
+    public function lowStockProductAdmin()
+    {
+        // Mengurutkan produk berdasarkan tanggal pembuatan terbaru (descending)
+        $products = Product::with(['categoryProduct', 'brand'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom 'created_at'
+            ->paginate(100); // Eager load kategori dan brand
+        return view('admin.product.stock.lowstock', [
+            'products' => $products,
+        ]);
+    }
+
+
+    public function updateStock(Request $request, $id)
+    {
+        try {
+            // Validasi data
+            $validated = $request->validate([
+                'stock_quantity' => 'required|integer|min:0',
+                'date_expired' => 'required|date',
+            ]);
+
+            // Cari produk berdasarkan ID
+            $product = Product::findOrFail($id);
+
+            // Update data produk
+            $product->update($validated);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Product stock and expired date updated successfully!',
+                'data' => $product
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation error',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('Error updating product stock: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to update product'
+            ], 500);
+        }
+    }
 
 
 
