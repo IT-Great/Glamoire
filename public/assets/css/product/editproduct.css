@@ -5,14 +5,14 @@
 }
 
 .upload__img-box-multiple {
-    width: 150px;
+    width: 170px;
     padding: 0 10px;
     margin-bottom: 12px;
     position: relative;
 }
 
 .upload__img-box-single {
-    width: 150px;
+    width: 450px;
     padding: 0 10px;
     margin-bottom: 12px;
     position: relative;
@@ -24,8 +24,8 @@
     border-radius: 50%;
     background-color: rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 6px;
-    right: 6px;
+    top: 36px; /* Sesuaikan posisi dari atas, nilai ini dihitung dari tinggi preview-label + margin */
+    right: 5px; /* Sesuaikan jarak dari kanan */
     text-align: center;
     line-height: 24px;
     z-index: 1;
@@ -37,6 +37,60 @@
     font-size: 14px;
     color: white;
 }
+
+/* Styling ikon close khusus untuk multiple image */
+.upload__img-close-multiple {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: absolute;
+    top: 7px; /* Atur jarak dari atas sesuai kebutuhan */
+    right: 5px; /* Atur jarak dari kanan sesuai kebutuhan */
+    text-align: center;
+    line-height: 24px;
+    z-index: 1;
+    cursor: pointer;
+    font-size: 14px; /* Ukuran font lebih kecil */
+    color: white;
+}
+
+/* Teks 'X' untuk ikon close multiple image */
+.upload__img-close-multiple:after {
+    content: '\2716'; /* Unicode karakter 'X' */
+    font-size: 14px;
+    color: white;
+}
+
+/* Tambahkan atau update CSS berikut */
+.image-preview-container {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.image-preview-box {
+    width: 100%;
+    max-width: 150px;
+    position: relative;
+    /* Tambahkan ini */
+}
+
+.preview-label {
+    display: block;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.preview-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    position: relative; /* Tambahkan ini */
+}
+
 
 .img-bg {
     background-repeat: no-repeat;
@@ -96,7 +150,8 @@
 
 
 .upload__video-close:after {
-    content: '\2716'; /* Unicode character for 'X' */
+    content: '\2716';
+    /* Unicode character for 'X' */
     font-size: 14px;
     color: white;
 }

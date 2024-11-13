@@ -17,91 +17,136 @@
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/product/detailproduct.css') }}">
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-datatables/style.css') }}">
 
     <style>
-        .upload__img-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
+        body {
+            font-family: 'Inter', sans-serif;
+            /* background-color: #f8f9fa; */
         }
 
-        .upload__img-box-multiple {
-            width: 195px;
-            padding: 0 10px;
-            margin-bottom: 12px;
-            position: relative;
-        }
-
-        .upload__img-box-single {
-            width: 450px;
-            padding: 0 10px;
-            margin-bottom: 12px;
-            position: relative;
-        }
-
-        .upload__img-close {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            text-align: center;
-            line-height: 24px;
-            z-index: 1;
-            cursor: pointer;
-        }
-
-        .upload__img-close:after {
-            content: '\2716';
-            font-size: 14px;
+        .page-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 2rem 0;
             color: white;
+            margin-bottom: 2rem;
         }
 
-        .img-bg {
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            position: relative;
-            padding-bottom: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: #435ebe;
         }
 
-        .detail-label {
-            font-weight: 600;
-            color: #555;
-            margin-bottom: 0.5rem;
+        .breadcrumb-item a {
+            color: #435ebe;
+            text-decoration: none;
         }
 
-        .detail-value {
-            color: #333;
-            margin-bottom: 1rem;
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
         }
 
-        .voucher-banner {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
         }
 
         .status-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
             font-weight: 600;
-            display: inline-block;
+            font-size: 0.875rem;
         }
 
         .status-active {
-            background-color: #4CAF50;
+            background-color: #10b981;
             color: white;
         }
 
         .status-inactive {
-            background-color: #f44336;
+            background-color: #ef4444;
             color: white;
+        }
+
+        .detail-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .stats-card {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .voucher-banner {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+
+        .product-table img {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        .product-table td {
+            vertical-align: middle;
+        }
+
+        .product-name {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .discount-badge {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+
+        .progress {
+            height: 0.75rem;
+            border-radius: 1rem;
         }
     </style>
 
@@ -128,137 +173,207 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Basic Horizontal form layout section start -->
-                <section class="section">
-                    <div class="container">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0">Voucher Information</h4>
-                                <div>
-                                    <span
-                                        class="status-badge {{ $promo->is_active ? 'status-active' : 'status-inactive' }}">
-                                        {{ $promo->is_active ? 'Active' : 'Inactive' }}
-                                    </span>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Voucher Information</h5>
                                 </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-4">
-                                            <div class="detail-label">Voucher Name</div>
-                                            <div class="detail-value">{{ $promo->promo_name }}</div>
-                                        </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-tag me-1"></i> Voucher Name
+                                                </div>
+                                                <div class="detail-value">{{ $promo->promo_name }}</div>
+                                            </div>
 
-                                        <div class="mb-4">
-                                            <div class="detail-label">Voucher Code</div>
-                                            <div class="detail-value">Glamo{{ $promo->promo_code }}</div>
-                                        </div>
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-barcode me-1"></i> Voucher Code
+                                                </div>
+                                                <div class="detail-value">
+                                                    <span
+                                                        class="badge bg-light text-dark p-2">GLAMO{{ $promo->promo_code }}</span>
+                                                </div>
+                                            </div>
 
-                                        <div class="mb-4">
-                                            <div class="detail-label">Validity Period</div>
-                                            <div class="detail-value">
-                                                {{ date('d M Y', strtotime($promo->start_date)) }} -
-                                                {{ date('d M Y', strtotime($promo->end_date)) }}
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-calendar me-1"></i> Validity Period
+                                                </div>
+                                                <div class="detail-value">
+                                                    {{ date('d M Y', strtotime($promo->start_date)) }} -
+                                                    {{ date('d M Y', strtotime($promo->end_date)) }}
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="row mb-4">
-                                            <div class="col">
-                                                <div class="detail-label">Usage Quota</div>
-                                                <div class="detail-value">{{ $promo->usage_quota }} times</div>
+                                        <div class="col-md-6">
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-percent me-1"></i> Discount
+                                                </div>
+                                                <div class="detail-value">
+                                                    <span class="discount-badge">{{ $promo->discount }}% OFF</span>
+                                                </div>
                                             </div>
-                                            <div class="col">
-                                                <div class="detail-label">Used</div>
-                                                <div class="detail-value">{{ $promo->used_quota }} times</div>
-                                            </div>
-                                        </div>
 
-                                        <div class="mb-4">
-                                            <div class="detail-label">Max Quantity Per Buyer</div>
-                                            <div class="detail-value">{{ $promo->max_quantity_buyer }} items</div>
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-shopping-cart me-1"></i> Minimum Transaction
+                                                </div>
+                                                <div class="detail-value">
+                                                    Rp. {{ number_format($promo->min_transaction, 0, ',', '.') }}
+                                                </div>
+                                            </div>
+
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-user me-1"></i> Max Quantity Per Buyer
+                                                </div>
+                                                <div class="detail-value">{{ $promo->max_quantity_buyer }} items</div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6">
-                                        <div class="row mb-4">
-                                            <div class="col">
-                                                <div class="detail-label">Discount</div>
-                                                <div class="detail-value">{{ $promo->discount }}%</div>
+                                    <div class="row mt-4">
+                                        <div class="col-12">
+                                            <div class="detail-label mb-3">Usage Statistics</div>
+                                            <div class="row g-3">
+                                                <div class="col-md-4">
+                                                    <div class="stats-card">
+                                                        <div class="stats-value">{{ $promo->usage_quota }}</div>
+                                                        <div class="stats-label">Total Quota</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="stats-card">
+                                                        <div class="stats-value">{{ $promo->used_quota }}</div>
+                                                        <div class="stats-label">Used</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="stats-card">
+                                                        <div class="stats-value">
+                                                            {{ $promo->usage_quota - $promo->used_quota }}</div>
+                                                        <div class="stats-label">Remaining</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col">
-                                                <div class="detail-label">Max Discount</div>
-                                                <div class="detail-value">{{ $promo->max_discount }}%</div>
+                                            <div class="mt-3">
+                                                <div class="detail-label">Usage Progress</div>
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: {{ ($promo->used_quota / $promo->usage_quota) * 100 }}%">
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                                        <div class="mb-4">
-                                            <div class="detail-label">Minimum Transaction</div>
-                                            <div class="detail-value">Rp.
-                                                {{ number_format($promo->min_transaction, 0, ',', '.') }}</div>
-                                        </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Applied Products</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table product-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Stock</th>
+                                                    <th>Regular Price</th>
+                                                    <th>Discount Per Product</th>
+                                                    <th>Discounted Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($promo->products as $product)
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="{{ Storage::url($product->main_image) }}"
+                                                                    alt="Product" class="me-3"
+                                                                    onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
 
-                                        <div class="mb-4">
-                                            <div class="detail-label">Banner promo</div>
-                                            <img src="{{ Storage::url($promo->image) }}" alt="Voucher Banner"
-                                                class="voucher-banner">
-                                        </div>
+                                                                <span
+                                                                    class="product-name">{{ Str::limit($product->product_name, 20, '...') }}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>{{ $product->stock_quantity }}</td>
+
+                                                        <td>Rp.
+                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                        </td>
+                                                        <td>
+                                                            <!-- Tampilkan discount_product_voucher_item dari pivot -->
+                                                            @if (isset($product->pivot->discount_product_voucher_item))
+                                                                {{ number_format($product->pivot->discount_product_voucher_item, 0, ',', '.') }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                            %
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-danger">
+                                                                Rp.
+                                                                {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Applied Products</h4>
-                            </div>
-                            <div class="card-body">
-                                <table class="table" id="table1">
-                                    <thead>
-                                        <tr>
-                                            <th>Product</th>
-                                            <th>Stock</th>
-                                            <th>Regular Price</th>
-                                            <th>Discounted Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{-- @foreach ($promo->products as $product)
-                                        <tr>
-                                            <td>
-                                                <img src="{{ Storage::url($product->main_image) }}" 
-                                                     alt="Product Image"
-                                                     style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                {{ $product->product_name }}
-                                            </td>
-                                            <td>{{ $product->stock_quantity }}</td>
-                                            <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}</td>
-                                            <td>Rp. {{ number_format($product->regular_price * (1 - $promo->discount/100), 0, ',', '.') }}</td>
-                                        </tr>
-                                        @endforeach --}}
-                                    </tbody>
-                                </table>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Promo Banner</h5>
+                                </div>
+                                <div class="card-body">
+                                    <img src="{{ Storage::url($promo->image) }}" alt="Voucher Banner"
+                                        class="voucher-banner mb-4"
+                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
 
-                                <div class="col-12 d-flex justify-content-end mt-4">
-                                    {{-- <a href="{{ route('edit-promo-product-voucher', $promo->id) }}" class="btn btn-primary me-3">
-                                        Edit Voucher
-                                    </a> --}}
-                                    <button type="button" class="btn btn-danger"
-                                        onclick="confirmDelete({{ $promo->id }})">
-                                        Delete Voucher
-                                    </button>
+                                    <div class="d-grid gap-2">
+                                        <a href="#" class="btn btn-primary btn-action">
+                                            <i class="fas fa-edit me-2"></i> Edit Voucher
+                                        </a>
+                                        <button class="btn btn-danger btn-action"
+                                            onclick="confirmDelete({{ $promo->id }})">
+                                            <i class="fas fa-trash-alt me-2"></i> Delete Voucher
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-
+                </div>
             </div>
-
             @include('admin.layouts.footer')
-
         </div>
     </div>
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
+    <script>
+        // Fungsi untuk membuka gambar di tab baru
+        function openImageInNewTab(url) {
+            window.open(url, '_blank');
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>

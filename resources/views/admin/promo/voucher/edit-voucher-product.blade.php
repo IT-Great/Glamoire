@@ -18,54 +18,82 @@
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('assets/css/product/createproduct.css') }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="assets/css/promo/create-edit-voucher.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="{{ asset('assets/css/promo/create-edit-voucher.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-datatables/style.css') }}">
+    <style>
+        .custom-dropdown-menu {
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, .1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+            min-width: 180px;
+        }
 
-
-    {{-- <style>
-        .upload__img-wrap {
+        .custom-dropdown-item-all,
+        .custom-dropdown-item-product {
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            color: #444;
             display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
 
-        .upload__img-box-single {
-            width: 450px;
-            padding: 0 10px;
-            margin-bottom: 12px;
-            position: relative;
+        .custom-dropdown-item-all:hover,
+        .custom-dropdown-item-product:hover {
+            background-color: #f8f9fa;
+            color: #2563eb;
+            text-decoration: none;
         }
 
-        .upload__img-close {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            text-align: center;
-            line-height: 24px;
-            z-index: 1;
-            cursor: pointer;
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            color: #444;
+            font-weight: 500;
+            padding: 8px 16px;
+            min-width: 140px;
         }
 
-        .upload__img-close:after {
-            content: '\2716';
-            font-size: 14px;
-            color: white;
+        .dropdown-toggle:hover,
+        .dropdown-toggle:focus {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #2563eb;
         }
 
-        .img-bg {
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: cover;
-            position: relative;
-            padding-bottom: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .form-control:not(:placeholder-shown) {
+            border-color: #dee2e6;
         }
-    </style> --}}
+
+        .form-control {
+            padding-right: 8px;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+        .badge {
+            padding: 0.25em 0.5em;
+            font-size: 0.75em;
+            border-radius: 0.25rem;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .badge.bg-success {
+            background-color: #198754 !important;
+        }
+    </style>
 
 </head>
 
@@ -81,7 +109,8 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Voucher</a>
+                                    <li class="breadcrumb-item"><a
+                                            href="{{ route('index-promo-voucher') }}">Voucher</a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">Update Promo Product Voucher
                                     </li>
@@ -210,56 +239,56 @@
                                             </div>
 
                                             <div class="col-md-6 mb-3">
-                                                <div class="row">
+                                                <div class="row mb-4">
                                                     <div class="col">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Discount <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('discount') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Discount" id="first-name-icon"
-                                                                    name="discount" value="{{ $promo->discount }}">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-percent"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('discount'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('discount') }}</p>
-                                                            @else
-                                                                <small class="form-text text-muted"
-                                                                    style="font-size: 14px;">Enter the
-                                                                    discount amount (e.g., 10 for 10%
-                                                                    off).</small>
-                                                            @endif
+                                                        <label class="form-label fw-medium" for="first-name-icon">
+                                                            Diskon <span class="text-danger">*</span>
+                                                        </label>
+                                                        <div class="input-group">
+                                                            <button class="btn dropdown-toggle" type="button"
+                                                                id="dropdownTypeAll" data-bs-toggle="dropdown"
+                                                                aria-expanded="false">
+                                                                <i class="bi bi-tag-fill me-1"></i>
+                                                                Tipe Diskon<i class="bi bi-chevron-down"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu custom-dropdown-menu">
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-all" href="#"
+                                                                        data-type="nominal">
+                                                                        <i class="bi bi-cash"></i>
+                                                                        Nominal
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="custom-dropdown-item-all" href="#"
+                                                                        data-type="percentage">
+                                                                        <i class="bi bi-percent"></i>
+                                                                        Persentase
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                            <input type="text" class="form-control border-start-0"
+                                                                id="discountInputAll" name="discount"
+                                                                placeholder="Masukkan nilai diskon">
+                                                            <span class="input-group-text bg-light"
+                                                                id="formatSymbolAll">Rp</span>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="col">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Max Discount <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('max_discount') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Max Discount"
-                                                                    id="first-name-icon" name="max_discount"
-                                                                    value="{{ $promo->max_discount }}">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-percent"></i>
-                                                                </div>
+                                                        <!-- Tambahkan hidden input di sini -->
+                                                        <input type="hidden" id="globalDiscountType"
+                                                            name="global_discount_type" value="nominal">
+
+                                                        @if ($errors->has('discount'))
+                                                            <div class="invalid-feedback d-block mt-1">
+                                                                <i class="bi bi-exclamation-circle me-1"></i>
+                                                                {{ $errors->first('discount') }}
                                                             </div>
-                                                            @if ($errors->has('max_discount'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('max_discount') }}</p>
-                                                            @else
-                                                                <small class="form-text text-muted"
-                                                                    style="font-size: 14px;">Specify the
-                                                                    maximum discount amount that can be applied
-                                                                    (e.g., 50).</small>
-                                                            @endif
-                                                        </div>
+                                                        @else
+                                                            <small class="form-text text-muted mt-1">
+                                                                <i class="bi bi-info-circle me-1"></i>
+                                                                Masukkan jumlah diskon (misalnya, 10 untuk 10% diskon).
+                                                            </small>
+                                                        @endif
                                                     </div>
                                                 </div>
 
@@ -304,6 +333,19 @@
                                                     <div class="file-upload-content" id="single-file-upload-content"
                                                         style="display: flex; flex-wrap: wrap;">
                                                         <!-- Gambar yang diunggah akan ditambahkan di sini -->
+
+                                                        @if ($promo->image)
+                                                            <div class="image-preview-container">
+                                                                <div class="image-preview-box">
+                                                                    <span class="preview-label"
+                                                                        style="color: green;">Old Image</span>
+                                                                    <img src="{{ Storage::url($promo->image) }}"
+                                                                        class="preview-image" alt="Old Image Preview"
+                                                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
                                                     </div>
 
                                                     @if ($errors->has('image'))
@@ -325,50 +367,72 @@
                             </div>
 
                             <div class="card">
-                                <div class="card-header ">
+                                <div class="card-header">
                                     <h4>Product List</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-2">
+                                    <div class="mb-4">
                                         <label for="product_ids">Select Products <span
                                                 style="color: red">*</span></label><br>
-                                        <small class="text-muted">Select the products to which you
-                                            want to apply the discount. You can choose multiple
-                                            products.</small>
+                                        <small class="text-muted">Select the products to which you want to apply the
+                                            discount. You can choose multiple products.</small>
                                     </div>
+
                                     <table class="table" id="table1">
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <input type="checkbox" id="select-all"> Select
-                                                    All
+                                                    <input type="checkbox" id="select-all"> Select All
                                                 </th>
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($products as $product)
-                                                <tr>
+                                                <tr @if ($product->has_other_active_promo) class="bg-light" @endif>
                                                     <td>
                                                         <input type="checkbox" name="product_ids[]"
-                                                            value="{{ $product->id }}" class="select-item">
+                                                            value="{{ $product->id }}" class="select-item"
+                                                            @if ($product->is_selected) checked @endif
+                                                            @if ($product->has_other_active_promo) disabled @endif>
                                                     </td>
                                                     <td>
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ $product->product_name }}
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <div>
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                                @if ($product->has_other_active_promo)
+                                                                    <span class="badge bg-danger">Active Promo</span>
+                                                                @elseif($product->is_selected)
+                                                                    <span class="badge bg-success">Selected</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+                                                    <td>
+                                                        @if ($product->has_other_active_promo)
+                                                            <span class="text-danger">Not Available</span>
+                                                        @elseif($product->is_selected)
+                                                            <span class="text-success">Current Promo</span>
+                                                        @else
+                                                            <span class="text-success">Available</span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
+
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
                                             Voucher</button>
@@ -386,9 +450,17 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('assets/js/product/createproduct.js') }}"></script>
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
@@ -396,12 +468,69 @@
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script type="text/javascript">
+        $(function() {
+            $('#daterange').daterangepicker({
+                locale: {
+                    format: 'YYYY-MM-DD'
+                },
+                startDate: moment().startOf('day'), // Default start date
+                endDate: moment().endOf('day') // Default end date
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize DataTable
+            let table1 = document.querySelector('#table1');
+            let dataTable = new simpleDatatables.DataTable(table1);
+
+            const checkboxes = document.querySelectorAll('.select-item');
+            const selectAllCheckbox = document.getElementById('select-all');
+
+            // Handle "Select All" checkbox
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(checkbox => {
+                        if (!checkbox.disabled) {
+                            checkbox.checked = this.checked;
+                        }
+                    });
+                });
+            }
+
+            // Update "Select All" state based on individual checkboxes
+            function updateSelectAllState() {
+                const enabledCheckboxes = Array.from(checkboxes).filter(cb => !cb.disabled);
+                const allChecked = enabledCheckboxes.every(cb => cb.checked);
+                const someChecked = enabledCheckboxes.some(cb => cb.checked);
+
+                selectAllCheckbox.checked = allChecked;
+                selectAllCheckbox.indeterminate = someChecked && !allChecked;
+            }
+
+            // Add change event listeners to all checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectAllState);
+            });
+
+            // Initialize select all state
+            updateSelectAllState();
+
+            // Image preview function
+            window.openImageInNewTab = function(imageUrl) {
+                window.open(imageUrl, '_blank');
+            }
+        });
     </script>
 
     <script>

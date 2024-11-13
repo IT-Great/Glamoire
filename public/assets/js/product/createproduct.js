@@ -224,47 +224,118 @@ function readURLSingle(input) {
 
 
 // HANDLE PRODUCT VARIANT SELECT2 & TABLE VARIANT
-function initializeSelect2WithAddOption(selectElement) {
-    $(selectElement).select2({
-        tags: true, // Enable adding new options
-        tokenSeparators: [',', ' '],
-        width: '100%',
-        // allowClear: true
-    });
-}
-
-function initializeSelect2(selectElement, options = {}) {
-    $(selectElement).select2({
-        tags: true,
-        tokenSeparators: [',', ' '],
-        width: '100%',
-        closeOnSelect: false, // Multi-select
-        ...options
-    });
-}
-
 document.addEventListener('DOMContentLoaded', function () {
     const variantContainer = document.getElementById('variant-container');
     const addVariantTypeBtn = document.getElementById('addVariantType');
     const variantTableBody = document.getElementById('variant-table-body');
     let variantTypes = 1;
 
+    // Data opsi variant
     const variantOptions = {
         warna: ['Merah', 'Hijau', 'Biru', 'Ungu', 'Putih', 'Kuning', 'Pink', 'Hitam', 'Orange', 'Coklat'],
         ukuran: ['Small', 'Medium', 'Large', 'Extra Large'],
         aroma: ['Mint', 'Rosemary', 'Lavender', 'Pandan', 'Lemon'],
         rasa: ['Vanilla', 'Coklat', 'Strawberry', 'Matcha'],
+        bahan: ['Katun', 'Sutra', 'Kulit', 'Plastik', 'Kayu', 'Besi', 'Alumunium'],
+        tekstur: ['Halus', 'Kasar', 'Creamy', 'Bubuk', 'Cair', 'Keras'],
+        desain: ['Polos', 'Garis', 'Bunga', 'Geometris'],
+        durabilitas: ['Tahan Air', 'Anti Tumpah', 'Tahan Panas', 'Tahan Dingin'],
+        fungsionalitas: ['Standar', 'Menengah', 'Pro'],
     };
 
-    // Tambahkan event listener untuk input stock quantity, regular price, dan weight product
+    // Input references
     const stockQuantityInput = document.querySelector('input[name="stock_quantity"]');
     const regularPriceInput = document.querySelector('input[name="regular_price"]');
     const weightProductInput = document.querySelector('input[name="weight_product"]');
 
-    stockQuantityInput.addEventListener('input', updateVariantTable);
-    regularPriceInput.addEventListener('input', updateVariantTable);
-    weightProductInput.addEventListener('input', updateVariantTable);
+    // Inisialisasi Select2 untuk variant type 
+    function initializeSelect2WithAddOption(selectElement) {
+        $(selectElement).select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            width: '100%',
+            language: {
+                noResults: function () {
+                    return "No matches found";
+                }
+            },
+            templateResult: function (data) {
+                if (data.loading) return data.text;
 
+                var $result = $("<span></span>");
+                $result.text(data.text);
+
+                if (data.newTag === true) {
+                    // Hapus class text-muted dan tambahkan !important pada style
+                    $result.append(" <em style='color: white !important'>(Press Enter to Add New Variant Type)</em>");
+                }
+
+                return $result;
+            },
+            createTag: function (params) {
+                var term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+                return {
+                    id: term,
+                    text: term,
+                    newTag: true
+                };
+            }
+        });
+    }
+
+    // Inisialisasi Select2 untuk variant values  
+    function initializeSelect2(selectElement, options = {}) {
+        $(selectElement).select2({
+            tags: true,
+            tokenSeparators: [',', ' '],
+            width: '100%',
+            closeOnSelect: false, // Multi-select
+            createTag: function (params) {
+                // Jika input kosong, jangan buat tag baru
+                var term = $.trim(params.term);
+                if (term === '') {
+                    return null;
+                }
+
+                // Cek apakah ada opsi yang cocok
+                var existingOptions = $(selectElement).find('option').map(function () {
+                    return this.value.toLowerCase();
+                }).get();
+
+                // Hanya buat tag baru jika tidak ada yang cocok
+                if (existingOptions.indexOf(term.toLowerCase()) === -1) {
+                    return {
+                        id: term,
+                        text: term,
+                        newOption: true
+                    };
+                }
+
+                return null;
+            },
+            templateResult: function (data) {
+                var $result = $("<span></span>");
+                $result.text(data.text);
+
+                if (data.newOption) {
+                    $result.append(" <em>(Press Enter to Add New Variant Value)</em>");
+                }
+
+                return $result;
+            },
+            language: {
+                noResults: function () {
+                    return "No matches found";
+                }
+            },
+            ...options
+        });
+    }
+
+    // Update tabel variant
     function updateVariantTable() {
         variantTableBody.innerHTML = '';
         const stockQuantity = stockQuantityInput.value;
@@ -282,26 +353,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 row.innerHTML = `
                     <td>
                         <div class="form-check form-switch">
-                            <input class="form-check-input use-variant-image" type="checkbox" id="useVariantImage${typeIndex}${valueIndex}" name="use_variant_image[${typeIndex}][${valueIndex}]" value="1">
+                            <input class="form-check-input use-variant-image" type="checkbox" 
+                                id="useVariantImage${typeIndex}${valueIndex}" 
+                                name="use_variant_image[${typeIndex}][${valueIndex}]" value="1">
                             <label class="form-check-label" for="useVariantImage${typeIndex}${valueIndex}">Use variant image</label>
                         </div>
                         <div class="variant-images mt-2" style="display: none;">
-                            <input type="file" class="form-control variant-image-upload" name="variant_images[${typeIndex}][${valueIndex}]" accept="image/*">
+                            <input type="file" class="form-control variant-image-upload" 
+                                name="variant_images[${typeIndex}][${valueIndex}]" accept="image/*">
                         </div>
                     </td>
                     <td>${selectedType}: ${value}</td>
-                    <td><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" placeholder="Price" min="0" step="0.01" value="${regularPrice}"></td>
-                    <td><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" placeholder="Stock" min="0" value="${stockQuantity}"></td>
-                    <td><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" placeholder="Weight" min="0" value="${weightProduct}"></td>                    
+                    <td><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" 
+                        placeholder="Price" min="0" step="0.01" value="${regularPrice}"></td>
+                    <td><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" 
+                        placeholder="Stock" min="0" value="${stockQuantity}"></td>
+                    <td><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" 
+                        placeholder="Weight" min="0" value="${weightProduct}"></td>                    
                 `;
                 variantTableBody.appendChild(row);
             });
         });
 
-        initializeImageUpload();
-        initializeImageToggle();
+        initializeImageHandlers();
     }
 
+    // Update nilai-nilai variant
     function updateVariantValues(selectElement) {
         const selectedVariantType = selectElement.value;
         const variantValuesSelect = selectElement.closest('.variant-type').querySelector('.variant-values select');
@@ -315,19 +392,19 @@ document.addEventListener('DOMContentLoaded', function () {
             variantValuesSelect.appendChild(newOption);
         });
 
-        initializeSelect2(variantValuesSelect); // Ensure Select2 is initialized with tags
+        initializeSelect2(variantValuesSelect);
         updateVariantTable();
     }
 
-
+    // Tambah tipe variant baru
     function addNewVariantType() {
-        if (variantTypes < 2) { // Limited to 2 variant types
+        if (variantTypes < 2) {
             variantTypes++;
             const newVariantType = document.createElement('div');
             newVariantType.className = 'variant-type mb-4 p-3 border rounded';
             newVariantType.innerHTML = `
-                <label>Tipe Variant ${variantTypes}</label>
-                <div class="d-flex align-items-center">
+                <label>Tipe Variasi ${variantTypes}</label>
+                <div class="d-flex align-items-center mt-2">
                     <select class="select2-variant-type form-select me-2" name="variant_type[]">
                         <option value="warna">Color</option>
                         <option value="aroma">Scent</option>
@@ -335,19 +412,23 @@ document.addEventListener('DOMContentLoaded', function () {
                         <option value="ukuran">Size</option>
                     </select>
                 </div>
-                <small class="text-muted">Select a variant type or add a new one if you don't find a suitable option.</small>
+                <small class="text-muted">Pilih jenis variasi atau
+                    tambahkan yang baru jika Anda tidak menemukan yang cocok dengan
+                    pilihan.
+                </small>
 
-                <label class="form-label mt-2">Variant Values</label>
                 <div class="variant-values">
-                    <select class="select2 form-select multiple-remove" name="variant_values[${variantTypes - 1}][]" multiple="multiple"></select>
+                    <label class="form-label mt-4">Nilai Variasi</label>
+                    <select class="select2 form-select multiple-remove" 
+                        name="variant_values[${variantTypes - 1}][]" multiple="multiple"></select>
                 </div>
-                <small class="text-muted">Select variant values or add new ones if you don't find suitable options.</small>
+                <small class="text-muted">Pilih nilai varian atau 
+                tambahkan yang baru jika menurut Anda tidak cocok dengan pilihan.</small>
             `;
             variantContainer.appendChild(newVariantType);
 
-            // Inisialisasi Select2 untuk Tipe Variant yang Baru
             const newVariantTypeSelect = newVariantType.querySelector('.select2-variant-type');
-            initializeSelect2(newVariantTypeSelect, { tags: true, closeOnSelect: true }); // Set tags: true untuk menambahkan opsi baru
+            initializeSelect2WithAddOption(newVariantTypeSelect);
             updateVariantValues(newVariantTypeSelect);
 
             if (variantTypes >= 2) {
@@ -357,258 +438,70 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function initializeImageUpload() {
+    function initializeImageHandlers() {
+        // Image upload handler
         $('.variant-image-upload').off('change').on('change', function (event) {
             const file = event.target.files[0];
-            const reader = new FileReader();
-            const imgPreview = $('<img>').addClass('img-thumbnail mt-2').css('max-width', '100px');
-            $(this).after(imgPreview);
+            const container = $(this).closest('.variant-images');
 
-            reader.onload = function (e) {
-                imgPreview.attr('src', e.target.result).show();
-            };
+            // Remove existing preview and remove icon
+            container.find('img, .upload__video-close').remove();
 
             if (file) {
+                const reader = new FileReader();
+                const previewContainer = $('<div>').addClass('image-preview-container position-relative mt-2');
+                const imgPreview = $('<img>').addClass('img-thumbnail').css('max-width', '100px');
+
+                // Create remove icon using the provided style
+                const removeIcon = $('<span>')
+                    .addClass('upload__video-close');
+
+                // Add remove icon click handler
+                removeIcon.on('click', function () {
+                    // Clear the file input
+                    $(this).closest('.variant-images').find('input[type="file"]').val('');
+                    // Remove the preview container
+                    previewContainer.remove();
+                });
+
+                previewContainer.append(imgPreview).append(removeIcon);
+                $(this).after(previewContainer);
+
+                reader.onload = e => imgPreview.attr('src', e.target.result);
                 reader.readAsDataURL(file);
             }
         });
-    }
 
-    function initializeImageToggle() {
+        // Image toggle handler
         $('.use-variant-image').off('change').on('change', function () {
             const imageUploadArea = $(this).closest('td').find('.variant-images');
             if (this.checked) {
                 imageUploadArea.show();
             } else {
                 imageUploadArea.hide();
-                // Clear the file input and remove the preview image
-                const fileInput = imageUploadArea.find('input[type="file"]');
-                fileInput.val('');
-                imageUploadArea.find('img').remove();
+                // Clear the file input and remove any existing previews
+                imageUploadArea.find('input[type="file"]').val('');
+                imageUploadArea.find('.image-preview-container').remove();
             }
         });
     }
 
     // Event listeners
-    $(document).on('change', '.select2-variant-type', function () {
+    [stockQuantityInput, regularPriceInput, weightProductInput].forEach(input => {
+        input.addEventListener('input', updateVariantTable);
+    });
+
+    $(document).on('change', 'select[name="variant_type[]"]', function () {
         updateVariantValues(this);
     });
 
-    $(document).on('change', '.variant-values select', function () {
-        updateVariantTable();
-    });
-
+    $(document).on('change', '.variant-values select', updateVariantTable);
     addVariantTypeBtn.addEventListener('click', addNewVariantType);
 
-    // Initialize the first variant type
-    updateVariantValues(document.querySelector('select[name="variant_type[]"]'));
-    updateVariantTable();
-
-    // Initialize Select2 for dropdowns
-    initializeSelect2WithAddOption('.select2-add-option');
-    initializeSelect2('.select2-variant-type', { tags: false, closeOnSelect: true });
+    // Inisialisasi awal
+    const firstVariantType = document.querySelector('select[name="variant_type[]"]');
+    if (firstVariantType) {
+        updateVariantValues(firstVariantType);
+        initializeSelect2WithAddOption('.select2-add-option');
+    }
 });
-
-// function initializeSelect2(selectElement, options = {}) {
-//     $(selectElement).select2({
-//         tags: options.tags || false, // Enable adding new options if specified
-//         tokenSeparators: [',', ' '],
-//         width: '100%',
-//         allowClear: true,
-//         closeOnSelect: options.closeOnSelect || false, // Multi-select by default
-//         placeholder: options.placeholder || '',
-//         language: {
-//             noResults: function() {
-//                 return "No results found";
-//             },
-//             searching: function() {
-//                 return "Searching...";
-//             },
-//             inputTooShort: function () {
-//                 return "Type to search or add";
-//             }
-//         },
-//         createTag: function(params) {
-//             const term = $.trim(params.term);
-//             if (term === '') {
-//                 return null;
-//             }
-//             return {
-//                 id: term,
-//                 text: term,
-//                 newOption: true
-//             };
-//         },
-//         templateResult: function(data) {
-//             const $result = $('<span></span>');
-//             $result.text(data.text);
-//             if (data.newOption) {
-//                 $result.append(' <em>(Press Enter to Add New)</em>'); // Show the message for new options
-//             }
-//             return $result;
-//         },
-//         ...options
-//     });
-// }
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     const variantContainer = document.getElementById('variant-container');
-//     const addVariantTypeBtn = document.getElementById('addVariantType');
-//     const variantTableBody = document.getElementById('variant-table-body');
-//     let variantTypes = 1;
-
-//     const variantOptions = {
-//         warna: ['Merah', 'Hijau', 'Biru', 'Ungu', 'Putih', 'Kuning', 'Pink', 'Hitam', 'Orange', 'Coklat'],
-//         ukuran: ['Small', 'Medium', 'Large', 'Extra Large'],
-//         aroma: ['Mint', 'Rosemary', 'Lavender', 'Pandan', 'Lemon'],
-//         rasa: ['Vanilla', 'Coklat', 'Strawberry', 'Matcha'],
-//     };
-
-//     const stockQuantityInput = document.querySelector('input[name="stock_quantity"]');
-//     const regularPriceInput = document.querySelector('input[name="regular_price"]');
-//     const weightProductInput = document.querySelector('input[name="weight_product"]');
-
-//     stockQuantityInput.addEventListener('input', updateVariantTable);
-//     regularPriceInput.addEventListener('input', updateVariantTable);
-//     weightProductInput.addEventListener('input', updateVariantTable);
-
-//     function updateVariantTable() {
-//         variantTableBody.innerHTML = '';
-//         const stockQuantity = stockQuantityInput.value;
-//         const regularPrice = regularPriceInput.value;
-//         const weightProduct = weightProductInput.value;
-
-//         document.querySelectorAll('.variant-type').forEach((variantType, typeIndex) => {
-//             const typeSelect = variantType.querySelector('select[name="variant_type[]"]');
-//             const valuesSelect = variantType.querySelector('select[name^="variant_values"]');
-//             const selectedType = typeSelect.value;
-//             const selectedValues = Array.from(valuesSelect.selectedOptions).map(option => option.value);
-
-//             selectedValues.forEach((value, valueIndex) => {
-//                 const row = document.createElement('tr');
-//                 row.innerHTML = `
-//                     <td>
-//                         <div class="form-check form-switch">
-//                             <input class="form-check-input use-variant-image" type="checkbox" id="useVariantImage${typeIndex}${valueIndex}" name="use_variant_image[${typeIndex}][${valueIndex}]" value="1">
-//                             <label class="form-check-label" for="useVariantImage${typeIndex}${valueIndex}">Use variant image</label>
-//                         </div>
-//                         <div class="variant-images mt-2" style="display: none;">
-//                             <input type="file" class="form-control variant-image-upload" name="variant_images[${typeIndex}][${valueIndex}]" accept="image/*">
-//                         </div>
-//                     </td>
-//                     <td>${selectedType}: ${value}</td>
-//                     <td><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" placeholder="Price" min="0" step="0.01" value="${regularPrice}"></td>
-//                     <td><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" placeholder="Stock" min="0" value="${stockQuantity}"></td>
-//                     <td><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" placeholder="Weight" min="0" value="${weightProduct}"></td>
-//                 `;
-//                 variantTableBody.appendChild(row);
-//             });
-//         });
-
-//         initializeImageUpload();
-//         initializeImageToggle();
-//     }
-
-//     function updateVariantValues(selectElement) {
-//         const selectedVariantType = selectElement.value;
-//         const variantValuesSelect = selectElement.closest('.variant-type').querySelector('.variant-values select');
-
-//         variantValuesSelect.innerHTML = '';
-//         const options = variantOptions[selectedVariantType] || [];
-//         options.forEach(option => {
-//             const newOption = document.createElement('option');
-//             newOption.value = option;
-//             newOption.textContent = option;
-//             variantValuesSelect.appendChild(newOption);
-//         });
-
-//         initializeSelect2(variantValuesSelect, { tags: true });
-//         updateVariantTable();
-//     }
-
-//     function addNewVariantType() {
-//         if (variantTypes < 2) {
-//             variantTypes++;
-//             const newVariantType = document.createElement('div');
-//             newVariantType.className = 'variant-type mb-4 p-3 border rounded';
-//             newVariantType.innerHTML = `
-//                 <label>Tipe Variant ${variantTypes}</label>
-//                 <div class="d-flex align-items-center mb-2">
-//                     <select class="select2-variant-type form-select me-2" name="variant_type[]">
-//                         <option value="rasa">Rasa</option>
-//                         <option value="ukuran">Ukuran</option>
-//                         <option value="warna">Warna</option>
-//                     </select>
-//                 </div>
-//                 <label class="form-label">Variant Values</label>
-//                 <div class="variant-values">
-//                     <select class="select2 form-select multiple-remove" name="variant_values[${variantTypes - 1}][]" multiple="multiple"></select>
-//                 </div>
-//             `;
-//             variantContainer.appendChild(newVariantType);
-
-//             const newVariantTypeSelect = newVariantType.querySelector('.select2-variant-type');
-//             initializeSelect2(newVariantTypeSelect, { tags: true });
-//             updateVariantValues(newVariantTypeSelect);
-
-//             if (variantTypes >= 2) {
-//                 addVariantTypeBtn.disabled = true;
-//                 addVariantTypeBtn.classList.add('disabled');
-//             }
-//         }
-//     }
-
-//     function initializeImageUpload() {
-//         $('.variant-image-upload').off('change').on('change', function (event) {
-//             const file = event.target.files[0];
-//             const reader = new FileReader();
-//             const imgPreview = $('<img>').addClass('img-thumbnail mt-2').css('max-width', '100px');
-//             $(this).after(imgPreview);
-
-//             reader.onload = function (e) {
-//                 imgPreview.attr('src', e.target.result).show();
-//             };
-
-//             if (file) {
-//                 reader.readAsDataURL(file);
-//             }
-//         });
-//     }
-
-//     function initializeImageToggle() {
-//         $('.use-variant-image').off('change').on('change', function () {
-//             const imageUploadArea = $(this).closest('td').find('.variant-images');
-//             if (this.checked) {
-//                 imageUploadArea.show();
-//             } else {
-//                 imageUploadArea.hide();
-//                 const fileInput = imageUploadArea.find('input[type="file"]');
-//                 fileInput.val('');
-//                 imageUploadArea.find('img').remove();
-//             }
-//         });
-//     }
-
-//     // Event listeners
-//     $(document).on('change', '.select2-variant-type', function () {
-//         updateVariantValues(this);
-//     });
-
-//     $(document).on('change', '.variant-values select', function () {
-//         updateVariantTable();
-//     });
-
-//     addVariantTypeBtn.addEventListener('click', addNewVariantType);
-
-//     // Initialize the first variant type
-//     updateVariantValues(document.querySelector('select[name="variant_type[]"]'));
-//     updateVariantTable();
-
-//     // Initialize Select2 for dropdowns
-//     initializeSelect2('.select2-add-option', { tags: true, placeholder: 'Select or add a new option' });
-//     initializeSelect2('.select2-variant-type', { tags: false });
-// });
-
-
-
-// handle add data subcategory

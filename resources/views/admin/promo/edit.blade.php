@@ -4,20 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Edit Promo - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-    <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-    <link rel="stylesheet" href="assets/css/promo/create-edit-voucher.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-datatables/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/promo/create-edit-voucher.css') }}">
     <style>
         .custom-dropdown-menu {
             padding: 8px;
@@ -91,9 +91,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Shipping Fee
-                                            Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Shipping Fee Voucher
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo') }}">Promo
+                                        </a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Update Promo
                                     </li>
                                 </ol>
                             </nav>
@@ -102,31 +102,37 @@
                 </div>
 
                 <section class="section">
-                    <form action="{{ route('store-promo-voucher-shippingfee') }}" class="form form-vertical" method="POST"
+                    {{-- <form action="{{ route('update-promo') }}" class="form form-vertical" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf --}}
+
+                    <form action="{{ route('update-promo', $promo->id) }}" class="form form-vertical" method="POST"
                         enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
+
                         <div class="container">
-                            <h3 class="mb-2">Create Voucher</h3>
+                            <h3 class="mb-2">Update Promo</h3>
                             <p class="mb-3">
-                                Create a Shipping Fee Voucher or Product Voucher now to attract Buyers.
-                                <a href="#" class="text-blue">Learn More</a>
+                                Update Promo sekarang untuk menarik Pembeli.
+                                <a href="#" class="text-blue">Pelajari lebih lanjut</a>
                             </p>
                             <div class="card mb-4">
                                 <div class="card-body">
                                     {{-- type --}}
-                                    <input type="hidden" name="type" value="shipping fee voucher">
+                                    <input type="hidden" name="type" value="promo">
 
                                     <div class="form-body">
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group has-icon-left mb-4">
-                                                    <label for="first-name-icon">Voucher Name <span
+                                                    <label for="first-name-icon">Nama Promo <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
-                                                            placeholder="Enter Voucher Name" id="first-name-icon"
-                                                            name="promo_name" value="{{ old('promo_name') }}">
+                                                            placeholder="Masukkan nama promo" id="first-name-icon"
+                                                            name="promo_name" value="{{ $promo->promo_name }}">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-bag"></i>
                                                         </div>
@@ -135,21 +141,20 @@
                                                         <p style="color: red">{{ $errors->first('promo_name') }}
                                                         </p>
                                                     @else
-                                                        <small class="form-text text-muted"
-                                                            style="font-size: 14px;">Enter the name of
-                                                            the voucher. This will be displayed to
-                                                            users.</small>
+                                                        <small class="form-text text-muted" style="font-size: 14px;">
+                                                            Masukkan nama promo. Ini akan ditampilkan kepada pengguna.
+                                                        </small>
                                                     @endif
                                                 </div>
 
                                                 <div class="form-group has-icon-left mb-4">
                                                     <label for="daterange">Date Range <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
                                                             id="daterange" name="date_range"
-                                                            value="{{ old('date_range') }}">
+                                                            value="{{ $promo->date_range }}">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-calendar"></i>
                                                         </div>
@@ -158,10 +163,10 @@
                                                         <p style="color: red">{{ $errors->first('date_range') }}
                                                         </p>
                                                     @else
-                                                        <small class="form-text text-muted"
-                                                            style="font-size: 14px;">Select the start and
-                                                            end dates for the voucher validity. Use the format:
-                                                            MM/DD/YYYY.</small>
+                                                        <small class="form-text text-muted" style="font-size: 14px;">
+                                                            Pilih tanggal mulai dan berakhir untuk masa berlaku voucher.
+                                                            Gunakan format: MM/HH/YYYY.
+                                                        </small>
                                                     @endif
                                                 </div>
 
@@ -175,24 +180,25 @@
                                                             value="{{ strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5)) }}">
 
                                                         <small class="form-text text-muted" style="font-size: 14px;">
-                                                            Enter a combination of numbers and letters from 0-9 and
-                                                            a-z, and it should only be 5 digits long.
+                                                            Masukkan kombinasi angka dan huruf dari 0-9 dan a-z, dan
+                                                            hanya harus sepanjang 5 digit.
                                                         </small>
                                                     </div>
                                                 </div>
 
                                                 <div class="row mb-4">
                                                     <div class="col">
-                                                        <label for="usage_quota">Max Usage Quota <span
+                                                        <label for="usage_quota">Kuota Penggunaan Maks <span
                                                                 style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
+                                                            class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }} mt-2"
                                                             placeholder="e.g., 100 times" name="usage_quota"
                                                             id="usage_quota" style="margin-bottom: 4px;"
-                                                            value="{{ old('usage_quota') }}">
-                                                        <small class="form-text text-muted">Enter the maximum
-                                                            number of times this item can be used (e.g., 100,
-                                                            200).</small>
+                                                            value="{{ $promo->usage_quota }}">
+                                                        <small class="form-text text-muted">
+                                                            Masukkan jumlah maksimum penggunaan item ini (misalnya, 100,
+                                                            200).
+                                                        </small>
                                                         @if ($errors->has('usage_quota'))
                                                             <p style="color: red">
                                                                 {{ $errors->first('usage_quota') }}</p>
@@ -200,17 +206,18 @@
                                                     </div>
 
                                                     <div class="col">
-                                                        <label for="max_quantity_buyer">Max Quantity Per Buyer
+                                                        <label for="max_quantity_buyer">Jumlah Maks Per Pembeli
                                                             <span style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
+                                                            class="form-control {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }} mt-2"
                                                             placeholder="e.g., 5 items per buyer"
                                                             name="max_quantity_buyer" id="max_quantity_buyer"
                                                             style="margin-bottom: 4px;"
-                                                            value="{{ old('max_quantity_buyer') }}">
-                                                        <small class="form-text text-muted">Specify the maximum
-                                                            number of items a single buyer can purchase (e.g.,
-                                                            1, 5, 10).</small>
+                                                            value="{{ $promo->max_quantity_buyer }}">
+                                                        <small class="form-text text-muted">
+                                                            Tentukan jumlah item maksimum yang dapat dibeli oleh satu
+                                                            pembeli (misalnya, 1, 5, 10).
+                                                        </small>
                                                         @if ($errors->has('max_quantity_buyer'))
                                                             <p style="color: red">
                                                                 {{ $errors->first('max_quantity_buyer') }}</p>
@@ -219,7 +226,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-4">
+                                            <div class="col-md-6">
                                                 <div class="row mb-4">
                                                     <div class="col">
                                                         <label class="form-label fw-medium" for="first-name-icon">
@@ -254,6 +261,11 @@
                                                             <span class="input-group-text bg-light"
                                                                 id="formatSymbolAll">Rp</span>
                                                         </div>
+
+                                                        <!-- Tambahkan hidden input di sini -->
+                                                        <input type="hidden" id="globalDiscountType"
+                                                            name="global_discount_type" value="nominal">
+
                                                         @if ($errors->has('discount'))
                                                             <div class="invalid-feedback d-block mt-1">
                                                                 <i class="bi bi-exclamation-circle me-1"></i>
@@ -270,24 +282,26 @@
 
                                                 <div class="row mb-4">
                                                     <div class="col">
-                                                        <label for="min_transaction">Minimum Transaction <span
+                                                        <label for="min_transaction">Minimal Pembelian <span
                                                                 style="color: red">*</span></label>
-                                                        <div class="input-group">
+                                                        <div class="input-group mt-2">
                                                             <span class="input-group-text">Rp.</span>
                                                             <input type="text"
                                                                 class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
                                                                 id="min_transaction" placeholder="x.xxx.xxx"
                                                                 name="min_transaction"
-                                                                value="{{ old('min_transaction') }}">
+                                                                value="{{ number_format($promo->min_transaction, 0, ',', '.') }}">
+
                                                         </div>
                                                         @if ($errors->has('min_transaction'))
                                                             <p style="color: red">
                                                                 {{ $errors->first('min_transaction') }}</p>
                                                         @else
                                                             <small class="form-text text-muted"
-                                                                style="font-size: 14px;">Enter the minimum
-                                                                transaction amount required to apply the
-                                                                voucher.</small>
+                                                                style="font-size: 14px;">
+                                                                Masukkan jumlah transaksi minimum yang diperlukan untuk
+                                                                menggunakan voucher.
+                                                            </small>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -295,8 +309,8 @@
                                                 <div class="card">
                                                     <label for="first-name-icon">Banner Voucher <span
                                                             style="color: red">*</span></label>
-                                                    <div class="image-upload-wrap" id="single-image-upload-wrap"
-                                                        style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
+                                                    <div class="image-upload-wrap mt-2" id="single-image-upload-wrap"
+                                                        style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
                                                         <input type="file" name="image"
                                                             class="file-upload-input" onchange="readURLSingle(this);"
                                                             accept="image/*"
@@ -309,20 +323,34 @@
                                                     <div class="file-upload-content" id="single-file-upload-content"
                                                         style="display: flex; flex-wrap: wrap;">
                                                         <!-- Gambar yang diunggah akan ditambahkan di sini -->
+
+                                                        @if ($promo->image)
+                                                            <div class="image-preview-container">
+                                                                <div class="image-preview-box">
+                                                                    <span class="preview-label"
+                                                                        style="color: green;">Old Image</span>
+                                                                    <img src="{{ Storage::url($promo->image) }}"
+                                                                        class="preview-image" alt="Old Image Preview"
+                                                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
+                                                                </div>
+                                                            </div>
+                                                        @endif
                                                     </div>
 
                                                     @if ($errors->has('image'))
                                                         <p style="color: red">
                                                             {{ $errors->first('image') }}</p>
                                                     @else
-                                                        <small class="form-text text-muted">Upload a clear,
-                                                            high-quality image that best represents your product. This
-                                                            will be the main image shown in search results. For file
-                                                            formats, please use JPG, JPEG, or PNG, and ensure the size
-                                                            is no more than 2MB. The image size should be
-                                                            256x64px.</small>
+                                                        <small class="form-text text-muted">
+                                                            Unggah gambar yang jelas dan berkualitas tinggi yang paling
+                                                            mewakili produk Anda. Ini akan menjadi gambar utama yang
+                                                            ditampilkan dalam hasil pencarian. Untuk format file,
+                                                            gunakan JPG, JPEG, atau PNG, dan pastikan ukurannya tidak
+                                                            lebih dari 2MB. Ukuran gambar harus 270x107px.
+                                                        </small>
                                                     @endif
                                                 </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -335,88 +363,76 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-4">
-                                        <label for="product_ids">Select Products <span
+                                        <label for="product_ids">Pilih Produk <span
                                                 style="color: red">*</span></label><br>
-                                        <small class="text-muted">Select the products to which you
-                                            want to apply the discount. You can choose multiple
-                                            products.</small>
+                                        <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
+                                            dapat memilih beberapa produk.</small>
                                     </div>
+
                                     <table class="table" id="table1">
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <input type="checkbox" id="select-all"> Select
-                                                    All
+                                                    <input type="checkbox" id="select-all"> Select All
                                                 </th>
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
-                                                <th>Discount Per Product</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($products as $product)
-                                                <tr>
+                                                <tr @if ($product->has_other_active_promo) class="bg-light" @endif>
                                                     <td>
                                                         <input type="checkbox" name="product_ids[]"
-                                                            value="{{ $product->id }}" class="select-item">
+                                                            value="{{ $product->id }}" class="select-item"
+                                                            @if ($product->is_selected) checked @endif
+                                                            @if ($product->has_other_active_promo) disabled @endif>
                                                     </td>
                                                     <td>
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ Str::limit($product->product_name, 30, '...') }}
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <div>
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                                @if ($product->has_other_active_promo)
+                                                                    <span class="badge bg-danger">Active Promo</span>
+                                                                @elseif($product->is_selected)
+                                                                    <span class="badge bg-success">Selected</span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
                                                     <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
                                                     </td>
                                                     <td>
-                                                        <div class="input-group input-group-sm">
-                                                            <button class="btn dropdown-toggle" type="button"
-                                                                id="dropdownTypeProduct-{{ $product->id }}"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="bi bi-tag-fill me-1"></i>
-                                                                Tipe Diskon <i class="bi bi-chevron-down"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu custom-dropdown-menu">
-                                                                <li>
-                                                                    <a class="custom-dropdown-item-product"
-                                                                        href="#" data-type="nominal"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        <i class="bi bi-cash"></i>
-                                                                        Nominal
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="custom-dropdown-item-product"
-                                                                        href="#" data-type="percentage"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        <i class="bi bi-percent"></i>
-                                                                        Persentase
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <input type="text"
-                                                                class="form-control form-control-sm border-start-0"
-                                                                id="discountInputProduct-{{ $product->id }}"
-                                                                name="product_discount[{{ $product->id }}]"
-                                                                placeholder="Masukkan diskon">
-                                                            <span class="input-group-text bg-light"
-                                                                id="formatSymbolProduct-{{ $product->id }}">Rp</span>
-                                                        </div>
+                                                        @if ($product->has_other_active_promo)
+                                                            <span class="text-danger">Not Available</span>
+                                                        @elseif($product->is_selected)
+                                                            <span class="text-success">Current Promo</span>
+                                                        @else
+                                                            <span class="text-success">Available</span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
-
                                     </table>
+
+
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                            Voucher</button>
+                                            Promo</button>
                                         <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                            Voucher</button>
+                                            Promo</button>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </form>
@@ -426,14 +442,15 @@
         </div>
     </div>
 
-    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
 
     <script>
         // Simple Datatable
@@ -441,13 +458,132 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
-    {{-- handle input group discount --}}
+    <script>
+        // Fungsi untuk membuka gambar di tab baru
+        function openImageInNewTab(url) {
+            window.open(url, '_blank');
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountInput = document.getElementById('discountInputAll');
+            const globalDiscountTypeInput = document.getElementById('globalDiscountType');
+            const checkboxes = document.querySelectorAll('.select-item');
+
+            function calculateDiscountedPrice(originalPrice, discount, discountType) {
+                if (!discount || isNaN(discount)) return originalPrice;
+
+                if (discountType === 'percentage') {
+                    return originalPrice - (originalPrice * (discount / 100));
+                } else {
+                    return originalPrice - discount;
+                }
+            }
+
+            function formatPrice(price) {
+                return price.toLocaleString('id-ID');
+            }
+
+            function updateDiscountedPrices() {
+                // Get discount value and remove non-numeric characters
+                const discountValue = discountInput.value.replace(/[^\d]/g, '');
+                const discount = parseFloat(discountValue);
+                const discountType = globalDiscountTypeInput.value;
+
+                checkboxes.forEach(checkbox => {
+                    const row = checkbox.closest('tr');
+                    const priceCell = row.querySelector('td:nth-child(4)');
+                    const originalPriceText = priceCell.innerText.split('After discount')[
+                        0]; // Get only the original price
+                    const originalPrice = parseFloat(originalPriceText.replace(/[^\d]/g, ''));
+
+                    // Remove any existing discounted price display
+                    const existingDiscountSpan = priceCell.querySelector('.discounted-price');
+                    if (existingDiscountSpan) {
+                        existingDiscountSpan.remove();
+                    }
+
+                    // Only show discount if checkbox is checked
+                    if (checkbox.checked && !isNaN(discount) && discount > 0) {
+                        const discountedPrice = calculateDiscountedPrice(originalPrice, discount,
+                            discountType);
+
+                        // Create and append discounted price element
+                        const discountSpan = document.createElement('div');
+                        discountSpan.className = 'discounted-price text-danger mt-1';
+                        discountSpan.innerHTML = `
+                    <small class="text-muted">After discount: </small>
+                    <span class="fw-bold">Rp ${formatPrice(discountedPrice)}</span>
+                `;
+                        priceCell.appendChild(discountSpan);
+                    }
+                });
+            }
+
+            // Event listeners
+            discountInput.addEventListener('input', updateDiscountedPrices);
+
+            document.querySelectorAll('.custom-dropdown-item-all').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = this.dataset.type;
+                    const dropdownButton = document.getElementById('dropdownTypeAll');
+                    const formatSymbol = document.getElementById('formatSymbolAll');
+
+                    dropdownButton.innerHTML = type === 'nominal' ?
+                        '<i class="bi bi-cash me-1"></i>Nominal' :
+                        '<i class="bi bi-percent me-1"></i>Persentase';
+                    formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
+                    globalDiscountTypeInput.value = type;
+                    discountInput.value = '';
+
+                    updateDiscountedPrices();
+                });
+            });
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateDiscountedPrices);
+            });
+
+            // Handle "Select All" checkbox
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    updateDiscountedPrices();
+                });
+            }
+        });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Format number to Indonesian Rupiah
             const formatRupiah = (number) => {
                 const formatted = number.toString().replace(/\D/g, '');
-                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
+                if (!formatted) return ''; // Jika input kosong, tidak perlu pemrosesan lebih lanjut
+
+                let parsedValue = parseInt(formatted);
+
+                // Jika parsedValue tidak valid, kembalikan string kosong
+                if (isNaN(parsedValue)) {
+                    return '';
+                }
+
+                return parsedValue.toLocaleString('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0, // Menghapus digit desimal
+                    maximumFractionDigits: 0
+                }).replace("IDR", "").trim(); // Menghapus IDR dari string hasil
+            };
+
+            // Convert formatted string back to number
+            const getNumericValue = (formattedString) => {
+                return parseInt(formattedString.replace(/\D/g, '')) || 0;
             };
 
             // Handle All Products discount
@@ -456,6 +592,9 @@
                 const dropdownButton = document.getElementById('dropdownTypeAll');
                 const formatSymbol = document.getElementById('formatSymbolAll');
                 const discountInput = document.getElementById('discountInputAll');
+                const globalDiscountTypeInput = document.getElementById('globalDiscountType');
+                const form = discountInput.closest('form');
+
                 let currentType = 'nominal';
 
                 dropdownItems.forEach(item => {
@@ -466,7 +605,8 @@
                             '<i class="bi bi-cash me-1"></i>Nominal' :
                             '<i class="bi bi-percent me-1"></i>Persentase';
                         formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
+                        discountInput.value = '';
+                        globalDiscountTypeInput.value = currentType;
                     });
                 });
 
@@ -475,57 +615,28 @@
                     if (currentType === 'nominal') {
                         this.value = value ? formatRupiah(value) : '';
                     } else {
-                        // Untuk persentase, hanya tambahkan % di belakang angka
                         this.value = value ? value : '';
                     }
                 });
-            };
 
-            // Handle individual product discounts
-            const initializeProductDiscounts = () => {
-                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-product');
-                const productTypes = {};
+                // Add hidden input for storing numeric value
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = discountInput.name;
+                discountInput.name = discountInput.name + '_display';
+                discountInput.after(hiddenInput);
 
-                dropdownItems.forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const type = this.dataset.type;
-                        const productId = this.dataset.productId;
-                        const dropdownButton = document.getElementById(
-                            `dropdownTypeProduct-${productId}`);
-                        const formatSymbol = document.getElementById(
-                            `formatSymbolProduct-${productId}`);
-                        const discountInput = document.getElementById(
-                            `discountInputProduct-${productId}`);
-
-                        productTypes[productId] = type;
-                        dropdownButton.innerHTML = type === 'nominal' ?
-                            '<i class="bi bi-cash me-1"></i>Nominal' :
-                            '<i class="bi bi-percent me-1"></i>Persentase';
-                        formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
+                // Update hidden input before form submission
+                if (form) {
+                    form.addEventListener('submit', function(e) {
+                        const numericValue = getNumericValue(discountInput.value);
+                        hiddenInput.value = numericValue;
                     });
-                });
-
-                document.querySelectorAll('input[id^="discountInputProduct-"]').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const productId = this.id.split('-')[1];
-                        const type = productTypes[productId] || 'nominal';
-                        let value = this.value.replace(/\D/g, '');
-
-                        if (type === 'nominal') {
-                            this.value = value ? formatRupiah(value) : '';
-                        } else {
-                            // Untuk persentase, hanya tambahkan % di belakang angka
-                            this.value = value ? value : '';
-                        }
-                    });
-                });
+                }
             };
 
             // Initialize both handlers
             initializeAllProductsDiscount();
-            initializeProductDiscounts();
         });
     </script>
 
@@ -612,9 +723,6 @@
         });
     </script>
 
-    <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>
-
     {{-- Upload Single Image --}}
     <script>
         // Fungsi untuk mengunggah satu gambar
@@ -653,7 +761,9 @@
             }
         }
     </script>
-    <script src="assets/js/main.js"></script>
+    <!-- toastify -->
+    <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

@@ -16,8 +16,9 @@ use App\Models\OrderItem;
 use App\Models\Payment;
 use App\Models\Invoice;
 use App\Models\Promo;
+use Exception;
 
-
+use function Laravel\Prompts\error;
 
 class CheckoutController extends Controller
 {

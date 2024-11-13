@@ -12,7 +12,9 @@ use App\Models\Cart_item;
 use App\Models\PromoTier;
 use App\Models\Wishlist;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,13 +26,13 @@ class PromoController extends Controller
         try {
             $date = now()->format('Y-m-d');
             $promos = Promo::where('type', '=', 'promo')
-            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
-            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
-            ->with(['products'])
-            ->get();
-            
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->with(['products'])
+                ->get();
+
             $vouchers = Promo::where('type', '=', 'voucher')->get();
-    
+
             return view('user.component.promo', [
                 'promos' => $promos,
                 'vouchers' => $vouchers,
@@ -38,7 +40,6 @@ class PromoController extends Controller
         } catch (Exception $err) {
             dd($err);
         }
-
     }
 
     public function detailPromoUser($name)
@@ -52,7 +53,7 @@ class PromoController extends Controller
 
             foreach ($promo as $promoItem) {
                 foreach ($promoItem->products as $product) {
-                    
+
                     $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
                     $priceAfterDiscount = $product->regular_price - $priceDiscount;
 
@@ -101,24 +102,180 @@ class PromoController extends Controller
     // ADMIN
     public function indexPromo()
     {
-        $promo = Promo::where('type', 'promo')->get();
-        $products = Product::all();
+        $promo = Promo::where('type', 'promo')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                // Set status berdasarkan end_date
+                $item->isActive = $item->end_date
+                    ? \Carbon\Carbon::parse($item->end_date)->isFuture()
+                    : false;
+                return $item;
+            });
+
+        $products = Product::with(['promos' => function ($query) {
+            $query->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%d/%m/%Y') <= CURDATE()")
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%d/%m/%Y') >= CURDATE()");
+        }])->get();
+
         $brands = Brand::all();
         return view('admin.promo.index', [
             'promo' => $promo,
             'products' => $products,
             'brands' => $brands,
-
         ]);
     }
+
+    // public function toggleStatus($id)
+    // {
+    //     try {
+    //         $promo = Promo::findOrFail($id);
+
+    //         // Update status promo
+    //         $promo->togglePromoStatus();
+
+    //         // Update date_range berdasarkan status baru
+    //         if ($promo->status === 'Active') {
+    //             $startDate = now()->format('Y-m-d');
+    //             $endDate = now()->addDays(30)->format('Y-m-d');
+    //         } else {
+    //             $startDate = now()->format('Y-m-d');
+    //             $endDate = now()->format('Y-m-d');
+    //         }
+
+    //         $promo->date_range = "{$startDate} - {$endDate}";
+    //         $promo->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Status promo berhasil diubah'
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error("Gagal mengubah status promo: " . $e->getMessage());
+
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Gagal mengubah status promo'
+    //         ], 500);
+    //     }
+    // }
+
+    public function toggleStatus($id)
+    {
+        try {
+            $promo = Promo::findOrFail($id);
+
+            // Toggle status
+            $currentStatus = $promo->status;
+            $promo->status = ($currentStatus === 'Active') ? 'Expired' : 'Active';
+
+            // Update date_range berdasarkan status baru
+            if ($promo->status === 'Active') {
+                $startDate = now()->format('d/m/Y');
+                $endDate = now()->addDays(30)->format('d/m/Y');
+            } else {
+                $startDate = now()->format('d/m/Y');
+                $endDate = now()->format('d/m/Y');
+            }
+
+            $promo->date_range = "{$startDate} - {$endDate}";
+            $promo->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status promo berhasil diubah menjadi ' . $promo->status
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Gagal mengubah status promo: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengubah status promo'
+            ], 500);
+        }
+    }
+
 
     public function createPromo()
     {
         // Ambil data produk dari database
-        $products = Product::all(); // Pastikan kamu menggunakan model Product
+        $products = Product::with(['promos'])->get()->map(function ($product) {
+            // Ambil tipe promo dari request (asumsi tipe promo dikirim via form)
+            $promoType = request('type', 'default_type');
+            $product->has_active_promo = $product->hasActivePromoByType($promoType);
+            return $product;
+        });
+
         return view('admin.promo.create', compact('products'));
     }
 
+
+    // default code
+    // public function storePromo(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'promo_name' => 'required|string|max:255',
+    //             'date_range' => 'required|string|max:255',
+    //             'min_transaction' => 'required',
+    //             'usage_quota' => 'required',
+    //             'max_quantity_buyer' => 'required',
+    //             'promo_code' => 'required',
+    //             'discount' => 'required|numeric',
+    //             'global_discount_type' => 'required|in:nominal,percentage',
+    //             'product_ids' => 'required|array',
+    //             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+    //         ]);
+
+    //         // Simpan data diskon
+    //         $discount = $request->input('discount');
+    //         $discountType = $request->input('global_discount_type');
+
+    //         // Hapus format rupiah dari regular_price
+    //         $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+    //         // Generate kode promo otomatis
+    //         $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
+    //         $promoCode = 'Glamo' . $randomCode;
+
+
+    //         // Simpan single image
+    //         $imagePath = null;
+    //         if ($request->hasFile('image')) {
+    //             $image = $request->file('image');
+    //             $imageName = time() . '_' . $image->getClientOriginalName();
+    //             // Simpan file ke storage/app/public/uploads/promo
+    //             $imagePath = $image->storeAs('promo', $imageName, 'public');
+    //         }
+
+    //         // Simpan data promo
+    //         $promo = Promo::create([
+    //             'promo_name' => $request->promo_name,
+    //             'date_range' => $request->date_range, // Tidak perlu explode, mutator akan menangani
+    //             'min_transaction' => $minTransaction,
+    //             'promo_code' => $promoCode,
+    //             'usage_quota' => $request->usage_quota,
+    //             'max_quantity_buyer' => $request->max_quantity_buyer,
+    //             'discount' => $discount,
+    //             'discount_type' => $discountType,
+    //             'image' => $imagePath ?? null,
+    //             'type' => $request->type, // Isi field 'type' dari input tersembunyi
+    //         ]);
+
+    //         $promo->products()->attach($request->product_ids);
+
+    //         // Redirect dengan pesan sukses
+    //         return redirect()->route('index-promo')->with('success', 'Promo created successfully!');
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         return redirect()->back()->withErrors($e->errors())->withInput();
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
+    //         return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Promo: ' . $e->getMessage()])->withInput();
+    //     }
+    // }
+
+
+    // code from claude
     public function storePromo(Request $request)
     {
         try {
@@ -129,52 +286,221 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'discount' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
                 'product_ids' => 'required|array',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
-            // Hapus format rupiah dari regular_price
+            DB::beginTransaction();
+
+            // Cek apakah produk yang dipilih sudah memiliki diskon dengan tipe yang sama
+            $alreadyDiscountedProducts = Product::whereIn('id', $request->product_ids)
+                ->whereHas('promos', function ($query) use ($request) {
+                    $query->where('type', $request->type); // Cek apakah promo dengan tipe yang sama sudah ada
+                })
+                ->pluck('product_name')
+                ->toArray();
+
+            if (count($alreadyDiscountedProducts) > 0) {
+                return redirect()->back()->withErrors([
+                    'product_ids' => 'The following products already have a discount applied for this promo type: ' . implode(', ', $alreadyDiscountedProducts)
+                ])->withInput();
+            }
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
 
-            // Generate kode promo otomatis
             $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
             $promoCode = 'Glamo' . $randomCode;
 
-
-            // Simpan single image
+            // Simpan gambar
             $imagePath = null;
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
-                // Simpan file ke storage/app/public/uploads/promo
                 $imagePath = $image->storeAs('promo', $imageName, 'public');
             }
 
             // Simpan data promo
             $promo = Promo::create([
                 'promo_name' => $request->promo_name,
-                'date_range' => $request->date_range, // Tidak perlu explode, mutator akan menangani
+                'date_range' => $request->date_range,
                 'min_transaction' => $minTransaction,
                 'promo_code' => $promoCode,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount,
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath ?? null,
-                'type' => $request->type, // Isi field 'type' dari input tersembunyi
+                'type' => $request->type,
             ]);
 
-            $promo->products()->attach($request->product_ids);
+            // Proses diskon untuk setiap produk
+            foreach ($request->product_ids as $productId) {
+                $product = Product::find($productId);
 
-            // Redirect dengan pesan sukses
+                if ($product) {
+                    $discountedPrice = $this->calculateDiscountedPrice(
+                        $product->regular_price,
+                        $discount,
+                        $discountType
+                    );
+
+                    // Simpan detail diskon ke tabel pivot
+                    $promo->products()->attach($productId, [
+                        'discount_product_voucher_item' => $discount,
+                        'discount_type' => $discountType,
+                        'discounted_price' => $discountedPrice
+                    ]);
+                }
+            }
+
+            DB::commit();
+
             return redirect()->route('index-promo')->with('success', 'Promo created successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Promo: ' . $e->getMessage()])->withInput();
         }
     }
+
+
+    private function calculateDiscountedPrice($originalPrice, $discount, $discountType)
+    {
+        if ($discountType === 'percentage') {
+            return $originalPrice - ($originalPrice * ($discount / 100));
+        } else { // nominal
+            return $originalPrice - $discount;
+        }
+    }
+
+    public function editPromo($id)
+    {
+
+        $promo = Promo::with(['products'])->findOrFail($id);
+        $products = Product::withCount(['promos'])->get();
+
+        // Transform products to include current selection status
+        $products = $products->map(function ($product) use ($promo) {
+            $product->is_selected = $promo->products->contains('id', $product->id);
+            $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+            return $product;
+        });
+
+        return view('admin.promo.edit', [
+            'promo' => $promo,
+            'products' => $products,
+        ]);
+    }
+
+
+    public function updatePromo(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'promo_name' => 'required|string|max:255',
+                'date_range' => 'required|string|max:255',
+                'min_transaction' => 'required',
+                'usage_quota' => 'required',
+                'max_quantity_buyer' => 'required',
+                'promo_code' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
+                'product_ids' => 'required|array',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            DB::beginTransaction();
+
+            // Fetch existing promo
+            $promo = Promo::findOrFail($id);
+
+            // Check if any selected products already have a promo of the same type
+            $alreadyDiscountedProducts = Product::whereIn('id', $request->product_ids)
+                ->whereHas('promos', function ($query) use ($request, $promo) {
+                    $query->where('type', $request->type)->where('promo_id', '!=', $promo->id);
+                })
+                ->pluck('product_name')
+                ->toArray();
+
+            if (count($alreadyDiscountedProducts) > 0) {
+                return redirect()->back()->withErrors([
+                    'product_ids' => 'The following products already have a discount applied for this promo type: ' . implode(', ', $alreadyDiscountedProducts)
+                ])->withInput();
+            }
+
+            // Update discount details
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+            $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+            // Handle image update
+            if ($request->hasFile('image')) {
+                if ($promo->image) {
+                    Storage::disk('public')->delete($promo->image); // Delete the old image
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('promo', $imageName, 'public');
+            } else {
+                $imagePath = $promo->image; // Keep the existing image if no new one is uploaded
+            }
+
+            // Update promo data
+            $promo->update([
+                'promo_name' => $request->promo_name,
+                'date_range' => $request->date_range,
+                'min_transaction' => $minTransaction,
+                'promo_code' => $request->promo_code,
+                'usage_quota' => $request->usage_quota,
+                'max_quantity_buyer' => $request->max_quantity_buyer,
+                'discount' => $discount,
+                'discount_type' => $discountType,
+                'image' => $imagePath,
+                'type' => $request->type,
+            ]);
+
+            // Update promo products
+            $promo->products()->detach(); // Detach existing products
+            foreach ($request->product_ids as $productId) {
+                $product = Product::find($productId);
+
+                if ($product) {
+                    $discountedPrice = $this->calculateDiscountedPrice(
+                        $product->regular_price,
+                        $discount,
+                        $discountType
+                    );
+
+                    // Attach updated discount details to pivot table
+                    $promo->products()->attach($productId, [
+                        'discount_product_voucher_item' => $discount,
+                        'discount_type' => $discountType,
+                        'discounted_price' => $discountedPrice
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return redirect()->route('index-promo')->with('success', 'Promo updated successfully!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating Promo', ['exception' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Promo: ' . $e->getMessage()])->withInput();
+        }
+    }
+
+
+
+
+
 
 
 
@@ -183,16 +509,21 @@ class PromoController extends Controller
     // PROMO VOUCHER
     public function indexPromoVoucher()
     {
-        $promo = Promo::whereIn('type', ['voucher', 'brand voucher', 'product voucher', 'shipping fee voucher'])->get();
+        // Mengambil promo dengan tipe yang ditentukan dan mengurutkannya berdasarkan created_at
+        $promo = Promo::whereIn('type', ['limited voucher', 'brand voucher', 'product voucher', 'shipping fee voucher', 'new user voucher'])
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan waktu pembuatan
+            ->get();
+
         $products = Product::all();
         $brands = Brand::all();
+
         return view('admin.promo.voucher.index', [
             'promo' => $promo,
             'products' => $products,
             'brands' => $brands,
-
         ]);
     }
+
 
     public function createPromoVoucher()
     {
@@ -210,14 +541,17 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'discount' => 'required',
-                'max_discount' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
             // Hapus format rupiah dari regular_price
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
-            $maxTransaction = str_replace(['Rp. ', '.'], '', $request->max_transaction);
 
             // Generate kode promo otomatis
             $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
@@ -240,8 +574,8 @@ class PromoController extends Controller
                 'promo_code' => $promoCode,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount,
-                'max_discount' => $request->max_discount,
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath ?? null,
                 'type' => $request->type, // Isi field 'type' dari input tersembunyi
             ]);
@@ -277,10 +611,15 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'discount' => 'required|numeric|min:0|max:100',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
                 'brand_id' => 'required|exists:brands,id',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
 
             // Hapus format rupiah dari regular_price
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
@@ -305,7 +644,8 @@ class PromoController extends Controller
                 'promo_code' => $promoCode,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount,
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath ?? null,
                 'type' => $request->type,
                 'brand_id' => $request->brand_id,
@@ -384,10 +724,15 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'discount' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
                 'product_ids' => 'required|array',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
 
             // Hapus format rupiah dari regular_price
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
@@ -412,7 +757,8 @@ class PromoController extends Controller
                 'promo_code' => $promoCode,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount, // Diskon All
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath ?? null,
                 'type' => $request->type,
             ]);
@@ -460,20 +806,90 @@ class PromoController extends Controller
         $brands = Brand::all();
         $products = Product::all();
 
+        // Transform products to include current selection status
+        $products = $products->map(function ($product) use ($promo) {
+            $product->is_selected = $promo->products->contains('id', $product->id);
+            $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+            return $product;
+        });
+
         // Parse date range yang tersimpan menjadi format yang sesuai
         $start_date = Carbon::parse($promo->start_date)->format('m/d/Y');
         $end_date = Carbon::parse($promo->end_date)->format('m/d/Y');
         $promo->date_range = $start_date . ' - ' . $end_date;
+
+        // Tambahkan diskon dan tipe diskon
+        $promo->discount_type = $promo->discount_type ?? 'nominal';
+        $promo->discount_value = $promo->discount;
 
         switch ($promo->type) {
             case 'brand voucher':
                 return view('admin.promo..voucher.edit-voucher-brand', compact('promo', 'brands'));
             case 'product voucher':
                 return view('admin.promo.voucher.edit-voucher-product', compact('promo', 'products'));
-            case 'voucher':
+            case 'limited voucher':
                 return view('admin.promo.voucher.edit-voucher-limited', compact('promo'));
+            case 'new user voucher':
+                return view('admin.promo.voucher.edit-voucher-newuser', compact('promo'));
             default:
                 return redirect()->back()->with('error', 'Invalid voucher type');
+        }
+    }
+
+    public function updatePromoVoucherLimited(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'promo_name' => 'required|string|max:255',
+                'date_range' => 'required|string|max:255',
+                'min_transaction' => 'required',
+                'usage_quota' => 'required',
+                'max_quantity_buyer' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            $promo = Promo::findOrFail($id);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
+            // Hapus format rupiah dari min_transaction
+            $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+            // Handle image update
+            $imagePath = $promo->image;
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($promo->image && Storage::disk('public')->exists($promo->image)) {
+                    Storage::disk('public')->delete($promo->image);
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('promo', $imageName, 'public');
+            }
+
+            // Update promo data
+            $promo->update([
+                'promo_name' => $request->promo_name,
+                'date_range' => $request->date_range,
+                'min_transaction' => $minTransaction,
+                'usage_quota' => $request->usage_quota,
+                'max_quantity_buyer' => $request->max_quantity_buyer,
+                'discount' => $discount,
+                'discount_type' => $discountType,
+                'image' => $imagePath,
+            ]);
+
+            return redirect()->route('index-promo-voucher')->with('success', 'Promo Voucher updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error updating Voucher', ['exception' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
 
@@ -736,7 +1152,7 @@ class PromoController extends Controller
 
 
 
-    
+
 
     public function detailPromo($id)
     {
@@ -785,7 +1201,9 @@ class PromoController extends Controller
     // PROMO DISKON
     public function indexPromoDiskon()
     {
-        $promo = Promo::where('type', 'discount')->get();
+        $promo = Promo::where('type', 'discount')->with('tiers')
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan waktu pembuatan
+            ->get();
         $products = Product::all();
         $brands = Brand::all();
         return view('admin.promo.diskon.index', [
@@ -806,35 +1224,23 @@ class PromoController extends Controller
     public function storePromoDiskon(Request $request)
     {
         try {
-
             $request->validate([
                 'promo_name' => 'required|string|max:255',
                 'date_range' => 'required|string|max:255',
                 'discount_type' => 'required|in:percentage,nominal,package',
                 'product_ids' => 'required|array',
                 'product_ids.*' => 'exists:products,id',
-                // 'discount' => 'required|numeric|min:0|max:100',
-
             ]);
 
-            // Simpan single image
-            $image = null;
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('uploads/promo'), $imageName);
-                $imagePath = 'uploads/promo/' . $imageName;
-            }
-
-            // Simpan data promo
+            // Simpan data promo tanpa discount_type karena akan disimpan di promo_tiers
             $promo = Promo::create([
                 'promo_name' => $request->promo_name,
                 'date_range' => $request->date_range,
-                'discount_type' => $request->discount_type,
-                'type' => 'discount',
+                'type' => 'discount', // ini untuk membedakan jenis promo
+                // tidak perlu menyimpan discount_type di sini karena sudah ada di promo_tiers
             ]);
 
-            // simpantier diskon
+            // Simpan tier diskon sesuai tipe
             switch ($request->discount_type) {
                 case 'percentage':
                     $this->savePercentageTiers($request, $promo);
@@ -850,16 +1256,19 @@ class PromoController extends Controller
             // Attach products
             $promo->products()->attach($request->product_ids);
 
-            // Redirect dengan pesan sukses
-            return redirect()->route('index-promo-diskon')->with('success', 'Promo Diskon created successfully!');
+            return redirect()->route('index-promo-diskon')
+                ->with('success', 'Promo Diskon created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
             Log::error('Error creating product', ['exception' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])->withInput();
+            return redirect()->back()
+                ->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])
+                ->withInput();
         }
     }
-
 
     private function savePercentageTiers($request, $promo)
     {
@@ -916,7 +1325,10 @@ class PromoController extends Controller
     // PROMO VOUCHER NEW USER
     public function indexPromoNewUser()
     {
-        $promo = Promo::where('type', 'new user')->get();
+        // Mengambil promo dengan tipe 'new user' dan mengurutkannya berdasarkan created_at
+        $promo = Promo::where('type', 'new user')
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan waktu pembuatan
+            ->get();
         $products = Product::all();
         $brands = Brand::all();
         return view('admin.promo.newuser.index', [
@@ -929,7 +1341,7 @@ class PromoController extends Controller
 
     public function createPromoNewUser()
     {
-        return view('admin.promo.newuser.create');
+        return view('admin.promo.voucher.create-voucher-newuser');
     }
 
     public function storePromoNewUser(Request $request)
@@ -938,10 +1350,26 @@ class PromoController extends Controller
 
             $request->validate([
                 'promo_name' => 'required|string|max:255',
+                'date_range' => 'required|string|max:255',
                 'min_transaction' => 'required',
-                'max_discount' => 'required',
-                'discount' => 'required',
+                'usage_quota' => 'required',
+                'max_quantity_buyer' => 'required',
+                'promo_code' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
+            // Hapus format rupiah dari regular_price
+            $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+            // Generate kode promo otomatis
+            $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
+            $promoCode = 'Glamo' . $randomCode;
 
             // Simpan single image
             $imagePath = null;
@@ -955,19 +1383,81 @@ class PromoController extends Controller
             // Simpan data promo
             Promo::create([
                 'promo_name' => $request->promo_name,
-                'min_transaction' => $request->min_transaction,
-                'max_discount' => $request->max_discount,
-                'discount' => $request->discount,
+                'date_range' => $request->date_range, // Tidak perlu explode, mutator akan menangani
+                'min_transaction' => $minTransaction,
+                'promo_code' => $promoCode,
+                'usage_quota' => $request->usage_quota,
+                'max_quantity_buyer' => $request->max_quantity_buyer,
+                'discount' => $discount,
+                'discount_type' => $discountType,
+                'image' => $imagePath ?? null,
                 'type' => $request->type, // Isi field 'type' dari input tersembunyi
             ]);
 
             // Redirect dengan pesan sukses
-            return redirect()->route('index-promo-new-user')->with('success', 'Promo Voucher New User created successfully!');
+            return redirect()->route('index-promo-voucher')->with('success', 'Promo Voucher created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            Log::error('Error creating product', ['exception' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])->withInput();
+            Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
+        }
+    }
+
+    public function updatePromoVoucherNewUser(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'promo_name' => 'required|string|max:255',
+                'date_range' => 'required|string|max:255',
+                'min_transaction' => 'required',
+                'usage_quota' => 'required',
+                'max_quantity_buyer' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            ]);
+
+            $promo = Promo::findOrFail($id);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
+            // Hapus format rupiah dari min_transaction
+            $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+            // Handle image update
+            $imagePath = $promo->image;
+            if ($request->hasFile('image')) {
+                // Delete old image if exists
+                if ($promo->image && Storage::disk('public')->exists($promo->image)) {
+                    Storage::disk('public')->delete($promo->image);
+                }
+
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('promo', $imageName, 'public');
+            }
+
+            // Update promo data
+            $promo->update([
+                'promo_name' => $request->promo_name,
+                'date_range' => $request->date_range,
+                'min_transaction' => $minTransaction,
+                'usage_quota' => $request->usage_quota,
+                'max_quantity_buyer' => $request->max_quantity_buyer,
+                'discount' => $discount,
+                'discount_type' => $discountType,
+                'image' => $imagePath,
+            ]);
+
+            return redirect()->route('index-promo-voucher')->with('success', 'Promo Voucher updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error updating Voucher', ['exception' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
 }

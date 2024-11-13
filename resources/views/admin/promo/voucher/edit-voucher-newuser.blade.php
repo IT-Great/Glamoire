@@ -4,20 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Update Voucher - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-    <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-    <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/app.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/sweetalert2/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('assets/css/product/createproduct.css') }}">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-    <link rel="stylesheet" href="assets/css/promo/create-edit-voucher.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/promo/create-edit-voucher.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-datatables/style.css') }}">
     <style>
         .custom-dropdown-menu {
             padding: 8px;
@@ -65,15 +68,30 @@
             color: #2563eb;
         }
 
-        /* Style for the input when it has a value */
         .form-control:not(:placeholder-shown) {
             border-color: #dee2e6;
         }
 
-        /* Adjust input padding to accommodate the formatted values */
         .form-control {
             padding-right: 8px;
-            /* text-align: right; */
+        }
+
+        .bg-light {
+            background-color: #f8f9fa !important;
+        }
+
+        .badge {
+            padding: 0.25em 0.5em;
+            font-size: 0.75em;
+            border-radius: 0.25rem;
+        }
+
+        .badge.bg-danger {
+            background-color: #dc3545 !important;
+        }
+
+        .badge.bg-success {
+            background-color: #198754 !important;
         }
     </style>
 
@@ -91,9 +109,10 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Shipping Fee
-                                            Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Shipping Fee Voucher
+                                    <li class="breadcrumb-item"><a
+                                            href="{{ route('index-promo-voucher') }}">Voucher</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Update Promo Product Voucher
                                     </li>
                                 </ol>
                             </nav>
@@ -102,31 +121,34 @@
                 </div>
 
                 <section class="section">
-                    <form action="{{ route('store-promo-voucher-shippingfee') }}" class="form form-vertical" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('update-promo-voucher-newuser', $promo->id) }}" class="form form-vertical"
+                        method="POST" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
+                        <input type="hidden" name="type" value="product voucher">
+
                         <div class="container">
-                            <h3 class="mb-2">Create Voucher</h3>
+                            <h3 class="mb-2">Update Voucher</h3>
                             <p class="mb-3">
-                                Create a Shipping Fee Voucher or Product Voucher now to attract Buyers.
+                                Update a New User Voucher now to attract Buyers.
                                 <a href="#" class="text-blue">Learn More</a>
                             </p>
                             <div class="card mb-4">
                                 <div class="card-body">
                                     {{-- type --}}
-                                    <input type="hidden" name="type" value="shipping fee voucher">
+                                    <input type="hidden" name="type" value="new user voucher">
 
                                     <div class="form-body">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group has-icon-left mb-4">
+                                                <div class="form-group has-icon-left">
                                                     <label for="first-name-icon">Voucher Name <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
                                                             placeholder="Enter Voucher Name" id="first-name-icon"
-                                                            name="promo_name" value="{{ old('promo_name') }}">
+                                                            name="promo_name" value="{{ $promo->promo_name }}">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-bag"></i>
                                                         </div>
@@ -142,14 +164,14 @@
                                                     @endif
                                                 </div>
 
-                                                <div class="form-group has-icon-left mb-4">
+                                                <div class="form-group has-icon-left">
                                                     <label for="daterange">Date Range <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
                                                             id="daterange" name="date_range"
-                                                            value="{{ old('date_range') }}">
+                                                            value="{{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d F Y') }} {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d F Y') }}">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-calendar"></i>
                                                         </div>
@@ -165,31 +187,28 @@
                                                     @endif
                                                 </div>
 
-                                                <div class="mb-4">
-                                                    <label for="promo_code" class="form-label">Voucher Code <span
-                                                            class="text-danger">*</span></label>
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text">Glamo</span>
-                                                        <input type="text" class="form-control" id="promo_code"
-                                                            name="promo_code"
-                                                            value="{{ strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5)) }}">
+                                                <label for="promo_code" class="form-label">Voucher Code <span
+                                                        class="text-danger">*</span></label>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <span class="input-group-text">Glamo</span>
+                                                    <input type="text" class="form-control" id="promo_code"
+                                                        name="promo_code" value="{{ $promo->promo_code }}">
 
-                                                        <small class="form-text text-muted" style="font-size: 14px;">
-                                                            Enter a combination of numbers and letters from 0-9 and
-                                                            a-z, and it should only be 5 digits long.
-                                                        </small>
-                                                    </div>
+                                                    <small class="form-text text-muted" style="font-size: 14px;">
+                                                        Enter a combination of numbers and letters from 0-9 and
+                                                        a-z, and it should only be 5 digits long.
+                                                    </small>
                                                 </div>
 
-                                                <div class="row mb-4">
+                                                <div class="row">
                                                     <div class="col">
                                                         <label for="usage_quota">Max Usage Quota <span
                                                                 style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
+                                                            class="form-control mt-2 {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
                                                             placeholder="e.g., 100 times" name="usage_quota"
                                                             id="usage_quota" style="margin-bottom: 4px;"
-                                                            value="{{ old('usage_quota') }}">
+                                                            value="{{ $promo->usage_quota }}">
                                                         <small class="form-text text-muted">Enter the maximum
                                                             number of times this item can be used (e.g., 100,
                                                             200).</small>
@@ -203,11 +222,11 @@
                                                         <label for="max_quantity_buyer">Max Quantity Per Buyer
                                                             <span style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
+                                                            class="form-control mt-2 {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
                                                             placeholder="e.g., 5 items per buyer"
                                                             name="max_quantity_buyer" id="max_quantity_buyer"
                                                             style="margin-bottom: 4px;"
-                                                            value="{{ old('max_quantity_buyer') }}">
+                                                            value="{{ $promo->max_quantity_buyer }}">
                                                         <small class="form-text text-muted">Specify the maximum
                                                             number of items a single buyer can purchase (e.g.,
                                                             1, 5, 10).</small>
@@ -219,7 +238,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-md-6 mb-4">
+                                            <div class="col-md-6 mb-3">
                                                 <div class="row mb-4">
                                                     <div class="col">
                                                         <label class="form-label fw-medium" for="first-name-icon">
@@ -250,10 +269,16 @@
                                                             </ul>
                                                             <input type="text" class="form-control border-start-0"
                                                                 id="discountInputAll" name="discount"
-                                                                placeholder="Masukkan nilai diskon">
+                                                                placeholder="Masukkan nilai diskon"
+                                                                value="{{ $promo->discount_value }}">
                                                             <span class="input-group-text bg-light"
-                                                                id="formatSymbolAll">Rp</span>
+                                                                id="formatSymbolAll">{{ $promo->discount_type == 'nominal' ? 'Rp' : '%' }}</span>
                                                         </div>
+
+                                                        <!-- Tambahkan hidden input di sini -->
+                                                        <input type="hidden" id="globalDiscountType"
+                                                            name="global_discount_type" value="nominal">
+
                                                         @if ($errors->has('discount'))
                                                             <div class="invalid-feedback d-block mt-1">
                                                                 <i class="bi bi-exclamation-circle me-1"></i>
@@ -268,17 +293,17 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="row mb-4">
+                                                <div class="row mb-2">
                                                     <div class="col">
                                                         <label for="min_transaction">Minimum Transaction <span
                                                                 style="color: red">*</span></label>
-                                                        <div class="input-group">
+                                                        <div class="input-group mt-2">
                                                             <span class="input-group-text">Rp.</span>
                                                             <input type="text"
                                                                 class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
                                                                 id="min_transaction" placeholder="x.xxx.xxx"
                                                                 name="min_transaction"
-                                                                value="{{ old('min_transaction') }}">
+                                                                value="{{ number_format($promo->min_transaction, 0, ',', '.') }}">
                                                         </div>
                                                         @if ($errors->has('min_transaction'))
                                                             <p style="color: red">
@@ -295,7 +320,7 @@
                                                 <div class="card">
                                                     <label for="first-name-icon">Banner Voucher <span
                                                             style="color: red">*</span></label>
-                                                    <div class="image-upload-wrap" id="single-image-upload-wrap"
+                                                    <div class="image-upload-wrap mt-2" id="single-image-upload-wrap"
                                                         style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
                                                         <input type="file" name="image"
                                                             class="file-upload-input" onchange="readURLSingle(this);"
@@ -309,6 +334,19 @@
                                                     <div class="file-upload-content" id="single-file-upload-content"
                                                         style="display: flex; flex-wrap: wrap;">
                                                         <!-- Gambar yang diunggah akan ditambahkan di sini -->
+
+                                                        @if ($promo->image)
+                                                            <div class="image-preview-container">
+                                                                <div class="image-preview-box">
+                                                                    <span class="preview-label"
+                                                                        style="color: green;">Old Image</span>
+                                                                    <img src="{{ Storage::url($promo->image) }}"
+                                                                        class="preview-image" alt="Old Image Preview"
+                                                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
+                                                                </div>
+                                                            </div>
+                                                        @endif
+
                                                     </div>
 
                                                     @if ($errors->has('image'))
@@ -316,108 +354,27 @@
                                                             {{ $errors->first('image') }}</p>
                                                     @else
                                                         <small class="form-text text-muted">Upload a clear,
-                                                            high-quality image that best represents your product. This
-                                                            will be the main image shown in search results. For file
-                                                            formats, please use JPG, JPEG, or PNG, and ensure the size
-                                                            is no more than 2MB. The image size should be
-                                                            256x64px.</small>
+                                                            high-quality image that best represents your
+                                                            product. This will be the main image shown in search
+                                                            results. For file formats, please use JPG, JPEG, or
+                                                            PNG, and ensure the size is no more than
+                                                            2MB.</small>
                                                     @endif
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="col-12 d-flex justify-content-end">
+                                            <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
+                                                Voucher</button>
+                                            <button type="submit" class="btn btn-sm btn-primary me-1">Submit
+                                                Voucher</button>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="card">
-                                <div class="card-header ">
-                                    <h4>Product List</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <label for="product_ids">Select Products <span
-                                                style="color: red">*</span></label><br>
-                                        <small class="text-muted">Select the products to which you
-                                            want to apply the discount. You can choose multiple
-                                            products.</small>
-                                    </div>
-                                    <table class="table" id="table1">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    <input type="checkbox" id="select-all"> Select
-                                                    All
-                                                </th>
-                                                <th>Product</th>
-                                                <th>Stock</th>
-                                                <th>Price</th>
-                                                <th>Discount Per Product</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($products as $product)
-                                                <tr>
-                                                    <td>
-                                                        <input type="checkbox" name="product_ids[]"
-                                                            value="{{ $product->id }}" class="select-item">
-                                                    </td>
-                                                    <td>
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ Str::limit($product->product_name, 30, '...') }}
-                                                    </td>
-                                                    <td>{{ $product->stock_quantity }}</td>
-                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                    </td>
-                                                    <td>
-                                                        <div class="input-group input-group-sm">
-                                                            <button class="btn dropdown-toggle" type="button"
-                                                                id="dropdownTypeProduct-{{ $product->id }}"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="bi bi-tag-fill me-1"></i>
-                                                                Tipe Diskon <i class="bi bi-chevron-down"></i>
-                                                            </button>
-                                                            <ul class="dropdown-menu custom-dropdown-menu">
-                                                                <li>
-                                                                    <a class="custom-dropdown-item-product"
-                                                                        href="#" data-type="nominal"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        <i class="bi bi-cash"></i>
-                                                                        Nominal
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a class="custom-dropdown-item-product"
-                                                                        href="#" data-type="percentage"
-                                                                        data-product-id="{{ $product->id }}">
-                                                                        <i class="bi bi-percent"></i>
-                                                                        Persentase
-                                                                    </a>
-                                                                </li>
-                                                            </ul>
-                                                            <input type="text"
-                                                                class="form-control form-control-sm border-start-0"
-                                                                id="discountInputProduct-{{ $product->id }}"
-                                                                name="product_discount[{{ $product->id }}]"
-                                                                placeholder="Masukkan diskon">
-                                                            <span class="input-group-text bg-light"
-                                                                id="formatSymbolProduct-{{ $product->id }}">Rp</span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-
-                                    </table>
-                                    <div class="col-12 d-flex justify-content-end">
-                                        <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                            Voucher</button>
-                                        <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                            Voucher</button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </form>
                 </section>
@@ -426,14 +383,25 @@
         </div>
     </div>
 
-    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/js/product/createproduct.js') }}"></script>
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <script>
         // Simple Datatable
@@ -456,17 +424,23 @@
                 const dropdownButton = document.getElementById('dropdownTypeAll');
                 const formatSymbol = document.getElementById('formatSymbolAll');
                 const discountInput = document.getElementById('discountInputAll');
-                let currentType = 'nominal';
+                const globalDiscountType = document.getElementById('globalDiscountType'); // Hidden input
+                let currentType = 'nominal'; // Default tipe
 
                 dropdownItems.forEach(item => {
                     item.addEventListener('click', function(e) {
                         e.preventDefault();
                         currentType = this.dataset.type;
+
+                        // Perbarui dropdown dan simbol format
                         dropdownButton.innerHTML = currentType === 'nominal' ?
                             '<i class="bi bi-cash me-1"></i>Nominal' :
                             '<i class="bi bi-percent me-1"></i>Persentase';
                         formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
+                        discountInput.value = ''; // Reset input saat tipe diubah
+
+                        // Perbarui nilai tipe diskon di hidden input
+                        globalDiscountType.value = currentType;
                     });
                 });
 
@@ -481,7 +455,7 @@
                 });
             };
 
-            // Handle individual product discounts
+            // Handle individual product discounts (if needed)
             const initializeProductDiscounts = () => {
                 const dropdownItems = document.querySelectorAll('.custom-dropdown-item-product');
                 const productTypes = {};
@@ -503,7 +477,7 @@
                             '<i class="bi bi-cash me-1"></i>Nominal' :
                             '<i class="bi bi-percent me-1"></i>Persentase';
                         formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
+                        discountInput.value = ''; // Reset input saat tipe diubah
                     });
                 });
 
@@ -526,27 +500,6 @@
             // Initialize both handlers
             initializeAllProductsDiscount();
             initializeProductDiscounts();
-        });
-    </script>
-
-    <script>
-        // Handle Select All
-        document.getElementById('select-all').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.select-item');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-        });
-
-        // Optionally, you can also update the "Select All" checkbox state
-        // if individual checkboxes are deselected
-        document.querySelectorAll('.select-item').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const selectAll = document.getElementById('select-all');
-                if (!this.checked) {
-                    selectAll.checked = false;
-                } else if (document.querySelectorAll('.select-item:checked').length === checkboxes.length) {
-                    selectAll.checked = true;
-                }
-            });
         });
     </script>
 
@@ -653,7 +606,7 @@
             }
         }
     </script>
-    <script src="assets/js/main.js"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

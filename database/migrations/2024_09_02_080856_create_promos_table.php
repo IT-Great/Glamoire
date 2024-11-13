@@ -25,12 +25,14 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();            
             $table->string('min_transaction')->nullable();
             $table->string('max_discount')->nullable();
+            $table->string('discount_type')->nullable();
             $table->string('terms_conditions')->nullable();
             $table->bigInteger('sale_price')->nullable();
             $table->string('promo_code')->nullable();
             $table->string('usage_quota')->nullable();
             $table->string('max_quantity_buyer')->nullable();
-            $table->string('image')->nullable();         
+            $table->string('image')->nullable();      
+            $table->string('status')->default('Active'); // Kolom status dengan nilai default Active   
             $table->timestamps();
         });
     }

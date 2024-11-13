@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
@@ -20,25 +20,87 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-
     <style>
-        .list-group-item {
-            transition: background-color 0.3s, transform 0.2s;
+        .stats-card {
+            transition: transform 0.3s ease;
             cursor: pointer;
-            /* Menunjukkan bahwa item dapat diklik */
         }
 
-        .list-group-item:hover {
-            background-color: #f8f9fa;
-            /* Ganti warna latar belakang saat hover */
-            transform: scale(1.02);
-            /* Sedikit memperbesar item saat hover */
+        .stats-card:hover {
+            transform: translateY(-5px);
         }
 
-        .flatpickr-calendar {
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0);
-            border-radius: 8px;
-        }      
+        .product-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.1);
+        }
+
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .message-preview {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .table>tbody>tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .table>tbody>tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
     </style>
 </head>
 
@@ -55,95 +117,89 @@
                             <!-- Breadcrumb Navigation -->
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="/brand-admin/contact">Contact Us</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Contact Messages</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
-                </div>
+                </div>             
 
                 <section class="section">
-                    <div class="card">
-                        <!-- Header untuk section Contact Us Messages -->
-                        <div class="card-header">
-                            <h4>Contact Us Messages</h4>
-                            <p class="text-muted">
-                                Review all incoming messages and click on a message to view or respond.
-                            </p>
+                    <div class="card product-card">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-3">Contact Us Messages</h4>
+                            <p class="text-muted">Review all incoming messages and click on a message to view or
+                                respond.</p>
                         </div>
-
-                        <div class="card-body">
-                            <!-- Search Bar untuk mencari pesan -->
-                            <form action="{{ url()->current() }}" method="GET" class="mb-4">
-                                <div class="row align-items-center">
-                                    <!-- Input untuk pencarian berdasarkan nama atau email -->
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="search"
-                                                placeholder="Search messages by name or email..."
-                                                value="{{ request('search') }}">
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Input untuk pencarian berdasarkan tanggal -->
-                                    <div class="col-md-8">
-                                        <div class="d-flex align-items-center">
-                                            <span class="me-2">Search By Date</span>
-                                            <input type="text"
-                                                class="datepicker me-3 form-control {{ $errors->has('date_expired') ? 'is-invalid' : '' }}"
-                                                id="date_expired" name="date_expired"
-                                                value="{{ request('date_expired') }}"
-                                                placeholder="Enter expiration date" style="max-width: 300px;">
-                                            <button type="submit" class="btn btn-secondary">Filter</button>
-                                            <!-- Clear Filter Button -->
-                                            <a href="{{ url()->current() }}?search={{ request('search') }}"
-                                                class="btn btn-outline-secondary ms-2">Reset Date</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <!-- Daftar pesan dari kontak -->
-                            <ul class="list-group">
-                                @foreach ($contacts as $contact)
-                                    <li class="list-group-item list-group-item-action"
-                                        onclick="window.location='{{ route('show-contactus-admin', $contact->id) }}'">
-                                        <div class="d-flex align-items-center">
-                                            <!-- Gambar profil pengguna -->
-                                            <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Image"
-                                                class="rounded-circle"
-                                                style="width: 50px; height: 50px; margin-right: 10px;">
-
-                                            <!-- Informasi pesan -->
-                                            <div>
-                                                <strong>{{ $contact->fullname }} ({{ $contact->email }}):</strong>
-                                                <p class="mb-1">{{ Str::limit($contact->question, 100, '...') }}</p>
-                                                <small class="text-muted">
-                                                    Received on:
-                                                    {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-
-                            <!-- Navigasi pagination -->
-                            <div class="d-flex justify-content-between mt-4 px-3" id="pagination-container">
-                                <div class="mb-3">
-                                    Showing {{ $contacts->firstItem() }} to {{ $contacts->lastItem() }}
-                                    of {{ $contacts->total() }} results
-                                </div>
-                                <div class="pagination-container">
-                                    {{ $contacts->appends(request()->query())->links('pagination::bootstrap-4') }}
-                                </div>
-                            </div>
+                        <div class="card-body">                                                        
+                            <!-- Messages Table -->
+                            <table class="table table-hover" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Contact Details</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Date Received</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($contacts as $contact)
+                                        <tr id="contact-item-{{ $contact->id }}">
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Image"
+                                                        class="product-image lazyload"
+                                                        style="width: 50px; height: 50px;">
+                                                    <div class="product-details">
+                                                        <span class="product-name">{{ $contact->fullname }}</span>
+                                                        <span class="product-meta">{{ $contact->email }}</span>
+                                                        <span class="product-meta">Phone:
+                                                            {{ $contact->phone ?? 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="message-preview">
+                                                    {{ Str::limit($contact->question, 100, '...') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if ($contact->status === 'read')
+                                                    <span class="stock-badge bg-success text-white">
+                                                        <i class="bi bi-check-circle-fill"></i> Read
+                                                    </span>
+                                                @else
+                                                    <span class="stock-badge bg-warning text-dark">
+                                                        <i class="bi bi-exclamation-circle-fill"></i> Unread
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('show-contactus-admin', $contact->id) }}"
+                                                        class="badge bg-info mb-2">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        class="badge bg-danger delete-contact"
+                                                        data-id="{{ $contact->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </section>
+                @include('admin.layouts.footer')
 
             </div>
         </div>
@@ -153,13 +209,19 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
-
+    
     <script>
         // HANDLE FORMAT DATE PICKER
         document.addEventListener('DOMContentLoaded', function() {

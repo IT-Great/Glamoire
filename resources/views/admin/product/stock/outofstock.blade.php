@@ -72,13 +72,7 @@
                                     <div class="form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch" id="stockAlert">
                                     </div>
-                                </div>
-                                <button class="btn btn-outline-secondary">
-                                    <i class="fa fa-download me-2"></i>Export Semua
-                                </button>
-                                {{-- <button class="btn btn-danger">
-                                    <i class="fa fa-sync me-2"></i>Mass Update
-                                </button> --}}
+                                </div>                             
                             </div>
                         </div>
                     </div>
@@ -102,28 +96,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Produk Sesuai Permintaan</a>
                     </li>
-                </ul>
-
-                <!-- Info Alert -->
-                <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
-                    <i class="fa fa-info-circle me-2"></i>
-                    Untuk memfasilitasi Penjual dalam mengatur stok produk, kolom Lokasi akan ditambahkan untuk
-                    mengidentifikasi lokasi produk dan kolom Batas Aman Stok akan ditambahkan sebagai pengingat untuk
-                    memperbarui stok.
-                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-                </div>
+                </ul>          
 
 
                 <!-- Search Filters -->
                 <div class="card mt-4">
                     <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label>Nama Produk</label>
-                                <input type="text" class="form-control"
-                                    placeholder="Masukkan min. 2 karakter untuk mencari produk">
-                            </div>
+                        <div class="row g-3">                          
                             <div class="col-md-4">
                                 <label>Lokasi</label>
                                 <input type="text" class="form-control" placeholder="Masukkan min. 1 kata">
@@ -143,19 +122,6 @@
                                 <button class="btn btn-outline-secondary">Atur Ulang</button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Results Header -->
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <div>330 Live</div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary">
-                            <i class="fa fa-download me-2"></i>Export
-                        </button>
-                        <button class="btn btn-outline-secondary">
-                            Header Tabel
-                        </button>
                     </div>
                 </div>
 
@@ -262,7 +228,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>

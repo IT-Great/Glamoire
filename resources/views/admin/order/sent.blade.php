@@ -74,7 +74,20 @@
         @include('admin.layouts.navbar')
 
         <div id="main">
-            <div class="container-fluid p-4">
+            <div class="container-fluid">
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/brand-admin">Order</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Sent</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h4 mb-0">Pesanan Saya</h1>
@@ -133,12 +146,11 @@
                 <!-- Info Alert -->
                 <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
                     <i class="fa fa-info-circle me-2"></i>
-                    Untuk memfasilitasi Penjual dalam mengatur stok produk, kolom Lokasi akan ditambahkan untuk
-                    mengidentifikasi lokasi produk dan kolom Batas Aman Stok akan ditambahkan sebagai pengingat untuk
-                    memperbarui stok.
-                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                    Ini adalah halaman pesanan yang sedang dalam proses pengiriman. Anda dapat memantau status pengiriman dan memastikan 
+                    pesanan sampai kepada pelanggan sesuai jadwal.
+                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+                
 
                 <!-- Status Filters -->
                 <div class="card">

@@ -19,18 +19,58 @@
     <link rel="stylesheet" href="assets/css/product/index.css">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stock-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stock-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.1);
+        }
+
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         .nav-tabs .nav-link.active {
+            border-bottom: 2px solid #435ebe;
             border-top: none;
             border-left: none;
             border-right: none;
+            color: #435ebe;
+            font-weight: 600;
         }
 
         .nav-tabs .nav-link {
             border: none;
             color: #666;
+            padding: 0.8rem 1.5rem;
         }
 
         .form-check-input:checked {
@@ -38,17 +78,21 @@
             border-color: #00C853;
         }
 
-        .modal-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
         }
 
-        .input-group .btn {
-            z-index: 0;
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
         }
 
-        .form-control:read-only {
-            background-color: #e9ecef;
+        .product-meta {
+            font-size: 0.9rem;
+            color: #666;
         }
     </style>
 
@@ -61,196 +105,200 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
+                <div class="page-title mb-4">
                     <div class="row align-items-center">
-                        <div class="col-6">
-                            <h2>Stok Saya</h2>
-                        </div>
-                        <div class="col-6 text-end">
-                            <div class="d-flex justify-content-end align-items-center gap-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">Peringatan Stok</span>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="stockAlert">
+                        <div class="col-12 col-md-6">
+                            <h2>Stock Management</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/stock-product-admin">Product</a></li>
+                                    <li class="breadcrumb-item active">Stock</li>
+                                </ol>
+                            </nav>
+                        </div>                       
+                    </div>
+                </div>
+
+                <!-- Quick Stats Section -->
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Products</h6>
+                                        <h3 class="mb-0">{{ $products->count() }}</h3>
+                                    </div>
+                                    <div class="stats-icon purple">
+                                        <i class="bi bi-box fs-3"></i>
                                     </div>
                                 </div>
-                                <button class="btn btn-outline-secondary">
-                                    <i class="fa fa-download me-2"></i>Export Semua
-                                </button>
-                                {{-- <button class="btn btn-danger">
-                                    <i class="fa fa-sync me-2"></i>Mass Update
-                                </button> --}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">In Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '>', 10)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-check-circle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-warning">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Low Stock</h6>
+                                        <h3 class="mb-0">
+                                            {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon yellow">
+                                        <i class="bi bi-exclamation-triangle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-danger">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Out of Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '=', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-x-circle fs-3"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tab Navigation -->
-                <ul class="nav nav-tabs mt-4">
+                <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('index-stock-product-admin') }}">All</a>
+                        <a class="nav-link active" href="{{ route('index-stock-product-admin') }}">Semua Item</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('outof-stock-product-admin') }}">Stok Habis</a>
+                        <a class="nav-link" href="{{ route('outof-stock-product-admin') }}">Habis Stok</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('low-stock-product-admin') }}">Stok Sedikit</a>
+                        <a class="nav-link" href="{{ route('low-stock-product-admin') }}">Stok Rendah</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Diarsipkan & Diblokir</a>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Produk Sesuai Permintaan</a>
+                        <a class="nav-link" href="#">Produk Khusus</a>
                     </li>
                 </ul>
 
                 <!-- Info Alert -->
                 <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
-                    <i class="fa fa-info-circle me-2"></i>
-                    Untuk memfasilitasi Penjual dalam mengatur stok produk, kolom Lokasi akan ditambahkan untuk
-                    mengidentifikasi lokasi produk dan kolom Batas Aman Stok akan ditambahkan sebagai pengingat untuk
-                    memperbarui stok.
-                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert"
-                        aria-label="Close"></button>
+                    <i class="bi bi-info-circle me-2"></i>
+                    Informasi penting tentang manajemen stok:
+                    <ul class="mb-0">
+                        <li><strong>Lokasi:</strong> Pastikan identifikasi lokasi produk dengan tepat.</li>
+                        <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li>
+                        <li><strong>Stok Tersedia:</strong> Jaga jumlah stok yang akurat.</li>
+                        <li><strong>Pengaturan Stok:</strong> Sesuaikan pengaturan berdasarkan permintaan produk.</li>
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
                 </div>
 
+
                 <!-- Search Filters -->
-                <div class="card mt-4">
+                <div class="card stock-card mt-4">
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label>Nama Produk</label>
-                                <input type="text" class="form-control"
-                                    placeholder="Masukkan min. 2 karakter untuk mencari produk">
-                            </div>
-                            <div class="col-md-4">
-                                <label>Lokasi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan min. 1 kata">
+                                <label class="form-label">Location</label>
+                                <input type="text" class="form-control" placeholder="Enter min. 1 word">
                             </div>
                             <div class="col-md-2">
-                                <label>Stock Min.</label>
+                                <label class="form-label">Min. Stock</label>
                                 <input type="number" class="form-control" placeholder="Min.">
                             </div>
                             <div class="col-md-2">
-                                <label>Stock Maks.</label>
-                                <input type="number" class="form-control" placeholder="Maks.">
+                                <label class="form-label">Max. Stock</label>
+                                <input type="number" class="form-control" placeholder="Max.">
                             </div>
-                        </div>
-                        <div class="row mt-3">
                             <div class="col-12">
-                                <button class="btn btn-primary me-2">Cari</button>
-                                <button class="btn btn-outline-secondary">Atur Ulang</button>
+                                <button class="btn btn-primary me-2">Search</button>
+                                <button class="btn btn-outline-secondary">Reset</button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Results Header -->
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <div>330 Live</div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary">
-                            <i class="fa fa-download me-2"></i>Export
-                        </button>
-                        <button class="btn btn-outline-secondary">
-                            Header Tabel
-                        </button>
                     </div>
                 </div>
 
                 <!-- Product Table -->
-                {{-- <div class="card mt-3">
-                    <div class="card-body">
-                        <table class="table" id="table1">
-                            <thead>
-                                <tr>
-                                    <th>Keperluan Stok Ulang Produk</th>
-                                    <th>Sesuai Permintaan</th>
-                                    <th>Rata-rata Penjualan Seminggu</th>
-                                    <th>Rata-rata Penjualan Sebulan</th>
-                                    <th>Jumlah Hari Ketersediaan Stok</th>
-                                    <th>Lokasi</th>
-                                    <th>Stok</th>
-                                    <th>Stok Dikunci untuk Promosi</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($products as $item)
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
-                                                    class="me-3"
-                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                <div>
-                                                    <div class="fw-bold">{{ $item->product_name }}</div>
-                                                    <div class="text-muted">SKU: {{ $item->product_code }}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" role="switch">
-                                            </div>
-                                        </td>
-                                        <td>{{ $item->weekly_sales ?? 0 }}</td>
-                                        <td>{{ $item->monthly_sales ?? 0 }}</td>
-                                        <td>{{ $item->stock_days ?? '-' }}</td>
-                                        <td>{{ $item->location ?? '-' }}</td>
-                                        <td>{{ $item->stock_quantity }}</td>
-                                        <td>{{ $item->locked_stock ?? 0 }}</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-primary update-btn"
-                                                data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
-                                                data-stock="{{ $item->stock_quantity }}"
-                                                data-expired="{{ $item->expired_date }}">
-                                                Ubah
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                <div class="card stock-card mt-4">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Stock Inventory</h4>
                     </div>
-                </div> --}}
-
-                <div class="card mt-3">
                     <div class="card-body">
-                        <table class="table" id="table1">
+                        <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Stok</th>
-                                    <th>Date Expired</th>
-                                    <th>Aksi</th>
+                                    <th>Product Details</th>
+                                    <th>Stock</th>
+                                    <th>Expiry Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($products as $item)
                                     <tr>
                                         <td>
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
                                                 <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
-                                                    class="me-3"
-                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                <div>
-                                                    <div class="fw-bold">{{ $item->product_name }}</div>
-                                                    <div class="text-muted">SKU: {{ $item->product_code }}</div>
-                                                    <div class="text-muted" style="font-size: 12px;">Category:
-                                                        {{ $item->categoryProduct->name }}</div>
+                                                    class="product-image">
+                                                <div class="product-details">
+                                                    <span class="product-name">{{ $item->product_name }}</span>
+                                                    <span class="product-meta">SKU: {{ $item->product_code }}</span>
+                                                    <span class="product-meta">Category:
+                                                        {{ $item->categoryProduct->name }}</span>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>{{ $item->stock_quantity }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->date_expired)->translatedFormat('d F Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->date_expired)->translatedFormat('d F Y') }}
+                                        </td>
+                                        <td>
+                                            @if ($item->stock_quantity > 10)
+                                                <span class="stock-badge bg-success text-white">
+                                                    <i class="bi bi-check-circle-fill"></i> In Stock
+                                                </span>
+                                            @elseif($item->stock_quantity > 0)
+                                                <span class="stock-badge bg-warning text-dark">
+                                                    <i class="bi bi-exclamation-circle-fill"></i> Low Stock
+                                                </span>
+                                            @else
+                                                <span class="stock-badge bg-danger text-white">
+                                                    <i class="bi bi-x-circle-fill"></i> Out of Stock
+                                                </span>
+                                            @endif
+                                        </td>
                                         <td>
                                             <button class="btn btn-sm btn-primary update-btn"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
                                                 data-stock="{{ $item->stock_quantity }}"
                                                 data-expired="{{ $item->date_expired }}">
-                                                Ubah
+                                                <i class="bi bi-pencil"></i> Update
                                             </button>
                                         </td>
                                     </tr>
@@ -258,25 +306,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="d-flex justify-content-center mt-4">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#"><i
-                                        class="fa fa-chevron-left"></i></a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item"><span class="page-link">...</span></li>
-                            <li class="page-item"><a class="page-link" href="#">33</a></li>
-                            <li class="page-item"><a class="page-link" href="#"><i
-                                        class="fa fa-chevron-right"></i></a></li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
@@ -316,9 +345,8 @@
 
 
                                 <!-- Input Stok -->
-                                <input type="number" class="form-control border-start-0"
-                                    id="stock_quantity" name="stock_quantity" required
-                                    placeholder="Masukkan jumlah stok">
+                                <input type="number" class="form-control border-start-0" id="stock_quantity"
+                                    name="stock_quantity" required placeholder="Masukkan jumlah stok">
 
                                 <small class="form-text text-muted mt-1">
                                     <i class="bi bi-info-circle me-1"></i> Masukkan jumlah stok baru yang ingin
@@ -356,6 +384,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>

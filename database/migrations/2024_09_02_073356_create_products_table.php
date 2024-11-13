@@ -29,7 +29,8 @@ return new class extends Migration
             $table->string('date_expired')->nullable(); 
             $table->text('main_image');
             $table->text('images')->nullable();
-            $table->text('video')->nullable(); // Menambahkan kolom video setelah kolom images            
+            $table->text('video')->nullable(); // Menambahkan kolom video setelah kolom images   
+            $table->integer('rating')->nullable();         
             $table->timestamps();
         });
     }    

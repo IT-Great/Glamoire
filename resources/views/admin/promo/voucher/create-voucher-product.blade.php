@@ -91,9 +91,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Product
+                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
                                             Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Product Voucher
+                                    <li class="breadcrumb-item active" aria-current="page">Buat Produk Voucher
                                     </li>
                                 </ol>
                             </nav>
@@ -106,10 +106,10 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
-                            <h3 class="mb-2">Create Voucher</h3>
+                            <h3 class="mb-2">Buat Produk Voucher</h3>
                             <p class="mb-3">
-                                Create a Store Voucher or Product Voucher now to attract Buyers.
-                                <a href="#" class="text-blue">Learn More</a>
+                                Buat Product Voucher Sekarang Untuk Menarik Minat Pembeli
+                                <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
                             </p>
                             <div class="card mb-4">
                                 <div class="card-body">
@@ -120,12 +120,12 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group has-icon-left mb-4">
-                                                    <label for="first-name-icon">Voucher Name <span
+                                                    <label for="first-name-icon">Nama Voucher <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('promo_name') ? 'is-invalid' : '' }}"
-                                                            placeholder="Enter Voucher Name" id="first-name-icon"
+                                                            placeholder="Masukkan nama voucher" id="first-name-icon"
                                                             name="promo_name" value="{{ old('promo_name') }}">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-bag"></i>
@@ -135,17 +135,17 @@
                                                         <p style="color: red">{{ $errors->first('promo_name') }}
                                                         </p>
                                                     @else
-                                                        <small class="form-text text-muted"
-                                                            style="font-size: 14px;">Enter the name of
-                                                            the voucher. This will be displayed to
-                                                            users.</small>
+                                                        <small class="form-text text-muted" style="font-size: 14px;">
+                                                            Masukkan nama voucher. Ini akan ditampilkan kepada
+                                                            pengguna.
+                                                        </small>
                                                     @endif
                                                 </div>
 
                                                 <div class="form-group has-icon-left mb-4">
-                                                    <label for="daterange">Date Range <span
+                                                    <label for="daterange">Periode <span
                                                             style="color: red">*</span></label>
-                                                    <div class="position-relative">
+                                                    <div class="position-relative mt-2">
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
                                                             id="daterange" name="date_range"
@@ -158,15 +158,15 @@
                                                         <p style="color: red">{{ $errors->first('date_range') }}
                                                         </p>
                                                     @else
-                                                        <small class="form-text text-muted"
-                                                            style="font-size: 14px;">Select the start and
-                                                            end dates for the voucher validity. Use the format:
-                                                            MM/DD/YYYY.</small>
+                                                        <small class="form-text text-muted" style="font-size: 14px;">
+                                                            Pilih tanggal mulai dan berakhir untuk masa berlaku
+                                                            voucher. Gunakan format: MM/HH/YYYY.
+                                                        </small>
                                                     @endif
                                                 </div>
 
                                                 <div class="mb-4">
-                                                    <label for="promo_code" class="form-label">Voucher Code <span
+                                                    <label for="promo_code" class="form-label">Kode Voucher <span
                                                             class="text-danger">*</span></label>
                                                     <div class="input-group input-group-sm mb-3">
                                                         <span class="input-group-text">Glamo</span>
@@ -175,24 +175,26 @@
                                                             value="{{ strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5)) }}">
 
                                                         <small class="form-text text-muted" style="font-size: 14px;">
-                                                            Enter a combination of numbers and letters from 0-9 and
-                                                            a-z, and it should only be 5 digits long.
+                                                            Masukkan kombinasi angka dan huruf dari 0-9 dan a-z,
+                                                            dan hanya harus sepanjang 5 digit.
                                                         </small>
                                                     </div>
                                                 </div>
 
                                                 <div class="row mb-4">
                                                     <div class="col">
-                                                        <label for="usage_quota">Max Usage Quota <span
+                                                        <label for="usage_quota">Kuota Penggunaan Maks <span
                                                                 style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
+                                                            class="form-control mt-2 {{ $errors->has('usage_quota') ? 'is-invalid' : '' }}"
                                                             placeholder="e.g., 100 times" name="usage_quota"
                                                             id="usage_quota" style="margin-bottom: 4px;"
                                                             value="{{ old('usage_quota') }}">
-                                                        <small class="form-text text-muted">Enter the maximum
-                                                            number of times this item can be used (e.g., 100,
-                                                            200).</small>
+                                                        <small class="form-text text-muted">
+                                                            Masukkan jumlah maksimum penggunaan item ini
+                                                            (misalnya, 100,
+                                                            200).
+                                                        </small>
                                                         @if ($errors->has('usage_quota'))
                                                             <p style="color: red">
                                                                 {{ $errors->first('usage_quota') }}</p>
@@ -200,10 +202,10 @@
                                                     </div>
 
                                                     <div class="col">
-                                                        <label for="max_quantity_buyer">Max Quantity Per Buyer
+                                                        <label for="max_quantity_buyer">Jumlah Maks Per Pembeli
                                                             <span style="color: red">*</span></label>
                                                         <input type="text"
-                                                            class="form-control {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
+                                                            class="form-control mt-2 {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"
                                                             placeholder="e.g., 5 items per buyer"
                                                             name="max_quantity_buyer" id="max_quantity_buyer"
                                                             style="margin-bottom: 4px;"
@@ -254,6 +256,11 @@
                                                             <span class="input-group-text bg-light"
                                                                 id="formatSymbolAll">Rp</span>
                                                         </div>
+
+                                                        <!-- Tambahkan hidden input di sini -->
+                                                        <input type="hidden" id="globalDiscountType"
+                                                            name="global_discount_type" value="nominal">
+
                                                         @if ($errors->has('discount'))
                                                             <div class="invalid-feedback d-block mt-1">
                                                                 <i class="bi bi-exclamation-circle me-1"></i>
@@ -270,9 +277,9 @@
 
                                                 <div class="row mb-4">
                                                     <div class="col">
-                                                        <label for="min_transaction">Minimum Transaction <span
+                                                        <label for="min_transaction">Minimal Pembelian <span
                                                                 style="color: red">*</span></label>
-                                                        <div class="input-group">
+                                                        <div class="input-group mt-2">
                                                             <span class="input-group-text">Rp.</span>
                                                             <input type="text"
                                                                 class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
@@ -285,9 +292,11 @@
                                                                 {{ $errors->first('min_transaction') }}</p>
                                                         @else
                                                             <small class="form-text text-muted"
-                                                                style="font-size: 14px;">Enter the minimum
-                                                                transaction amount required to apply the
-                                                                voucher.</small>
+                                                                style="font-size: 14px;">
+                                                                Masukkan jumlah transaksi minimum yang diperlukan
+                                                                untuk
+                                                                menggunakan voucher.
+                                                            </small>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -295,7 +304,7 @@
                                                 <div class="card">
                                                     <label for="first-name-icon">Banner Voucher <span
                                                             style="color: red">*</span></label>
-                                                    <div class="image-upload-wrap" id="single-image-upload-wrap"
+                                                    <div class="image-upload-wrap mt-2" id="single-image-upload-wrap"
                                                         style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
                                                         <input type="file" name="image"
                                                             class="file-upload-input" onchange="readURLSingle(this);"
@@ -315,12 +324,14 @@
                                                         <p style="color: red">
                                                             {{ $errors->first('image') }}</p>
                                                     @else
-                                                        <small class="form-text text-muted">Upload a clear,
-                                                            high-quality image that best represents your product. This
-                                                            will be the main image shown in search results. For file
-                                                            formats, please use JPG, JPEG, or PNG, and ensure the size
-                                                            is no more than 2MB. The image size should be
-                                                            270x107px.</small>
+                                                        <small class="form-text text-muted">
+                                                            Unggah gambar yang jelas dan berkualitas tinggi yang
+                                                            paling mewakili produk Anda. Ini akan menjadi gambar
+                                                            utama yang ditampilkan dalam hasil pencarian. Untuk
+                                                            format file, gunakan JPG, JPEG, atau PNG, dan
+                                                            pastikan ukurannya tidak lebih dari 2MB. Ukuran
+                                                            gambar harus 256x64px.
+                                                        </small>
                                                     @endif
                                                 </div>
                                             </div>
@@ -335,11 +346,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="mb-4">
-                                        <label for="product_ids">Select Products <span
+                                        <label for="product_ids">Pilih Produk <span
                                                 style="color: red">*</span></label><br>
-                                        <small class="text-muted">Select the products to which you
-                                            want to apply the discount. You can choose multiple
-                                            products.</small>
+                                        <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
+                                            dapat memilih beberapa produk.</small>
                                     </div>
                                     <table class="table" id="table1">
                                         <thead>
@@ -460,6 +470,8 @@
                 const dropdownButton = document.getElementById('dropdownTypeAll');
                 const formatSymbol = document.getElementById('formatSymbolAll');
                 const discountInput = document.getElementById('discountInputAll');
+                const globalDiscountTypeInput = document.getElementById('globalDiscountType'); // Hidden input
+
                 let currentType = 'nominal';
 
                 dropdownItems.forEach(item => {
@@ -471,6 +483,8 @@
                             '<i class="bi bi-percent me-1"></i>Persentase';
                         formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
                         discountInput.value = ''; // Reset input when changing type
+                        globalDiscountTypeInput.value = currentType; // Set hidden input value
+
                     });
                 });
 

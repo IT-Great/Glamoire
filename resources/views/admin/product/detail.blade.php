@@ -139,6 +139,10 @@
                     <h4>Product Description</h4>
                     <p>{{ $product->description }}</p>
                 </div>
+                <div class="description-card">
+                    <h4>Information Product</h4>
+                    <p>{{ $product->information_product }}</p>
+                </div>
 
                 @if (!empty($product->video))
                     <div class="description-card">

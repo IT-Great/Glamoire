@@ -15,123 +15,236 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <style>
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
 
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .category-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-buttons .btn {
+            transition: all 0.2s ease;
+            margin: 0 3px;
+        }
+
+        .action-buttons .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .category-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .subcategory-name {
+            font-size: 1rem;
+            color: #666;
+            padding-left: 1.5rem;
+        }
+
+        .category-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
 </head>
 
 <body>
     <div id="app">
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
+
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
+                <div class="page-title mb-4">
+                    <div class="row align-items-center">
                         <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <h2>Category Management</h2>
+                            <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/category-product">Category</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Category</li>
+                                    <li class="breadcrumb-item"><a href="/category-product">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Categories</li>
                                 </ol>
                             </nav>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <a href="#" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#categoryModal">
+                                <i class="fa fa-plus-circle"></i> Add New Category
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <h4>List Categories</h4>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="#" type="button"
-                                        class="btn btn-sm btn-primary d-flex align-items-center" data-bs-toggle="modal"
-                                        data-bs-target="#categoryModal">
-                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Category
-                                    </a>
+                <!-- Quick Stats Section -->
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Categories</h6>
+                                        <h3 class="mb-0">{{ $categories->count() }}</h3>
+                                    </div>
+                                    <div class="stats-icon purple">
+                                        <i class="bi bi-folder fs-3"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="card-body">
-                            <table class="table" id="table1">
-                                <thead>
-                                    <tr>
-                                        <th>Category Name</th>
-                                        <th>Total Product</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($categories as $category)
-                                        <tr>
-                                            <td>{{ $category->name }}</td>
-                                            <td>{{ $category->products->count() }}</td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary add-subcategory"
-                                                    data-id="{{ $category->id }}" data-type="subcategory">Add
-                                                    Subcategory</button>
-                                                <button class="btn btn-sm btn-danger delete-category"
-                                                    data-id="{{ $category->id }}">Delete</button>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Tampilkan subcategory jika ada -->
-                                        @foreach ($category->children as $subcategory)
-                                            <tr>
-                                                <td>— {{ $subcategory->name }} (Subcategory of {{ $category->name }})
-                                                </td>
-                                                <td>{{ $subcategory->products->count() }}</td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-danger delete-category"
-                                                        data-id="{{ $subcategory->id }}">Delete</button>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endforeach
-                                </tbody>
-                            </table>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Subcategories</h6>
+                                        <h3 class="mb-0">
+                                            {{ $categories->sum(function ($category) {return $category->children->count();}) }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-diagram-3 fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-info">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Products</h6>
+                                        <h3 class="mb-0">
+                                            {{ $categories->sum(function ($category) {return $category->products->count();}) }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Table Section -->
+                <div class="card category-card">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Category List</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover" id="table1">
+                            <thead>
+                                <tr>
+                                    <th>Category Details</th>
+                                    <th>Total Products</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($categories as $category)
+                                    <tr>
+                                        <td>
+                                            <div class="category-name">{{ $category->name }}</div>
+                                            <div class="category-meta">Main Category</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ $category->products->count() }}
+                                                Products</span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-sm btn-info add-subcategory"
+                                                    data-id="{{ $category->id }}" data-type="subcategory">
+                                                    <i class="bi bi-plus-circle"></i> Add Subcategory
+                                                </button>
+                                                <button class="btn btn-sm btn-danger delete-category"
+                                                    data-id="{{ $category->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @foreach ($category->children as $subcategory)
+                                        <tr>
+                                            <td>
+                                                <div class="subcategory-name">
+                                                    <i class="bi bi-arrow-return-right"></i> {{ $subcategory->name }}
+                                                </div>
+                                                <div class="category-meta ps-4">Subcategory of {{ $category->name }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">{{ $subcategory->products->count() }}
+                                                    Products</span>
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn btn-sm btn-danger delete-category"
+                                                        data-id="{{ $subcategory->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <div class="modal fade text-left" id="categoryModal" tabindex="-1" role="dialog"
+            <!-- Category Modal -->
+            <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog"
                 aria-labelledby="categoryModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="categoryModalLabel">Form Add Category/Subcategory</h4>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <i data-feather="x"></i>
-                            </button>
+                            <h4 class="modal-title" id="categoryModalLabel">Add New Category</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <form id="categoryForm">
                             @csrf
                             <input type="hidden" name="parent_id" id="parentId">
                             <input type="hidden" name="type" id="categoryType" value="category">
                             <div class="modal-body">
-                                <label>Category Name <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control mb-2"
-                                        name="name" id="categoryName">
+                                <div class="form-group">
+                                    <label for="categoryName">Category Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="categoryName" name="name"
+                                        placeholder="Masukan Nama Kategory" required>
                                     <small class="text-muted" style="font-size: 14px;">
-                                        Please enter a unique and descriptive Category/Subcategory name to help organize your
-                                        products efficiently.
+                                        Silakan masukkan nama kategori yang unik dan deskriptif.
                                     </small>
 
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-sm btn-primary ml-1">
-                                    <span class="d-none d-sm-block">Submit</span>
-                                </button>
+                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Category</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
+
             @include('admin.layouts.footer')
         </div>
     </div>

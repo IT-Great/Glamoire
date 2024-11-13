@@ -125,7 +125,8 @@
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
                                             Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Buat Brand Voucher</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Buat Promo Voucher User Baru
+                                    </li>
                                 </ol>
                             </nav>
                         </div>
@@ -134,19 +135,19 @@
 
                 <!-- Basic Horizontal form layout section start -->
                 <section class="section">
-                    <form action="{{ route('store-promo-brand-voucher') }}" class="form form-vertical" method="POST"
+                    <form action="{{ route('store-promo-new-user') }}" class="form form-vertical" method="POST"
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
-                            <h3 class="mb-2">Buat Brand Voucher</h3>
+                            <h3 class="mb-2">Buat Voucher User Baru</h3>
                             <p class="mb-3">
-                                Buat Brand Voucher Sekarang Untuk Menarik Minat Pembeli.
+                                Buat Voucher User Baru Sekarang Untuk Menarik Minat Pembeli
                                 <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
                             </p>
                             <div class="card mb-4">
                                 <div class="card-body">
                                     {{-- type --}}
-                                    <input type="hidden" name="type" value="brand voucher">
+                                    <input type="hidden" name="type" value="new user voucher">
 
                                     <div class="form-body">
                                         <div class="row">
@@ -167,10 +168,10 @@
                                                         <p style="color: red">{{ $errors->first('promo_name') }}
                                                         </p>
                                                     @else
-                                                        <small class="form-text text-muted" style="font-size: 14px;">
-                                                            Masukkan nama voucher. Ini akan ditampilkan kepada
-                                                            pengguna.
-                                                        </small>
+                                                        <small class="form-text text-muted"
+                                                            style="font-size: 14px;">Enter the name of
+                                                            the voucher. This will be displayed to
+                                                            users.</small>
                                                     @endif
                                                 </div>
 
@@ -254,34 +255,6 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group mb-4">
-                                                    <label for="first-name-icon">Brand <span
-                                                            style="color: red">*</span></label>
-                                                    <div class="form-group mt-2">
-                                                        <select
-                                                            class="form-control select2-basic-brand {{ $errors->has('brand_id') ? 'is-invalid' : '' }}"
-                                                            name="brand_id">
-                                                            <option value="" disabled
-                                                                {{ old('brand_id') ? '' : 'selected' }}>
-                                                                Select
-                                                                Brand</option>
-                                                            @foreach ($brands as $brand)
-                                                                <option value="{{ $brand->id }}"
-                                                                    {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
-                                                                    {{ $brand->name }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        @if ($errors->has('brand_id'))
-                                                            <p style="color: red">
-                                                                {{ $errors->first('brand_id') }}</p>
-                                                        @else
-                                                            <small class="text-muted mt-1" style="font-size: 14px;">
-                                                                <i class="bi bi-info-circle me-1"></i>
-                                                                Pilih atau tambah Brand</small>
-                                                        @endif
-                                                    </div>
-                                                </div>
                                             </div>
 
                                             <div class="col-md-6 mb-4">
@@ -333,8 +306,7 @@
                                                         @else
                                                             <small class="form-text text-muted mt-1">
                                                                 <i class="bi bi-info-circle me-1"></i>
-                                                                Masukkan jumlah diskon (misalnya, 10 untuk 10%
-                                                                diskon).
+                                                                Masukkan jumlah diskon (misalnya, 10 untuk 10% diskon).
                                                             </small>
                                                         @endif
                                                     </div>
@@ -344,7 +316,7 @@
                                                     <div class="col">
                                                         <label for="min_transaction">Minimal Pembelian <span
                                                                 style="color: red">*</span></label>
-                                                        <div class="input-group mt-2">
+                                                        <div class="input-group">
                                                             <span class="input-group-text">Rp.</span>
                                                             <input type="text"
                                                                 class="form-control {{ $errors->has('min_transaction') ? 'is-invalid' : '' }}"
@@ -369,7 +341,7 @@
                                                 <div class="card">
                                                     <label for="first-name-icon">Banner Voucher <span
                                                             style="color: red">*</span></label>
-                                                    <div class="image-upload-wrap mt-2" id="single-image-upload-wrap"
+                                                    <div class="image-upload-wrap" id="single-image-upload-wrap"
                                                         style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 8px; height: auto;">
                                                         <input type="file" name="image"
                                                             class="file-upload-input" onchange="readURLSingle(this);"
@@ -400,110 +372,20 @@
                                                     @endif
                                                 </div>
                                             </div>
+                                            <div class="col-12 d-flex justify-content-end">
+                                                <button type="reset"
+                                                    class="btn btn-sm btn-light-secondary me-3">Reset
+                                                    Voucher</button>
+                                                <button type="submit" class="btn btn-sm btn-primary me-1">Submit
+                                                    Voucher</button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="card">
-                                <div class="card-header ">
-                                    <h4>Product List</h4>
-                                </div>
-                                <div class="card-body">
-                                    <div class="mb-4">
-                                        <label for="product_ids">Pilih Produk <span
-                                                style="color: red">*</span></label><br>
-                                        <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
-                                            dapat memilih beberapa produk.</small>
-                                    </div>
-                                    <table class="table" id="table1">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 50px;">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input"
-                                                            id="select-all">
-                                                    </div>
-                                                </th>
-                                                <th>Product</th>
-                                                <th>Stock</th>
-                                                <th>Price</th>
-                                                <th>Discount Per Product</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                    <div class="col-12 d-flex justify-content-end">
-                                        <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                            Voucher</button>
-                                        <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                            Voucher</button>
-                                    </div>
-                                </div>
-
                             </div>
 
                         </div>
                     </form>
-
-                    <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addBrandModalLabel">Add New Brand
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form id="brandForm" enctype="multipart/form-data">
-                                        <div class="form-group mb-3">
-                                            <label>Brand Name <span style="color: red">*</span></label>
-                                            <input type="text" class="form-control" id="newBrandName"
-                                                name="name">
-                                                <small class="text-muted" style="font-size: 14px;">
-                                                    Berikan nama yang unik untuk Brand Anda yang akan
-                                                    mudah dikenali oleh pengguna.
-                                                </small>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label>Description <span style="color: red">*</span></label>
-                                            <textarea class="form-control" id="newBrandDescription" name="description"></textarea>
-                                            <small class="text-muted" style="font-size: 14px;">
-                                                Jelaskan apa yang membuat Brand Anda menonjol dan
-                                                misinya.
-                                            </small>
-                                        </div>
-                                        <div class="form-group mb-3">
-                                            <label>Brand Logo <span style="color: red">*</span></label>
-                                            <input type="file" class="form-control" id="newBrandLogo"
-                                                name="brand_logo" accept="image/*">
-                                                <small class="text-muted" style="font-size: 14px;">
-                                                    Logo Brand Anda harus dalam format gambar (misalnya,
-                                                    JPG, JPEG, PNG) dan tidak boleh melebihi 2MB.
-                                                </small>
-                                        </div>
-
-                                        <div id="imagePreview" class="mt-2" style="display: none;">
-                                            <img id="preview" src="" alt="Preview"
-                                                style="max-width: 200px; max-height: 200px;">
-
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="saveNewBrand">Save</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </section>
             </div>
 
@@ -524,228 +406,7 @@
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
 
     {{-- handle input group discount --}}
-    <script>
-        let table1 = document.querySelector('#table1');
-        let dataTable = new simpleDatatables.DataTable(table1);
-
-        $(document).ready(function() {
-            const formatRupiah = (number) => {
-                const formatted = number.toString().replace(/\D/g, '');
-                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
-            };
-
-            // Initialize select2
-            $('.select2-basic-brand').select2();
-
-            // Keep track of modified product discount types
-            const modifiedProductTypes = new Set();
-
-            // Handle brand change
-            $('.select2-basic-brand').on('change', function() {
-                var brandId = $(this).val();
-                if (brandId) {
-                    $.ajax({
-                        url: `/get-products-by-brand/${brandId}`,
-                        type: 'GET',
-                        success: function(response) {
-                            if (response.success) {
-                                updateProductTable(response.products);
-                            }
-                        },
-                        error: function(xhr) {
-                            console.error('Error fetching products:', xhr);
-                        }
-                    });
-                }
-            });
-
-            // Handle global discount type change
-            $('.custom-dropdown-item-all').on('click', function(e) {
-                e.preventDefault();
-                const type = $(this).data('type');
-                const dropdownButton = $('#dropdownTypeAll');
-                const formatSymbol = $('#formatSymbolAll');
-                const discountInput = $('#discountInputAll');
-
-                // Update global discount type
-                $('#globalDiscountType').val(type);
-
-                // Update UI for global discount
-                dropdownButton.html(type === 'nominal' ?
-                    '<i class="bi bi-cash me-1"></i>Nominal' :
-                    '<i class="bi bi-percent me-1"></i>Persentase');
-                formatSymbol.text(type === 'nominal' ? 'Rp' : '%');
-                discountInput.val('');
-
-                // Update all unmodified product discount types
-                updateUnmodifiedProductTypes(type);
-            });
-
-            // Function to update unmodified product discount types
-            function updateUnmodifiedProductTypes(globalType) {
-                $('[id^="discountType-"]').each(function() {
-                    const productId = this.id.split('-')[1];
-                    if (!modifiedProductTypes.has(productId)) {
-                        // Update hidden input
-                        $(this).val(globalType);
-
-                        // Update UI
-                        const dropdownButton = $(`#dropdownTypeProduct-${productId}`);
-                        const formatSymbol = $(`#formatSymbolProduct-${productId}`);
-
-                        dropdownButton.html(globalType === 'nominal' ?
-                            '<i class="bi bi-cash me-1"></i>Nominal' :
-                            '<i class="bi bi-percent me-1"></i>Persentase');
-                        formatSymbol.text(globalType === 'nominal' ? 'Rp' : '%');
-
-                        // Clear input value when type changes
-                        $(`#discountInputProduct-${productId}`).val('');
-                    }
-                });
-            }
-
-            // Function to update product table
-            function updateProductTable(products) {
-                var tbody = $('#table1 tbody');
-                tbody.empty();
-
-                products.forEach(function(product) {
-                    var row = `
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="product_ids[]" 
-                                    value="${product.id}" class="select-item">
-                            </td>
-                            <td>
-                                <img src="${product.main_image}" 
-                                    loading="lazy" class="lazyload" alt="Product Image"
-                                    style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                ${product.product_name.length > 30 ? 
-                                    product.product_name.substring(0, 30) + '...' : 
-                                    product.product_name}
-                            </td>
-                            <td>${product.stock_quantity}</td>               
-                            <td>Rp. ${number_format(product.regular_price)}</td>
-                            <td>
-                                <div class="input-group input-group-sm">
-                                    <button class="btn dropdown-toggle" type="button"
-                                        id="dropdownTypeProduct-${product.id}"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-tag-fill me-1"></i>
-                                        Tipe Diskon <i class="bi bi-chevron-down"></i>
-                                    </button>
-                                    <ul class="dropdown-menu custom-dropdown-menu">
-                                        <li>
-                                            <a class="custom-dropdown-item-product"
-                                                href="#" data-type="nominal"
-                                                data-product-id="${product.id}">
-                                                <i class="bi bi-cash"></i>
-                                                Nominal
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="custom-dropdown-item-product"
-                                                href="#" data-type="percentage"
-                                                data-product-id="${product.id}">
-                                                <i class="bi bi-percent"></i>
-                                                Persentase
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <input type="text"
-                                        class="form-control form-control-sm border-start-0"
-                                        id="discountInputProduct-${product.id}"
-                                        name="product_discount[${product.id}]"
-                                        placeholder="Masukkan diskon">
-                                    <span class="input-group-text bg-light"
-                                        id="formatSymbolProduct-${product.id}">Rp</span>
-                                    <input type="hidden" 
-                                        name="discount_type[${product.id}]" 
-                                        value="${$('#globalDiscountType').val()}" 
-                                        id="discountType-${product.id}">
-                                </div>
-                            </td>
-                        </tr>
-                        `;
-                    tbody.append(row);
-                });
-
-                // Reinitialize components
-                reinitializeComponents();
-            }
-
-            // Helper function for number formatting
-            function number_format(number) {
-                return new Intl.NumberFormat('id-ID').format(number);
-            }
-
-            // Function to reinitialize components after table update
-            function reinitializeComponents() {
-                // Reinitialize select all functionality
-                $('#select-all').off('change').on('change', function() {
-                    $('.select-item').prop('checked', $(this).prop('checked'));
-                });
-
-                // Handle product-specific discount type changes
-                $('.custom-dropdown-item-product').off('click').on('click', function(e) {
-                    e.preventDefault();
-                    const type = $(this).data('type');
-                    const productId = $(this).data('product-id');
-
-                    // Mark this product as modified
-                    modifiedProductTypes.add(productId);
-
-                    // Update UI and hidden input
-                    const dropdownButton = $(`#dropdownTypeProduct-${productId}`);
-                    const formatSymbol = $(`#formatSymbolProduct-${productId}`);
-                    const discountInput = $(`#discountInputProduct-${productId}`);
-                    const discountTypeInput = $(`#discountType-${productId}`);
-
-                    dropdownButton.html(type === 'nominal' ?
-                        '<i class="bi bi-cash me-1"></i>Nominal' :
-                        '<i class="bi bi-percent me-1"></i>Persentase');
-                    formatSymbol.text(type === 'nominal' ? 'Rp' : '%');
-                    discountInput.val('');
-                    discountTypeInput.val(type);
-                });
-
-                // Handle discount input formatting
-                $('input[id^="discountInputProduct-"]').off('input').on('input', function() {
-                    const productId = this.id.split('-')[1];
-                    const type = $(`#discountType-${productId}`).val();
-                    let value = this.value.replace(/\D/g, '');
-
-                    if (type === 'nominal') {
-                        this.value = value ? formatRupiah(value) : '';
-                    } else {
-                        // Untuk persentase, batasi maksimal 100
-                        value = Math.min(parseInt(value) || 0, 100);
-                        this.value = value ? value.toString() : '';
-                    }
-                });
-
-                // Handle global discount input formatting
-                $('#discountInputAll').off('input').on('input', function() {
-                    const type = $('#globalDiscountType').val();
-                    let value = this.value.replace(/\D/g, '');
-
-                    if (type === 'nominal') {
-                        this.value = value ? formatRupiah(value) : '';
-                    } else {
-                        value = Math.min(parseInt(value) || 0, 100);
-                        this.value = value ? value.toString() : '';
-                    }
-                });
-            }
-
-            // Initialize components on page load
-            reinitializeComponents();
-        });
-    </script>
-
-
-    {{-- handle input group discount --}}
-    <script>
+    {{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Format number to Indonesian Rupiah
             const formatRupiah = (number) => {
@@ -830,201 +491,98 @@
             initializeAllProductsDiscount();
             initializeProductDiscounts();
         });
-    </script>
+    </script>  --}}
 
-
-    {{-- handle add brand --}}
     <script>
-        // handle brand
-        $(document).ready(function() {
-            // Inisialisasi Select2 untuk brand
-            $('.select2-basic-brand').select2({
-                width: '100%',
-                dropdownAutoWidth: true,
-                placeholder: "Select a Brand",
-                allowClear: true,
-                dropdownParent: $('.select2-basic-brand').parent(),
-                tags: true,
-                createTag: function(params) {
-                    return {
-                        id: params.term,
-                        text: params.term,
-                        newOption: true
-                    }
-                },
-                templateResult: function(data) {
-                    var $result = $("<span></span>");
-                    $result.text(data.text);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Format number to Indonesian Rupiah
+            const formatRupiah = (number) => {
+                const formatted = number.toString().replace(/\D/g, '');
+                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
+            };
 
-                    if (data.newOption) {
-                        $result.append(" <em>(Press Enter to Add New)</em>");
-                    }
+            // Handle All Products discount
+            const initializeAllProductsDiscount = () => {
+                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-all');
+                const dropdownButton = document.getElementById('dropdownTypeAll');
+                const formatSymbol = document.getElementById('formatSymbolAll');
+                const discountInput = document.getElementById('discountInputAll');
+                const globalDiscountType = document.getElementById('globalDiscountType'); // Hidden input
+                let currentType = 'nominal'; // Default tipe
 
-                    return $result;
-                }
-            }).on('select2:select', function(e) {
-                var data = e.params.data;
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        currentType = this.dataset.type;
 
-                if (data.newOption) {
-                    // Reset selection
-                    $('.select2-basic-brand').val(null).trigger('change');
+                        // Perbarui dropdown dan simbol format
+                        dropdownButton.innerHTML = currentType === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase';
+                        formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
+                        discountInput.value = ''; // Reset input saat tipe diubah
 
-                    // Reset modal form dan error states
-                    $('#brandForm')[0].reset();
-                    $('#newBrandName').val(data.text);
-                    $('#imagePreview').hide();
-                    clearErrors();
-
-                    // Show modal
-                    $('#addBrandModal').modal('show');
-                }
-            });
-
-            // Preview image before upload
-            $('#newBrandLogo').change(function() {
-                const file = this.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        $('#preview').attr('src', e.target.result);
-                        $('#imagePreview').show();
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Function to clear errors
-            function clearErrors() {
-                $('.is-invalid').removeClass('is-invalid');
-                $('.invalid-feedback').remove();
-                $('.error-message').remove();
-            }
-
-            // Function to show errors
-            function showErrors(errors) {
-                clearErrors();
-
-                Object.keys(errors).forEach(function(field) {
-                    const element = $(`#new${field.charAt(0).toUpperCase() + field.slice(1)}`);
-                    const errorMessage = errors[field][0];
-
-                    // Add error class
-                    element.addClass('is-invalid');
-
-                    // Add error message
-                    element.after(`<div class="invalid-feedback error-message">${errorMessage}</div>`);
+                        // Perbarui nilai tipe diskon di hidden input
+                        globalDiscountType.value = currentType;
+                    });
                 });
 
-                // Show toast message for first error
-                const firstError = Object.values(errors)[0][0];
-                Swal.fire({
-                    toast: true,
-                    position: 'top-end',
-                    showConfirmButton: false,
-                    timer: 4000,
-                    timerProgressBar: true,
-                    icon: 'error',
-                    title: `Error: ${firstError}`,
-                    didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer)
-                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                discountInput.addEventListener('input', function() {
+                    let value = this.value.replace(/\D/g, '');
+                    if (currentType === 'nominal') {
+                        this.value = value ? formatRupiah(value) : '';
+                    } else {
+                        // Untuk persentase, hanya tambahkan % di belakang angka
+                        this.value = value ? value : '';
                     }
                 });
-            }
+            };
 
-            // Handle save new brand
-            $('#saveNewBrand').click(function() {
-                clearErrors();
+            // Handle individual product discounts (if needed)
+            const initializeProductDiscounts = () => {
+                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-product');
+                const productTypes = {};
 
-                var formData = new FormData();
-                formData.append('name', $('#newBrandName').val());
-                formData.append('description', $('#newBrandDescription').val());
-                formData.append('brand_logo', $('#newBrandLogo')[0].files[0]);
-                formData.append('_token', '{{ csrf_token() }}');
+                dropdownItems.forEach(item => {
+                    item.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const type = this.dataset.type;
+                        const productId = this.dataset.productId;
+                        const dropdownButton = document.getElementById(
+                            `dropdownTypeProduct-${productId}`);
+                        const formatSymbol = document.getElementById(
+                            `formatSymbolProduct-${productId}`);
+                        const discountInput = document.getElementById(
+                            `discountInputProduct-${productId}`);
 
-                if (!$('#newBrandName').val() || !$('#newBrandDescription').val() || !$('#newBrandLogo')[0]
-                    .files[0]) {
-                    Swal.fire({
-                        toast: true,
-                        position: 'top-end',
-                        showConfirmButton: false,
-                        timer: 4000,
-                        timerProgressBar: true,
-                        icon: 'error',
-                        title: 'Please fill in all required fields',
-                        didOpen: (toast) => {
-                            toast.addEventListener('mouseenter', Swal.stopTimer)
-                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        productTypes[productId] = type;
+                        dropdownButton.innerHTML = type === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase';
+                        formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
+                        discountInput.value = ''; // Reset input saat tipe diubah
+                    });
+                });
+
+                document.querySelectorAll('input[id^="discountInputProduct-"]').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const productId = this.id.split('-')[1];
+                        const type = productTypes[productId] || 'nominal';
+                        let value = this.value.replace(/\D/g, '');
+
+                        if (type === 'nominal') {
+                            this.value = value ? formatRupiah(value) : '';
+                        } else {
+                            // Untuk persentase, hanya tambahkan % di belakang angka
+                            this.value = value ? value : '';
                         }
                     });
-                    return;
-                }
-
-                $.ajax({
-                    url: '{{ route('store-brand-admin') }}',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            // Add new option to select2
-                            var newOption = new Option($('#newBrandName').val(), response.data
-                                .id, true, true);
-                            $('.select2-basic-brand').append(newOption).trigger('change');
-
-                            // Close modal
-                            $('#addBrandModal').modal('hide');
-
-                            // Reset form
-                            $('#brandForm')[0].reset();
-                            $('#imagePreview').hide();
-                            clearErrors();
-
-                            // Show success message
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 4000,
-                                timerProgressBar: true,
-                                icon: 'success',
-                                title: 'Brand has been added successfully!',
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal
-                                        .stopTimer)
-                                    toast.addEventListener('mouseleave', Swal
-                                        .resumeTimer)
-                                }
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        if (xhr.status === 422) {
-                            // Validation errors
-                            showErrors(xhr.responseJSON.errors);
-                        } else {
-                            // Other errors
-                            Swal.fire({
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 4000,
-                                timerProgressBar: true,
-                                icon: 'error',
-                                title: xhr.responseJSON?.message ||
-                                    'Failed to add brand',
-                                didOpen: (toast) => {
-                                    toast.addEventListener('mouseenter', Swal
-                                        .stopTimer)
-                                    toast.addEventListener('mouseleave', Swal
-                                        .resumeTimer)
-                                }
-                            });
-                        }
-                    }
                 });
-            });
+            };
+
+            // Initialize both handlers
+            initializeAllProductsDiscount();
+            initializeProductDiscounts();
         });
     </script>
 

@@ -22,11 +22,69 @@
     <link rel="stylesheet" href="assets/css/brand/createbrand.css">
 
     <style>
-        .action-buttons a {
-            display: block;
-            /* Set to block so each link appears on a new line */
-            margin-bottom: 5px;
-            /* Add some space between the buttons */
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .brand-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .brand-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .brand-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            /* Menyusun tombol secara vertikal */
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .brand-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .brand-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .brand-meta {
+            font-size: 0.9rem;
+            color: #666;
         }
     </style>
 </head>
@@ -36,7 +94,7 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        <div id="main">
+        {{-- <div id="main">
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
@@ -83,7 +141,7 @@
                                             <td>
                                                 <img src="{{ Storage::url($brand->brand_logo) }}"
                                                     alt="{{ $brand->name }}" class="lazyload"
-                                                    style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
+                                                    style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;"
                                                     onclick="openImageInNewTab('{{ Storage::url($brand->brand_logo) }}')">
                                             </td>
                                             <td>{{ $brand->brand_code }}</td>
@@ -119,6 +177,148 @@
                 </section>
             </div>
             @include('admin.layouts.footer')
+        </div> --}}
+
+        <div id="main">
+            <div class="page-heading">
+                <div class="page-title mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6">
+                            <h2>Brand Management</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Brands</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <a href="{{ route('create-brand-admin') }}" class="btn btn-primary">
+                                <i class="fa fa-plus-circle"></i> Add New Brand
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Section -->
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Brands</h6>
+                                        <h3 class="mb-0">{{ $brands->total() }}</h3>
+                                    </div>
+                                    <div class="stats-icon purple">
+                                        <i class="bi bi-building fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Brands</h6>
+                                        <h3 class="mb-0">{{ $brands->count() }}</h3>
+                                    </div>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-check-circle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-4">
+                        <div class="card stats-card bg-light-info">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Products</h6>
+                                        <h3 class="mb-0">{{ $brands->sum('products_count') }}</h3>
+                                    </div>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Brands Table Section -->
+                <div class="card brand-card">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Brand Directory</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover" id="table1">
+                            <thead>
+                                <tr>
+                                    <th>Brand Details</th>
+                                    <th>Total Products</th>
+                                    <th>Brand Code</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($brands as $brand)
+                                    <tr id="brand-item-{{ $brand->id }}">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="{{ Storage::url($brand->brand_logo) }}"
+                                                    alt="{{ $brand->name }}" class="brand-logo lazyload"
+                                                    onclick="openImageInNewTab('{{ Storage::url($brand->brand_logo) }}')">
+                                                <div class="brand-details">
+                                                    <span
+                                                        class="brand-name">{{ Str::limit($brand->name, 20, '...') }}</span>
+                                                    <span class="brand-meta">Code: {{ $brand->brand_code }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light-success">{{ $brand->products_count }}</span>
+                                        </td>
+                                        <td>{{ $brand->brand_code }}</td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="{{ url('/detail-brand/' . $brand->id) }}"
+                                                    class="badge bg-info mb-2">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="{{ url('/edit-brand/' . $brand->id) }}"
+                                                    class="badge bg-warning mb-2">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <a href="javascript:void(0);" class="badge bg-danger delete-brand"
+                                                    data-id="{{ $brand->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between mt-4 px-3">
+                    <div class="text-muted">
+                        Showing {{ $brands->firstItem() }} to {{ $brands->lastItem() }} of {{ $brands->total() }}
+                        brands
+                    </div>
+                    <div class="pagination-container">
+                        {{ $brands->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
+                    </div>
+                </div>
+            </div>
+            @include('admin.layouts.footer')
         </div>
     </div>
 
@@ -130,7 +330,7 @@
     <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/main.js"></script>    
+    <script src="assets/js/main.js"></script>
     <script src="assets/js/brand/indexbrand.js"></script>
 
     @if (session('success'))
