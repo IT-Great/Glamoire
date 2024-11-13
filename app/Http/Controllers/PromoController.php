@@ -29,8 +29,8 @@ class PromoController extends Controller
             ->with(['products'])
             ->get();
             
-            $vouchers = Promo::where('type', '=', 'voucher')->get();
-    
+            $vouchers = Promo::whereIn('type', ['voucher', 'product voucher'])->get();
+
             return view('user.component.promo', [
                 'promos' => $promos,
                 'vouchers' => $vouchers,
@@ -53,11 +53,14 @@ class PromoController extends Controller
             foreach ($promo as $promoItem) {
                 foreach ($promoItem->products as $product) {
                     
-                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
-                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    if ($promoItem->discount > 100) {
+                        $priceAfterDiscount = $product->regular_price - $promoItem->discount;
+                    }
+                    elseif ($promoItem->discount <= 100) {
+                        $priceDiscount = ($product->regular_price) * ($promoItem->discount/100);
+                        $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    }
 
-                    // Masukkan hasil diskon ke objek promo
-                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
                     $product->price_after_discount = $priceAfterDiscount;
                 }
             }
@@ -78,14 +81,15 @@ class PromoController extends Controller
                 ->get();
 
             foreach ($promo as $promoItem) {
-                // Pastikan products adalah koleksi 
                 foreach ($promoItem->products as $product) {
-                    // Hitung diskon untuk setiap produk
-                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
-                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    if ($promoItem->discount > 100) {
+                        $priceAfterDiscount = $product->regular_price - $promoItem->discount;
+                    }
+                    elseif ($promoItem->discount <= 100) {
+                        $priceDiscount = ($product->regular_price) * ($promoItem->discount/100);
+                        $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    }
 
-                    // Masukkan hasil diskon ke objek promo
-                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
                     $product->price_after_discount = $priceAfterDiscount;
                 }
             }
@@ -211,7 +215,7 @@ class PromoController extends Controller
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
                 'discount' => 'required',
-                'max_discount' => 'required',
+                // 'max_discount' => 'required',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
@@ -255,10 +259,6 @@ class PromoController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
-
-
-
-
 
     // PROMO BRAND VOUCHER
     public function createPromoShopVoucher()
@@ -737,13 +737,12 @@ class PromoController extends Controller
 
             $request->validate([
                 'promo_name' => 'required|string|max:255',
-                'start_date' => 'required',
-                'end_date' => 'required',
+                'date_range' => 'required|string|max:255',
                 'min_transaction' => 'required',
                 'promo_code' => 'required',
-                'description' => 'required',
-                'terms_conditions' => 'required',
-                'diskon' => 'required',
+                // 'description' => 'required',
+                // 'terms_conditions' => 'required',
+                'discount' => 'required',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
@@ -759,13 +758,12 @@ class PromoController extends Controller
             // Simpan data promo
             Promo::create([
                 'promo_name' => $request->promo_name,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
+                'date_range' => $request->date_range,
                 'min_transaction' => $request->min_transaction,
                 'promo_code' => $request->promo_code,
-                'description' => $request->description,
-                'terms_conditions' => $request->terms_conditions,
-                'diskon' => $request->diskon,
+                // 'description' => $request->description,
+                // 'terms_conditions' => $request->terms_conditions,
+                'discount' => $request->discount,
                 'image' => $imagePath ?? null,
                 'type' => $request->type, // Isi field 'type' dari input tersembunyi
             ]);

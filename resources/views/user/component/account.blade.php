@@ -8,10 +8,10 @@
   $wishlist          = $profile->wishlist;
 @endphp
 
-<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 py-2">
-  <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
-      <div class="d-flex gap-2 pl-2">
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
+  <div class="container-fluid px-0 px-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
+      <div class="d-flex gap-1 px-3 px-md-0">
         <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Profil Saya</a>
@@ -57,12 +57,12 @@
               <label for="handphone" class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
               <div class="input-group">
                 <span class="input-group-text text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
-                <input type="number" class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="inputHandphone" placeholder="Enter your phone number" pattern="[0]{1}[8]{1}[0-9]{9,10}" name="handphone" value="{{ $profile->handphone ? $profile->handphone : '' }}" {{ $profile->email_verified_at == NULL ? "disabled" : "" }}>
+                <input type="number" class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="inputHandphone" placeholder="Enter your phone number" pattern="[0]{1}[8]{1}[0-9]{9,10}" name="handphone" value="{{ $profile->handphone ? $profile->handphone : '' }}" disabled>
               </div>
             </div>
             <div class="col-12">
               <label for="email" class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Email</label>
-              <input type="email" class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="inputEmail" placeholder="Enter your email" value="{{ $profile->email ? $profile->email : '' }}" name="email" {{ $profile->email_verified_at == NULL ? "disabled" : "" }}>
+              <input type="email" class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="inputEmail" placeholder="Enter your email" value="{{ $profile->email ? $profile->email : '' }}" name="email" disabled>
             </div>
             <div class="col-12">
               <label for="Gender" class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jenis Kelamin</label>
@@ -143,6 +143,8 @@
                   <div class="p-2 rounded-sm custom-shadow">
                     <div class="d-flex align-items-center">
                       <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $sa->label }}</p>
+                  
+                      <i aria-hidden="true" class="fas fa-solid fa-trash text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto" title="Hapus Alamat" data-id="{{ $sa->id }}" name="deleteAddress" type="button" style="background-color: #ffffff"></i>
                     </div>
                     
                     <p class="text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-black">{{ $sa->recipient_name }}</p>
@@ -156,25 +158,27 @@
                     @endif
       
                     <div class="d-flex gap-2 input-group-btn mt-2">
-                      <button type="button" class="btn border text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]"
-                        data-bs-toggle="modal" data-bs-target="#form-edit-address-{{$sa->id}}"
-                        >
-                        Ubah Alamat
-                      </button>
+                        <button type="button" class="btn border text-[#183018] bg-light rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] flex-grow-1"
+                            data-bs-toggle="modal" data-bs-target="#form-edit-address-{{$sa->id}}">
+                            Ubah Alamat
+                        </button>
 
-                      <button data-id="{{ $sa->id }}" type="button" name="setMainAddress" class="btn border text-white bg-dark w-full rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018">
-                        Jadikan Alamat Utama
-                      </button>
+                        <button data-id="{{ $sa->id }}" type="button" name="setMainAddress" 
+                            class="btn border text-white bg-dark rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] hover-shadow-md flex-grow-1" 
+                            style="background-color: #183018">
+                            Jadikan Alamat Utama
+                        </button>
 
-                      <button data-id="{{ $sa-> id }}" name="deleteAddress" type="button" class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="background-color: #ffffff">
-                          <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
-                      </button>
-                      
-                    
-                      <!-- <button data-id="{{ $sa->id }}" name="deleteAddress" type="submit" class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="background-color: #ffffff">
-                        <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
-                      </button> -->
+                        <!-- Optional: Uncomment if you need the delete button -->
+                        <!-- 
+                        <button data-id="{{ $sa->id }}" name="deleteAddress" type="submit" 
+                            class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex-grow-1" 
+                            style="background-color: #ffffff">
+                            <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
+                        </button> 
+                        -->
                     </div>
+
                   </div>
                 </div>
               @endif
@@ -282,23 +286,25 @@
           <div class="grid gap-2 p-0 m-0">
 
             @foreach ($profile->orders as $order)
-              <!-- DONE -->
+              <!-- CARD -->
               <div class="col-12 p-0">
-                <div class="p-3 custom-shadow">
-                  <div class="d-flex align-items-center mb-2">
-                    <svg class="d-flex align-items-center justify-content-center" xmlns="http://www.w3.org/2000/svg" width="15" height="15" 
+                <div class="p-2 p-md-3 custom-shadow">
+                  <div class="d-flex align-items-center mb-2 gap-1">
+                    <svg class="d-flex align-items-center justify-content-center" xmlns="http://www.w3.org/2000/svg" width="25" height="25" 
                       viewBox="0 0 448 512">
                       <path d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z"/>
                     </svg>
-                    <p class="font-semibold text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">Belanja</p>
-                    <p class="text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px]">{{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
-                    <span class="badge 
+                    <div class="grid">
+                      <p class="font-semibold text-black mb-0 text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Belanja</p>
+                      <p class="text-black mb-0 text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">{{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
+                    </div>
+                    <span class="ml-auto badge 
                         @if($order->status == 'done') badge-success
                         @elseif($order->status == 'waiting confirm') badge-secondary
                         @elseif($order->status == 'in process') badge-info
                         @elseif($order->status == 'in delivery') badge-warning
                         @endif
-                        d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">
+                        d-flex align-items-center justify-content-center text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
                         {{
                             $order->status == 'done' ? 'Selesai' :
                             ($order->status == 'waiting confirm' ? 'Menunggu Konfirmasi' :
@@ -306,55 +312,54 @@
                             ($order->status == 'in delivery' ? 'Dalam Pengiriman' : 'Unknown')))
                         }}
                     </span>
-                    <p class="text-primary mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] d-none d-md-block">
-                      {{ $order->invoice->no_invoice }}
-                    </p>
                   </div>
 
                   @foreach ($order->items as $item)
                   <div class="flex mb-2 md:mb-4 lg:md-4 xl:md-4">
                     <div class="flex hover:cursor-pointer hover:text-italic" onclick="detailProduct('{{$item->product->product_code}}')">
-                      <div class="col-2 col-md-1 p-0 m-0">
+                      <div class="col-2 col-lg-1 p-0 m-0">
                         <img class="border border-[#183018] rounded-sm" src="{{ Storage::url($item->product->main_image) }}" alt="{{ $item->product->product_name }}">    
                       </div>
-                      <div class="col-6 col-md-8 gap-4">
-                        <p class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
-                        <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $item->product->product_name }}</p>
-                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                      <div class="col-10 col-lg-11 gap-4 pr-0">
+                        <p class="font-semibold text-black mb-0 text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px]">{{ $item->product->brand->name }}</p>
+                        <p class="text-black text-[10px] md:text-[11px] lg:text-[12px] xl:text-[13px] truncate-ellipsis">{{ $item->product->product_name }}</p>
+                        <p class="text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">{{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
                       </div>
-                    </div>
-                    <div class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                      <p class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
-                      <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
                     </div>
                   </div>  
                   @endforeach
                   
 
-                  <div class="d-flex justify-content-end input-group-btn mt-2">
-                    <div class="col-12 d-flex p-0 justify-content-end gap-2">
-                      <div class="d-flex align-items-center justify-content-center">
-                        <a class="hover:cursor-pointer text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] text-red-700" data-bs-toggle="modal" data-bs-target="#transaction-detail-{{$order->invoice->no_invoice}}">
-                          Lihat Detail Transaksi
-                        </a>
-                      </div>
-                      @if ($order->status == 'done')
-                        @if (count($order->ratingAndReviews) == 0)
-                          <button type="submit" class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" data-bs-toggle="modal" data-bs-target="#form-rating-review-{{$order->id}}" style="background-color: #ffffff">
-                              Rating & Review
-                          </button>
-                        @else
-                        @endif
-                        <button type="button" class="btn border rounded-sm w-fit text-white text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" style="background-color: #183018" data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
-                            Beli Lagi
-                        </button>
-                      @endif
+                  <div class="d-flex input-group-btn mt-2">
+                    <div class="grid md:flex w-100">
+                        <div class="d-flex flex-column align-items-start justify-content-center">
+                            <p class="text-black font-semibold text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Total Belanja</p>
+                            <p class="text-black text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>  
+                        </div>
+                        <div class="action d-flex ml-auto p-0 justify-content-end gap-2">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <a class="hover:cursor-pointer text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] text-red-700" data-bs-toggle="modal" data-bs-target="#transaction-detail-{{$order->invoice->no_invoice}}">
+                                    Lihat Detail Transaksi
+                                </a>
+                            </div>
+                            @if ($order->status == 'done')
+                                @if (count($order->ratingAndReviews) == 0)
+                                    <button type="submit" class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" data-bs-toggle="modal" data-bs-target="#form-rating-review-{{$order->id}}" style="background-color: #ffffff">
+                                        Rating & Review
+                                    </button>
+                                @endif
+                                <button type="button" class="btn border rounded-sm w-fit text-white text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md" style="background-color: #183018" data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
+                                    Beli Lagi
+                                </button>
+                            @endif
+                        </div>
                     </div>
                   </div>
 
+
                 </div>
               </div>
-              <!-- END DONE -->
+              <!-- END CARD -->
               
               <!-- DETAIL TRANSAKSI -->
               <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}" tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}" aria-hidden="true">
@@ -399,7 +404,7 @@
                             <div class="col-12 p-0 pb-2 border-bottom">
                               <div class="d-flex">
                                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">No. Invoice</p>
-                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-danger hover:cursor-pointer hover:text-decoration-underlined" onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">{{ $order->invoice->no_invoice }}</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-info hover:cursor-pointer hover:underline" onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">{{ $order->invoice->no_invoice }}</p>
                               </div>
                               <div class="d-flex">
                                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Tanggal Pembelian</p>
@@ -481,7 +486,7 @@
                                         </div>
                                         @if ($order->voucher_promo !== NULL)
                                         <div class="d-flex">
-                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Diskon</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Diskon</p>
                                             <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">-Rp{{ number_format($order->discount_amount, 0, ',', '.') }}</p>
                                         </div>
                                         @endif
@@ -489,6 +494,12 @@
                                             <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Total Ongkos Kirim</p>
                                             <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}</p>
                                         </div>
+                                        @if ($order->voucher_ongkir !== NULL)
+                                        <div class="d-flex">
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Diskon Ongkos kirim</p>
+                                            <p class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">-Rp{{ number_format($order->discount_ongkir, 0, ',', '.') }}</p>
+                                        </div>
+                                        @endif
                                     </div>
                                     <div class="d-flex py-2 border-bottom border-top align-items-center">
                                         <p class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
@@ -624,63 +635,58 @@
           <div class="row">
             @foreach ($profile->wishlist as $wp)
             <div class="col-lg-2 col-md-3 col-6 p-1">
-              <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-wishlist border border-xl">
-                <a href="/{{ $wp->product->product_code }}_product" class="text-decoration-none">
-                    <div class="position-relative overflow-hidden bg-transparent p-0">
-                        <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
-                    </div>
-                    <div class="grid gap-1 text-left p-2">
-                        <div class="flex">
-                            <div class="flex gap-1">
-                                <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[12px] xl:text-[16px]" style="color:orange;"></i>
-                                <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">5</p>
-                            </div>
-                            <div class="ml-auto">
-                              <a href="javascript:void(0);" class="col-4 text-decoration-none text-[#183018] p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] grid hover-[#183018] text-center" onclick="removeFromWishlist({{$wp->product->id}})">
-                                <i class="fas fa-heart"></i> Hapus
-                              </a>
-                            </div>
-                        </div>
-                          <div class="grid name-price hover:cursor-pointer">
-                            <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="{{ $wp->product->product_name }}">
-
-                                <a href="/{{ $wp->product->product_code }}_product" 
-                                    class="text-decoration-none">
-                                    {{ Str::limit($wp->product->product_name, 20) }}
-                                </a>
-                            </p>
-
-                            <div class="flex justify-content-start gap-1">
-                                <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                    Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex justify-content-between px-2">
-                      @if ($wp->product->stock_quantity == 0)
-                        <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                          Maaf Stok Habis
-                        </a>
-                      @else
-                        @php
-                          $inCart = collect($profile->cartItems)->contains('product_id', $wp->product->id);
-                        @endphp
-                        @if($inCart)
-                          <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                              Cek Keranjang Belanjamu
-                          </a>
-                        @else
-                          <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$wp->product->id}})">
-                              + <i class="fas fa-shopping-cart"></i> Keranjang
-                          </a>
-                        @endif
-                      @endif
-                    </div>
-                </a>
+              <div onclick="window.location.href = '/{{ $wp->product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                <div class="position-relative overflow-hidden bg-transparent p-0">
+                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($wp->product->main_image) }}" alt="{{ $wp->product->product_name}}">
+                </div>
+                <div class="grid gap-1 text-left p-1 p-md-2">
+                  <div class="flex gap-1">
+                      <i class="text-decoration-none fas fa-star text-[10px] md:text-[14px] lg:text-[12px] xl:text-[16px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                      <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">5</p>
+                      <i class="ml-auto p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] fas fa-heart grid align-items-center justify-content-between hover-red" title="Hapus dari Favorit" onclick="event.stopPropagation();removeFromWishlist({{$wp->product->id}})">
+                      </i>
+                  </div>
+                  <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                    <a href="/{{ $wp->product->product_code }}_product" 
+                      class="text-decoration-none truncate-ellipsis" 
+                      data-bs-toggle="tooltip" 
+                      data-bs-placement="top" 
+                      title="{{ $wp->product->product_name }}">
+                        {{ $wp->product->product_name }}
+                    </a>
+                  </p>
+                  <div class="flex justify-content-start gap-1">
+                    <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                      Rp {{ number_format($wp->product->regular_price, 0, ',', '.') }}
+                    </p>
+                  </div>
+                  @if ($wp->product->stock_quantity == 0)
+                    <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Beritahu Saya Jika Stok Sudah Ada" 
+                        type="button" 
+                        style="color:#183018"
+                        id="notify-me-{{$wp->product->id}}"
+                        onclick="event.stopPropagation();notifyMe({{$wp->product->id}})"
+                    >
+                        Stok Habis
+                    </a>
+                  @else
+                    @php
+                      $inCart = collect($profile->cart->cartItems)->contains('product_id', $wp->product->id);
+                    @endphp
+                    @if($inCart)
+                      <a href="/cart" class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                          Cek Keranjangmu
+                      </a>
+                    @else
+                      <a class="py-1 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$wp->product->id}})">
+                          + <i class="fas fa-shopping-cart"></i> Keranjang
+                      </a>
+                    @endif
+                  @endif
+                </div>
               </div>
             </div>
             @endforeach

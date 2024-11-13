@@ -49,7 +49,7 @@
               <div class="grid px-0 px-md-4">
                 <a href="#" class="ml-1 text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" data-bs-toggle="modal" data-bs-target="#forgot" data-bs-dismiss="modal">Lupa Password ?</a>
                 <p class="text-white text-center py-4 font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Belum Punya Akun ? 
-                  <a href="#" class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" data-bs-toggle="modal" data-bs-target="#register" data-bs-dismiss="modal">Daftar Sekarang</a>
+                  <a href="#" class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" data-bs-toggle="modal" data-bs-target="#registerUser1" data-bs-dismiss="modal">Daftar Sekarang</a>
                 </p>
               </div>
           </div>
@@ -129,7 +129,7 @@
                   </button>
                   <div class="grid">
                     <p class="text-white text-center py-4 font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Sudah Memiliki Akun ? 
-                      <a href="#" class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" data-bs-toggle="modal" data-bs-target="#login" data-bs-dismiss="modal">Masuk Sekarang</a>
+                      <a href="#" class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" data-bs-toggle="modal" data-bs-target="#loginUser1" data-bs-dismiss="modal">Masuk Sekarang</a>
                     </p>
                   </div>
                 </div>
@@ -173,7 +173,7 @@
                   <div class="col-12">
                     <div class="text-center text-sm">
                         <p class="text-white py-4">Sudah Ingat Akunmu? 
-                        <a href="#" class="text-white ml-1" data-bs-toggle="modal" data-bs-target="#login" data-bs-dismiss="modal">Masuk</a>
+                        <a href="#" class="text-white ml-1" data-bs-toggle="modal" data-bs-target="#loginUser1" data-bs-dismiss="modal">Masuk</a>
                         </p>
                     </div>
                   </div>
@@ -187,10 +187,15 @@
       @yield('content')
     </div>
 
+    @if (!Request::is('cart') && !Request::is('checkout') && !Request::is('buy-now'))  
+      <a href="#" class="btn back-to-top text-[8px]" style="background-color: #183018"><i class="fa fa-angle-double-up text-white"></i></a>
+    @endif
+
     @if (
       !Request::is('cart') && !Request::is('checkout') && !Request::is('account') && !Request::is('shop') && !Request::is('detail') 
       && !Request::routeIs('detail.product') && !Request::routeIs('buy.now') && !Request::routeIs('invoice.user')
       && !Request::routeIs('shop.category') && !Request::routeIs('shop.category.sub')
+      && !Request::is('search')
       )
       @include('user.layouts.footer')
     @endif
@@ -201,11 +206,12 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
     <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/easing/easing.min.js') }}"></script>
+    
 
     <!-- UNTUK MENGATUR JUMLAH CARD MENGGUNAKAN SWIPERJS PADA HALAMAN HOME -->
     <script>
       var swiper = new Swiper(".mySwiper", {
-        loop: true,
         slidesPerView: 5,
         spaceBetween: 15,
         cssMode: true,
@@ -214,6 +220,10 @@
           prevEl: ".swiper-button-prev",
         },
         breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
           1440: {
             slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
@@ -224,30 +234,29 @@
           },
           // Tablet
           768: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
           },
           425: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
+            spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           375: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
+            spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           // Mobile
           320: {
-            slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
             spaceBetween: 5,  // Menyusun jarak antar slide
             navigation: false,
           },
         },
       });
 
-
-      var swiper = new Swiper(".mySwiperCarousel", {
+      var swiperCorousel = new Swiper(".mySwiperCarousel", {
         spaceBetween: 30,
         centeredSlides: true,
         autoplay: {
@@ -268,12 +277,8 @@
           }
         }
       });
-    </script>
-    <!--  -->
-
-    <!-- UNTUK MENGATUR REVIEW PRODUK -->
-    <script>
-      var swiper = new Swiper(".mySwiperReview", {
+      
+      var swiperReview = new Swiper(".mySwiperReview", {
         slidesPerView: 2,
         spaceBetween: 5,
         cssMode: true,
@@ -282,36 +287,8 @@
           prevEl: ".swiper-button-prev",
         },
       });
-
-
-      var swiper = new Swiper(".mySwiperCarousel", {
-        spaceBetween: 30,
-        centeredSlides: true,
-        autoplay: {
-          delay: 2000,
-          disableOnInteraction: false,
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoint: {
-          320: {
-            navigation: false,
-          }
-        }
-      });
-    </script>
-    <!--  -->
-
-
-    <!-- UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT -->
-    <script>
-      var swiper = new Swiper(".mySwiperProduct", {
+      
+      var swiperDetail = new Swiper(".mySwiperProduct", {
         loop: true,
         spaceBetween: 10,
         slidesPerView: 4,
@@ -323,16 +300,110 @@
         },
         
       });
-
-      var swiper2 = new Swiper(".mySwiperShow", {
+      
+      // UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT
+      var swiperShow = new Swiper('.mySwiperShow', {
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
         loop: true,
-        spaceBetween: 10,
-        thumbs: {
-          swiper: swiper,
+      });
+
+      var swiperNewest = new Swiper(".mySwiperNewest", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
+        },
+      });
+
+      var swiperTop = new Swiper(".mySwiperTop", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
         },
       });
     </script>
-    <!--  -->
 
     <!-- UNTUK MENGATUR RANGE DI FILTER SHOP -->
     <script>
@@ -371,7 +442,7 @@
       });
     </script>
 
-    <!-- Check All Item In Cart -->
+    <!-- Pilih all item di keranjang -->
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const checkAll = document.getElementById("checkAll");
@@ -402,7 +473,6 @@
                 Toast.fire({
                   icon: "success",
                   text: response.message,
-                  title: "Berhasil",
                   willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');
@@ -423,7 +493,6 @@
                 Toast.fire({
                   icon: "error",
                   text: errorMessages,
-                  title: "Error",
                   willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');
@@ -437,7 +506,6 @@
               Toast.fire({
                 icon: "error",
                 text: "Kesalahan Sistem",
-                title: "Error",
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');
                   const content = document.querySelector('.swal2-html-container');
@@ -463,7 +531,6 @@
                   Toast.fire({
                     icon: "success",
                     text: response.message,
-                    title: "Berhasil",
                     willOpen: () => {
                       const title = document.querySelector('.swal2-title');
                       const content = document.querySelector('.swal2-html-container');
@@ -484,7 +551,7 @@
                     Toast.fire({
                       icon: "error",
                       text: response.message,
-                      title: "Oops..",
+                      
                       willOpen: () => {
                         const title = document.querySelector('.swal2-title');
                         const content = document.querySelector('.swal2-html-container');
@@ -498,7 +565,7 @@
               Toast.fire({
                 icon: "error",
                 text: "Kesalahan Sistem",
-                title: "Oops..",
+                
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');
                   const content = document.querySelector('.swal2-html-container');
@@ -523,7 +590,7 @@
                     Toast.fire({
                       icon: "success",
                       text: response.message,
-                      title: "Berhasil",
+                      
                       willOpen: () => {
                         const title = document.querySelector('.swal2-title');
                         const content = document.querySelector('.swal2-html-container');
@@ -544,7 +611,7 @@
                     Toast.fire({
                       icon: "error",
                       text: response.message,
-                      title: "Oops..",
+                      
                       willOpen: () => {
                         const title = document.querySelector('.swal2-title');
                         const content = document.querySelector('.swal2-html-container');
@@ -558,7 +625,7 @@
               Toast.fire({
                 icon: "error",
                 text: "Kesalahan Sistem",
-                title: "Oops..",
+                
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');
                   const content = document.querySelector('.swal2-html-container');
@@ -591,9 +658,6 @@
         e.preventDefault();
 
         let fullname = $("#register_fullname").val();
-
-        console.log(fullname);
-
         let email = $("#register_email").val();
         let password = $("#register_password").val();
         let handphone = $("#register_handphone").val();
@@ -611,8 +675,7 @@
 
         // console.log({province,regency,district,date});
         Swal.fire({
-          title: "Akun Anda Sedang Kami Proses",
-          text: "Mohon tunggu sebentar ...",
+          text: "Akun Anda Sedang Kami Proses ...",
           allowOutsideClick: false,
           didOpen: () => {
             Swal.showLoading();
@@ -640,72 +703,68 @@
                 benchmark : benchmark,
             },
             success: function (response) {
-                Swal.close();
-                if (response.success) {
-                    Toast.fire({
-                      icon: "success",
-                      text: response.message,
-                      title: "Berhasil",
-                      willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                      }
-                    }).then(function () {
-                      window.location.href = "/email-verify"; // Redirect ke halaman utama atau halaman lain
-                    });
-                } else {
-                    let errorMessage = response.message || "Terjadi kesalahan"; // Mengambil pesan error dari response
-                    Toast.fire({
-                        icon: "error",
-                        text: errorMessage,
-                        title: "Oops..",
-                        willOpen: () => {
-                          const title = document.querySelector('.swal2-title');
-                          const content = document.querySelector('.swal2-html-container');
-                          if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                          if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                        }
-                    });
-                }
+              Swal.close();
+              if (response.success) {
+                Toast.fire({
+                  icon: "success",
+                  text: response.message,
+                  
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                }).then(function () {
+                  window.location.href = "/email-verify"; // Redirect ke halaman utama atau halaman lain
+                });
+              } else {
+                let errorMessage = response.message || "Terjadi kesalahan"; // Mengambil pesan error dari response
+                Toast.fire({
+                  icon: "error",
+                  text: errorMessage,
+                  
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                }).then(function () {
+                  window.location.href = "/"; // Redirect ke halaman utama atau halaman lain
+                });
+              }
             },
             error: function (response) {
-                Swal.close();
+                Toast.close();
                 let errorMessage = "";
                 
                 if (response.responseJSON) {
                     if (response.responseJSON.message) {
-                        errorMessage = response.responseJSON.message; // Pesan error dari Laravel
-                        
-                
+                      errorMessage = response.responseJSON.message; // Pesan error dari Laravel
                     } else if (response.responseJSON.errors) {
-                        // Jika ada beberapa pesan error, tampilkan semuanya
-                        errorMessage = "";
-                        $.each(response.responseJSON.errors, function (key, value) {
-                            errorMessage += value[0] + "<br>"; // Menggabungkan pesan error
-                        });
-                        
-                
+                      // Jika ada beberapa pesan error, tampilkan semuanya
+                      errorMessage = "";
+                      $.each(response.responseJSON.errors, function (key, value) {
+                          errorMessage += value[0] + "<br>"; // Menggabungkan pesan error
+                      });
                     }
                 } else if (response.statusText) {
-                    // Jika tidak ada response JSON, tampilkan status text dari request
-                    errorMessage = response.statusText;
-                    
-                
+                  errorMessage = response.statusText;
                 }
-
                 // Tampilkan pesan error dengan SweetAlert
                 Toast.fire({
-                    icon: "error",
-                    text: errorMessage,
-                    title: "Oops..",
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
+                  icon: "error",
+                  text: errorMessage,
+                  
+                  willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+                }).then(function () {
+                  window.location.href = "/"; // Redirect ke halaman utama atau halaman lain
                 });
             },
         });
@@ -720,14 +779,15 @@
         let email = $("#login_email").val();
         let password = $("#login_password").val();
 
-        console.log(email);
-
-        Swal.fire({
-          title: "Sedang Mengakses Akunmu",
+        Toast.fire({
           text: "Mohon tunggu sebentar ...",
           allowOutsideClick: false,
           didOpen: () => {
-            Swal.showLoading();
+            Toast.showLoading();
+            $("#loginUser1").hide();
+
+            const content = document.querySelector('.swal2-html-container');
+            if (content) content.style.color = '#ffffff'; // Ubah warna konten
           }
         });
         // console.log({email, password});
@@ -741,12 +801,12 @@
                 password: password,
             },
             success: function (response) {
-                Swal.close();
+              Toast.close();
                 if (response.success) {
                   Toast.fire({
                     icon: "success",
                     text: response.message,
-                    title: "Berhasil",
+                    
                     willOpen: () => {
                       const title = document.querySelector('.swal2-title');
                       const content = document.querySelector('.swal2-html-container');
@@ -767,13 +827,15 @@
                   Toast.fire({
                     icon: "error",
                     text: response.message,
-                    title: "Oops..",
+                    
                     willOpen: () => {
                       const title = document.querySelector('.swal2-title');
                       const content = document.querySelector('.swal2-html-container');
                       if (title) title.style.color = '#ffffff'; // Ubah warna judul
                       if (content) content.style.color = '#ffffff'; // Ubah warna konten
                     }
+                  }).then(function () {
+                    window.location.href = "/"; // Redirect ke halaman utama atau halaman lain
                   });
                 }
             },
@@ -782,13 +844,15 @@
               Toast.fire({
                 icon: "error",
                 text: response.message,
-                title: "Oops..",
+                
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');
                   const content = document.querySelector('.swal2-html-container');
                   if (title) title.style.color = '#ffffff'; // Ubah warna judul
                   if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
+                },
+              }).then(function () {
+                window.location.href = "/"; // Redirect ke halaman utama atau halaman lain
               });
             },
         });
@@ -910,7 +974,7 @@
                       Toast.fire({
                           icon: "success",
                           text: response.message,
-                          title: "Berhasil",
+                          
                           willOpen: () => {
                               const title = document.querySelector('.swal2-title');
                               const content = document.querySelector('.swal2-html-container');
@@ -942,7 +1006,7 @@
                       Toast.fire({
                           icon: "error",
                           text: errorMessage,
-                          title: "Oops..",
+                          
                           willOpen: () => {
                               const title = document.querySelector('.swal2-title');
                               const content = document.querySelector('.swal2-html-container');
@@ -976,7 +1040,7 @@
                   Toast.fire({
                       icon: "error",
                       text: errorMessage,
-                      title: "Oops..",
+                      
                       willOpen: () => {
                           const title = document.querySelector('.swal2-title');
                           const content = document.querySelector('.swal2-html-container');
@@ -1008,7 +1072,7 @@
                     Toast.fire({
                       icon: "success",
                       text: response.message,
-                      title: "Berhasil",
+                      
                       willOpen: () => {
                         const title = document.querySelector('.swal2-title');
                         const content = document.querySelector('.swal2-html-container');
@@ -1043,7 +1107,7 @@
                 Toast.fire({
                   icon: "success",
                   text: response.message,
-                  title: "Berhasil",
+                  
                   willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');
@@ -1064,7 +1128,7 @@
                 Toast.fire({
                   icon: "error",
                   text: errorMessages,
-                  title: "Error",
+                  
                   willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');
@@ -1078,7 +1142,7 @@
               Toast.fire({
                 icon: "error",
                 text: "Kesalahan Sistem",
-                title: "Error",
+                
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');
                   const content = document.querySelector('.swal2-html-container');
@@ -1146,7 +1210,7 @@
         Toast.fire({
           icon: "error",
           text: "Masuk/Daftar terlebih dahulu yaa",
-          title: "Oops..",
+          
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
             const content = document.querySelector('.swal2-html-container');
@@ -1174,7 +1238,7 @@
         Toast.fire({
           icon: "success",
           text: "Kata sandi anda berhasil diubah",
-          title: "Berhasil",
+          
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
             const content = document.querySelector('.swal2-html-container');
@@ -1202,7 +1266,7 @@
         Toast.fire({
           icon: "error",
           text: "Kata sandi anda gagal diperbarui",
-          title: "Oops..",
+          
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
             const content = document.querySelector('.swal2-html-container');
@@ -1230,7 +1294,7 @@
         Toast.fire({
           icon: "success",
           text: "Yeey emailmu berhasil diverifikasi",
-          title: "Berhasil",
+          
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
             const content = document.querySelector('.swal2-html-container');
@@ -1241,6 +1305,33 @@
       </script>
     @endif
 
+    @if (session('voucher_new_user'))
+      <script>
+        var Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            background: "#183018",
+            showConfirmButton: false,
+            timer: 4500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        });
+        Toast.fire({
+          icon: "success",
+          text: "Silahkan cek kode promomu di emailmu",
+          title: "Selamat",
+          willOpen: () => {
+            const title = document.querySelector('.swal2-title');
+            const content = document.querySelector('.swal2-html-container');
+            if (title) title.style.color = '#ffffff'; // Ubah warna judul
+            if (content) content.style.color = '#ffffff'; // Ubah warna konten
+          }
+        });
+      </script>
+    @endif
     
   </body>
 </html>

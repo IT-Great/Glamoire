@@ -2,25 +2,25 @@
 
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 py-2 mb-8">
-  <div class="container-fluid p-0 py-4" style="min-height:55vh;">
-    <div class="col mb-2">
-      <p class="font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
+  <div class="container-fluid p-0" style="min-height:55vh;">
+    <div class="col mb-2 px-0 px-md-3">
+      <p class="font-semibold text-[10px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
         Makin Hemat dengan Voucher
       </p>
     </div>
 
-    <div class="col mb-2">
+    <div class="col mb-2 px-0 px-md-3">
       <div class="d-flex overflow-x-auto max-w-fit-content custom-scroll gap-2 border-top border-bottom py-2" style="max-height: 20vh; max-width: 100%;">
         @if (count($vouchers) !== 0)
           @foreach ($vouchers as $voucher)
-            <img src="{{ Storage::url($voucher->image) }}" class="img-fluid shadow-md rounded-sm" title="{{ $voucher->promo_name }}" id="image-voucher-{{ $voucher->id }}" alt="{{ $voucher->promo_name }}" data-bs-toggle="modal" data-bs-target="#voucher-{{ $voucher->id }}"  style="max-width: 20vh;">
+            <img src="{{ Storage::url($voucher->image) }}" class="img-fluid shadow-md rounded-sm" title="{{ $voucher->promo_name }}" id="image-voucher-{{ $voucher->id }}" alt="{{ $voucher->promo_name }}" data-bs-toggle="modal" data-bs-target="#voucher-{{ $voucher->id }}"  style="max-width: 20vh; max-height:13vh;">
             <!-- MODAL DETAIL VOUCHER -->
             <div class="modal fade" id="voucher-{{$voucher->id}}" tabindex="-1" aria-labelledby="voucher-{{$voucher->id}}" aria-hidden="true">
                 <div class="modal-dialog modal-md-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header" style="background-color: #183018">
-                          <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">{{ $voucher->promo_name }}</h1>
-                          <button type="button" class="btn-close text-white" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal-header">
+                          <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">{{ $voucher->promo_name }}</h1>
+                          <button type="button" class="btn-close text-white" style="invert(1)" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
 
                         <div class="modal-body border-top border-1 p-1 p-md-3">
@@ -85,23 +85,21 @@
 
     @if (count($promos) !== 0)
       @foreach ($promos as $promo)
-        <div class="col flex mb-2 mt-8">
-          <p class="font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
-            {{ $promo->promo_name }}
-          </p>
+        <div class="col flex px-0 px-md-3 mb-2 mt-2 mt-md-8">
           @php
             $dateRange = explode(' - ', $promo->date_range);
             $startDate = \Carbon\Carbon::parse($dateRange[0])->translatedFormat('d F Y');
             $endDate = \Carbon\Carbon::parse($dateRange[1])->translatedFormat('d F Y');
           @endphp
-          <p class="flex justify-content-center align-items-center ml-auto font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pr-1 pl-3" style="border-top-left-radius: 50px; border-bottom-left-radius: 50px;">
+          <p class="font-semibold text-[10px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
+            {{ $promo->promo_name }} <br>
             {{ $startDate }} sampai {{ $endDate }}
           </p>
         </div>
         
-        <div class="col">
+        <div class="col px-0 px-md-3">
           <a href="/{{$promo->promo_name}}-detail-promo" class="hover:shadow-xl">
-            <img src="{{ Storage::url($promo->image) }}" class="img-fluid py-1 hover:scale-105 transition-transform duration-300 hover:shadow-md" alt="{{ $promo->promo_name }}" title="{{ $promo->promo_name }}">
+            <img src="{{ Storage::url($promo->image) }}" class="w-full py-1 hover:scale-105 transition-transform duration-300 hover:shadow-md" alt="{{ $promo->promo_name }}" title="{{ $promo->promo_name }}">
           </a>
         </div>
       @endforeach

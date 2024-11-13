@@ -22,6 +22,8 @@ return new class extends Migration
             $table->text('description');
             $table->text('information_product');
             $table->string('stock_quantity');
+            $table->integer('rating')->nullable()->default(0);
+            $table->integer('sale')->nullable()->default(0);
             $table->string('weight_product')->nullable();
             $table->text('dimensions')->nullable();  // Menggunakan JSON
             $table->bigInteger('regular_price');

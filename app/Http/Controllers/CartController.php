@@ -12,35 +12,46 @@ use App\Models\Cart_item;
 class CartController extends Controller
 {
     public function index(){
-        $userId = session('id_user');
-
-        if ($userId) {
-            $data = Cart::where('user_id', $userId)
-            ->with('cartItems.product') // Ambil relasi cartItems dengan produk
-            ->get()
-            ->map(function ($cart) {
-                // Urutkan cartItems berdasarkan stock_quantity dari produk
-                $cart->cartItems = $cart->cartItems->sortByDesc(function ($cartItem) {
-                    return $cartItem->product->stock_quantity;
-                });
-                return $cart;
-            });
-
-            
-            $total = $data->sum(function($cart) {
-                return $cart->cartItems->sum('total'); // Menjumlahkan total setiap cartItems dalam setiap cart
-            });
+        try {
+            $userId = session('id_user');
+            if ($userId) {
+                $data = Cart::where('user_id', $userId)
+                ->with('cartItems.product')
+                ->get();
+    
+                // Jika data ditemukan, lakukan mapping
+                if (count($data) !== 0) {
+                    // dd($data);
+                    $data = $data->map(function ($cart) {
+                        // Pastikan cart memiliki cartItems sebelum mencoba mengurutkan
+                        if ($cart->cartItems->isNotEmpty()) {
+                            $cart->cartItems = $cart->cartItems->sortByDesc(function ($cartItem) {
+                                return $cartItem->product->stock_quantity;
+                            });
+                        }
+                        return $cart;
+                    });
+                    $total = $data->sum(function ($cart) {
+                        // Pastikan cart memiliki cartItems sebelum menjumlahkan total
+                        return $cart->cartItems->isNotEmpty() ? $cart->cartItems->sum('total') : 0;
+                    });
+                } else {
+                    $data = 0; // Tetap set sebagai koleksi kosong untuk konsistensi
+                    $total = 0; 
+                }
+                return view('user.component.cart', [
+                    'data' => $data,
+                    'total' => $total,
+                ]);
+    
+            }
+            else {
+                session()->flash('register_or_login_first');
+                return redirect()->back();
+            }
+        } catch (Exception $err) {
+            dd($err);
         }
-        else {
-            session()->flash('register_or_login_first');
-            return redirect()->back();
-        }
-
-        // dd($data);
-        return view('user.component.cart', [
-            'data' => $data,
-            'total' => $total,
-        ]);
     }
 
     // DELETE PRODUCT ITEM IN CART
@@ -93,8 +104,7 @@ class CartController extends Controller
                     ->first();
 
                 $totalQuantity = $cart->cartItems->sum('quantity');
-                
-                
+            
                 // Jika cart ditemukan, return jumlah item
                 return response()->json($totalQuantity);
             }
@@ -114,7 +124,11 @@ class CartController extends Controller
             // Jika "Pilih Semua" diklik
             if ($request->has('select_all')) {
                 // Update semua item di keranjang
-                Cart_item::where('cart_id', $cartId)->update([
+                Cart_item::where('cart_id', $cartId)
+                ->whereHas('product', function ($query) {
+                    $query->where('stock_quantity', '!=', 0);
+                })
+                ->update([
                     'is_choose' => $request->is_choose
                 ]);
             } else {

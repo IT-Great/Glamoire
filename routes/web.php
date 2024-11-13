@@ -23,6 +23,7 @@ use App\Http\Controllers\ContactusController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\NotifyMe;
@@ -31,7 +32,6 @@ use App\Models\User;
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
 Route::get('/', [ProductController::class, 'index'])->name('home.glamoire');
-
 
 Route::get('/{user}_account', [UserController::class, 'account'])
 ->name('account');
@@ -87,12 +87,20 @@ Route::post('/notify-me', function (Request $request) {
     $email = User::where('id', $userId)->value('email');
 
     if ($userId) {
-        NotifyMe::create([
-            'user_id' => $userId,
-            'product_id' => $request->product_id,
-            'email' => $email,
-        ]);
-        return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+        $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
+            ->where('email', $email)
+            ->exists();
+
+        if ($checkIsAlreadyExists) {
+            return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
+        }else{
+            NotifyMe::create([
+                'user_id' => $userId,
+                'product_id' => $request->product_id,
+                'email' => $email,
+            ]);
+            return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+        }
     }
     return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
 })->name('notify.me');
@@ -116,6 +124,8 @@ Route::get('/forgot-password-user', [PasswordResetController::class, 'showForgot
 Route::post('/forgot-password-user', [PasswordResetController::class, 'sendResetLink'])->withoutMiddleware('throttle:60,1')->name('forgot.password.link');
 Route::get('/reset-password-user-form/{email}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('/reset-password-user', [PasswordResetController::class, 'resetPassword'])->name('reset.password');
+
+Route::post('/voucher-new-user', [FormController::class, 'voucherNewUser'])->name('voucher.new.user');
 
 // ACCOUNT
 // Route::get('/{user}_account', [UserController::class, 'account'])->name('account');
@@ -146,6 +156,10 @@ Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('sh
 // DETAIL PRODUCT
 Route::get('/{id}_product', [ProductController::class, 'detail'])->name('detail.product');
 
+// SHIPPING 
+Route::get('/provinces', [CheckoutController::class, 'getProvinces']);
+Route::get('/expeditions', [CheckoutController::class, 'getExpeditions']);
+Route::get('/cities/{id}', [CheckoutController::class, 'getCities']);
 
 Route::get('/contact', function () {
     return view('user.component.contact');
@@ -196,6 +210,7 @@ Route::get('/{nameArticle}_detailnewsletter', [ArticleController::class, 'detail
 
 // LAKUKAN PEMBAYARAN
 Route::post('/order-paynow', [CheckoutController::class, 'orderPayment'])->name('order.payment');
+Route::post('/order-buynow', [CheckoutController::class, 'orderBuyNow'])->name('order.buynow');
 Route::post('/rating-and-review', [UserController::class, 'ratingAndReview'])->name('rating.and.review');
 
 
@@ -205,8 +220,11 @@ Route::prefix('/cart')->group(function () {
 
 
 // CHECKOUT
-Route::middleware(['auth', 'verified'])->get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/check-apply-voucher', [CheckoutController::class, 'checkApplyVoucher'])->name('check.apply.voucher');
+Route::post('/check-apply-voucher-buy-now', [CheckoutController::class, 'checkApplyVoucherBuyNow'])->name('check.apply.voucher.buy.now');
 Route::post('/apply-voucher', [CheckoutController::class, 'applyVoucher'])->name('apply.voucher');
+Route::post('/apply-voucher-new-user', [CheckoutController::class, 'applyVoucherNewUser'])->name('apply.voucher.new.user');
 Route::post('/apply-voucher-buy-now', [CheckoutController::class, 'applyVoucherBuyNow'])->name('apply.voucher.buy.now');
 // CHECK VOUCHER
 Route::post('/check-code-voucher', [CheckoutController::class, 'checkCodeVoucher'])->name('check.code.voucher');
@@ -277,6 +295,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/order-detail', function () {
         return view('admin.order.detail');
     });
+
+    Route::get('/order-admin', [OrderController::class, 'indexOrder'])->name('index-admin-order');
+    Route::get('/order-sent-admin', [OrderController::class, 'sentAdmin'])->name('index-admin-order-sent');
+    Route::get('/order-need-sent-admin', [OrderController::class, 'needSentAdmin'])->name('index-admin-order-need-sent');
+    Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
 
     // brand
     Route::get('/brand-admin', [BrandController::class, 'indexbrand'])->name('index-brand-admin');

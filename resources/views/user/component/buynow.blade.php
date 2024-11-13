@@ -2,41 +2,41 @@
 
 @section('content')
 
-<div class="md:px-20 lg:px-24 xl:px-24 pt-2">
-    <div class="container-fluid">
-        <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-2 my-md-3">
-            <div class="d-flex gap-2 pl-2">
-                <a href="/home" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pembayaran</a>
+<div class="md:px-20 lg:px-24 xl:px-24 pt-1 pt-md-2 h-fit">
+    <div class="container-fluid px-0 px-md-3">
+        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
+            <div class="d-flex gap-1 px-3 px-md-0">
+                <a href="/home" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
+                <a href="#" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pembayaran</a>
             </div>
         </div>
     </div>
 
-    <div class="row gap-2 gap-md-0 m-0 p-0 mb-4">
-        <div class="col-md-8 grid gap-2">
+    <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
+        <div class="col-lg-8 grid gap-2 px-0 px-md-3">
             @if (count($data['address']) !== 0)
                 @foreach ($data['address'] as $checkout_address)
                     @if($checkout_address->is_use)
-                        <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
-                            <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px] mb-2">Alamat Pengiriman</h1>
+                        <div class="col-12 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                            <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-2">Alamat Pengiriman</h1>
                             <div class="grid gap-1 gap-md-2 mb-md-2">
                                 <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                    <i class="fas fa-location-arrow text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"></i>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->label }}</p>
-                                    <p class="font-bold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">.</p>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->recipient_name }}</p>
+                                    <i class="fas fa-location-arrow text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"></i>
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->label }}</p>
+                                    <p class="font-bold text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">.</p>
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->recipient_name }}</p>
                                 </div>
                                 <div class="d-flex gap-1 gap-md-2">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->address }}</p>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">({{ $checkout_address->benchmark }})</p>
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $checkout_address->address }}</p>
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">({{ $checkout_address->benchmark }})</p>
                                 </div>
                                 <div class="d-flex">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
                                     </p>
                                 </div>
-                                <div class="d-flex ">
-                                    <button type="button" class="btn btn-primary rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#change_address" style="background-color: #183018">
+                                <div class="d-flex">
+                                    <button type="button" class="btn btn-primary rounded-sm text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#change_address" style="background-color: #183018">
                                         Ubah Alamat
                                     </button>
                                 </div>
@@ -46,89 +46,92 @@
                 @endforeach
             @else
             <!-- MODAL TAMBAH ALAMAT -->
-            <div class="modal fade" id="form-address" tabindex="-1" aria-labelledby="form-address" aria-hidden="true">
+            <div class="modal fade" id="form-address-new" tabindex="-1" aria-labelledby="form-address-new" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
                     <div class="modal-header" style="background-color: #183018">
-                        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
+                        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
                     </div>
 
                     <div class="modal-body overflow-y-auto" style="max-height:100vh;">
                         <form method="POST" action="{{ route('add.shipping.address')}}" id="add-address-form-null">
                         @csrf
-                        <div class="grid gap-md-2">
+                        <div class="grid gap-1 gap-md-2">
                             <div class="grid md:flex">
                                 <div class="col-md-6">
                                     <div class="col-12 p-0">
-                                        <label for="label" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
-                                        <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
+                                        <label for="label" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Label</label>
+                                        <input type="text" class="form-control rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
                                     </div>
                                     <div class="col-12 p-0">
-                                        <label for="receiver" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
-                                        <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
+                                        <label for="receiver" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
+                                        <input type="text" class="form-control rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
                                     </div>
                                     <div class="col-12 p-0">
-                                        <label for="handphone" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
+                                        <label for="handphone" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Handphone</label>
                                         <div class="input-group">
-                                            <span class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
-                                            <input type="number" class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="handphone" placeholder="Contoh : 8979254301" pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
+                                            <span class="input-group-text text-red-700 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
+                                            <input type="number" class="form-control rounded-end text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="handphone" placeholder="Contoh : 8979254301" pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
                                         </div>
                                     </div>
                                     <!-- ALAMAT -->
                                     <div class="col-12 p-0">
-                                        <label for="alamat" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Alamat</label>
-                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address" rows="3" placeholder="Masukkan Alamatmu" required></textarea>
+                                        <label for="alamat" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Alamat</label>
+                                        <textarea class="form-control rounded-lg text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="address" rows="3" placeholder="Masukkan Alamatmu" required></textarea>
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
 
                                     <div class="col-12 p-0">
-                                    <label for="provinsi" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
-                                    <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province" id="checkout_province">
-                                        <option class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
+                                    <label for="provinsi" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
+                                    <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province" id="checkout_province">
+                                        <option class="text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
                                     </select>
                                     <input type="hidden" name="province_name" id="checkout_province_name">
                                     </div>
     
                                     <div class="col-12 p-0">
-                                    <label for="kabupaten/kota" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
-                                    <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kabupaten/Kota" name="regency" id="checkout_regency">
-                                        <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kabupaten/Kota</option>
+                                    <label for="kabupaten/kota" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
+                                    <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Kabupaten/Kota" name="regency" id="checkout_regency">
+                                        <option class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Kabupaten/Kota</option>
                                     </select>
                                     <input type="hidden" name="regency_name" id="checkout_regency_name">
                                     </div>
     
                                     <div class="col-12 p-0">
-                                    <label for="kecamatan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
-                                    <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kecamatan" name="district" id="checkout_district">
-                                        <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kecamatan</option>
+                                    <label for="kecamatan" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
+                                    <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Kecamatan" name="district" id="checkout_district">
+                                        <option class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Kecamatan</option>
                                     </select>
                                     <input type="hidden" name="district_name" id="checkout_district_name">
                                     </div>
                                     <!-- PATOKAN -->
                                     <div class="col-12 p-0">
-                                    <label for="patokan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan (Opsional)</label>
-                                    <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="benchmark" rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
+                                    <label for="patokan" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Patokan (Opsional)</label>
+                                    <textarea class="form-control rounded-lg text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="benchmark" rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- BUTTON SUBMIT -->
                             <div class="col-12 p-0">
-                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
+                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
                             </div>
+
                         </div>
                         </form>
+
                     </div>
                     </div>
                 </div>
             </div>
             <!-- END MODAL TAMBAH ALAMAT -->
             @endif
+
         <form action="{{ route('order.payment')}}" method="POST" class="grid gap-2">
             @csrf
-            <div class="col-12 p-0 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+            <div class="col-12 md:shadow-md md:rounded border-bottom border-top md:border-none p-md-3 px-3 px-md-0 py-2 py-md-0">
                 <h1 class="font-semibold text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] mb-2">Rincian Pengiriman</h1>
                 <div class="grid gap-1 gap-md-2 mb-md-2">
                     <div class="flex gap-1 align-items-center">
@@ -142,65 +145,85 @@
                             @if($checkout_address->is_use)
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-[#183018]">Menuju {{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
                                 </p>
-                                <input type="number" name="shipping_address_id" id="shipping-address-id" value="{{$checkout_address->id}}" hidden>
-                                <input type="number" name="shipping_cost" id="shipping-cost" value="20000" hidden>
                             @endif
                         @endforeach
                     </div>
                     <div class="flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 576 512"><path d="M0 112.5L0 422.3c0 18 10.1 35 27 41.3c87 32.5 174 10.3 261-11.9c79.8-20.3 159.6-40.7 239.3-18.9c23 6.3 48.7-9.5 48.7-33.4l0-309.9c0-18-10.1-35-27-41.3C462 15.9 375 38.1 288 60.3C208.2 80.6 128.4 100.9 48.7 79.1C25.6 72.8 0 88.6 0 112.5zM288 352c-44.2 0-80-43-80-96s35.8-96 80-96s80 43 80 96s-35.8 96-80 96zM64 352c35.3 0 64 28.7 64 64l-64 0 0-64zm64-208c0 35.3-28.7 64-64 64l0-64 64 0zM512 304l0 64-64 0c0-35.3 28.7-64 64-64zM448 96l64 0 0 64c-35.3 0-64-28.7-64-64z"/></svg>
-                        <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px text-[#183018]" id="shipping_price" value="20000">Tarif Biaya : Rp20.000</p>
-                    </div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                <path d="M112 0C85.5 0 64 21.5 64 48l0 48L16 96c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 208 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 160l-16 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l16 0 176 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 224l-48 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 144 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 288l0 128c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L112 0zM544 237.3l0 18.7-128 0 0-96 50.7 0L544 237.3zM160 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm272 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z"/>
+                            </svg>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018]">Berat Produk : 
+                            @if ($data['weight'] < 1000)
+                                {{ $data['weight'] }}gr
+                            @else
+                                {{ number_format($data['weight'] / 1000, 1) }}kg
+                            @endif
+
+                            </p>
+                        </div>
+                        <div class="flex gap-1 align-items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 576 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 112.5L0 422.3c0 18 10.1 35 27 41.3c87 32.5 174 10.3 261-11.9c79.8-20.3 159.6-40.7 239.3-18.9c23 6.3 48.7-9.5 48.7-33.4l0-309.9c0-18-10.1-35-27-41.3C462 15.9 375 38.1 288 60.3C208.2 80.6 128.4 100.9 48.7 79.1C25.6 72.8 0 88.6 0 112.5zM288 352c-44.2 0-80-43-80-96s35.8-96 80-96s80 43 80 96s-35.8 96-80 96zM64 352c35.3 0 64 28.7 64 64l-64 0 0-64zm64-208c0 35.3-28.7 64-64 64l0-64 64 0zM512 304l0 64-64 0c0-35.3 28.7-64 64-64zM448 96l64 0 0 64c-35.3 0-64-28.7-64-64z"/></svg>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018]">Tarif Pengiriman :</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018]" id="shipping_price"></p>
+                        </div>
+                        <div id="shipping-fee" class="shipping">
+                            <!-- SHIPPING -->
+                            <select class="form-select text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="chooseShippingFee" name="shipping_fee" id="choose_shipping_fee">
+                                @foreach ($data['shippingFee'] as $sp)
+                                    <option value="{{ $sp['id'] }}">{{ $sp['description'] }} - Rp{{ number_format($sp['value'], 0, ',', '.') }} (estimasi {{ $sp['etd'] }} hari)</option>                                    
+                                @endforeach
+                            </select>
+                        </div>
                 </div>
             </div>
     
             @foreach ($data['product'] as $cart => $product)
-                <div class="col-12 p-0 py-1 py-md-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3">
-                    <div class="grid mb-2">
-                        <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
-                    </div>  
-    
-                    <div class="flex">
-                        <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
-                            <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-md border border-[#183018]">
-                        </div>
-                        <div class="col p-0">
-                            <div class="grid lg:flex">
-                                <div class="col-lg-8 mb-2 mb-md-0">
-                                    <div class="d-flex col-12 gap-1 gap-md-2 mb-2 p-0 h-[20px] h-md-[20px]">
-                                        <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
-                                    </div>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] mb-2">{{ $product->product->product_name }}</p>
-                                    <div class="d-flex gap-1 font-semibold">
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}</p>
-                                        <input type="number" id="amountProduct" value="{{$product->product->regular_price}}" hidden>
-                                    </div>
+            <div class="col-12 p-0 md:shadow-md md:border border-bottom border-top md:rounded p-md-3 px-3 px-md-0 py-2 py-md-0">
+                <div class="grid mb-2">
+                    <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
+                </div>  
+
+                <div class="flex">
+                    <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                        <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
+                    </div>
+                    <div class="col p-0">
+                        <div class="grid lg:flex">
+                            <div class="col-lg-8 mb-2 mb-md-0">
+                                <div class="d-flex col-12 gap-1 gap-md-2 p-0">
+                                    <p class="font-semibold text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
                                 </div>
-                                <div class="col-lg-4 p-lg-0 d-flex flex-column">
-                                    <div class="d-flex mt-auto bottom">
-                                        <div class="d-flex ml-md-auto">
-                                            <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 130px;">
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
-                                                        <i class="fa fa-minus text-xs"></i>
-                                                    </button>
-                                                </div>
+                                <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                                <div class="d-flex gap-1 font-semibold">
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 p-lg-0 d-flex flex-column">
+                                <div class="d-flex mt-auto bottom">
+                                    <div class="d-flex ml-auto">
+                                        <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 130px;">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-minus" data-id="{{$product->product_id}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
+                                                    <i class="fa fa-minus text-xs"></i>
+                                                </button>
+                                            </div>
 
-                                                <input type="number" 
-                                                    id="product-quantity-{{ $product->product->id }}" 
-                                                    value="{{ $product->quantity }}"
-                                                    name="total_product_buy_now"
-                                                    class="text-xs form-control bg-secondary text-center no-spinner" 
-                                                    min="1" 
-                                                    max="{{ $product->product->stock_quantity}}" 
-                                                    oninput="validateInput(this, {{ $product->product->stock_quantity }})">
+                                            <input type="number" 
+                                                id="product-quantity-{{ $product->product->id }}"
+                                                value="{{ $product->quantity }}"
+                                                name="total_product_buy_now"
+                                                data-unify="QuantityEditor",
+                                                class="text-xs form-control bg-secondary text-center no-spinner" 
+                                                aria-valuemin="1" 
+                                                aria-valuemax="{{ $product->product->stock_quantity}}"
+                                                min="1" 
+                                                max="{{ $product->product->stock_quantity}}"
+                                            >
 
-                                                    
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-plus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart-{{$product->product_id}}">
-                                                        <i class="fa fa-plus text-xs"></i>
-                                                    </button>
-                                                </div>
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-plus" data-id="{{$product->product_id}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart">
+                                                    <i class="fa fa-plus text-xs"></i>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -209,52 +232,50 @@
                         </div>
                     </div>
                 </div>
-
-                <input type="number" name="product[]" id="product-id-{{$product->product_id}}" value="{{ $product->product_id }}" hidden>
-                <input type="number" name="product_quantity[{{ $product->product_id }}]" id="product-quantity-{{$product->product_id}}" value="{{ $product->quantity }}" hidden>
-                <input type="number" name="product_price[{{ $product->product_id }}]" id="product-price-{{$product->product_id}}" value="{{ $product->price }}" hidden>
+            </div>
             @endforeach
         </div>
     
-        <div class="col-md-4 pl-3 pl-md-0">
+        <!-- PERHITUNGAN -->
+        <div class="col-lg-4 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0">
             <div class="position-sticky" style="top: 4.5rem">
                 <div class="p-3 bg-light rounded shadow-sm border border-[#183018] grid gap-2 gap-md-3">
                     <h1 class="font-semibold text-black text-[14px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Rincian Biaya</h1>
     
                     <div class="grid">
                         <div class="d-flex">
-                            <p id="totalProductBuyNow" class="text-[10px] md:text-[8px] lg:text-[12px] xl:text-[14px]">Total Harga ({{ $data['totalProduct'] }} Barang)</p>
-                            <input type="number" name="total_item" value="{{ $data['totalProduct'] }}" hidden>
-                            <p id="totalPriceBuyNow" class="text-[10px] md:text-[8px] lg:text-[12px] xl:text-[14px] ml-auto">(Rp{{ number_format($data['totalPrice'], 0, ',', '.') }})</p>
-                            <input type="number" name="total_item_price" value="{{ $data['totalPrice'] }}" hidden>
+                            <p id="totalProductBuyNow" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Harga ({{ $data['totalProduct'] }} Barang)</p>
+                            <p id="totalPriceBuyNow" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">(Rp{{ number_format($data['totalPrice'], 0, ',', '.') }})</p>
                         </div>
                         <div class="d-none" id="discount-use">
-                            <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Diskon</p>
-                            <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto" id="discount"></p>
-                            <input type="number" name="discount_amount" id="discount-amount" value="" hidden>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Diskon</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto" id="discount"></p>
                         </div>
                         <div class="d-flex">
-                            <p class="text-[10px] md:text-[8px] lg:text-[12px] xl:text-[14px]">Ongkos Kirim</p>
-                            <p class="text-[10px] md:text-[8px] lg:text-[12px] xl:text-[14px] ml-auto">Rp20.000</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Ongkos Kirim</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto" id="ongkir-user">{{ $data['ongkir'] }}</p>
+                        </div>
+                        <div class="d-none" id="ongkir-use">
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Diskon Ongkir</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto" id="ongkir"></p>
                         </div>
                     </div>
 
                     <div class="d-flex py-2 border-bottom border-top align-items-center">
-                        <p class="text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
+                        <p class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Total Belanja</p>
                         <p class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[16px] xl:text-[18px] ml-auto" id="total-shopping"></p>
-                        <input type="number" name="subtotal" id="subtotal-price" value="{{$data['totalPrice']}}" hidden>
                     </div>
 
                     <div>
-                        <div class="relative flex gap-1 items-center">
+                        <div class="relative flex gap-1 items-center input-code">
                             <div class="cancel-code-voucher text-[#183018] absolute" role="status" style="display:none;" id="cancel-code-voucher" title="Hapus Kode">
                                 <button type="button" class="btn rounded-sm w-fit font-semibold text-sm text-danger" onclick="cancelCode()">X</button>
                             </div>
-                            <input type="text" class="form-control pl-5 w-full rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="code_voucher" name="code_voucher" placeholder="Masukkan kode promo">
+                            <input type="text" class="form-control pl-5 w-full rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="code_voucher" name="code_voucher" placeholder="Masukkan kode promo">
                             <div class="spinner-border text-[#183018] absolute" role="status" style="width:15px; height:15px;display:none;" id="voucher-spinner">
                                 <span class="visually-hidden"></span>
                             </div>
-                            <button type="button" id="button-code-voucher" class="btn border rounded-md w-fit text-white text-[10px] md:text-[7px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
+                            <button type="button" id="button-code-voucher" class="btn border rounded-sm w-fit text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover-shadow-md" style="background-color: #183018" disabled>
                                 Pakai
                             </button>
                         </div>
@@ -262,18 +283,17 @@
                         </div>
                     </div>
 
-                    <button type="button" class="d-flex align-items-center btn btn-primary rounded-sm text-black text-[6px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#promo" style="background-color: #FFFFFF" id="show-voucher">
-                        <i class="fas fa-solid fa-tag mr-2"></i>
-                        <p class="text-[10px] md:text-[8px] lg:text-[12px] xl:text-[14px]">Gunakan Promo</p>
-                        <i class="fas fa-solid fa-arrow-right ml-auto"></i>
+                    <button type="button" class="d-flex align-items-center btn btn-primary rounded-sm text-black text-[6px] md:text-[12px] lg:text-[12px] xl:text-[14px]" data-bs-toggle="modal" data-bs-target="#promo" style="background-color: #FFFFFF" id="show-voucher">
+                        <i class="fas fa-solid fa-tag mr-2 text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]"></i>
+                        <p class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="choose-voucher">Pilih Voucher</p>
+                        <i class="fas fa-solid fa-arrow-right ml-auto text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]"></i>
                     </button>
-                    <button class="btn w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="background-color: #183018" type="submit" id="paynow">
+                    <button class="btn w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="background-color: #183018" type="button" id="paynow">
                         Bayar Sekarang
                     </button>
                 </div>
             </div>
         </div>
-
         </form>
     </div>
 </div>
@@ -401,14 +421,16 @@
 <div class="modal fade" id="change_address" tabindex="-1" aria-labelledby="change_address" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header border-none pb-0">
-        <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Pilih Alamat Pengiriman</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header border-none bg-[#183018]">
+            <div class="flex gap-3 justify-content-center align-items-center">
+                <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
+                <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Alamat Pengiriman</h1>
+            </div>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body overflow-y-auto custom-scroll">
         <button type="button" class="btn border btn-light d-flex align-items-center rounded-sm mb-2" id="open-add-address-modal">
-            <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
+            <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-[12px] lg:text-[13px] xl:text-[15px]"></i>
             <p class="text-black mb-0 text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Tambahkan Alamat</p>
         </button>
         @foreach ($data['address'] as $address)
@@ -416,21 +438,21 @@
                 <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
                     <div class="p-2 rounded-sm border border-dark">
                         <div class="d-flex align-items-center">
-                            <p class="text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
+                            <p class="text-black mb-0 text-[10px] md:text-[12px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
                             @if ($address->is_main)
                                 <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                                text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
+                                text-87px] md:text-[12px] lg:text-[11px] xl:text-[13px]">Utama</span>
                             @endif
                         </div>
 
                         <div class="flex">
                             <div class="col-10 p-0">
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $address->recipient_name }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
-                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
+                                <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $address->handphone }}</p>
+                                <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
+                                <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] ">{{ $address->address }}</p>
                                 @if ($address->benchmark)
-                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
+                                    <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan ({{ $address->benchmark }})</p>
                                 @endif
                             </div>
                             <div class="col-2 p-0 d-flex flex-column align-items-start justify-content-center">
@@ -443,23 +465,23 @@
             <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
                 <div class="p-2 rounded-sm custom-shadow">
                     <div class="d-flex align-items-center">
-                        <p class="text-black mb-0 text-[9px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
+                        <p class="text-black mb-0 text-[9px] md:text-[12px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
                         @if ($address->is_main)
                             <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                            text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
+                            text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Utama</span>
                         @endif
                     </div>
                     
                     <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $address->recipient_name }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
-                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
+                    <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $address->handphone }}</p>
+                    <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
+                    <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] ">{{ $address->address }}</p>
                     @if ($address->benchmark)
-                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
+                        <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan ({{ $address->benchmark }})</p>
                     @endif
     
                     <div class="d-flex gap-2 input-group-btn mt-2">
-                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[9px] md:text-11px lg:text-[13px] xl:text-[15px]" name="useAddress" data-id="{{ $address->id }}">
+                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="useAddress" data-id="{{ $address->id }}">
                             Gunakan
                         </button>
                     </div>
@@ -478,67 +500,169 @@
 <div class="modal fade" id="promo" tabindex="-1" aria-labelledby="promo" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-            <div class="modal-header border-none pb-0">
-                <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="exampleModalLabel">Gunakan Voucher Promo</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-none bg-[#183018]">
+                <div class="flex gap-3 justify-content-center align-items-center">
+                    <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
+                    <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Gunakan Voucher Promo</h1>
+                </div>
             </div>
 
-            <div class="modal-body p-1 p-md-3">
+            <div class="modal-body p-2 p-md-3 overflow-y-auto custom-scroll">
                 <div class="col-12 p-0">
+
+                    @php
+                        // Pisahkan voucher berdasarkan kondisi yang bisa digunakan atau tidak
+                        $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data) {
+                            return $data['totalPrice'] >= $voucher->min_transaction && $data['totalItem'] <= $voucher->max_quantity_buyer;
+                        });
+                        $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data) {
+                            return $data['totalPrice'] < $voucher->min_transaction || $data['totalItem'] > $voucher->max_quantity_buyer;
+                        });
+                    @endphp
+
                     @if (count($data['vouchers']) !== 0)
-                        @foreach ($data['vouchers'] as $voucher)
-                            <div class="col-12 p-2 promo-item" onclick="{{ $data['totalPrice'] >= $voucher->min_transaction ? 'selectPromo(this)' : 'event.stopPropagation()' }}">
-                                <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
-                                    <div class="d-flex">
-                                        <div class="col-10 p-0">
-                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ $voucher->promo_name }}</p>
-                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#988888]">{{ $voucher->description }}</p>
+                        @if ($usableVouchers->isNotEmpty())
+                            <h5 class="text-[#183018] text-[10px] md:text-[12px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher yang Dapat Digunakan</h5>
+                            @foreach ($usableVouchers as $voucher)
+                                <div class="col-12 p-0 p-md-2 promo-item" data-code="{{ $voucher->promo_code }}" onclick="selectPromo(this, '{{ $voucher->promo_code }}', '{{$voucher->type}}')">
+                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                        <div class="flex">
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ ucwords($voucher->promo_name) }}</p>
+                                            <i class="fas fa-check hidden ml-auto"></i>
                                         </div>
-                                        <div class="col-2 d-flex flex-column align-items-start justify-content-center">
-                                            <i class="fas fa-check hidden"></i>
+
+                                        <div class="flex">
+                                        @if ($voucher->discount)
+                                            @if ($voucher->discount >= 0 && $voucher->discount <= 100)
+                                                {{-- Diskon dalam bentuk persentase --}}
+                                                <p class="text-[10px] md:text-[12px] lg:text-[11px] xl:text-[13px]">Diskon {{ $voucher->discount }}%</p>
+                                            @elseif ($voucher->discount >= 10000 && $voucher->discount <= 1000000)
+                                                {{-- Diskon dalam bentuk nominal --}}
+                                                <p class="text-[10px] md:text-[12px] lg:text-[11px] xl:text-[13px]">Diskon Rp{{ number_format($voucher->discount, 0, ',', '.') }}</p>
+                                            @else
+                                                {{-- Nilai diskon tidak valid --}}
+                                                <p class="text-danger">Diskon tidak valid</p>
+                                            @endif
+                                        @endif
+                                        </div>
+
+                                        <div class="d-flex gap-1 gap-md-2 align-items-center">
+                                            <i class="fas fa-regular fa-clock"></i>
+                                            @php
+                                                // Ambil tanggal akhir dari rentang tanggal
+                                                $endDate = explode(' - ', $voucher->date_range)[1];
+                                            @endphp
+
+                                            <p class="text-[18px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                Berlaku hingga {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
+                                            </p>
+                                            <a class="ml-auto text-[18px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">S&K</a>
+                                        </div>
+
+                                        <div class="grid mt-1 mt-md-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
+                                            <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                                <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px]">
+                                                    <p class="ml-2 text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] mb-0">Minimal transaksi sebesar Rp{{ number_format($voucher->min_transaction, 0, ',', '.') }}</p>
+                                                </li>
+                                                <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px]">
+                                                    <p class="ml-2 text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
+                                                </li>
+                                            </ol>
                                         </div>
                                     </div>
-
-                                    <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                        <i class="fas fa-regular fa-clock"></i>
-                                        <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Berlaku hingga {{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}</p>
-                                        <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">Lihat Detail</a>
-                                    </div>
-
-                                    <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
-                                        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                        <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
-                                            <li class="list-group-item p-1 border-none d-flex align-items-start text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px]">
-                                                <span class=""></span> <!-- Nomor list -->
-                                                <p class="ml-2 text-[7px] md:text-[7px] lg:text-[9px] xl:text-[11px] mb-0">{{ $voucher->terms_conditions }}</p>
-                                            </li>
-                                        </ol>
-                                    </div>
-
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        @endif
+
+                        @if ($unusableVouchers->isNotEmpty())
+                            <h5 class="text-[#183018] text-[12px] md:text-[12px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher tersedia</h5>
+                            @foreach ($unusableVouchers as $voucher)
+                                <div class="col-12 p-0 promo-item" onclick="event.stopPropagation()">
+                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                        <div class="flex">
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-muted font-semibold">{{ ucwords($voucher->promo_name) }}</p>
+                                            <i class="fas fa-check hidden ml-auto"></i>
+                                        </div>
+
+                                        <div>
+                                        @if ($voucher->discount)
+                                            @if ($voucher->discount >= 0 && $voucher->discount <= 100)
+                                                {{-- Diskon dalam bentuk persentase --}}
+                                                <p class="text-[10px] md:text-[12px] lg:text-[11px] xl:text-[13px]">Diskon {{ $voucher->discount }}%</p>
+                                            @elseif ($voucher->discount >= 10000 && $voucher->discount <= 1000000)
+                                                {{-- Diskon dalam bentuk nominal --}}
+                                                <p class="text-[10px] md:text-[12px] lg:text-[11px] xl:text-[13px]">Diskon Rp{{ number_format($voucher->discount, 0, ',', '.') }}</p>
+                                            @else
+                                                {{-- Nilai diskon tidak valid --}}
+                                                <p class="text-danger">Diskon tidak valid</p>
+                                            @endif
+                                        @endif
+                                        </div>
+
+                                        <div class="d-flex gap-1 gap-md-2 align-items-center">
+                                            <i class="fas fa-regular fa-clock"></i>
+                                            @php
+                                                $endDate = explode(' - ', $voucher->date_range)[1];
+                                            @endphp
+
+                                            <p class="text-[18px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                Berlaku hingga {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
+                                            </p>
+                                            <a class="ml-auto text-[18px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">S&K</a>
+                                        </div>
+
+                                        <div>
+                                            @if ($data['totalPrice'] < $voucher->min_transaction)
+                                                <p class="text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] text-danger">- Oops.. Kurang Rp{{ number_format($voucher->min_transaction - $data['totalPrice'], 0, ',', '.') }} lagi</p>
+                                            @endif
+                                            
+                                            @if ($data['totalItem'] > $voucher->max_quantity_buyer)
+                                                <p class="text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] text-danger">- Jumlah produk yang kamu beli melebihi S&K voucher ini</p>
+                                            @endif
+                                        </div>
+
+                                        <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
+                                            <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                                <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px]">
+                                                    <p class="ml-2 text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] mb-0">Minimal transaksi sebesar Rp{{ number_format($voucher->min_transaction, 0, ',', '.') }}</p>
+                                                </li>
+                                                <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px]">
+                                                    <p class="ml-2 text-[10px] md:text-[12px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @endif
                     @else
                         <div style="display:flex; align-items:center; justify-content:start;">
                             <img src="images/voucher-empty.png" class="img-fluid" style="width:10%; height:100%; object-fit: cover;" alt=Voucher kosong">
-                            <p class="text-danger text-md">Maaf tidak ada voucher tersedia</p>
+                            <p class="text-danger text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Maaf tidak ada voucher tersedia</p>
                         </div>
                     @endif
                 </div>
             </div>
+                        
 
-            <div class="modal-footer" hidden>
-                <div class="d-flex justify-content-between align-items-center w-100">
-                    <div>
-                        <p class="mb-0 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Yey, kamu hemat</p>
-                        <p class="mb-0 text-black font-semibold text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"></p>
+            @if (count($data['vouchers']) !== 0)
+                <div class="modal-footer flex">
+                    <div class="grid">
+                        <p class="text-muted text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] d-none" id="hore">Horee.. Kamu hemat,</p>
+                        <p class="text-[#183018] text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px]" id="thrifty"></p>
                     </div>
-                    <button type="submit" id="button-use-voucher" class="btn border rounded-md text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px] hover-shadow-md" style="background-color: #183018">
-                        Pakai Voucher
-                    </button>
+                    <div class="grid">
+                        <p class="text-[#183018] text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px]" id="discountPrice"></p>
+                        <p class="text-[#183018] text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px]" id="ongkirPrice"></p>
+                    </div>
+                    <div class="ml-auto">
+                        <!-- <button type="button" class="btn btn-danger rounded-sm text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" onclick="window.location.reload()">Reset Voucher</button> -->
+                        <button type="button" class="btn btn-success rounded-sm text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="choose-voucher" data-bs-dismiss="modal">Gunakan</button>
+                    </div>
                 </div>
-            </div>
-
+            @endif
         </div>
     </div>
 </div>
@@ -558,63 +682,63 @@
                 <div class="grid md:flex">
                     <div class="col-md-6">
                         <div class="col-12 p-0">
-                            <label for="label" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
-                            <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
+                            <label for="label" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Label</label>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
                         </div>
                         <div class="col-12 p-0">
-                            <label for="receiver" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
-                            <input type="text" class="form-control rounded-md text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
+                            <label for="receiver" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Nama Penerima</label>
+                            <input type="text" class="form-control rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"  name="recipient_name" placeholder="Masukkan Nama Penerima" required>
                         </div>
                         <div class="col-12 p-0">
-                            <label for="handphone" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
+                            <label for="handphone" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Handphone</label>
                             <div class="input-group">
-                                <span class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
-                                <input type="number" class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="handphone" placeholder="Contoh : 8979254301" pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
+                                <span class="input-group-text text-red-700 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="basic-addon1">+62</span>
+                                <input type="number" class="form-control rounded-end text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="handphone" placeholder="Contoh : 8979254301" pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
                             </div>
                         </div>
                         <!-- ALAMAT -->
                         <div class="col-12 p-0">
-                            <label for="alamat" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Alamat</label>
-                            <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address" rows="3" placeholder="Masukkan Alamatmu" required></textarea>
+                            <label for="alamat" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Alamat</label>
+                            <textarea class="form-control rounded-lg text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="address" rows="3" placeholder="Masukkan Alamatmu" required></textarea>
                         </div>
                     </div>
 
                     <div class="col-md-6">
 
                         <div class="col-12 p-0">
-                        <label for="provinsi" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
-                        <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province" id="add_checkout_province">
-                            <option class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
+                        <label for="provinsi" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
+                        <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Provinsi" name="province" id="add_checkout_province">
+                            <option class="text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Provinsi</option>
                         </select>
                         <input type="hidden" name="province_name" id="add_checkout_province_name">
                         </div>
 
                         <div class="col-12 p-0">
-                        <label for="kabupaten/kota" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
-                        <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kabupaten/Kota" name="regency" id="add_checkout_regency">
-                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kabupaten/Kota</option>
+                        <label for="kabupaten/kota" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
+                        <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Kabupaten/Kota" name="regency" id="add_checkout_regency">
+                            <option class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Kabupaten/Kota</option>
                         </select>
                         <input type="hidden" name="regency_name" id="add_checkout_regency_name">
                         </div>
 
                         <div class="col-12 p-0">
-                        <label for="kecamatan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
-                        <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" aria-label="Kecamatan" name="district" id="add_checkout_district">
-                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih Kecamatan</option>
+                        <label for="kecamatan" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
+                        <select class="form-select text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" aria-label="Kecamatan" name="district" id="add_checkout_district">
+                            <option class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pilih Kecamatan</option>
                         </select>
                         <input type="hidden" name="district_name" id="add_checkout_district_name">
                         </div>
                         <!-- PATOKAN -->
                         <div class="col-12 p-0">
-                        <label for="patokan" class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan (Opsional)</label>
-                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="benchmark" rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
+                        <label for="patokan" class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Patokan (Opsional)</label>
+                        <textarea class="form-control rounded-lg text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" name="benchmark" rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- BUTTON SUBMIT -->
                 <div class="col-12 p-0">
-                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
+                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]" type="submit"  style="background-color: #183018">Tambahkan</button>
                 </div>
             </div>
             </form>
@@ -623,9 +747,122 @@
     </div>
 </div>
 
-<!-- MENGATUR STYLE PENGGUNAAN VOUCHER -->
+@include('spinner')
+
 <script>
-    // Function to toggle promo details
+    let ongkir = null;  // Declare the global variable at the start
+    let productItems = {!! json_encode($data['cartItems']) !!};
+    let productIds = [];
+    let productQuantities = {};
+    let productPrices = {};
+    let voucher = null;
+    let totalPrice = {{ $data['totalPrice'] }};
+    let shippingAddressId = {{ $data['shippingAddressId'] }};
+    let totalItem = {{ $data['totalProduct'] }};
+    let subTotal = 0;
+    let totalItemPrice = {{ $data['totalPrice'] }};
+    let originalTotalShopping = null;
+    let maxQuantity = {{ $data['maxQuantity'] }};
+
+    // Batas minimum dan maksimum untuk input
+    const minValue = 1;
+    const maxValue = {{ $data['maxQuantity'] }};
+    let amount = {!! json_encode($data['productPrice']) !!};
+
+    // Fungsi untuk membatasi input
+    function validateQuantityInput(inputElement) {
+        const value = parseInt(inputElement.value, 10);
+        
+        // Memastikan nilai dalam rentang yang diizinkan
+        if (isNaN(value) || value < minValue) {
+            inputElement.value = minValue;
+        } else if (value > maxValue) {
+            inputElement.value = maxValue;
+        }
+    }
+
+    // Event listener untuk input perubahan
+    const quantityInput = document.querySelector('input[data-unify="QuantityEditor"]');
+    quantityInput.addEventListener('input', () => validateQuantityInput(quantityInput));
+
+    // Memastikan validasi saat fokus keluar dari input
+    quantityInput.addEventListener('blur', () => validateQuantityInput(quantityInput));
+
+    // Function to highlight selected promo
+    let selectedPromoCode = null; // Discount voucher code
+    let selectedOngkirCode = null; // Shipping voucher code
+    let discountAmount = 0; // Discount from promo voucher
+    let shippingDiscountAmount = 0; // Diskon Paten
+    let shippingDiscount = 0; 
+
+    // ONGKIR
+    const shippingFee = document.getElementById("choose_shipping_fee");
+
+    // Function to fetch and update 'ongkir' based on selected shipping service
+    function updateOngkir() {
+        const selectedService = shippingFee.value.trim();
+
+        if (selectedService) {
+            $.ajax({
+                url: '/checkout', 
+                type: 'GET',
+                data: { service: selectedService },
+                beforeSend: function() {
+                    $('.loading-container').show();
+                },
+                success: function(response) {
+                    ongkir = response.ongkir;
+                    // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+                    shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
+
+                    // Update displayed prices with the latest values
+                    updateOngkirDisplay();
+                },
+                complete: function() {
+                    $('.loading-container').hide();
+                },
+                error: function(error) {
+                    console.error("Failed to fetch ongkir:", error);
+                }
+            });
+        }
+    }
+
+    // Function to update display or calculations that use 'ongkir'
+    function updateOngkirDisplay() {
+        if (ongkir !== null) {
+            $("#shipping_price").text("Rp" + formatRupiah(ongkir));
+            $("#ongkir-user").text("Rp" + formatRupiah(ongkir));
+
+            // Calculate the subtotal based on `ongkir`, promo discount, and shipping discount
+            subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+            $("#total-shopping").text("Rp" + formatRupiah(subTotal));
+
+            // Display the shipping discount if applied
+            if (shippingDiscount > 0) {
+                $("#ongkir").text("-Rp" + formatRupiah(shippingDiscount));
+                $("#ongkir-use").removeClass("d-none").addClass("d-flex");
+            } else {
+                $("#ongkir-use").removeClass("d-flex").addClass("d-none");
+            }
+        }
+    }
+
+    // Event listener for shipping option change
+    shippingFee.addEventListener("change", function() {
+        updateOngkir(); // Update 'ongkir' when shipping option changes
+    });
+
+    // Initialize 'ongkir' on page load if an option is selected
+    if (shippingFee) {
+        updateOngkir();
+    }
+
+    // Format numbers to Indonesian Rupiah
+    function formatRupiah(number) {
+        return 'Rp' + number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     function toggleDetail(event, detailId, link) {
         event.stopPropagation(); // Prevent the click from bubbling up to the promo item
         const detail = document.querySelector(detailId);
@@ -634,26 +871,192 @@
         // Toggle detail visibility
         if (isVisible) {
             detail.style.display = 'none';
-            link.textContent = 'Lihat Detail';
+            link.textContent = 'S&K';
         } else {
             detail.style.display = 'block';
             link.textContent = 'Tutup Detail';
         }
     }
 
-    // Function to highlight selected promo
-    function selectPromo(promoElement) {
-        // Remove border from all promo items
-        const allPromos = document.querySelectorAll('.promo-item');
-        allPromos.forEach(promo => {
-            promo.querySelector('.grid').classList.remove('border-dark');
-            promo.querySelector('.fas.fa-check').classList.add('hidden');
-        });
+    function saveOriginalValues(response) {
+        // Store the discount amounts from the response
+        if (response.discountFormatted !== null) {
+            discountAmount = response.discount; // Get discount amount from response
+        }
+        if (response.ongkir) {
+            shippingDiscount = response.ongkir; // Get shipping discount from response
+        }
+    }
 
-        // Add border to the selected promo
+    function selectPromo(promoElement, promo_code, voucherType) {
+        const isPromoType = voucherType === 'voucher';
+        const isOngkirType = voucherType === 'product voucher';
+
+        // Check if the voucher being clicked is already selected
+        if ((isPromoType && selectedPromoCode === promo_code) || (isOngkirType && selectedOngkirCode === promo_code)) {
+            // Deselect the voucher
+            promoElement.querySelector('.grid').classList.remove('border-dark');
+            promoElement.querySelector('.fas.fa-check').classList.add('hidden');
+
+            if (isPromoType) {
+                selectedPromoCode = null;
+                discountAmount = 0; // Reset discount amount when deselecting
+            } else if (isOngkirType) {
+                selectedOngkirCode = null;
+                shippingDiscount = 0; // Reset shipping discount when deselecting
+            }
+            
+            if (shippingDiscount == 0 && discountAmount == 0) { 
+                $(".input-code").removeClass("d-none");
+            }
+
+            // Restore the original calculations
+            restoreOriginalValues();
+            $("#choose-voucher").text("Pilih Voucher").removeClass("text-success").addClass("text-dark").show();
+            return;
+        }
+        
+        // Clear previously selected voucher of the same type
+        if (isPromoType && selectedPromoCode) {
+            document.querySelector(`.promo-item[data-code="${selectedPromoCode}"] .grid`).classList.remove('border-dark');
+            document.querySelector(`.promo-item[data-code="${selectedPromoCode}"] .fas.fa-check`).classList.add('hidden');
+        } else if (isOngkirType && selectedOngkirCode) {
+            document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .grid`).classList.remove('border-dark');
+            document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .fas.fa-check`).classList.add('hidden');
+        }
+
+        $(".input-code").addClass("d-none");
+        $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
+
+        // Set the selected voucher
+        if (isPromoType) {
+            selectedPromoCode = promo_code;
+        } else if (isOngkirType) {
+            selectedOngkirCode = promo_code;
+        }
+
+
+        // Update UI for the selected voucher
         promoElement.querySelector('.grid').classList.add('border', 'border-dark');
         promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
+
+        // Make AJAX request to get voucher details
+        $.ajax({
+            url: "{{ route('check.apply.voucher') }}",
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                code_voucher_promo: selectedPromoCode,
+                code_voucher_ongkir: selectedOngkirCode,
+                shipping_cost: ongkir,
+            },
+            beforeSend: function() {
+                $('.loading-container').show(); // Show the spinner
+            },
+            success: function(response) {
+                if (response.success) {
+                    if (shippingDiscountAmount !== 0) {
+                        if (shippingDiscountAmount > ongkir) {
+                            shippingDiscount = ongkir;
+                        }
+                        else {
+                            shippingDiscount = shippingDiscount;
+                        }
+                    }
+                    saveOriginalValues(response); // Save values for later restoration
+                    updateTotals(response); // Update totals based on the response
+                    updateThriftyDisplay(response); // Show savings based on the response
+                } else {
+                    $("#validationVoucher").text(response.message).show();
+                }
+            },
+            complete: function() {
+                $('.loading-container').hide(); // Show the spinner
+            },
+            error: function(xhr) {
+                $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();
+            }
+        });
     }
+
+    // Function to update totals based on selected vouchers
+    function updateTotals(response) {
+        if (response.discount) {
+            discountAmount = parseInt(response.discount.replace(/\./g, ''), 10); // Get discount amount from response
+            
+            if (response.discount !== null) {
+                $("#discount").text("-Rp"+formatRupiah(discountAmount));
+                $("#discount-use").removeClass("d-none").addClass("d-flex");
+                $(".input-code").removeClass("d-flex").addClass("d-done");
+            }
+        }
+        if (response.ongkir) {
+            shippingDiscountAmount = parseInt(response.ongkirVoucher.replace(/\./g, ''), 10); // Get shipping discount from response
+            shippingDiscount = parseInt(response.ongkir.replace(/\./g, ''), 10); // Get shipping discount from response
+            
+            if (response.ongkir !== null) {
+                $("#ongkir").text("-Rp"+formatRupiah(shippingDiscount));
+                // $("#ongkir-after").text("Total setelah diskon :"+formatRupiah(discountOngkirAfter));
+                $("#ongkir-use").removeClass("d-none").addClass("d-flex");
+                // $("#ongkir-use-after").removeClass("d-none").addClass("d-flex");
+                $(".input-code").removeClass("d-flex").addClass("d-done");
+            }
+        }
+
+        subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        
+        // Update the display with the new total
+        $("#total-shopping").text("Rp"+formatRupiah(subTotal));
+    }
+
+    // Restore original values
+    function restoreOriginalValues() {
+        let newTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        subTotal = newTotal;
+        
+        if (discountAmount == 0 || discountAmount == null) {
+            $("#discount-use").removeClass("d-flex").addClass("d-none");
+        }
+        if (shippingDiscount == 0) {
+            $("#ongkir-use").removeClass("d-flex").addClass("d-none");
+            $("#ongkir-use-after").removeClass("d-flex").addClass("d-none");
+        }
+
+        if (shippingDiscount == 0 && discountAmount == 0) {
+            $(".input-code").removeClass("d-none").addClass("d-flex");
+            $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+            $(".input-code").removeClass("d-none").addClass("d-flex");
+        }
+
+        updateThriftyDisplay();
+        $("#total-shopping").text("Rp"+formatRupiah(subTotal));
+    }
+
+    // Function to update the display with the savings
+    function updateThriftyDisplay() {
+        let totalSavings = discountAmount + shippingDiscount; // Calculate total savings
+        // console.log(totalSavings);
+        if (totalSavings == 0) {
+            $("#hore").removeClass("d-flex").addClass("d-none");
+            $("#thrifty").addClass("d-none"); 
+        }
+        else{
+            $("#thrifty").text("Rp"+formatRupiah(totalSavings)); // Display total savings
+            $("#thrifty").removeClass("d-none"); 
+            $("#hore").removeClass("d-none").addClass("d-flex");
+            $("#discount").removeClass("d-none").addClass("d-flex");
+            $("#ongkir").removeClass("d-none").addClass("d-flex");
+        }
+    }
+
+    // Function to format number to Rupiah
+    function formatRupiah(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+</script>
+
+<!-- MENGATUR STYLE PENGGUNAAN VOUCHER -->
+<script>
 
     function selectAddress(addressElement) {
         const allAddress = document.querySelectorAll('.shipping-address');
@@ -818,26 +1221,78 @@
 
 <!-- HANDLE QUANTITY  -->
 <script>
-// Product Quantity
-$(".quantity button").on("click", function () {
-    var button = $(this);
-    var oldValue = button.parent().parent().find("input").val();
-    if (button.hasClass("btn-plus")) {
-        var newVal = parseFloat(oldValue) + 1;
-    } else {
-        if (oldValue > 1) {
-            var newVal = parseFloat(oldValue) - 1;
+    // Product Quantity
+    $(".quantity button").on("click", function () {
+        var button = $(this);
+        var oldValue = button.parent().parent().find("input").val();
+        if (button.hasClass("btn-plus")) {
+            var newVal = parseFloat(oldValue) + 1;
         } else {
-            newVal = 1;
+            if (oldValue > 1) {
+                var newVal = parseFloat(oldValue) - 1;
+            } else {
+                newVal = 1;
+            }
         }
-    }
-    button.parent().parent().find("input").val(newVal);
-});
+        button.parent().parent().find("input").val(newVal);
+    });
 </script>
 
 <!-- HANDLE QUANTITY IN DATABASE -->
 <script>
+function validateInput(input, maxQuantity) {
+    let value = parseInt(input.value);
+    var productId = {{ $data['productId'] }};
+
+    // Jika nilai di luar batas, set ke maxQuantity atau min 1
+    if (value > maxQuantity) {
+        input.value = maxQuantity;
+    } else if (value < 1 || isNaN(value)) {
+        input.value = 1;
+    }
+    $.ajax({
+        url: "{{ route('update.cart.quantity.buy.now') }}",
+        type: 'POST',
+        data: {
+            _token: '{{ csrf_token() }}',
+            product_id: productId,
+            quantity: value
+        },
+        beforeSend: function() {
+            $('.loading-container').show(); // Show the spinner before the AJAX request
+        },
+        success: function(response) {
+            if (response.success) {
+                // Keep loading spinner visible during reload
+                $('.loading-container').show();
+                setTimeout(function() {
+                    location.reload();
+                }, 500);
+            } else {
+                alert(response.message);
+            }
+        },
+        complete: function() {
+            // Hide the spinner only if not reloading
+            $('.loading-container').hide();
+        },
+        error: function(xhr) {
+            console.log(xhr.responseText);
+            alert("An error occurred.");
+        }
+    });
+}
+
 $(document).ready(function() {
+
+    var maxQuantity = {{ $data['maxQuantity'] }};
+    var quantityProduct = parseInt(document.getElementById(`product-quantity-{{ $data['productId'] }}`).value.trim(), 10);
+
+    if (maxQuantity === quantityProduct) {
+        $("#plus-btn-product-cart").prop('disabled', true);
+    } else {
+        $("#plus-btn-product-cart").prop('disabled', false);
+    }
 
     // Function to format numbers into currency
     function number_format(number, decimals, dec_point, thousands_sep) {
@@ -855,10 +1310,10 @@ $(document).ready(function() {
     // Function to update total price
     function updateTotalPrice() {
         var quantity = parseInt($('[name="total_product_buy_now"]').val());
-        var amount = parseInt($('#amountProduct').val());
+        var price = amount;
 
-        var total = amount * quantity;
-        $('#totalPriceBuyNow').text('Rp ' + number_format(total, 0, ',', '.'));
+        var total = price * quantity;
+        $('#totalPriceBuyNow').text('Rp' +formatRupiah(total));
     }
 
     // Initial calculation when page loads
@@ -866,11 +1321,42 @@ $(document).ready(function() {
 
     // Handle quantity input change
     $(document).on('input', '[name="total_product_buy_now"]', function() {
+        var productId = {{ $data['productId'] }};
         var newQuantity = parseInt($(this).val());
 
         // Ensure the quantity is a valid number and greater than 0
         if (!isNaN(newQuantity) && newQuantity > 0) {
-            updateTotalPrice(); // Update total price when quantity changes
+            $.ajax({
+                url: "{{ route('update.cart.quantity.buy.now') }}",
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    product_id: productId,
+                    quantity: newQuantity
+                },
+                beforeSend: function() {
+                    $('.loading-container').show(); // Show the spinner before the AJAX request
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Keep loading spinner visible during reload
+                        $('.loading-container').show();
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                complete: function() {
+                    // Hide the spinner only if not reloading
+                    $('.loading-container').hide();
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    alert("An error occurred.");
+                }
+            });
         } else {
             alert("Quantity must be a valid number greater than 0");
             $(this).val(1); // Reset to 1 if the input is invalid
@@ -887,7 +1373,37 @@ $(document).ready(function() {
             $('#product-quantity-' + productId).val(currentQuantity);
             $('[name="total_product_buy_now"]').val(currentQuantity); // Update hidden input
             updateTotalPrice();
-            updateProductQuantity(productId, currentQuantity);
+            $.ajax({
+                url: "{{ route('update.cart.quantity.buy.now') }}",
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    product_id: productId,
+                    quantity: currentQuantity
+                },
+                beforeSend: function() {
+                    $('.loading-container').show(); // Show the spinner before the AJAX request
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Keep loading spinner visible during reload
+                        $('.loading-container').show();
+                        setTimeout(function() {
+                            location.reload();
+                        }, 500);
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                complete: function() {
+                    // Hide the spinner only if not reloading
+                    $('.loading-container').hide();
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                    alert("An error occurred.");
+                }
+            });
         }
     });
 
@@ -899,46 +1415,52 @@ $(document).ready(function() {
         $('#product-quantity-' + productId).val(currentQuantity);
         $('[name="total_product_buy_now"]').val(currentQuantity); // Update hidden input
         updateTotalPrice();
-        updateProductQuantity(productId, currentQuantity);
-    });
 
-    // Function to send AJAX request to update quantity (optional if you need server update)
-    function updateProductQuantity(productId, newQuantity) {
         $.ajax({
             url: "{{ route('update.cart.quantity.buy.now') }}",
             type: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
                 product_id: productId,
-                quantity: newQuantity
+                quantity: currentQuantity
+            },
+            beforeSend: function() {
+                $('.loading-container').show(); // Show the spinner before the AJAX request
             },
             success: function(response) {
                 if (response.success) {
-                    console.log('Quantity updated successfully for product ' + productId);
+                    // Keep loading spinner visible during reload
+                    $('.loading-container').show();
+                    setTimeout(function() {
+                        location.reload();
+                    }, 500);
                 } else {
                     alert(response.message);
                 }
+            },
+            complete: function() {
+                // Hide the spinner only if not reloading
+                $('.loading-container').hide();
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
                 alert("An error occurred.");
             }
         });
-    }
     });
 
     $(".quantity-detail-produk button").on("click", function () {
         var button = $(this);
         var input = button.parent().parent().find("input");
         var oldValue = parseFloat(input.val());
-        var maxQuantity = parseFloat(button.data("quantity")); // Ambil nilai max quantity dari data attribute
+        var maxQuantity = {{ $data['maxQuantity'] }}; // Ambil nilai max quantity dari data attribute
         var newVal;
 
         if (button.hasClass("btn-plus")) {
             if (oldValue < maxQuantity) {
                 newVal = oldValue + 1;
             } else {
-                newVal = maxQuantity; // Jika sudah mencapai maksimum, tetap pada max
+                newVal = maxQuantity; // Jika sudah mencapai maksimum, tetap pada max'
             }
         } else {
             newVal = (oldValue > 1) ? oldValue - 1 : 1;
@@ -955,32 +1477,28 @@ $(document).ready(function() {
     function checkMaxQuantity(input, maxQuantity) {
         var value = parseFloat(input.value);
         var warningElement = document.getElementById("quantity-warning-" + input.id.split('-').pop());
-        var plusButton = document.getElementById("plus-btn-product-cart-" + input.id.split('-').pop());
+        var plusButton = document.getElementById("plus-btn-product-cart");
 
         if (value > maxQuantity) {
-            plusButton.disabled = true; // Disable tombol plus ketika sudah mencapai stok maksimum
+            $("#plus-btn-product-cart").prop('disabled', true); // Disable tombol plus ketika sudah mencapai stok maksimum
             if (warningElement) {
                 warningElement.innerText = "Batas untuk pembelian produk terpenuhi";
             }
         } else {
-            plusButton.disabled = false; // Enable tombol plus jika belum mencapai stok maksimum
+            $("#plus-btn-product-cart").prop('disabled', false); // Enable tombol plus jika belum mencapai stok maksimum
             if (warningElement) {
                 warningElement.innerText = "";
             }
         }
     }
 
-    function validateInput(input, maxQuantity) {
-        var value = parseFloat(input.value);
+    productItems.forEach(product => {
+        productIds.push(product.product_id);
+        productQuantities[product.product_id] = product.quantity;
+        productPrices[product.product_id] = product.price;
+    });
 
-        if (value > maxQuantity) {
-            input.value = maxQuantity; // Jangan biarkan lebih dari stok
-        } else if (value < 1) {
-            input.value = 1; // Jangan biarkan di bawah 1
-        }
-        checkMaxQuantity(input, maxQuantity); // Update status tombol
-    }
-
+});
 </script>
 
 <!-- CHECK KODE VOUCHER TERSEDIA ATAU TIDAK -->
@@ -1096,4 +1614,75 @@ $(document).ready(function() {
 </script>  
 @endif
 
+
+<!-- PAYMENT -->
+<script>
+    $(document).on('click', '#paynow', function(e) { // Added a dot before paynow
+    e.preventDefault();
+    console.log({
+        subtotal: subTotal,          // Removed the colon inside the key
+        shipping_cost: ongkir,
+        shipping_address_id: shippingAddressId,
+        total_item: totalItem,
+        total_item_price: totalItemPrice,
+        discount_amount: discountAmount,
+        discount_ongkir: shippingDiscountAmount,
+        voucher_promo: selectedPromoCode,
+        voucher_ongkir: selectedOngkirCode,
+    });
+    $.ajax({
+        url: "{{ route('order.buynow') }}",
+        type: 'POST',
+        data: {
+            product: productIds,
+            product_quantity: productQuantities,
+            product_price: productPrices,
+            subtotal: subTotal,          // Removed the colon inside the key
+            shipping_cost: ongkir,
+            shipping_address_id: shippingAddressId,
+            total_item: totalItem,
+            total_item_price: totalItemPrice,
+            discount_amount: discountAmount,
+            discount_ongkir: shippingDiscountAmount,
+            voucher_promo: selectedPromoCode,
+            voucher_ongkir: selectedOngkirCode,
+            _token: '{{ csrf_token() }}'
+        },
+        beforeSend: function() {
+            $('.loading-container').show(); // Show the spinner
+        },
+        success: function(response) {
+            Toast.fire({
+                icon: "success",
+                text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
+                title: "Pembayaranmu Berhasil",
+                willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+            }).then(function () {
+                location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
+            });
+        },
+        complete: function() {
+            $('.loading-container').hide(); // Show the spinner
+        },
+        error: function(xhr) {
+            Toast.fire({
+                icon: "error",
+                text: "Kesalahan Sistem",
+                title: "Oops..",
+                willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+            });
+        }
+    });
+});
+</script>
 @endsection

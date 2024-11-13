@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('voucher_new_users', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id')->nullable();
-            $table->string('email')->nullable();
-            $table->string('code');
-            $table->boolean('is_use');
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('city_id')->unique();
+            $table->string('province_id');
+            $table->string('province');
+            $table->string('type');
+            $table->string('city_name');
+            $table->string('postal_code');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('cities');
     }
 };

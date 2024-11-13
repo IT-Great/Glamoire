@@ -1,13 +1,13 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 py-2 py-md-3 mb-4">
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2 mb-4">
   <div class="container-fluid">
     <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-1 my-md-3">
       <div class="d-flex gap-2 pl-2">
-        <a href="/" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-        <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-        <a href="#" class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kontak Kami</a>
+        <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="#" class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kontak Kami</a>
       </div>
     </div>
   </div>
@@ -28,29 +28,42 @@
                 <label for="description" class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pertanyaan</label>
                 <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="question" id="contact_description" rows="3" placeholder="Apa yang ada tanyakan?" required></textarea>
 
-                <button class="mt-2 py-2 w-full rounded-md text-white bg-[#183018] text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit" id="question-btn">Kirim Pertanyaan Kamu</button>
+                <button class="mt-2 py-2 w-full rounded-md text-white bg-[#183018] hover:bg-neutral-900 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" type="submit" id="question-btn">Kirim Pertanyaan Kamu</button>
             </div>
           </div>
         </form>
       </div>
       <div class="col-lg-5">
-        <h5 class="font-weight-semi-bold mb-3">Hubungi Kami</h5>
-        <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-justify">
+        <h5 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px] font-semibold mb-2">Hubungi Kami</h5>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-justify">
           Kami ingin mendengar dari Anda! Apakah Anda memiliki pertanyaan tentang produk kami, memerlukan bantuan dengan pesanan Anda, atau hanya ingin membagikan pemikiran Anda, kami siap membantu.
         </p>
-        <div class="d-flex flex-column mt-4">
-          <p class="mb-2 text-[12px] md:text-[14px] lg:text-[14px] xl:text-[16px]">
-            <i class="fa fa-map-marker-alt text-primary mr-3 h-4 w-4"></i>Jl Wijaya Kusuma no. 57, Surabaya
-          </p>
-          <p class="mb-2 text-[12px] md:text-[14px] lg:text-[14px] xl:text-[16px]">
-            <i class="fa fa-envelope text-primary mr-3 h-4 w-4"></i>glamoirevegan.id@gmail.com              
-          </p>
-          <p class="mb-2 text-[12px] md:text-[14px] lg:text-[14px] xl:text-[16px]">
-            <i class="fa fa-phone-alt text-primary mr-3 h-4 w-4"></i>+62 822-7373-6200
-          </p>
-          <p class="mb-2 text-[12px] md:text-[14px] lg:text-[14px] xl:text-[16px]">
-            <i class="fab fa-instagram text-primary mr-3 h-4 w-4"></i>glamoire.idn
-          </p>
+        <div class="grid gap-2">
+          <div class="flex gap-1">
+            <i class="fa fa-map-marker-alt text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"></i>
+            <p class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">Jl Wijaya Kusuma no. 57, Surabaya</p>
+          </div>
+          <div class="flex items-center justify-start gap-2">
+            <i class="fa fa-envelope text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"></i>              
+            <p class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">
+            glamoirevegan.id@gmail.com</p>
+          </div>
+          <div class="flex items-center justify-start gap-2">
+            <i class="fa fa-phone-alt text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"></i>
+            <p class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">
+              +62 822-7373-6200
+            </p>
+          </div>
+          <div class="flex items-center justify-start gap-2">
+            <i class="fab fa-instagram text-primary text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"></i>
+            <p class="text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">
+              glamoire.idn
+            </p>
+          </div>
+
+          
+         
+          
         </div>
       </div>
     </div>
@@ -64,12 +77,6 @@
     let fullname = $("#contact_fullname").val();
     let email    = $("#contact_email").val();
     let question = $("#contact_description").val();
-
-    console.log({
-      fullname,
-      email,
-      question,
-    });
 
     $.ajax({
         url: "{{ route('send.question') }}",
@@ -93,7 +100,7 @@
                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
                   }
                 }).then(function () {
-                  window.refresh(); // Redirect ke halaman utama atau halaman lain
+                  location.reload(); // Redirect ke halaman utama atau halaman lain
                 });
             } else {
               let errors = response.errors;

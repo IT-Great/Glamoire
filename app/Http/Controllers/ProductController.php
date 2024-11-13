@@ -39,21 +39,48 @@ class ProductController extends Controller
                 $cartItems = Cart_item::where('cart_id', $cartId)->get();
 
                 $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
-                $promos = Promo::where('type', '=', 'promo')->get();
+                $topsell = Product::orderBy('sale', 'desc')->take(10)->get();
+                $new     = Product::orderBy('created_at', 'asc')->take(10)->get();
+
+                $date = now()->format('Y-m-d');
+                $promos = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->get();
+
+                $mainPromo = Promo::where('type', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->latest() // Order by latest created/updated promo
+                    ->first();
+
+                $promoModal = $mainPromo;
 
                 $data = [
                     'wishlist'  => $wishlist,
                     'product'   => $product,
                     'cartItems' => $cartItems,
                     'promos'    => $promos,
+                    'promoModal' => $promoModal,
+                    'topsell' => $topsell,
+                    'new'     => $new,
                 ];
 
                 return view('user.component.home')->with('data', $data);
             } else {
                 $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
-                $promos = Promo::where('type', '=', 'promo')->get();
+                $topsell = Product::orderBy('sale', 'desc')->get();
+                $new     = Product::orderBy('created_at', 'asc')->get();
+                $date = now()->format('Y-m-d');
+                $promos = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->get();
+                
 
                 $data = [
+                    'topsell' => $topsell,
+                    'new'     => $new,
                     'product' => $product,
                     'promos'  => $promos,
                 ];
@@ -84,7 +111,13 @@ class ProductController extends Controller
             $averageRating = number_format($product->rating_and_reviews_avg_rating, 1);
             $totalReviews = $product->rating_and_reviews_count;
 
-            $youlike = Product::with(['ratingAndReviews'])->withAvg('ratingAndReviews', 'rating')->get();
+            
+            $categoryMainProduct = $product->category_product_id;
+            $getParent = CategoryProduct::where('id', $categoryMainProduct)->value('parent_id');
+            $subCategories = CategoryProduct::where('parent_id', $getParent)->pluck('id')->toArray();
+            $youlike = Product::whereIn('category_product_id', $subCategories)->orderBy('sale', 'desc')->get();
+            
+
             $product->images = json_decode($product->images, true);
             $product->dimensions = json_decode($product->dimensions, true);
 
@@ -125,7 +158,23 @@ class ProductController extends Controller
         $sort = $request->sort;
         // dd($request);
 
-        $products = Product::where('product_name', 'like', '%' . $product_search . '%')
+        $products = Product::where(function ($query) use ($product_search) {
+            $query->where('product_name', 'like', '%' . $product_search . '%')
+                ->orWhere('description', 'like', '%' . $product_search . '%')
+                ->orWhere('information_product', 'like', '%' . $product_search . '%');
+        })
+        ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
+            return $query->where('brand_id', $brand);
+        })
+        ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
+            return $query->where('rating', $rating);
+        })
+        ->when($minPrice !== null, function ($query) use ($minPrice) {
+            return $query->where('regular_price', '>=', $minPrice);
+        })
+        ->when($maxPrice !== null, function ($query) use ($maxPrice) {
+            return $query->where('regular_price', '<=', $maxPrice);
+        })
             ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                 return $query->where('brand_id', $brand);
             })
@@ -321,8 +370,8 @@ class ProductController extends Controller
         try {
             $request->validate([
                 'product_name' => 'required',
-                // 'stock_quantity' => 'required',
-                // 'regular_price' => 'required',
+                'stock_quantity' => 'required',
+                'regular_price' => 'required',
 
                 'stock_quantity' => 'required|integer',
                 'regular_price' => 'required|numeric',

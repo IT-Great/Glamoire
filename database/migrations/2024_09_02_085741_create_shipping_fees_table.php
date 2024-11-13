@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('shipping_fees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('brand_id')->nullable();
-            $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('city');
-            $table->string('province');
-            $table->bigInteger('price');
+            $table->string('code');             // Shipping company code, e.g., 'jne'
+            $table->string('name');             // Shipping company name, e.g., 'Jalur Nugraha Ekakurir (JNE)'
+            $table->string('service');          // Service type, e.g., 'JTR', 'REG', 'YES'
+            $table->string('description');      // Service description, e.g., 'JNE Trucking'
+            $table->integer('cost_value');      // Cost value, e.g., 95000, 21000, 25000
+            $table->string('etd');              // Estimated delivery time, e.g., '8-9'
+            $table->text('note')->nullable();   // Any additional notes
             $table->timestamps();
         });
     }

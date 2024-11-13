@@ -15,6 +15,7 @@ class VoucherNewUser extends Model
         'id',
         'user_id',
         'code',
+        'email',
         'is_use',
         'created_at',
         'updated_at',

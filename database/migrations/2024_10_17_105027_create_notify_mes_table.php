@@ -16,6 +16,8 @@ return new class extends Migration
             $table->uuid('user_id'); 
             $table->unsignedBigInteger('product_id');
             $table->string('email');
+            $table->boolean('status')->default(0);
+            $table->date('send_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

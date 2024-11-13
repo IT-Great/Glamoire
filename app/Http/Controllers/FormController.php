@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+
+use App\Mail\sendMailCodeNewUser;
 use App\Models\User;
 use App\Models\Subscribe;
 use App\Models\Question;
 use App\Models\Partner;
+use App\Models\VoucherNewUser;
 use App\Models\File;
 use Exception;
 
@@ -21,9 +25,19 @@ class FormController extends Controller
 
     public function checkEmailVoucher(Request $request)
     {
-        $emailExists = User::where('email', $request->email)->exists();
 
-        return response()->json(['exists' => $emailExists]);
+        $emailExists = User::where('email', $request->email)->exists();
+        $voucherExists = VoucherNewUser::where('email', $request->email)->exists();
+
+        if($emailExists){
+            return response()->json(['exists' => $emailExists]);
+        }
+        else{
+            if($voucherExists){
+                return response()->json(['exists' => $voucherExists]);
+            }
+        } 
+
     }
 
     public function sendQuestion(Request $request)
@@ -92,7 +106,7 @@ class FormController extends Controller
             ]);
 
             session()->flash('send_success');
-            return redirect()->back()->with('success', 'File berhasil diupload');
+            return redirect()->back();
 
         } catch (Exception $err) {
             dd($err);
@@ -110,4 +124,46 @@ class FormController extends Controller
             dd($err);
         }
     }
+
+    public function voucherNewUser(Request $request)
+    {
+        $check = VoucherNewUser::where('email', $request->email)->exists();
+    
+        // Buat voucher hanya jika email belum terdaftar
+        if (!$check) {
+            $increment = VoucherNewUser::count() + 1;
+    
+            // Ambil 4 karakter pertama dari ID user
+            $idFragment = substr($request->email, 0, 4);
+    
+            // Buat kode voucher sesuai format "increment-4hurufID"
+            $codeUser = "{$increment}-{$idFragment}";
+    
+            VoucherNewUser::create([
+                'code' => $codeUser,
+                'email' => $request->email,
+                'is_use' => 0,
+            ]);
+    
+            $data = [
+                'code' => $codeUser,
+                'fullname' => "Calon pengguna",
+            ];
+    
+            $email_target = $request->email;
+    
+            Mail::to($email_target)->send(new sendMailCodeNewUser($data));
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Silakan cek email kamu untuk melihat voucher yang kamu dapat'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email anda sudah terdaftar.'
+            ]);
+        }
+    }
+    
 }

@@ -2,13 +2,13 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="py-2 md:px-20 lg:px-24 xl:px-48 2xl:px-96">
-  <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
-      <div class="d-flex gap-2 pl-2">
-        <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-        <a href="#" class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Hasil Pencarian "{{ $data['keyword'] }}"</a>
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2 mb-4">
+  <div class="container-fluid px-0 px-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
+      <div class="d-flex gap-1 px-3 px-md-0">
+        <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="#" class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Hasil Pencarian "{{ $data['keyword'] }}"</a>
       </div>
     </div>  
   </div>
@@ -17,7 +17,7 @@
   <div class="container-fluid my-2 my-md-8">
     <div class="row">
       <!-- Shop Sidebar Start -->
-      <div class="col-lg-2 col-md-3 d-none d-md-block">
+      <div class="col-lg-2 pr-md-0 col-md-3 d-none d-md-block">
         <!-- Filter Start -->
         <div class="border border-black shadow-md rounded-sm md:mb-0 lg:mb-0 xl:mb-0 py-1 px-3">
           <h5 class="font-weight-semi-bold text-[#183018] my-2">Filter</h5>
@@ -77,10 +77,10 @@
   
             <!-- Rating Start -->
             <div class="border-bottom mb-2 mb-md-3">
-               <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
+               <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating {{ $data['rating'] }}</h5>
                <div class="mb-4">
                  <div class="form-check ml-2">
-                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
+                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $data['rating'] === null ||  $data['rating'] === 'allbrand' ? 'checked' : '' }}>
                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
                  </div>
                  <div class="form-check ml-2">
@@ -143,16 +143,16 @@
       </div>
 
       <!-- Shop Product Start -->
-      <div class="col-lg-10 col-md-9">
+      <div class="col-lg-10 col-md-9 p-0 mb-4">
         <div class="position-sticky" style="top: 4rem">
           <div class="container-fluid">
-              <div class="col-12 p-0">
-                <div class="d-flex w-full align-items-center justify-content-between p-0 m-0 mb-2 mb-md-4">
+              <div class="row">
+                <div class="flex w-full align-items-center justify-content-between mb-2 mb-my-4">
                   <div class="flex justify-content-center align-items-center gap-3">
-                      <h1 class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-[#183018]">"{{$data['keyword']}}"</h1>
-                      <p class="text-[8px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Ditemukan {{ $data['count'] }} Produk</p>
+                      <h1 class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018]">"{{$data['keyword']}}"</h1>
+                      <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Ditemukan {{ $data['count'] }} Produk</p>
                   </div>
-                  <div class="dropdown ml-auto"> <!-- Menambahkan inline style -->
+                  <div class="dropdown flex ml-auto"> <!-- Menambahkan inline style -->
                       <input type="hidden" name="sort" id="sort" value="">
 
                       <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
@@ -176,73 +176,147 @@
               </div>
 
               <div class="row">
+                <div id="skeletonLoader" class="skeleton-loader">
+                  @for ($i = 0; $i < count($data['products']); $i++) <!-- Adjust the number based on how many you want to show -->
+                    <div class="skeleton-card">
+                      <div class="skeleton-image"></div>
+                      <div class="skeleton-text"></div>
+                      <div class="skeleton-text small"></div>
+                      <div class="skeleton-price"></div>
+                    </div>
+                  @endfor
+                </div>
+
                 <!-- Card Items -->
-                @if (session('id_user'))
-                    @if (count($data['products']) !== 0)
-                      <div class="grid-container-shop" style="min-height:48vh;">
+                <div id="productList" style="display: none;" class="px-0 px-md-2 mb-12 mb-md-0">
+                  @if (session('id_user'))
+                      @if (count($data['products']) !== 0)
+                        <div class="grid-container-shop" style="min-height:48vh;">
                         @foreach ($data['products'] as $product)
-                          <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-except border border-xl">
-                            <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                <div class="position-relative overflow-hidden bg-transparent p-0">
-                                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                            <div class="position-relative overflow-hidden bg-transparent p-0">
+                                <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                            </div>
+                            <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="flex gap-1">
+                                    <i class="text-decoration-none fas fa-star text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                                    @php
+                                        $inWishlist = collect($data['wishlists'])->contains('product_id', $product->id);
+                                    @endphp
+                                    <i 
+                                        class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
+                                        onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
+                                    </i>
                                 </div>
-                                <div class="grid gap-1 text-left p-2">
-                                    <div class="flex">
-                                        <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
-                                            @if ($product->rating)
-                                            {{ $product->rating }}</p>
-                                            @else
-                                            0
-                                            @endif  
-                                        </div>
-                                        <div class="ml-auto">
-                                            @php
-                                                $inWishlist = collect($data['wishlists'])->contains('product_id', $product->id);
-                                            @endphp
-                                            <a href="javascript:void(0);" class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
-                                                <i class="fas fa-heart text-center"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                        <a href="/{{ $product->product_code }}_product" 
-                                        class="text-decoration-none" 
+                                <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                    <a href="/{{ $product->product_code }}_product" 
+                                    class="text-decoration-none truncate-ellipsis" 
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="{{ $product->product_name }}">
+                                        {{ $product->product_name }}
+                                    </a>
+                                </p>
+
+                                <div class="flex justify-content-start gap-1">
+                                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[10px] xl:text-[14px]">
+                                        Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                    </p>
+                                </div>
+                                
+                                @if ($product->stock_quantity == 0)
+                                    <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
-                                        title="{{ $product->product_name }}">
-                                            {{ Str::limit($product->product_name, 20) }}
-                                        </a>
-                                    </p>
-                                    <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="flex justify-content-between px-2">
-                                    @if ($product->stock_quantity == 0)
-                                      <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                          Maaf Stok Habis
-                                      </a>
-                                    @else
-                                        @php
-                                            $inCart = collect($data['cartItems'])->contains('product_id', $product->id);
-                                        @endphp
+                                        title="Beritahu Saya Jika Stok Sudah Ada" 
+                                        type="button" 
+                                        style="color:#183018"
+                                        id="notify-me-{{$product->id}}"
+                                        onclick="event.stopPropagation();notifyMe({{$product->id}})"
+                                    >
+                                        Stok Habis
+                                    </a>
+                                @else
+                                    @php
+                                        $inCart = collect($data['cartItems'])->contains('product_id', $product->id);
+                                    @endphp
 
-                                        @if($inCart)
-                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[10px] xl:text-[10px] flex gap-1 align-items-center justify-content-center hover-red">
-                                                Cek Keranjang Belanjamu
-                                            </a>
-                                        @else
-                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
-                                                + <i class="fas fa-shopping-cart"></i> Keranjang
-                                            </a>
-                                        @endif
+                                    @if($inCart)
+                                        <a href="/cart" class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                            Cek Keranjang
+                                        </a>
+                                    @else
+                                        <a class="gap-1 py-1 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$product->id}})">
+                                          + <i class="fas fa-shopping-cart"></i> Keranjang
+                                        </a>
                                     @endif
+                                @endif
+                            </div>
+                          </div>
+                        @endforeach 
+                        </div>
+                      @else
+                        <div style="min-height:48vh;">
+                          <div style="display:flex; align-items:center; justify-content:center;">
+                            <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                          </div>
+                          <div style="display:flex; align-items:center; justify-content:center;">
+                            <p class="text-danger text-md">Produk yang kamu cari tidak ada</p>
+                          </div>
+                        </div>
+                      @endif
+                    </div>
+                  @else
+                    @if (count($data['products']) !== 0)
+                      <div class="grid-container-shop">
+                        @foreach ($data['products'] as $product)
+                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                            <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+
+                            <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="flex gap-1">
+                                  <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                  <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                                  <i 
+                                    class="fas fa-heart hover:cursor-pointer ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                    onclick="event.stopPropagation();addToWishlist({{$product->id}})">
+                                  </i>
                                 </div>
-                            </a>
+
+                                <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                  <a href="/{{ $product->product_code }}_product" 
+                                  class="text-decoration-none truncate-ellipsis" 
+                                  data-bs-toggle="tooltip" 
+                                  data-bs-placement="top" 
+                                  title="{{ $product->product_name }}">
+                                      {{ $product->product_name }}
+                                  </a>
+                                </p>
+                                
+                                <div class="flex justify-content-start gap-1">
+                                  <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                  </p>
+                                </div>
+                                @if ($product->stock_quantity == 0)
+                                  <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top" 
+                                      title="Beritahu Saya Jika Stok Sudah Ada" 
+                                      type="button" 
+                                      style="color:#183018"
+                                      id="notify-me-{{$product->id}}"
+                                      onclick="event.stopPropagation();notifyMe({{$product->id}})"
+                                  >
+                                      Stok Habis
+                                  </a>
+                                @else
+                                  <a class="py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$product->id}})">
+                                    + <i class="fas fa-shopping-cart"></i> Keranjang
+                                  </a>
+                                @endif
+                            </div>
                           </div>
                         @endforeach
                       </div>
@@ -256,76 +330,8 @@
                         </div>
                       </div>
                     @endif
-                  </div>
-                @else
-                  @if (count($data['products']) !== 0)
-                    <div class="grid-container-shop" style="min-height:48vh;">
-                      @foreach ($data['products'] as $product)
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item-except border border-xl">
-                          <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
-
-                          <div class="grid text-left content-card px-3 py-2 flex-grow-1">
-                              <div class="flex rating-wishlist">
-                                  <div class="flex gap-1">
-                                      <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
-                                      @if ($product->rating)
-                                      {{ $product->rating }}</p>
-                                      @else
-                                      0
-                                      @endif  
-                                  </div>
-
-                                  <div class="ml-auto">
-                                      <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$product->id}})">
-                                          <i class="fas fa-heart text-center"></i>
-                                      </a>
-                                  </div>
-                              </div>
-                              
-                              <div class="grid name-price hover:cursor-pointer">
-                                  <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]"> 
-                                      <a href="/{{ $product->product_code }}_product" class="text-decoration-none"
-                                      data-bs-toggle="tooltip" 
-                                      data-bs-placement="top" 
-                                      title="{{ $product->product_name }}">
-                                          {{ Str::limit($product->product_name, 20) }}
-                                      </a>
-                                  </p>
-                                  <div class="flex justify-content-start gap-1">
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                          Rp {{ number_format($product->regular_price, 0, ',', '.') }}
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          
-                          <div class="flex justify-content-between px-2 mt-auto add-wishlist">
-                            @if ($product->stock_quantity == 0)
-                                <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
-                                  Maaf Stok Habis
-                                </a>
-                            @else
-                                <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="addToCart({{$product->id}})">
-                                    + <i class="fas fa-shopping-cart"></i> Keranjang
-                                </a>
-                            @endif
-                          </div>
-                          
-                        </div>
-                      @endforeach
-                    </div>
-                  @else
-                    <div style="min-height:48vh;">
-                      <div style="display:flex; align-items:center; justify-content:center;">
-                        <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
-                      </div>
-                      <div style="display:flex; align-items:center; justify-content:center;">
-                        <p class="text-danger text-md">Produk yang kamu cari tidak ada</p>
-                      </div>
-                    </div>
                   @endif
-                @endif
+                </div>
                 <!-- End Card Items -->
               </div>
 
@@ -369,7 +375,7 @@
       <div class="modal-content overflow-y-auto fixed bottom-0 w-full" style="max-height:90vh; z-index: 1050;">
         <div class="modal-header" style="background-color: #183018">
           <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]" id="exampleModalLabel">Form Filter Produk</h1>
-          <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" style="filter:invert(1)" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body overflow-y-auto" style="max-height:100vh;">
@@ -377,26 +383,28 @@
             <!-- Brands Start -->
             <div class="border-bottom">
               <h5 class="font-weight-semi-bold my-2">Brand</h5>
-              <div class="form-check ml-2">
-                <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
-                <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
-                  Semua Brand
-                </label>
-              </div>
-
-              @foreach ($data['brands'] as $brand)
+              <div class="max-h-[150px] overflow-y-auto custom-scroll">
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" 
-                    name="brand" 
-                    id="{{ $brand->name}}-{{$brand->id}}" 
-                    value="{{ $brand->name}}" 
-                    {{ $data['brand'] == $brand->name ? 'checked' : '' }}>
-
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
-                    {{ $brand->name}}
+                  <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $data['brand'] === null ||  $data['brand'] === 'allbrand' ? 'checked' : '' }}>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
+                    Semua Brand
                   </label>
                 </div>
-              @endforeach
+  
+                @foreach ($data['brands'] as $brand)
+                  <div class="form-check ml-2">
+                    <input class="form-check-input" type="checkbox" 
+                      name="brand" 
+                      id="{{ $brand->name}}-{{$brand->id}}" 
+                      value="{{ $brand->name}}" 
+                      {{ $data['brand'] == $brand->name ? 'checked' : '' }}>
+  
+                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                      {{ $brand->name}}
+                    </label>
+                  </div>
+                @endforeach
+              </div>
             </div>
             <!-- Brands End -->
   
@@ -428,20 +436,49 @@
               <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
               <div class="mb-4">
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" checked>
+                  <input class="form-check-input" type="checkbox" name="rating" id="allRatingMobile" value="all" {{ $data['rating'] === null ||  $data['rating'] === 'all' ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
                 </div>
                 <div class="form-check ml-2">
-                  <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5">
+                  <input class="form-check-input" type="checkbox" name="rating" id="mobilerating5" value="5" {{ $data['rating'] == 5 ? 'checked' : '' }}>
                   <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating5">
-                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
-                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
-                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
-                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
-                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
                   </label>
                 </div>
-                <!-- Repeat for other ratings -->
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="mobilerating4" value="4" {{ $data['rating'] == 4 ? 'checked' : '' }}>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating4">
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                  </label>
+                </div>
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="mobilerating3" value="3" {{ $data['rating'] == 3 ? 'checked' : '' }}>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating3">
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                  </label>
+                </div>
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="mobilerating2" value="2" {{ $data['rating'] == 2 ? 'checked' : '' }}>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating2">
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                  </label>
+                </div>
+                <div class="form-check ml-2">
+                  <input class="form-check-input" type="checkbox" name="rating" id="mobilwrating1 " value="1" {{ $data['rating'] == 1 ? 'checked' : '' }}>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px]" for="rating1">
+                    <small class="fas fa-star text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="color:orange;"></small>
+                  </label>
+                </div>
               </div>
             </div>
             <!-- Rating End -->
@@ -493,6 +530,25 @@
         document.getElementById('sort').value = sortValue;
         document.getElementById('form-filter-product').submit();
     }
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const skeletonLoader = document.getElementById('skeletonLoader');
+    const productList = document.getElementById('productList');
+
+    // Show skeleton loader initially
+    skeletonLoader.style.display = 'flex'; // or 'block'
+
+    // Simulate an API call with setTimeout (replace this with your actual API call)
+    setTimeout(function() {
+        // Fetch your product data here...
+
+        // Hide skeleton loader and show product list after data is fetched
+        skeletonLoader.style.display = 'none';
+        productList.style.display = 'block';
+    }, 2000); // Simulating a 2-second delay
+  });
 </script>
 
 @endsection

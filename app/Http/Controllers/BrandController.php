@@ -218,26 +218,52 @@ class BrandController extends Controller
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
             $wishlists = Wishlist::where('user_id', $userId)->get();
 
-            $brand = Brand::where('name', $name)
-                // ->with(['products.ratingAndReviews']) // Load products and their reviews
-                // ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
-                ->get();
+            $brands = Brand::where('name', $name)
+                ->with(['products','productsNewest', 'productsTop'])
+                ->get();    
+                       
+            foreach ($brands as $brand) {
+                $newestProducts = $brand->productsNewest;
+                $topProducts = $brand->productsTop;
+            
+                // Process each brand's products as needed
+            }
 
+            $allbrand = Brand::where('name', $name)
+                ->with(['products'])
+                ->first();  
 
             // dd($brand);
             return view('user.component.brand', [
-                'brands'    => $brand,
+                'countBrand' => count($allbrand->products),
+                'brands'    => $brands,
+                'newest'    => $newestProducts,
+                'top'       => $topProducts,
                 'cartItems' => $cartItems,
                 'wishlists' => $wishlists,
             ]);
         } else {
-            $brand = Brand::where('name', $name)
-                ->with(['products'])
-                ->get();
+            $brands = Brand::where('name', $name)
+                ->with(['products','productsNewest', 'productsTop'])
+                ->get();    
+                       
+            foreach ($brands as $brand) {
+                $newestProducts = $brand->productsNewest;
+                $topProducts = $brand->productsTop;
+            
+                // Process each brand's products as needed
+            }
 
-            // dd($brand);
+            $allbrand = Brand::where('name', $name)
+                ->with(['products'])
+                ->first();    
+
+            // dd($brands);
             return view('user.component.brand', [
-                'brands' => $brand
+                'countBrand' => count($allbrand->products),
+                'brands' => $brands,
+                'newest' => $newestProducts,
+                'top'    => $topProducts,
             ]);
         }
     }

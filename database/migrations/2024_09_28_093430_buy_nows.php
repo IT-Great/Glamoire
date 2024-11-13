@@ -19,6 +19,7 @@ return new class extends Migration
             $table->bigInteger('price');
             $table->boolean('is_buy');
             $table->bigInteger('total');
+            $table->string('email')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });

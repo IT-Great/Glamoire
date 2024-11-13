@@ -46,10 +46,10 @@ class ShopController extends Controller
                     $query->orderBy('created_at', 'desc');
                     $sort = "Terbaru";
                     break;
-                case 'popular':
-                    // Assuming you have a 'popularity' field
-                    $query->orderBy('popularity', 'desc');
-                    break;
+                // case 'popular':
+                //     // Assuming you have a 'popularity' field
+                //     $query->orderBy('sale', 'desc');
+                //     break;
                 case 'high_price':
                     $query->orderBy('regular_price', 'desc');
                     $sort = "Harga Tertinggi";
@@ -61,7 +61,7 @@ class ShopController extends Controller
             }
     
             // Execute query and get filtered products
-            $products = $query->get();
+            $products = $query->orderBy('sale', 'desc')->paginate(15);
     
             $totalProduct = $products->count();
             $categories = CategoryProduct::whereNull('parent_id')->get();
@@ -141,7 +141,7 @@ class ShopController extends Controller
             ->when($maxPrice !== null, function ($query) use ($maxPrice) {
                 return $query->where('regular_price', '<=', $maxPrice);
             })
-            ->when($rating !== null, function ($query) use ($rating) {
+            ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
                 return $query->where('rating', '=', $rating);
             });
     
@@ -166,7 +166,7 @@ class ShopController extends Controller
             }
     
             // Execute query and get filtered products
-            $products = $query->get();
+            $products = $query->paginate(15);
     
             $totalProduct = $products->count();
             $subCategories = CategoryProduct::where('parent_id', $categoryId)->get();
@@ -259,7 +259,7 @@ class ShopController extends Controller
                         $sort = "Harga Terendah";
                         break;
                 }
-                $products = $products->get();
+                $products = $products->paginate(15);
 
 
                 $brands = Brand::get();

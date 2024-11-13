@@ -199,13 +199,16 @@ class UserController extends Controller
                     // JIKA PRODUK BELUM ADA DI CART USER
                     else{
                         $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                        $product = Product::where('id', $request->product_id)->first();
+                        $total = $product->regular_price;
+
                         Cart_item::create([
                             'cart_id'    => $cartId,
                             'product_id' => $request->product_id,
                             'quantity'   => $request->quantity ? $request->quantity : 1,
                             'is_choose'  => TRUE,
-                            'price'      => 10000,
-                            'total'      => 10000,
+                            'price'      => $product->regular_price,
+                            'total'      => $total,
                         ]);
                     }
 
@@ -416,12 +419,19 @@ class UserController extends Controller
     public function subscribe(Request $request)
     {
         try {
-            Subscribe::create([
-                'email'      => $request->email,
-                'created_at' => now(),
-            ]);
+            $check = Subscribe::where('email', $request->email)->exists();
 
-            return response()->json(['success' => true, 'message' => 'Selamat Anda Berhasil Berlangganan']);
+            if (!$check) {
+                Subscribe::create([
+                    'email'      => $request->email,
+                    'created_at' => now(),
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selamat Anda Berhasil Berlangganan']);
+            }
+            else {
+                return response()->json(['success' => false, 'message' => 'Email sudah terdaftar']);
+            }
+
         } catch (Exception $err) {
             dd($err);
         }

@@ -1,15 +1,15 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
-    <div class="container-fluid">
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96">
+    <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
             <div class="d-flex gap-2 pl-2">
-                <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="/shop" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Belanja</a>
-                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product_name }}</a>
+                <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
+                <a href="/shop" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
+                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
+                <a href="#" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $product->product_name }}</a>
             </div>
         </div>
     </div>
@@ -20,13 +20,12 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="position-sticky" style="top: 4rem">
-                    <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiperShow">
+                    <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiperShow p-0">
                         <div class="swiper-wrapper">
-
                             @if (!empty($product->main_image))
                                 <div class="swiper-slide">
                                     <div class="image-container">
-                                        <img class="zoomable-image" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
+                                        <img class="zoomable-image main-display" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
                                     </div>
                                 </div>
                             @endif
@@ -35,15 +34,15 @@
                                 @foreach ($product->images as $image)
                                     <div class="swiper-slide">
                                         <div class="image-container">
-                                            <img class="zoomable-image" src="{{ Storage::url($image) }}" alt="product Image" />
+                                            <img class="zoomable-image main-display" src="{{ Storage::url($image) }}" alt="product Image" />
                                         </div>
                                     </div>
                                 @endforeach
                             @endif
 
                             @if (!empty($product->video))
-                                <div class="swiper-slide h-fit">
-                                    <video class="zoomable-video" id="mainVideo" controls controlsList="nodownload noplaybackrate">
+                                <div class="swiper-slide" style="max-height:350px">
+                                    <video class="zoomable-video main-display" id="mainVideo" controls controlsList="nodownload noplaybackrate" style="max-height:350px">
                                         <source src="{{ Storage::url($product->video) }}" type="video/mp4">
                                     </video>
                                 </div>
@@ -51,29 +50,29 @@
                         </div>
                     </div>
 
-                    <div class="swiper mySwiperProduct">
+                    <div class="swiper mySwiperProduct p-0">
                         <div class="swiper-wrapper">
-                            @if (!empty($product->images))
-                                @foreach ($product->images as $image)
-                                    <div class="swiper-slide example-product hover:cursor-pointer p-1" id="main_image">
-                                        <a>
-                                            <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}}}" />
-                                        </a>
-                                    </div>
-                                @endforeach
-                            @endif
-                            
                             @if (!empty($product->main_image))
-                                <div class="swiper-slide example-product hover:cursor-pointer p-1" id="main_image">
-                                    <a>
-                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}}}" />
+                                <div class="swiper-slide example-product hover:cursor-pointer" id="main_image">
+                                    <a data-src="{{ Storage::url($product->main_image) }}" data-type="image">
+                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" />
                                     </a>
                                 </div>
                             @endif
 
+                            @if (!empty($product->images))
+                                @foreach ($product->images as $image)
+                                    <div class="swiper-slide example-product hover:cursor-pointer" id="main_image">
+                                        <a data-src="{{ Storage::url($image) }}" data-type="image">
+                                            <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}" />
+                                        </a>
+                                    </div>
+                                @endforeach
+                            @endif
+
                             @if (!empty($product->video))
-                                <div class="swiper-slide example-product hover:cursor-pointer p-1" id="videoproduk">
-                                    <a>
+                                <div class="swiper-slide example-product hover:cursor-pointer" id="videoproduk">
+                                    <a data-src="{{ Storage::url($product->video) }}" data-type="video">
                                         <div class="video-thumbnail-wrapper">
                                             <img src="{{ Storage::url($product->main_image) }}" alt="Video Thumbnail" />
                                             <i class="fas fa-play" style="color: #183018;"></i>
@@ -90,25 +89,49 @@
                 </div>
             </div>
 
-            <div class="grid col-lg-8 gap-3">
-                <div class="variant d-md-none">
-                    <p class="text-[14px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Color</p>
+            <div class="grid col-lg-8 gap-1 pl-lg-0">
+                <div class="variant d-lg-none">
+                    <p class="text-[14px] md:text-[14px] lg:text-[20px] xl:text-[24px]">Color</p>
                     <div class="flex gap-1">
                         @for ($i=1; $i<=3;$i++)
                         <div class="border border-red rounded-sm p-2">
-                            <p class="text-[10px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Warna {{ $i  }}</p>
+                            <p class="text-[10px] md:text-[12px] lg:text-[20px] xl:text-[24px]">Warna {{ $i  }}</p>
                         </div>
                         @endfor
                     </div>
                 </div>
 
+                <div class="d-flex gap-1">
+                    <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between">{{ $product->rating }}</p>
+                    <p class="text-decoration-none text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">({{ $product->rating_and_reviews_count }} Ulasan)</p>
+                    @if (session('id_user'))
+                        @php
+                            $inWishlist = collect($wishlists)->contains('product_id', $product->id);
+                        @endphp
+                        <i 
+                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                            onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" title="Hapus dari Favorit">
+                        </i>
+                    @else
+                        <i 
+                            class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                            onclick="{{ 'addToWishlist(' . $product->id . ')' }}" title="Tambah ke Favorit">
+                        </i>
+                    @endif
+                </div>
+
+                <div>
+                    <p class="font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Rp{{ number_format($product->regular_price, 0, ',', '.') }}</p>
+                </div>
+
                 <div class="grid gap-1">
-                    <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a>
-                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{ $product->product_name }}</p>
+                    <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a>
+                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
                 </div>
                 
-                <div class="variant d-none d-md-block">
-                    <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Variant Warna</p>
+                <div class="variant d-none d-lg-block">
+                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">Variant Warna</p>
                     <div class="flex gap-2">
                         @for ($i=1; $i<=3;$i++)
                         <div class="border border-red rounded-sm px-3 py-1 hover:cursor-pointer">
@@ -117,21 +140,9 @@
                         @endfor
                     </div>
                 </div>
-
-                <div class="d-flex">
-                    <div class="mr-2">
-                        <small class="fas fa-star text-[14px]" style="color:orange;"></small>
-                        <small class="text-[14px] text-black">{{ $averageRating }}</small>
-                    </div>
-                    <small class="pt-1">({{ $product->rating_and_reviews_count }} Ulasan)</small>
-                </div>
-                
-                <div>
-                    <p class="font-weight-semi-bold text-black text-[14px] md:text-[18px] lg:text-[20px] xl:text-[24px]">Rp{{ number_format($product->regular_price, 0, ',', '.') }}</p>
-                </div>
                 
                 @if ($product->stock_quantity == 0)
-                    <div class="flex">
+                    <div class="flex py-3">
                         <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong.</span>
                         <span
                             class="text-danger rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
@@ -145,14 +156,43 @@
                         </span>
                     </div>
                 @else
-                    @php
-                        $inCart = collect($cartItems)->contains('product_id', $product->id);
-                    @endphp
+                    @if (session('id_user'))
+                        @php
+                            $inCart = collect($cartItems)->contains('product_id', $product->id);
+                        @endphp
 
-                    @if ($inCart)
-                        <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex align-items-center justify-content-center hover-red">
-                            Cek Keranjangmu
-                        </a>
+                        @if ($inCart)
+                            <button onclick="cart()" class="mb-2 py-2 rounded-sm w-full bg-[#183018] hover:bg-neutral-900  text-white p-0 text-[7px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex align-items-center justify-content-center">
+                                Cek Keranjangmu
+                            </button>
+                        @else
+                            <div class="align-items-center gap-2 d-none d-lg-flex py-3">
+                                <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-minus">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
+                                    <input type="number" 
+                                        class="form-control bg-secondary text-center px-2  no-spinner" 
+                                        id="total-detail-product-quantity-{{$product->id}}" 
+                                        value="1" 
+                                        min="1"
+                                        max="{{ $product->stock_quantity }}"
+                                        oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
+                                    >
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                            </div>
+                            <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
+                        @endif
                     @else
                         <div class="align-items-center gap-2 d-none d-lg-flex">
                             <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -181,12 +221,11 @@
                         </div>
                         <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                     @endif
-
                 @endif
                 
                 
                 <div class="row">
-                    <div class="col tabbable">
+                    <div class="col tabbable py-3">
                         <div class="nav nav-tabs justify-content-start border-secondary mb-4">
                             <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
                             <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
@@ -195,11 +234,11 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="deskripsi">
                                 <h4 class="mb-3">Deskripsi Produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->description }}</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->description }}</p>
                             </div>
                             <div class="tab-pane fade" id="informasi">
                                 <h4 class="mb-3">Informasi terkait produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->information_product }}</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->information_product }}</p>
                             </div>
                             <div class="tab-pane fade" id="ulasan">
                                 <div class="row">
@@ -226,7 +265,7 @@
                                                                 @if ($ratingAndReviews->video !== null)
                                                                 <div class="col-4 pr-1 pl-0">
                                                                     <video class="zoomable-video" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
-                                                                    <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
+                                                                        <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
                                                                     </video>
                                                                 </div>
                                                                 @endif
@@ -250,20 +289,17 @@
                     </div>
                 </div>
 
-                <div class="d-flex">
-                    <p class="text-dark font-weight-medium mb-0 mr-2">Bagikan Produk ke:</p>
+                <div class="d-flex py-2 py-md-0 py-lg-4">
+                    <p class="text-dark text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold mb-0 mr-2">Bagikan Produk ke:</p>
                     <div class="d-inline-flex">
-                        <a class="text-dark px-2" href="">
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a class="text-dark px-2" href="">
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-pinterest"></i>
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
+                            <i class="fab fa-instagram"></i>
                         </a>
                     </div>
                 </div>
@@ -274,88 +310,74 @@
     <!-- Shop Detail End -->
 
     <!-- Products Start -->
-    <div class="container-fluid mt-md-4 mb-12">
-        <div class="text-center mb-md-2 mb-lg-4 mb-xl-4 py-3 pt-md-4 pt-lg-4 pt-xl-4">
-            <h2 class="section-title px-5  text-[12px] md:text-[14px] lg:text-[18px] xl:text-[22px]"><span class="px-2">Produk Yang Mungkin Anda Suka</span></h2>
+    <div class="container-fluid mb-14 mb-lg-0">
+        <div class="text-center py-3">
+            <h2 class="section-title px-5  text-[12px] md:text-[14px] lg:text-[18px] xl:text-[22px]"><span class="px-2">Produk Lainnya</span></h2>
         </div>
 
-        <div class="swiper mySwiper">
+        <div class="swiper mySwiperDetail">
             <div class="swiper-wrapper"> 
             @if (session('id_user'))
                 @foreach ($youlike as $yl)
-                    <div class="swiper-slide p-0">
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden product-item border border-xl">
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
                             <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
                                     <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-2">
-                                    <div class="flex">
-                                        <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[10px] md:text-[14px] lg:text-[14px] xl:text-[16px]" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                @if ($yl->rating)
-                                                {{ $yl->rating }}
-                                                @else
-                                                0    
-                                                @endif
-                                            </p>
-                                        </div>
-                                        <div class="ml-auto">
-                                            @php
-                                                $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
-                                            @endphp
-                                            <a href="javascript:void(0);" 
-                                                class="text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
-                                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}">
-                                                <i class="fas fa-heart text-center"></i>
-                                            </a>
-                                        </div>
+                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                    <div class="flex gap-1">
+                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
+                                        @php
+                                            $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
+                                        @endphp
+                                        <i 
+                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                            onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}"
+                                            >
+                                        </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
                                         <a href="/{{ $yl->product_code }}_product" 
-                                        class="text-decoration-none" 
+                                        class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
                                         title="{{ $yl->product_name }}">
-                                            {{ Str::limit($yl->product_name, 20) }}
+                                            {{ $yl->product_name }}
                                         </a>
                                     </p>
+
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
+                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[10px] xl:text-[14px]">
                                             Rp {{ number_format($yl->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
-                                </div>
-                                <div class="px-1 px-md-2">
+                                    
                                     @if ($yl->stock_quantity == 0)
-                                    <div class="flex">
-                                            <div class="col-12 p-0">
-                                                <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
-                                                    data-bs-toggle="tooltip" 
-                                                    data-bs-placement="top" 
-                                                    title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                    type="button" 
-                                                    style="color:#183018"
-                                                    id="notify-me-{{$yl->id}}"
-                                                    onclick="notifyMe({{$yl->id}})"
-                                                >
-                                                    Stok Habis
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Beritahu Saya Jika Stok Sudah Ada" 
+                                            type="button" 
+                                            style="color:#183018"
+                                            id="notify-me-{{$yl->id}}"
+                                            onclick="event.stopPropagation();notifyMe({{$yl->id}})"
+                                        >
+                                            Stok Habis
+                                        </a>
                                     @else
                                         @php
                                             $inCart = collect($cartItems)->contains('product_id', $yl->id);
                                         @endphp
-
+    
                                         @if($inCart)
-                                            <a href="/cart" class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
-                                                Cek Keranjangmu
+                                            <a href="/cart" class="py-1 rounded-sm border border-[#183018] hover:bg-neutral-900 shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                                Cek Keranjang
                                             </a>
                                         @else
-                                            <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$yl->id}})">
+                                            <a class="gap-1 py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center" onclick="event.stopPropagation();addToCart({{$yl->id}})">
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
@@ -369,75 +391,65 @@
             <!-- MUNCULKAN DATA PRODUK JIKA USER BELUM LOGIN -->
             @else
                 @foreach ($youlike as $yl)
-                    <div class="swiper-slide p-0">
-                        <div class="border border-[#183018] bg-white rounded-lg shadow-sm overflow-hidden product-item d-flex flex-column transition-transform duration-300">
-                            <div class="product-image-container">
-                                <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
-                            </div>
-                            <div class="grid text-left content-card px-3 py-2 flex-grow-1">
-                                <div class="flex rating-wishlist">
-                                    <div class="flex gap-1">
-                                        <i class="text-decoration-none fas fa-star text-[8px] md:text-[14px] lg:text-[16px] xl:text-[16px]" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[14px] xl:text-[14px]">
-                                        @if ($yl->rating !== NULL)
-                                        {{ $yl->rating }}</p>
-                                        @else
-                                        0
-                                        @endif    
-                                    </div>
-
-                                    <div class="ml-auto">
-                                        <a title="Tambah ke Favorit" href="javascript:void(0);" class="text-decoration-none text-[#183018] p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" onclick="addToWishlist({{$yl->id}})">
-                                            <i class="fas fa-heart text-center"></i>
-                                        </a>
-                                    </div>
+                    <div class="swiper-slide">
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
+                            <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
+                                <div class="product-image-container">
+                                    <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                 </div>
-                                
-                                <div class="grid name-price hover:cursor-pointer">
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[14px]"> 
-                                        <a href="/{{ $yl->product_code }}_product" class="text-decoration-none"
+
+                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                    <div class="flex gap-1">
+                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
+                                        <i 
+                                            class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                            onclick="event.stopPropagation();addToWishlist({{ $yl->id }})">
+                                        </i>
+                                    </div>
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                        <a href="/{{ $yl->product_code }}_product" 
+                                        class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
                                         title="{{ $yl->product_name }}">
-                                            {{ Str::limit($yl->product_name, 20) }}
+                                            {{ $yl->product_name }}
                                         </a>
                                     </p>
+
                                     <div class="flex justify-content-start gap-1">
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[13px] lg:text-[11px] xl:text-[16px]">
+                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[10px] xl:text-[14px]">
                                             Rp {{ number_format($yl->regular_price, 0, ',', '.') }}
                                         </p>
                                     </div>
+                                    
+                                    @if ($yl->stock_quantity == 0)
+                                        <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Beritahu Saya Jika Stok Sudah Ada" 
+                                            type="button" 
+                                            style="color:#183018"
+                                            id="notify-me-{{$yl->id}}"
+                                            onclick="event.stopPropagation();notifyMe({{$yl->id}})"
+                                        >
+                                            Stok Habis
+                                        </a>
+                                    @else
+                                        <a class="gap-1 py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$yl->id}})">
+                                            + <i class="fas fa-shopping-cart"></i> Keranjang
+                                        </a>
+                                    @endif
                                 </div>
-                            </div>
-                            
-                            <div class="px-2 mt-auto add-wishlist">
-                                @if ($yl->stock_quantity == 0)
-                                    <a class="mb-2 py-2 btn w-full h-full text-white btn-danger rounded-sm shadow-sm text-decoration-none text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px]"
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="top" 
-                                        title="Beritahu Saya Jika Stok Sudah Ada" 
-                                        type="button" 
-                                        style="color:#183018"
-                                        id="notify-me-{{$yl->id}}"
-                                        onclick="notifyMe({{$yl->id}})"
-                                    >
-                                        Stok Habis
-                                    </a>
-                                @else
-                                    <a href="javascript:void(0);" class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[7px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="addToCart({{$yl->id}})">
-                                        + <i class="fas fa-shopping-cart"></i> Keranjang
-                                    </a>
-                                @endif
-                            </div>
+                            </a>
                         </div>
                     </div>
                 @endforeach
             @endif
 
             </div>
-            <div class="swiper-button-next"></div>
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-pagination mt-8"></div>
+            <div class="swiper-button-next-other"></div>
+            <div class="swiper-button-prev-other"></div>
         </div>
     </div>
     <!-- Products End -->
@@ -459,11 +471,11 @@
 
 <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
   <div class="container-fluid d-flex gap-2 py-1">
-    <button class="btn rounded-sm shadow-sm w-fit bg-transparent border border-white text-[#183018] text-[10px] md:text-[16px] lg:text-[18px] xl:text-[18px]">
+    <!-- <button class="btn rounded-sm shadow-sm w-fit bg-transparent border border-white text-[#183018] text-[10px] md:text-[16px] lg:text-[18px] xl:text-[18px]">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 512 512">
             <path fill="#ffffff" d="M64 0C28.7 0 0 28.7 0 64L0 352c0 35.3 28.7 64 64 64l96 0 0 80c0 6.1 3.4 11.6 8.8 14.3s11.9 2.1 16.8-1.5L309.3 416 448 416c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L64 0z"/>
         </svg>
-    </button>
+    </button> -->
     <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
         + Keranjang
     </a>
@@ -504,8 +516,6 @@
     });
 
     
-
-
     function addCartWithQuantity(productId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
 
@@ -541,11 +551,31 @@
                             errorMessages += errors[key][0] + "<br>";
                         }
                     }
-                    Swal.fire("Error", errorMessages, "error");
+                    Toast.fire({
+                    icon: "error",
+                    text: errorMessages,
+                    
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                    });
                 }
             },
             error: function (response) {
-                Swal.fire("Error", "Kesalahan Sistem", "error");
+                Toast.fire({
+                    icon: "error",
+                    text: "Kesalahan Sistem",
+                    
+                    willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                });
             },
         });
     }
@@ -572,11 +602,31 @@
                             errorMessages += errors[key][0] + "<br>";
                         }
                     }
-                    Swal.fire("Error", errorMessages, "error");
+                    Toast.fire({
+                    icon: "error",
+                    text: errorMessages,
+                    
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                    });
                 }
             },
             error: function (response) {
-                Swal.fire("Error", "Kesalahan Sistem", "error");
+                Toast.fire({
+                    icon: "error",
+                    text: "Kesalahan Sistem",
+                    
+                    willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                });
             },
         });
     }
@@ -635,6 +685,142 @@
         var fullscreenModalElement = document.getElementById('fullscreenModal');
         var modal = new bootstrap.Modal(fullscreenModalElement); // Recreate the modal
         modal.hide(); // Close the modal
+    });
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    function cart(){
+        window.location.href = "/cart";
+    }
+
+    var swiperDetailProduct = new Swiper(".mySwiperDetail", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next-other",
+          prevEl: ".swiper-button-prev-other",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
+        },
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const thumbnailLinks = document.querySelectorAll('.swiper.mySwiperProduct .swiper-slide a');
+        const mainDisplay = document.querySelector('.swiper.mySwiperShow');
+        const mySwiperProduct = new Swiper('.mySwiperProduct', {
+            slidesPerView: 'auto',
+            spaceBetween: 10,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        const mySwiperShow = new Swiper('.mySwiperShow', {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+
+        // Sync main display when thumbnail is clicked
+        thumbnailLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const src = this.getAttribute('data-src');
+                const type = this.getAttribute('data-type');
+
+                mainDisplay.innerHTML = '';  // Clear current display
+
+                if (type === 'image') {
+                    mainDisplay.innerHTML = `
+                        <div class="swiper-slide">
+                            <div class="image-container">
+                                <img class="zoomable-image" src="${src}" alt="product Image" />
+                            </div>
+                        </div>
+                    `;
+                } else if (type === 'video') {
+                    mainDisplay.innerHTML = `
+                        <div class="swiper-slide" style="max-height:350px">
+                            <video class="zoomable-video h-fit" controls controlsList="nodownload noplaybackrate">
+                                <source src="${src}" type="video/mp4">
+                            </video>
+                        </div>
+                    `;
+                }
+            });
+        });
+
+        // Sync mySwiperShow with mySwiperProduct when navigating slides
+        mySwiperProduct.on('slideChange', function () {
+            const activeIndex = mySwiperProduct.activeIndex;
+            const activeSlide = mySwiperProduct.slides[activeIndex];
+
+            const src = activeSlide.querySelector('a').getAttribute('data-src');
+            const type = activeSlide.querySelector('a').getAttribute('data-type');
+
+            // Update the main display when slide changes
+            mainDisplay.innerHTML = '';  // Clear current display
+
+            if (type === 'image') {
+                mainDisplay.innerHTML = `
+                    <div class="swiper-slide">
+                        <div class="image-container">
+                            <img class="zoomable-image" src="${src}" alt="product Image" />
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'video') {
+                mainDisplay.innerHTML = `
+                    <div class="swiper-slide" style="max-height:350px">
+                        <video class="zoomable-video h-fit" controls controlsList="nodownload noplaybackrate">
+                            <source src="${src}" type="video/mp4">
+                        </video>
+                    </div>
+                `;
+            }
+        });
     });
 
 

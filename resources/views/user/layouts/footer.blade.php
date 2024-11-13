@@ -5,7 +5,7 @@
         <div class="py-2 flex items-center justify-between w-full md:px-20 lg:px-24 xl:px-24 2xl:px-96">
           <img class="w-1/3" style="max-width:250px;" src="images/l-1.png" alt="Image">
           <p class="text-white text-[10px] md:text-[12px] lg:text-[20px] xl:text-[26px]">
-            Toko Kecantikan Berbahan Tumbuhan Pertama di Indonesia
+            The First Plant-Based Beauty Store in Indonesia
           </p>
         </div>
       </div>
@@ -66,5 +66,4 @@
       </div> -->
     </div>
   </div>
-  <a href="#" class="btn back-to-top text-[8px]"style="background-color: #183018"><i class="fa fa-angle-double-up text-white"></i></a>
 </footer>
