@@ -1,16 +1,10 @@
-{{-- {% set title = 'DataTable' %}
-{% set filename = 'table-datatable.html' %}
-
-{% extends 'layouts/master.html' %}
-{% block content %} --}}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affiliate || Admin Glamoire</title>
+    <title>Affiliate - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -36,16 +30,13 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Affiliate</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/product-admin">Affiliate</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Affiliate</li>
                                 </ol>
                             </nav>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
                 <section class="section">
@@ -75,7 +66,7 @@
                                                 <a href="{{ url('detail-affiliate-admin/' . $item->id) }}"><span
                                                         class="badge bg-info">
                                                         View</span></a>
-                                                
+
                                                 <a href="javascript:void(0);" class="delete-product"
                                                     data-id="{{ $item->id }}"><span
                                                         class="badge bg-danger">Delete</span></a>

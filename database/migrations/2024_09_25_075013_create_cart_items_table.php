@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('quantity');
+            $table->boolean('is_choose');
             $table->bigInteger('price');
             $table->bigInteger('total');
-            $table->boolean('is_choose');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cart_item');
+        Schema::dropIfExists('cart_items');
     }
 };

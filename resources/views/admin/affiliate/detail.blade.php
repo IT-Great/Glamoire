@@ -9,20 +9,26 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/detailproduct.css') }}">
-
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 
     <style>
+        .list-group-item {
+            transition: background-color 0.3s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .list-group-item:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+        }
+
         .upload__img-wrap {
             display: flex;
             flex-wrap: wrap;
@@ -37,47 +43,13 @@
             cursor: pointer;
         }
 
-        .upload__img-box-single {
-            width: 100%;
-            max-width: 457px;
-            height: auto;
-            aspect-ratio: 457 / 444;
-            /* Maintain aspect ratio */
-        }
-
-        .upload__img-box-multiple {
-            position: relative;
-            width: 100%;
-            max-width: 180px;
-            height: auto;
-            aspect-ratio: 1;
+        .upload__img-box-single,
+        .upload__video-box {
+            max-width: 100%;
+            border: 1px solid #ddd;
             border-radius: 8px;
             overflow: hidden;
-            cursor: pointer;
-        }
-
-        .upload__video-box {
-            width: 100%;
-            max-width: 457px;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            /* Maintain aspect ratio for video */
-        }
-
-        .img-bg-single,
-        .img-bg,
-        .video-bg {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .video-bg {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            /* Make sure the video covers the container */
+            position: relative;
         }
 
         .upload__img-close,
@@ -104,10 +76,7 @@
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>Detail Affiliate</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                        <div class="col-12 col-md-6 d-flex">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/product-admin"
@@ -120,199 +89,251 @@
                 </div>
 
                 <!-- Basic Horizontal form layout section start -->
-                <section id="multiple-column-form">
+                {{-- <section id="multiple-column-form">
                     <div class="container">
                         <div class="row">
                             <div class="col-12">
-                                <div class="card">
+                                <div class="card shadow-sm">
                                     <div class="card-content">
                                         <div class="card-body">
                                             <div class="form-body">
                                                 <div class="row">
-                                                    <!-- Kolom Kiri -->
-                                                    <div class="col-md-6 col-12">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Full Name</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name" value="{{ $partners->fullname }}"
-                                                                    disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
+                                                    <div class="col-lg-8 col-12">
+                                                        <!-- Personal Information Card -->
+                                                        <div class="bg-light p-4 rounded-3 mb-4">
+                                                            <h5 class="text-primary mb-4">Personal Information</h5>
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">Full
+                                                                            Name</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-text bg-white">
+                                                                                <i
+                                                                                    class="bi bi-person text-primary"></i>
+                                                                            </span>
+                                                                            <input type="text"
+                                                                                class="form-control bg-white"
+                                                                                value="{{ $partners->fullname }}"
+                                                                                disabled>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Company Name</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name"
-                                                                    value="{{ $partners->company_name }}" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Hnadphone</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name"
-                                                                    value="{{ $partners->handphone }}" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Email</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name" value="{{ $partners->email }}"
-                                                                    disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">Company
+                                                                            Name</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-text bg-white">
+                                                                                <i
+                                                                                    class="bi bi-building text-primary"></i>
+                                                                            </span>
+                                                                            <input type="text"
+                                                                                class="form-control bg-white"
+                                                                                value="{{ $partners->company_name }}"
+                                                                                disabled>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-code">Category Product</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-code"
-                                                                    value="{{ $partners->category_product }}" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-upc"></i>
+                                                        <!-- Contact Information Card -->
+                                                        <div class="bg-light p-4 rounded-3 mb-4">
+                                                            <h5 class="text-primary mb-4">Contact Information</h5>
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">Phone
+                                                                            Number</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-text bg-white">
+                                                                                <i
+                                                                                    class="bi bi-telephone text-primary"></i>
+                                                                            </span>
+                                                                            <input type="text"
+                                                                                class="form-control bg-white"
+                                                                                value="{{ $partners->handphone }}"
+                                                                                disabled>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">Email
+                                                                            Address</label>
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-text bg-white">
+                                                                                <i
+                                                                                    class="bi bi-envelope text-primary"></i>
+                                                                            </span>
+                                                                            <input type="text"
+                                                                                class="form-control bg-white"
+                                                                                value="{{ $partners->email }}"
+                                                                                disabled>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="mb-3">
-                                                            <label for="first-name-icon">Description</label>
-                                                            <div class="position-relative">
-                                                                <textarea class="form-control" name="description" id="description" cols="30" rows="20" disabled>{{ $partners->description }}</textarea>
+                                                        <!-- Product Information Card -->
+                                                        <div class="bg-light p-4 rounded-3 mb-4">
+                                                            <h5 class="text-primary mb-4">Product Information</h5>
+                                                            <div class="form-group mb-4">
+                                                                <label class="form-label text-muted">Category
+                                                                    Product</label>
+                                                                <div class="input-group">
+                                                                    <span class="input-group-text bg-white">
+                                                                        <i class="bi bi-tags text-primary"></i>
+                                                                    </span>
+                                                                    <input type="text"
+                                                                        class="form-control bg-white"
+                                                                        value="{{ $partners->category_product }}"
+                                                                        disabled>
+                                                                </div>
                                                             </div>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="file-company">File Company</label>
-                                                            <div class="position-relative">
-                                                                @if ($partners->fileCompany)
-                                                                    <a href="{{ asset('storage/' . $partners->fileCompany->file_path) }}"
-                                                                        target="_blank">
-                                                                        {{ $partners->fileCompany->file_name }}
-                                                                    </a>
-                                                                @else
-                                                                    <span>Tidak ada file company yang diunggah</span>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-group">
-                                                            <label for="file-bpom">File BPOM</label>
-                                                            <div class="position-relative">
-                                                                @if ($partners->fileBpom)
-                                                                    <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
-                                                                        target="_blank">
-                                                                        {{ $partners->fileBpom->file_name }}
-                                                                    </a>
-                                                                @else
-                                                                    <span>Tidak ada file BPOM yang diunggah</span>
-                                                                @endif
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="card-body">
                                                             <div class="form-group">
-                                                                <label>BPOM :</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="form-check me-3">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="bpom" id="bpomYes"
-                                                                            value="1"
-                                                                            {{ $partners->bpom ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="bpomYes">Yes</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="bpom" id="bpomNo"
-                                                                            value="0"
-                                                                            {{ !$partners->bpom ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="bpomNo">No</label>
+                                                                <label
+                                                                    class="form-label text-muted">Description</label>
+                                                                <textarea class="form-control bg-white" rows="6" disabled>{{ $partners->description }}</textarea>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Documents Card -->
+                                                        <div class="bg-light p-4 rounded-3 mb-4">
+                                                            <h5 class="text-primary mb-4">Documents</h5>
+                                                            <div class="row g-3">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">Company
+                                                                            Document</label>
+                                                                        <div class="p-3 border rounded bg-white">
+                                                                            @if ($partners->fileCompany)
+                                                                                <a href="{{ asset('storage/' . $partners->fileCompany->file_path) }}"
+                                                                                    class="d-flex align-items-center text-decoration-none">
+                                                                                    <i
+                                                                                        class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                                                    <span>{{ $partners->fileCompany->file_name }}</span>
+                                                                                </a>
+                                                                            @else
+                                                                                <span class="text-muted"><i
+                                                                                        class="bi bi-exclamation-circle me-2"></i>No
+                                                                                    file uploaded</span>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-
-                                                            <div class="form-group">
-                                                                <label>Adakah distributor resmi di Indonesia? :</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="form-check me-3">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="distributor" id="distributorYes"
-                                                                            value="1"
-                                                                            {{ $partners->distributor ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="distributorYes">Yes</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="distributor" id="distributorNo"
-                                                                            value="0"
-                                                                            {{ !$partners->distributor ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="distributorNo">No</label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="form-group">
-                                                                <label>Pernah Menghubungi Glamoire via Email Sebelumnya
-                                                                    ?</label>
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="form-check me-3">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="email" id="emailYes"
-                                                                            value="1"
-                                                                            {{ $partners->reached_email ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="emailYes">Yes</label>
-                                                                    </div>
-                                                                    <div class="form-check">
-                                                                        <input class="form-check-input" type="radio"
-                                                                            name="email" id="emailNo"
-                                                                            value="0"
-                                                                            {{ !$partners->reached_email ? 'checked' : '' }}
-                                                                            disabled>
-                                                                        <label class="form-check-label"
-                                                                            for="emailNo">No</label>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="form-label text-muted">BPOM
+                                                                            Document</label>
+                                                                        <div class="p-3 border rounded bg-white">
+                                                                            @if ($partners->fileBpom)
+                                                                                <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
+                                                                                    class="d-flex align-items-center text-decoration-none">
+                                                                                    <i
+                                                                                        class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                                                    <span>{{ $partners->fileBpom->file_name }}</span>
+                                                                                </a>
+                                                                            @else
+                                                                                <span class="text-muted"><i
+                                                                                        class="bi bi-exclamation-circle me-2"></i>No
+                                                                                    file uploaded</span>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="category_product">Category Product</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="category_product" value="{{ $partners->category_product }}"
-                                                                    disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
+                                                        <!-- Status Information Card -->
+                                                        <div class="bg-light p-4 rounded-3">
+                                                            <h5 class="text-primary mb-4">Status Information</h5>
+                                                            <div class="row g-4">
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            class="form-label text-muted d-block">BPOM
+                                                                            Status</label>
+                                                                        <div class="p-3 border rounded bg-white">
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ $partners->bpom ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">Yes</label>
+                                                                            </div>
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ !$partners->bpom ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            class="form-label text-muted d-block">Official
+                                                                            Distributor</label>
+                                                                        <div class="p-3 border rounded bg-white">
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ $partners->distributor ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">Yes</label>
+                                                                            </div>
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ !$partners->distributor ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="form-group">
+                                                                        <label
+                                                                            class="form-label text-muted d-block">Prior
+                                                                            Contact</label>
+                                                                        <div class="p-3 border rounded bg-white">
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ $partners->reached_email ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">Yes</label>
+                                                                            </div>
+                                                                            <div
+                                                                                class="form-check form-check-inline mb-0">
+                                                                                <input type="radio"
+                                                                                    class="form-check-input"
+                                                                                    {{ !$partners->reached_email ? 'checked' : '' }}
+                                                                                    disabled>
+                                                                                <label
+                                                                                    class="form-check-label">No</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-
-
-
                                                     </div>
                                                 </div>
                                             </div>
@@ -322,22 +343,185 @@
                             </div>
                         </div>
                     </div>
+                </section> --}}
+
+                <section class="section">
+                    <div class="container">
+                        <div class="card">
+                            <div class="card-header text-primary">
+                                <h4>Affiliate Detail Information</h4>
+                                <p class="text-primary-50">Overview and details of the affiliate partner</p>
+                            </div>
+                            <div class="card-body">
+                                <!-- Personal Information -->
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h5 class="text-primary mb-3">Personal Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-person-circle text-primary me-3"
+                                                    style="font-size: 24px;"></i>
+                                                <div>
+                                                    <h6 class="mb-1">Full Name</h6>
+                                                    <p class="text-muted">{{ $partners->fullname }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h5 class="text-primary mb-3">Contact Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-telephone text-primary me-3"
+                                                    style="font-size: 24px;"></i>
+                                                <div>
+                                                    <h6 class="mb-1">Phone Number</h6>
+                                                    <p class="text-muted">{{ $partners->handphone }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-envelope text-primary me-3"
+                                                    style="font-size: 24px;"></i>
+                                                <div>
+                                                    <h6 class="mb-1">Email Address</h6>
+                                                    <p class="text-muted">{{ $partners->email }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Product Information -->
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h5 class="text-primary mb-3">Product Information</h5>
+                                    <div class="mb-3">
+                                        <h6 class="mb-1">Category Product</h6>
+                                        <p class="text-muted">{{ $partners->category_product }}</p>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Description</h6>
+                                        <p class="text-muted">{{ $partners->description }}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Documents Section -->
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h5 class="text-primary mb-3">Documents</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <h6 class="mb-1">Company Document</h6>
+                                            <div class="p-3 border rounded bg-white">
+                                                @if ($partners->fileCompany)
+                                                    <a href="{{ asset('storage/' . $partners->fileCompany->file_path) }}"
+                                                        class="d-flex align-items-center text-decoration-none">
+                                                        <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                        <span>{{ $partners->fileCompany->file_name }}</span>
+                                                    </a>
+                                                @else
+                                                    <span class="text-muted"><i
+                                                            class="bi bi-exclamation-circle me-2"></i>No file
+                                                        uploaded</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h6 class="mb-1">BPOM Document</h6>
+                                            <div class="p-3 border rounded bg-white">
+                                                @if ($partners->fileBpom)
+                                                    <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
+                                                        class="d-flex align-items-center text-decoration-none">
+                                                        <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                        <span>{{ $partners->fileBpom->file_name }}</span>
+                                                    </a>
+                                                @else
+                                                    <span class="text-muted"><i
+                                                            class="bi bi-exclamation-circle me-2"></i>No
+                                                        file uploaded</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Status Information -->
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h5 class="text-primary mb-3">Status Information</h5>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1">BPOM Status</h6>
+                                            <div class="d-flex align-items-center">
+                                                <input type="radio" class="form-check-input me-2"
+                                                    {{ $partners->bpom ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label me-3">Yes</label>
+                                                <input type="radio" class="form-check-input me-2"
+                                                    {{ !$partners->bpom ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1">Prior Contact</h6>
+                                            <div class="d-flex align-items-center">
+                                                <input type="radio" class="form-check-input me-2"
+                                                    {{ $partners->reached_email ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label me-3">Yes</label>
+                                                <input type="radio" class="form-check-input"
+                                                    {{ !$partners->reached_email ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <h6 class="mb-1">Official Distributor</h6>
+                                            <div class="d-flex align-items-center">
+                                                <input type="radio" class="form-check-input me-2"
+                                                    {{ $partners->distributor ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label me-3">Yes</label>
+                                                <input type="radio" class="form-check-input me-2"
+                                                    {{ !$partners->distributor ? 'checked' : '' }} disabled>
+                                                <label class="form-check-label">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Response Form -->
+                                <form action="{{ route('send-response-affiliate', $partners->id) }}" method="POST">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="response"><strong>Your Response: <span
+                                                    class="text-danger">*</span></strong></label>
+                                        <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}" id="response" name="response"
+                                            rows="5" placeholder="Write your detailed response here..."></textarea>
+
+                                        @if ($errors->has('response'))
+                                            <p style="color: red">{{ $errors->first('response') }}</p>
+                                        @else
+                                            <small class="text-muted" style="font-size: 14px;">
+                                                Please provide a comprehensive response addressing the user's query. Be
+                                                clear and concise.
+                                            </small>
+                                        @endif
+                                    </div>
+
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        <i class="bi bi-send"></i> Send Response
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </section>
 
 
             </div>
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
         </div>
     </div>
 

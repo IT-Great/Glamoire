@@ -48,15 +48,17 @@ class Authenticate
     //     return $next($request);
     // }
 
+    // berfungsi
     public function handle($request, Closure $next, $guard = null)
-    {
+    {        
         if (Auth::guard($guard)->guest()) {
             Log::info('Auth guard is guest, redirecting to login');
-            return redirect()->guest('login');
+            return redirect()->guest('login-admin');
         }
 
         Log::info('Authenticated user: ' . Auth::user()->name);
 
         return $next($request);
     }
+    
 }

@@ -4,39 +4,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact-Us || Admin Glamoire</title>
+    <title>Contact-Us - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
     <style>
-        .list-group-item {
-            transition: background-color 0.3s, transform 0.2s;
+        .stats-card {
+            transition: transform 0.3s ease;
             cursor: pointer;
-            /* Menunjukkan bahwa item dapat diklik */
         }
 
-        .list-group-item:hover {
-            background-color: #f8f9fa;
-            /* Ganti warna latar belakang saat hover */
-            transform: scale(1.02);
-            /* Sedikit memperbesar item saat hover */
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.1);
+        }
+
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .message-preview {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .table>tbody>tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .table>tbody>tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
         }
     </style>
 </head>
@@ -51,71 +114,139 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>All Contact Us</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                            <!-- Breadcrumb Navigation -->
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Contact Us</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Contact Us</li>
+                                    <li class="breadcrumb-item"><a href="/brand-admin/contact">Contact Us</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">All Contact Messages</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
-                </div>
+                </div>             
 
                 <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Contact Us Messages</h4>
+                    <div class="card product-card">
+                        <div class="card-header bg-white">
+                            <h4 class="mb-3">Contact Us Messages</h4>
+                            <p class="text-muted">Review all incoming messages and click on a message to view or
+                                respond.</p>
                         </div>
-                        <div class="card-body">
-                            <ul class="list-group">
-                                @foreach ($contacts as $contact)
-                                    <li class="list-group-item"
-                                        onclick="window.location='{{ route('show-contactus-admin', $contact->id) }}'">
-                                        <div class="d-flex align-items-center">
-                                            <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Image"
-                                                class="rounded-circle"
-                                                style="width: 50px; height: 50px; margin-right: 10px;">
-                                            <div>
-                                                <strong>{{ $contact->name }}
-                                                    ({{ $contact->email }})
-                                                    :</strong>
-                                                <p>{{ Str::limit($contact->question, 100, '...') }}</p>
-                                                <small>{{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}</small>
-                                            </div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-
-                            <!-- Pagination Links -->
-                            <div class="d-flex justify-content-between mt-4 px-3" id="pagination-container">
-                                <div class="mb-3">
-                                    Showing {{ $contacts->firstItem() }} to {{ $contacts->lastItem() }}
-                                    of
-                                    {{ $contacts->total() }} results
-                                </div>
-                                <div class="pagination-container">
-                                    {{ $contacts->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
-                                </div>
-                            </div>
+                        <div class="card-body">                                                        
+                            <!-- Messages Table -->
+                            <table class="table table-hover" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Contact Details</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Date Received</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($contacts as $contact)
+                                        <tr id="contact-item-{{ $contact->id }}">
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Image"
+                                                        class="product-image lazyload"
+                                                        style="width: 50px; height: 50px;">
+                                                    <div class="product-details">
+                                                        <span class="product-name">{{ $contact->fullname }}</span>
+                                                        <span class="product-meta">{{ $contact->email }}</span>
+                                                        <span class="product-meta">Phone:
+                                                            {{ $contact->phone ?? 'N/A' }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="message-preview">
+                                                    {{ Str::limit($contact->question, 100, '...') }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @if ($contact->status === 'read')
+                                                    <span class="stock-badge bg-success text-white">
+                                                        <i class="bi bi-check-circle-fill"></i> Read
+                                                    </span>
+                                                @else
+                                                    <span class="stock-badge bg-warning text-dark">
+                                                        <i class="bi bi-exclamation-circle-fill"></i> Unread
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('show-contactus-admin', $contact->id) }}"
+                                                        class="badge bg-info mb-2">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        class="badge bg-danger delete-contact"
+                                                        data-id="{{ $contact->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </section>
+                @include('admin.layouts.footer')
+
             </div>
-
         </div>
-
-
     </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
+    
+    <script>
+        // HANDLE FORMAT DATE PICKER
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr("#date_expired", {
+                enableTime: false,
+                dateFormat: "Y-m-d",
+                time_24hr: true,
+                minuteIncrement: 1
+            });
+        });
+    </script>
+
+    @if (session('toast_success'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session('toast_success') }}',
+                showConfirmButton: false,
+                timer: 3000, // Toast will disappear after 3 seconds
+                timerProgressBar: true
+            });
+        </script>
+    @endif
 </body>
 
 </html>

@@ -4,18 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Order - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/bootstrap.css">
-
-    <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
-    <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
-    <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
-    <link rel="stylesheet" href="assets/css/app.css">
-    <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 </head>
 
 <body>
@@ -27,19 +25,14 @@
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Order Detail</h3>
-                        </div>
-
-                        <div class="col-12 col-md-6 order-md-2 order-first">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
-                                <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/order-list">Order</a></li>
+                        <div class="col-12 col-md-6">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/order-admin">Order</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Detail Order</li>
                                 </ol>
                             </nav>
                         </div>
-
                     </div>
                 </div>
 
@@ -56,10 +49,6 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted">Transaction Date: August 28, 2024</small>
                                         <div>
-                                            {{-- <button type="button" class="btn btn-primary btn-sm"
-                                                style="border-radius: 8px;"><i class="bi bi-printer-fill"></i>
-                                                Print</button> --}}
-
                                             <button type="button" class="btn btn-primary btn-sm"
                                                 style="border-radius: 8px;">
                                                 <i class="bi bi-printer-fill"></i> Print
@@ -98,15 +87,15 @@
                                                                         </h4>
                                                                         <p class="card-category mb-0"
                                                                             style="font-size: 0.875rem; color: #6c757d;">
-                                                                            Full Name :
+                                                                            Full Name : {{ $order->user->fullname }}
                                                                         </p>
                                                                         <p class="card-category mb-0"
                                                                             style="font-size: 0.875rem; color: #6c757d;">
-                                                                            Email :
+                                                                            Email : {{ $order->user->email }}
                                                                         </p>
                                                                         <p class="card-category mb-0"
                                                                             style="font-size: 0.875rem; color: #6c757d;">
-                                                                            Phone :
+                                                                            Phone : {{ $order->user->handphone }}
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -195,7 +184,16 @@
                                                                         </h4>
                                                                         <p class="card-category mb-0"
                                                                             style="font-size: 0.875rem; color: #6c757d;">
+                                                                            Province :
+                                                                            {{ $order->shippingAddress->province }}
+                                                                            <br>
+                                                                            Regency :
+                                                                            {{ $order->shippingAddress->regency }} <br>
+                                                                            District :
+                                                                            {{ $order->shippingAddress->district }}
+                                                                            <br>
                                                                             Address :
+                                                                            {{ $order->shippingAddress->address }} <br>
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -266,7 +264,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="card-title">Products</h4>
+                                    <h4 class="card-title">Order Details</h4>
                                 </div>
                                 <div class="card-content" style="padding: 1rem;">
                                     <div class="table-responsive">
@@ -278,65 +276,33 @@
                                                     <th>Order ID</th>
                                                     <th>Quantity</th>
                                                     <th>Total</th>
-                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td class="text-bold-500">Bedak Bubuk</td>
-                                                    <td>Implora</td>
-                                                    <td>#12313131</td>
-                                                    <td class="text-bold-500">12</td>
-                                                    <td>Rp. 200.000</td>
-                                                    <td><a href="#"><i
-                                                                class="badge-circle badge-circle-light-secondary font-medium-1"
-                                                                data-feather="mail"></i></a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold-500">Bedak Bubuk</td>
-                                                    <td>Implora</td>
-                                                    <td>#19191919</td>
-                                                    <td class="text-bold-500">12</td>
-                                                    <td>Rp. 200.000</td>
-                                                    <td><a href="#"><i
-                                                                class="badge-circle badge-circle-light-secondary font-medium-1"
-                                                                data-feather="mail"></i></a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-bold-500">Bedak Bubuk</td>
-                                                    <td>Implora</td>
-                                                    <td>#1010101919</td>
-                                                    <td class="text-bold-500">12</td>
-                                                    <td>Rp. 200.000</td>
-                                                    <td><a href="#"><i
-                                                                class="badge-circle badge-circle-light-secondary font-medium-1"
-                                                                data-feather="mail"></i></a></td>
-                                                </tr>
+                                                @foreach ($order->orderItems as $item)
+                                                    <tr>
+                                                        <td class="text-bold-500">{{ $item->product->product_name }}
+                                                        </td>
+                                                        <td>{{ $item->product->brand ? $item->product->brand->name : 'No Brand' }}
+                                                        </td>
+                                                        <td>{{ $order->id }}</td>
+                                                        <td class="text-bold-500">{{ $item->quantity }}</td>
+                                                        <td>Rp. {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                             <tfoot>
                                                 <tr>
                                                     <td colspan="4" class="text-end" style="font-weight: bold;">
                                                         Subtotal</td>
-                                                    <td class="fw-bold">Rp. 600.000</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="4" class="text-end" style="font-weight: bold;">
-                                                        Tax (10%)</td>
-                                                    <td class="fw-bold">Rp. 60.000</td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="4" class="text-end" style="font-weight: bold;">
-                                                        Discount</td>
-                                                    <td class="fw-bold">Rp. 0</td>
-                                                    <td></td>
+                                                    <td class="fw-bold">Rp.
+                                                        {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="4" class="text-end" style="font-weight: bold;">
                                                         Grand Total</td>
-                                                    <td class="fw-bold">Rp. 660.000</td>
-                                                    <td></td>
+                                                    <td class="fw-bold">Rp.
+                                                        {{ number_format($order->total_amount, 0, ',', '.') }}</td>
                                                 </tr>
                                             </tfoot>
                                         </table>
@@ -357,27 +323,14 @@
                         </div>
                     </div>
                 </section>
-
             </div>
-
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
         </div>
     </div>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-
-    <script src="assets/js/main.js"></script>
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <script>
         function generateInvoiceHTML() {

@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('variant_value');
             $table->text('use_variant_image')->nullable();
             $table->text('variant_image')->nullable(); // Untuk menyimpan gambar varian jika diperlukan
-            $table->string('variant_stock');
-            $table->bigInteger('variant_price');
+            $table->string('variant_stock')->nullable();
+            $table->bigInteger('variant_price')->nullable();
             $table->string('weight_variant')->nullable();
             $table->timestamps();
         });

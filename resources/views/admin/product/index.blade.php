@@ -4,61 +4,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product || Admin Glamoire</title>
+    <title>Product - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
-
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-
+    <link rel="stylesheet" href="assets/css/product/index.css">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <style>
-        .product-item-container {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            /* Allows items to wrap on smaller screens */
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
         }
 
-        .product-item-container img {
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
             object-fit: cover;
-            margin-right: 15px;
+            transition: transform 0.3s ease;
         }
 
-        @media (max-width: 768px) {
-            .product-item-container {
-                flex-direction: column;
-                /* Stack items vertically on smaller screens */
-                align-items: flex-start;
-            }
-
-            .product-item-container img {
-                margin-bottom: 10px;
-                width: 80px;
-                height: 80px;
-                /* Reduce image size on smaller screens */
-            }
+        .product-image:hover {
+            transform: scale(1.1);
         }
 
-        .action-buttons a {
-            display: block;
-            /* Set to block so each link appears on a new line */
-            margin-bottom: 5px;
-            /* Add some space between the buttons */
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            margin: 0 3px;
+            transition: all 0.2s ease;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .product-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
         }
     </style>
 </head>
@@ -68,15 +101,12 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        <div id="main">
+        {{-- <div id="main">
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>All Products</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                        <div class="col-12 col-md-6 mb-3">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/brand-admin">Products</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Products</li>
@@ -95,9 +125,8 @@
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('create-product-admin') }}" type="submit"
-                                        class="btn btn-sm btn-primary d-flex align-items-center"
-                                        style="border-radius: 8px;">
-                                        <i class="bi bi-plus-circle" style="margin-right: 3px;"></i> Add Product
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Product
                                     </a>
                                 </div>
                             </div>
@@ -118,16 +147,10 @@
                                         <tr id="product-item-{{ $item->id }}">
                                             <td>
                                                 <div class="product-item-container">
-                                                    <!-- Image -->
-                                                    {{-- <img src="{{ asset($item->main_image) }}" class="lazyload"
-                                                        alt="Product Image"
-                                                        onclick="openImageInNewTab('{{ asset($item->main_image) }}')"> --}}
-
                                                     <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
                                                         class="lazyload"
-                                                        style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
+                                                        style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;"
                                                         onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
-
                                                     <!-- Product Details -->
                                                     <div>
                                                         <strong style="font-size: 5mm;">
@@ -139,20 +162,6 @@
                                                         <span style="font-size: 3.6mm;">Category :
                                                             {{ $item->categoryProduct ? $item->categoryProduct->name : 'No Category' }}
                                                         </span><br>
-                                                        <!-- Display color_text if it exists -->
-                                                        @if ($item->color_text)
-                                                            <span style="font-size: 3.6mm;">
-                                                                Color : {{ $item->color_text }}
-                                                            </span><br>
-                                                        @endif
-
-                                                        <!-- Display color if it exists -->
-                                                        @if ($item->color)
-                                                            <div
-                                                                style="width: 20px; height: 20px; border-radius: 50%; background-color: {{ $item->color }}; margin-top: 5px;">
-                                                            </div>
-                                                        @endif
-
                                                     </div>
                                                 </div>
                                             </td>
@@ -166,10 +175,13 @@
                                                         class="badge bg-info">
                                                         View</span></a>
                                                 <a href="{{ url('edit-product-admin/' . $item->id) }}"><span
-                                                        class="badge bg-warning">Edit</span></a>
+                                                        class="badge bg-warning">Update</span></a>
                                                 <a href="javascript:void(0);" class="delete-product"
                                                     data-id="{{ $item->id }}"><span
                                                         class="badge bg-danger">Delete</span></a>
+                                                <a href="javascript:void(0);" class="notify-product"
+                                                    data-id="{{ $item->id }}"><span
+                                                        class="badge bg-primary">Notify</span></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -189,22 +201,224 @@
                     </div>
                 </section>
             </div>
-
             @include('admin.layouts.footer')
+        </div> --}}
 
+        <div id="main">
+            <div class="page-heading">
+                <div class="page-title mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6">
+                            <h2>Product Management</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item active">Products</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="col-12 col-md-6 text-md-end">
+                            <a href="{{ route('create-product-admin') }}" class="btn btn-primary">
+                                <i class="fa fa-plus-circle"></i> Add New Product
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats Section -->
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-primary">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Products</h6>
+                                        <h3 class="mb-0">{{ $products->total() }}</h3>
+                                    </div>
+                                    <div class="stats-icon purple">
+                                        <i class="bi bi-box fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-success">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">In Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '>', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-check-circle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-warning">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Low Stock</h6>
+                                        <h3 class="mb-0">
+                                            {{ $products->where('stock_quantity', '<', 10)->where('stock_quantity', '>', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon yellow">
+                                        <i class="bi bi-exclamation-triangle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3 mb-4">
+                        <div class="card stats-card bg-light-danger">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Out of Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '=', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-x-circle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Table Section -->
+                <div class="card product-card">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Product Inventory</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-hover" id="table1">
+                            <thead>
+                                <tr>
+                                    <th>Product Details</th>
+                                    <th>Sales</th>
+                                    <th>Stock Status</th>
+                                    <th>Price</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($products as $item)
+                                    <tr id="product-item-{{ $item->id }}">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="{{ Storage::url($item->main_image) }}"
+                                                    alt="{{ $item->product_name }}" class="product-image lazyload"
+                                                    onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
+                                                <div class="product-details">
+                                                    <span
+                                                        class="product-name">{{ $item->brand ? $item->brand->name : 'No Brand' }}
+                                                        - {{ Str::limit($item->product_name, 20, '...') }}</span>
+                                                    <span class="product-meta">SKU:
+                                                        {{ $item->product_code ?: 'N/A' }}</span>
+                                                    <span class="product-meta">Category:
+                                                        {{ $item->categoryProduct ? $item->categoryProduct->name : 'Uncategorized' }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ $item->stock_quantity }}</td>
+                                        <td>
+                                            @if ($item->stock_quantity > 10)
+                                                <span class="stock-badge bg-success text-white">
+                                                    <i class="bi bi-check-circle-fill"></i> In Stock
+                                                </span>
+                                            @elseif($item->stock_quantity > 0)
+                                                <span class="stock-badge bg-warning text-dark">
+                                                    <i class="bi bi-exclamation-circle-fill"></i> Low Stock
+                                                </span>
+                                            @else
+                                                <span class="stock-badge bg-danger text-white">
+                                                    <i class="bi bi-x-circle-fill"></i> Out of Stock
+                                                </span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                @php
+                                                    $activePromo = $item->promos->first();
+                                                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                                @endphp
+                                                
+                                                @if ($discountedPrice && $discountedPrice < $item->regular_price)
+                                                    <span class="text-danger fw-bold">
+                                                        Rp {{ number_format($discountedPrice, 0, ',', '.') }}
+                                                    </span>
+                                                    <span class="text-muted text-decoration-line-through">
+                                                        Rp {{ number_format($item->regular_price, 0, ',', '.') }}
+                                                    </span>
+                                                @else
+                                                    <span class="fw-bold">
+                                                        Rp {{ number_format($item->regular_price, 0, ',', '.') }}
+                                                    </span>
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <a href="{{ url('detail-product-admin/' . $item->id) }}"
+                                                    class="badge bg-info mb-2">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <a href="{{ url('edit-product-admin/' . $item->id) }}"
+                                                    class="badge bg-warning mb-2">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </a>
+                                                <a href="javascript:void(0);" class="badge bg-danger delete-product"
+                                                    data-id="{{ $item->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                                @if ($item->stock_quantity < 10)
+                                                    <a href="javascript:void(0);"
+                                                        class="badge bg-primary notify-product"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-bell"></i> Notify
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between mt-4 px-3">
+                    <div class="text-muted">
+                        Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
+                        {{ $products->total() }} products
+                    </div>
+                    {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
+                </div>
+            </div>
+            @include('admin.layouts.footer')
         </div>
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
-
-    <!-- Include jQuery (if not included already) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="assets/js/main.js"></script>
+
     <script>
         // Fungsi untuk membuka gambar di tab baru
         function openImageInNewTab(url) {
@@ -269,16 +483,62 @@
                         }
                     });
                 }
+
+                if (event.target.closest('.notify-product')) {
+                    let productId = event.target.closest('.notify-product').getAttribute('data-id');
+
+                    // SweetAlert2 confirmation dialog
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You won\'t be able to revert this!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, Send it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Send AJAX request
+                            fetch(`/send-notify/${productId}`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector(
+                                            'meta[name="csrf-token"]').getAttribute(
+                                            'content')
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire(
+                                            'Sent!',
+                                            'Notification has been sent successfully.',
+                                            'success'
+                                        );
+                                    } else {
+                                        Swal.fire(
+                                            'Error!',
+                                            data.message || 'Failed to send notification.',
+                                            'error'
+                                        );
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log('Error:', error);
+                                    Swal.fire(
+                                        'Error!',
+                                        'An error occurred while sending notification.',
+                                        'error'
+                                    );
+                                });
+                        }
+                    });
+                }
             });
         });
     </script>
 
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/js/pages/dashboard.js"></script>
-
-    <script src="assets/js/main.js"></script>
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>

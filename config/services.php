@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'doku' => [
+        'client_id' => env('DOKU_CLIENT_ID'),
+        'secret_key' => env('DOKU_SECRET_KEY'),
+        'environment' => env('DOKU_ENVIRONMENT', 'sandbox'),
+    ],
+
 ];

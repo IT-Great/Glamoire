@@ -11,6 +11,14 @@ use App\Models\Shipping_address;
 use App\Models\User;
 use App\Models\VoucherNewUser;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Payment;
+use App\Models\Invoice;
+use App\Models\Promo;
+use Exception;
+
+use function Laravel\Prompts\error;
 
 class CheckoutController extends Controller
 {
@@ -23,6 +31,10 @@ class CheckoutController extends Controller
                     ->with('cartItems')
                     ->get();
 
+                $vouchers = Promo::whereIn('type', ['voucher', 'ongkir'])->get();
+
+                // dd($vouchers);
+
                 $address = Shipping_address::where('user_id', session('id_user'))
                     ->orderBy('is_main', 'DESC')
                     ->get();
@@ -34,6 +46,11 @@ class CheckoutController extends Controller
                     ->with(['product.brand'])
                     ->get();
 
+                // dd($cartItems);
+                if (count($cartItems) == 0) {
+                    return redirect('/');
+                }
+
                 $totalProduct = $cartItems->sum('quantity');
                 // Hitung total harga
                 $totalPrice = $cartItems->sum('total');
@@ -44,7 +61,8 @@ class CheckoutController extends Controller
                     'cartItems'     => $cartItems,
                     'totalProduct'  => $totalProduct,
                     'totalPrice'    => $totalPrice,
-                    'totalShopping' => $totalPrice  
+                    'totalShopping' => $totalPrice,
+                    'vouchers'      => $vouchers,
                 ];
                 
                 return view('user.component.checkout')->with('data', $data);
@@ -59,7 +77,9 @@ class CheckoutController extends Controller
     }
 
     public function checkCodeVoucher(Request $request){
-        $voucherExists = VoucherNewUser::where('code', $request->code)->exists();
+        $voucherExists = VoucherNewUser::where('code', $request->code)
+        ->where('is_use', '=', 0)
+        ->exists();
 
         return response()->json(['exists' => $voucherExists]);
     }
@@ -86,10 +106,16 @@ class CheckoutController extends Controller
                     $totalPrice = $cartItems->sum('total');
 
                     // Hitung diskon dari voucher
-                    $discount = $totalPrice * 10 / 100;
+                    $percent = Promo::where('promo_name', '=', 'new user')->value('discount');
+                    $maxDiscountAmount = Promo::where('promo_name', '=', 'new user')->value('max_discount');
+                    $discount = $totalPrice * ($percent / 100);
+                    
+                    if ($discount >= $maxDiscountAmount) {
+                       $discount = $maxDiscountAmount;
+                    }
 
                     // Hitung total belanja setelah diskon
-                    $totalShopping = $totalPrice - $discount;
+                    $totalShopping = $totalPrice - $discount + 20000;
 
                     $data = [
                         'address'       => Shipping_address::where('user_id', $userId)->orderBy('is_main', 'DESC')->get(),
@@ -195,11 +221,14 @@ class CheckoutController extends Controller
                     $totalPrice = $prod->total;
                 }
 
+                $vouchers = Promo::whereIn('type', ['voucher', 'ongkir'])->get();
+
                 $data = [
                     'product'       => $product,
                     'address'       => $address,
                     'totalProduct'  => $totalProduct,
                     'totalPrice'    => $totalPrice,
+                    'vouchers'      => $vouchers,
                 ];
                 return view('user.component.buynow')->with('data', $data);
             }
@@ -221,6 +250,8 @@ class CheckoutController extends Controller
             if ($userId && $voucherCode) {
                 // Validasi kode promo
                 $voucher = VoucherNewUser::where('code', $voucherCode)
+                    ->where('user_id', $userId)
+                    ->where('is_use', '=', 0)
                     ->first();
 
                 if ($voucher) {
@@ -234,10 +265,16 @@ class CheckoutController extends Controller
                     }
 
                     // Hitung diskon dari voucher
-                    $discount = $totalPrice * 10 / 100;
+                    $percent = Promo::where('promo_name', '=', 'new user')->value('discount');
+                    $maxDiscountAmount = Promo::where('promo_name', '=', 'new user')->value('max_discount');
+                    $discount = $totalPrice * ($percent / 100);
+                    
+                    if ($discount >= $maxDiscountAmount) {
+                       $discount = $maxDiscountAmount;
+                    }
 
                     // Hitung total belanja setelah diskon
-                    $totalShopping = $totalPrice - $discount;
+                    $totalShopping = $totalPrice - $discount + 20000;
 
                     return response()->json([
                         'success' => true, 
@@ -254,4 +291,109 @@ class CheckoutController extends Controller
             dd($err);
         }
     }
+
+    public function orderPayment(Request $request){
+        $userId = session('id_user');
+        $shipping_cost = 20000;
+        
+        // dd($request);
+        $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+
+        if ($lastInvoice) {
+            // Split the invoice by '/' and take the last part
+            $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
+
+            // Increment the number
+            $invoiceNumber = $lastNoInvoice + 1;
+        } else {
+            // Start from 1 if there is no previous invoice
+            $invoiceNumber = 1;
+        }
+
+        // Get the current day, month, and year
+        $day = date('d');
+        $month = date('m');
+        $year = date('Y');
+
+        // Format the new invoice number
+        $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
+
+        // Create a new invoice with the formatted invoice number
+        $invoiceCreate = Invoice::create([
+            'no_invoice' => $formattedInvoice,
+        ]);
+
+        // Buat order
+        $order = Order::create([
+            'user_id'             => $userId,
+            'invoice_id'          => $invoiceCreate->id,
+            'shipping_address_id' => $request->shipping_address_id,
+            'total_item'          => $request->total_item,
+            'total_item_price'    => $request->total_item_price,
+            'shipping_cost'       => $shipping_cost,
+            'voucher_promo'       => $request->code_voucher,
+            'discount_amount'     => $request->discount_amount,
+            'total_amount'        => $request->subtotal,
+            'order_date'          => now(),
+        ]);
+    
+        // Buat order item
+        foreach($request->product as $id => $productId){
+            OrderItem::create([
+                'order_id'      => $order->id,
+                'product_id'    => $productId,
+                'quantity'      => $request->product_quantity[$productId],
+                'price'         => $request->product_price[$productId],
+                'subtotal'      => $request->product_quantity[$productId] * $request->product_price[$productId],
+            ]);
+        }
+    
+        // Buat pembayaran
+        $payment = Payment::create([
+            'user_id'        => $userId,
+            'order_id'       => $order->id,
+            'payment_method' => "UJICOBA",
+            'transaction_id' => "",
+            'status'         => 'completed',
+            'amount'         => $request->subtotal,
+            'payment_date'   => now(),
+        ]);
+    
+        // Update status voucher jika digunakan
+        $useVoucherNewUser = VoucherNewUser::where('user_id', $userId)
+            ->where('code', $request->code_voucher)
+            ->first();
+        
+        if ($useVoucherNewUser) {
+            $useVoucherNewUser->is_use = 1;
+            $useVoucherNewUser->save();
+        }
+    
+        // Jika pembayaran selesai
+        if ($payment->status == "completed") {
+            // Ambil cart berdasarkan user_id sekali di luar loop
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            
+            foreach($request->product as $id => $productId){
+                // Temukan produk berdasarkan ID
+                $product = Product::find($productId);
+                
+                // Jika produk ditemukan, lakukan update stok
+                if ($product) {
+                    $product->stock_quantity -= $request->product_quantity[$productId];
+                    $product->save();
+                }
+    
+                // Hapus item dari cart berdasarkan cart_id dan product_id
+                Cart_item::where('cart_id', $cartId)
+                    ->where('product_id', $productId)
+                    ->delete();
+            }
+        }
+    
+        session()->flash('payment_success');
+    
+        return redirect("/{$userId}_account");
+    }
+    
 }

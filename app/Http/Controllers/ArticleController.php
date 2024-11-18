@@ -48,13 +48,13 @@ class ArticleController extends Controller
             'content' => 'required',
         ]);
 
+        // Simpan single image
         $imagePath = null;
-
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/article_images'), $imageName);
-            $imagePath = 'uploads/article_images/' . $imageName;
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            // Simpan file ke storage/app/public/uploads/promo
+            $imagePath = $image->storeAs('article', $imageName, 'public');
         }
 
         Article::create([
@@ -80,23 +80,30 @@ class ArticleController extends Controller
 
     // USER
     public function articleUser(){
-        $articles = Article::all();
-        $categoryArticles = CategoryArticle::with(['categoryArticles'])
+        $articles = Article::with(['categoryArticle'])->get();
+        $categoryArticles = CategoryArticle::with(['articles'])
         ->get();
 
         // dd(count($categoryArticles));
 
+        // dd($categoryArticles);
         return view('user.component.newsletter', [
             'articles' => $articles,
             'categoryArticles' => $categoryArticles,
         ]);
     }
 
-    public function detailArticle($name){
-        $article = Article::where('name', $name)->first();
+    public function detailArticleUser($name){
+        $article = Article::where('title', $name)->with(['categoryArticle'])->first();
+        $categoryArticles = CategoryArticle::with(['articles'])
+        ->get();
+        $articles = Article::with(['categoryArticle'])->get();
 
+        // dd($categoryArticles);
         return view('user.component.blog', [
-            'artcile' => $article,
+            'article' => $article,
+            'categoryArticles' => $categoryArticles,
+            'articles' => $articles,
         ]);
     }
 }

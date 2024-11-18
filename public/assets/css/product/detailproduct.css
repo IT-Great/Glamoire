@@ -1,119 +1,233 @@
-    /* .upload__img-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-    }
+.product-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
 
-    .upload__img-box-single {
-        position: relative;
-        width: 457px;
-        height: 444px;
-        border-radius: 8px;
-        overflow: hidden;
-        cursor: pointer;
-    }
+.product-image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
 
-    .upload__img-box-multiple {
-        position: relative;
-        width: 180px;
-        height: 180px;
-        border-radius: 8px;
-        overflow: hidden;
-        cursor: pointer;
-    }
+.product-image {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
 
-    .img-bg-single,
-    .img-bg {
-        width: 100%;
-        height: 100%;
-        background-size: cover;
-        background-position: center;
-    }
+.product-image:hover {
+    transform: scale(1.05);
+}
 
-    .upload__img-close {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 50%;
-        padding: 2px;
-        cursor: pointer;
-    } */
-
-
-.upload__img-wrap {
+.gallery-container {
     display: flex;
-    flex-wrap: wrap;
+    overflow-x: auto;
     gap: 10px;
+    padding: 10px 0;
 }
 
-.upload__img-box-single,
-.upload__video-box {
-    position: relative;
+.gallery-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
     border-radius: 8px;
-    overflow: hidden;
     cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-.upload__img-box-single {
-    width: 100%;
-    max-width: 457px;
-    height: auto;
-    aspect-ratio: 457 / 444;
+.gallery-image:hover {
+    transform: scale(1.1);
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.meta-item {
+    background-color: #f0f4f8;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.product-variant-meta {
+    display: flex;
+    /* Menggunakan flexbox */
+    gap: 15px;
+    /* Jarak antar item, sesuaikan dengan kebutuhan */
+    flex-wrap: wrap;
+    /* Membuat item dapat dibungkus saat ruang terbatas */
+}
+
+.meta-item {
+    display: inline-block;
+    /* Memastikan item ditampilkan secara inline */
+    /* Styling tambahan, jika diperlukan */
+}
+
+/* Tambahan untuk responsivitas */
+@media (max-width: 768px) {
+    .product-variant-meta {
+        flex-direction: column;
+        /* Menyusun item secara vertikal pada layar kecil */
+        gap: 5px;
+        /* Mengurangi jarak antar item pada layar kecil */
+    }
+}
+
+
+
+.description-card,
+.variants-card {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.variant-type {
+    font-size: 1.2rem;
+    font-weight: 600;
+    /* margin-top: 20px; */
+    margin-bottom: 15px;
+}
+
+.variant-title {
+    margin-top: 40px;
+    /* Atur jarak sesuai kebutuhan */
+}
+
+.variants-wrap {
+    display: flex;
+    justify-content: space-between;
+    /* Equal space between items */
+    flex-wrap: wrap;
+    /* Wrap to next line if needed */
+    margin: 0 -5px;
+    /* Adjust spacing */
+}
+
+.variant-item {
+    width: calc(33.333% - 10px);
+    /* 3 images per row, with some margin */
+    padding: 0 5px;
+    /* Padding for each item */
+    margin-bottom: 12px;
+    /* Bottom margin for spacing */
+    position: relative;
+}
+
+.variant-image-container {
+    position: relative;
+    padding-bottom: 100%;
     /* Maintain aspect ratio */
-}
-
-.upload__img-box-multiple {
-    position: relative;
-    width: 100%;
-    max-width: 180px;
-    height: auto;
-    aspect-ratio: 1;
-    border-radius: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
     overflow: hidden;
-    cursor: pointer;
 }
 
-.upload__video-box {
-    width: 100%;
-    max-width: 457px;
-    height: auto;
-    aspect-ratio: 16 / 9;
-    /* Maintain aspect ratio for video */
-}
-
-.img-bg-single,
-.img-bg,
-.video-bg {
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
-}
-
-.video-bg {
+.variant-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Make sure the video covers the container */
+    /* Cover the entire container */
+    transition: transform 0.3s ease;
+    /* Smooth transition */
 }
 
-.upload__img-close,
-.upload__video-close {
+.variant-value {
+    margin-top: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* update */
+
+/* Variant Image Hover Effect */
+.variant-image-container {
+    position: relative;
+    padding-bottom: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.variant-image {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
-    padding: 2px;
-    cursor: pointer;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+    /* Smooth transition on hover */
+}
+
+.variant-image:hover {
+    transform: scale(1.1);
+}
+
+.variant-value {
+    margin-top: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* For consistency, you can keep the gallery image hover effect unchanged */
+.gallery-image:hover {
+    transform: scale(1.1);
+    /* Slight zoom on hover */
 }
 
 
+/* display video */
 
+.video-container {
+    max-width: 853px;
+    /* 16:9 aspect ratio for 480p */
+    margin: 0 auto;
+    /* Center the container */
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
 
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    /* Optional: rounds the corners of the video */
+}
 
-
-
-
-
+/* Media query for smaller screens */
+@media (max-width: 853px) {
+    .video-container {
+        width: 100%;
+    }
+}

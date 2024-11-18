@@ -20,19 +20,20 @@ return new class extends Migration
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('description');
+            $table->text('information_product');
             $table->string('stock_quantity');
-            $table->string('unit')->nullable(); 
-            $table->string('color')->nullable(); 
-            $table->string('color_text')->nullable(); 
             $table->string('weight_product')->nullable();
             $table->text('dimensions')->nullable();  // Menggunakan JSON
             $table->bigInteger('regular_price');
+            $table->bigInteger('discounted_price')->nullable(); // Kolom baru untuk harga setelah diskon
+            $table->string('date_expired')->nullable(); 
             $table->text('main_image');
             $table->text('images')->nullable();
-            $table->text('video')->nullable(); // Menambahkan kolom video setelah kolom images            
+            $table->text('video')->nullable(); // Menambahkan kolom video setelah kolom images   
+            $table->integer('rating')->nullable();         
             $table->timestamps();
         });
-    }
+    }    
 
     /**
      * Reverse the migrations.

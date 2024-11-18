@@ -4,8 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\Wishlist;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class BrandController extends Controller
 {
@@ -39,6 +45,36 @@ class BrandController extends Controller
         return view('admin.brand.create');
     }
 
+    // public function storeBrand(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'description' => 'required',
+    //         'brand_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //     ]);
+
+    //     // Generate unique brand code based on the brand name
+    //     $brandCode = $this->generateBrandCode($request->name);
+
+    //     if ($request->hasFile('brand_logo')) {
+    //         $image = $request->file('brand_logo');
+    //         $imageName = time() . '.' . $image->getClientOriginalExtension();
+    //         $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
+    //     }
+
+
+    //     Brand::create([
+    //         'name' => $request->name,
+    //         'description' => $request->description,
+    //         'brand_logo' => $imagePath,
+    //         'brand_code' => $brandCode, // Menyimpan kode merek
+
+    //     ]);
+
+    //     // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
+    //     return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
+    // }   
+
     public function storeBrand(Request $request)
     {
         $request->validate([
@@ -50,36 +86,32 @@ class BrandController extends Controller
         // Generate unique brand code based on the brand name
         $brandCode = $this->generateBrandCode($request->name);
 
-        // if ($request->hasFile('brand_logo')) {
-        //     $image = $request->file('brand_logo');
-        //     $imageName = time() . '.' . $image->getClientOriginalExtension();
-        //     $image->move(public_path('uploads/brand_logos'), $imageName);
-        //     $imagePath = 'uploads/brand_logos/' . $imageName;
-        // }
-
+        $imagePath = null;
         if ($request->hasFile('brand_logo')) {
             $image = $request->file('brand_logo');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            // Simpan file ke storage/app/public/brand_logos
             $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
-
-            // Simpan informasi file di database (opsional)
-            // Brand::create([...]);
         }
 
-
-        Brand::create([
+        $brand = Brand::create([
             'name' => $request->name,
             'description' => $request->description,
             'brand_logo' => $imagePath,
-            'brand_code' => $brandCode, // Menyimpan kode merek
-
+            'brand_code' => $brandCode,
         ]);
 
-        // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => $brand, // Return brand data including the new ID
+                'message' => 'Brand has been added successfully!',
+            ]);
+        }
+
+        // Fallback for non-AJAX requests (if needed)
         return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
     }
-
 
     private function generateBrandCode($brandName)
     {
@@ -103,6 +135,7 @@ class BrandController extends Controller
 
         return $brandCode;
     }
+
 
 
     public function detailBrand($id)
@@ -162,9 +195,9 @@ class BrandController extends Controller
             ]);
         }
 
-        // Hapus gambar utama dari folder
-        if (!empty($brand->brand_logo) && file_exists(public_path($brand->brand_logo))) {
-            unlink(public_path($brand->brand_logo));
+        // Hapus logo brand dari folder storage
+        if (!empty($brand->brand_logo) && Storage::disk('public')->exists($brand->brand_logo)) {
+            Storage::disk('public')->delete($brand->brand_logo);
         }
 
         // Hapus produk dari database
@@ -177,14 +210,36 @@ class BrandController extends Controller
     }
 
     // AKSES USER 
-    public function brands($name){
-        $brand = Brand::where('name', $name)
-        ->with(['products'])
-        ->get();
-        
-        // dd($brand);
-        return view('user.component.brand', [
-            'brands' => $brand
-        ]);
+    public function brands($name)
+    {
+        $userId = session('id_user');
+
+        if ($userId) {
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            $wishlists = Wishlist::where('user_id', $userId)->get();
+
+            $brand = Brand::where('name', $name)
+                // ->with(['products.ratingAndReviews']) // Load products and their reviews
+                // ->withAvg('products.ratingAndReviews', 'rating') // Calculate average rating for each product
+                ->get();
+
+
+            // dd($brand);
+            return view('user.component.brand', [
+                'brands'    => $brand,
+                'cartItems' => $cartItems,
+                'wishlists' => $wishlists,
+            ]);
+        } else {
+            $brand = Brand::where('name', $name)
+                ->with(['products'])
+                ->get();
+
+            // dd($brand);
+            return view('user.component.brand', [
+                'brands' => $brand
+            ]);
+        }
     }
 }

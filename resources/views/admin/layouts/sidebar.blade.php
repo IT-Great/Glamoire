@@ -22,17 +22,29 @@
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
-                    </li>
+                    </li>                
 
-                    <li class="sidebar-item {{ Request::is('product-admin') ? 'active' : '' }}">
+                    <li class="sidebar-item has-sub {{ Request::is('product-admin*') ? 'active' : '' }} ">
                         <a href="/product-admin" class='sidebar-link'>
                             <i class="bi bi-bag-fill"></i>
                             <span>Product</span>
                         </a>
+
+                        <ul class="submenu">
+                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">                                
+                                <a href="/product-admin">
+                                    Product
+                                </a>
+                            </li>
+                            <li class="submenu-item {{ Request::is('stock-product-admin') ? 'active' : '' }}">
+                                <a href="/stock-product-admin">Stock Product</a>
+                            </li>                          
+                        </ul>
+
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('order-list') ? 'active' : '' }}">
-                        <a href="/order-list" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('order-admin') ? 'active' : '' }}">
+                        <a href="/order-admin" class='sidebar-link'>
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
                         </a>
@@ -64,12 +76,9 @@
                             <li class="submenu-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
                                 <a href="/promo-voucher">Voucher</a>
                             </li>
-                            <li class="submenu-item {{ Request::is('promo-ongkir') ? 'active' : '' }}">
-                                <a href="/promo-ongkir">Ongkir</a>
-                            </li>
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                                <a href="/promo-diskon">Diskon</a>
-                            </li>
+                                <a href="/promo-diskon">Discount</a>
+                            </li>                          
                         </ul>
 
                     </li>
@@ -81,17 +90,10 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('user-admin') ? 'active' : '' }}">
-                        <a href="/user-admin" class='sidebar-link'>
-                            <i class="bi bi-people-fill"></i>
-                            <span>User</span>
-                        </a>
-                    </li>
-
-                    <li class="sidebar-item {{ Request::is('shipping-fee') ? 'active' : '' }}">
-                        <a href="/shipping-fee" class='sidebar-link'>
-                            <i class="bi bi-mailbox2"></i>
-                            <span>Shipping Fee</span>
+                    <li class="sidebar-item {{ Request::is('contact-us-admin') ? 'active' : '' }}">
+                        <a href="/contact-us-admin" class='sidebar-link'>
+                            <i class="bi bi-patch-question"></i>
+                            <span>Contact Us</span>
                         </a>
                     </li>
 
@@ -102,6 +104,13 @@
                         </a>
                     </li>
 
+                    <li class="sidebar-item {{ Request::is('user-admin') ? 'active' : '' }}">
+                        <a href="/user-admin" class='sidebar-link'>
+                            <i class="bi bi-people-fill"></i>
+                            <span>User</span>
+                        </a>
+                    </li>                 
+
                     <li class="sidebar-item {{ Request::is('chat-admin') ? 'active' : '' }}">
                         <a href="/chat-admin" class='sidebar-link'>
                             <i class="bi bi-chat-dots-fill"></i>
@@ -109,12 +118,6 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('contact-us-admin') ? 'active' : '' }}">
-                        <a href="/contact-us-admin" class='sidebar-link'>
-                            <i class="bi bi-patch-question"></i>
-                            <span>Contact Us</span>
-                        </a>
-                    </li>
 
                     <li class="sidebar-item {{ Request::is('subscribe-admin') ? 'active' : '' }}">
                         <a href="/subscribe-admin" class='sidebar-link'>

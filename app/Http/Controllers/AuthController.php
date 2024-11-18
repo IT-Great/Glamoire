@@ -79,10 +79,10 @@ class AuthController extends Controller
             event(new Registered($user));
 
             $userLogin = User::where('email', $user->email)->first();
-    
+
             if ($userLogin) {
                 // Email ditemukan, sekarang cek apakah password cocok
-                
+
                 // Increment: hitung jumlah voucher yang sudah ada dan tambah 1
                 $increment = VoucherNewUser::count() + 1;
 
@@ -105,8 +105,9 @@ class AuthController extends Controller
                     'fullname' => $userLogin->fullname,
                 ];
                 $email_target = $userLogin->email;
-                Mail::to($email_target)->send(new sendMailCodeNewUser($data));
                 
+                Mail::to($email_target)->send(new sendMailCodeNewUser($data));
+
                 session()->put([
                     'id_user' => $user['id'],
                     'username' => $user['fullname'],
@@ -116,7 +117,7 @@ class AuthController extends Controller
                     'success' => true, 
                     'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
                 ]);
-               
+
             } else {
                 return response()->json(['error' => true, 'message' => 'Oops Email Gagal Didaftarkan']);
             }
@@ -128,6 +129,87 @@ class AuthController extends Controller
             ]); // Mengembalikan status 500 untuk menandakan error server
         }
     }
+
+    // public function register(Request $request)
+    // {
+    //     try {
+    //         // Periksa apakah email sudah terdaftar
+    //         if (User::where('email', $request->email)->exists()) {
+    //             return response()->json(['error' => true, 'message' => 'Email Sudah Terdaftar']);
+    //         }
+
+    //         // Periksa apakah handphone sudah terdaftar
+    //         if (User::where('handphone', $request->handphone)->exists()) {
+    //             return response()->json(['error' => true, 'message' => 'Handphone Sudah Terdaftar']);
+    //         }
+
+    //         // Set nilai role secara langsung
+    //         $role = 'user';  // Bisa disesuaikan
+
+    //         // Simpan pengguna baru ke variabel $user
+    //         $user = User::create([
+    //             'fullname'   => $request->fullname,
+    //             'email'      => $request->email,
+    //             'password'   => Hash::make($request->password),
+    //             'handphone'  => $request->handphone,
+    //             'date'       => $request->date,
+    //             'gender'     => $request->gender,
+    //             'role'       => $role,
+    //             'created_at' => now(),
+    //             'updated_at' => now(),
+    //         ]);
+
+    //         // Trigger event Registered dengan variabel $user
+    //         event(new Registered($user));
+
+    //         // Cari pengguna berdasarkan email
+    //         $userLogin = User::where('email', $user->email)->first();
+
+    //         if ($userLogin) {
+    //             // Increment voucher dan buat kode voucher
+    //             $increment = VoucherNewUser::count() + 1;
+    //             $idFragment = substr($userLogin->id, 0, 4);
+    //             $codeUser = "{$increment}-{$idFragment}";
+
+    //             // Simpan voucher baru untuk pengguna
+    //             VoucherNewUser::create([
+    //                 'code' => $codeUser,
+    //                 'user_id' => $userLogin->id,
+    //                 'is_use' => 0,
+    //             ]);
+
+    //             // Login pengguna
+    //             Auth::login($userLogin);
+
+    //             // Kirim email dengan kode voucher
+    //             $data = [
+    //                 'code' => $codeUser,
+    //                 'fullname' => $userLogin->fullname,
+    //             ];
+    //             $email_target = $userLogin->email;
+    //             Mail::to($email_target)->send(new sendMailCodeNewUser($data));
+
+    //             // Simpan data pengguna ke session
+    //             session()->put([
+    //                 'id_user' => $userLogin->id,
+    //                 'username' => $userLogin->fullname,
+    //             ]);
+
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
+    //             ]);
+    //         } else {
+    //             return response()->json(['error' => true, 'message' => 'Oops Email Gagal Didaftarkan']);
+    //         }
+    //     } catch (Exception $err) {
+    //         return response()->json([
+    //             'error'   => true,
+    //             'message' => $err->getMessage(),
+    //         ]);
+    //     }
+    // }
+
 
     public function checkEmail(Request $request)
     {

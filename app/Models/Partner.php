@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Partner extends Model
 {
     use HasFactory;
-    protected $table = 'partner';  // Tambahkan baris ini
+    protected $table = 'partners';  // Tambahkan baris ini
     protected $fillable = [
         'id',
         'fullname',

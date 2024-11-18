@@ -31,7 +31,7 @@ class AuthenticateController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('login')
+            return redirect()->route('login-admin')
                 ->withErrors($validator)
                 ->withInput();
         }
@@ -52,7 +52,7 @@ class AuthenticateController extends Controller
         }
 
         // Authentication failed
-        return redirect()->route('login')
+        return redirect()->route('login-admin')
             ->withErrors(['name' => 'These credentials do not match our records.'])
             ->withInput();
     }
@@ -62,7 +62,7 @@ class AuthenticateController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/login');
+        return redirect('/login-admin');
     }
 
 

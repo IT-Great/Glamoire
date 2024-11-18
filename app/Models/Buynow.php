@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Buynow extends Model
 {
     use HasFactory;
-
-    protected $table ='buy_nows';
+    protected $table = 'buy_nows';  // Tambahkan baris ini
 
     protected $fillable = [
         'id',
