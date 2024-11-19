@@ -150,7 +150,7 @@ class DokuPaymentController extends Controller
             $orderId = 'ORDER-' . time() . '-' . Str::random(5);
 
             // Calculate total amount
-            $totalAmount = $request->total_amount + $request->shipping_cost - $request->discount_amount;
+            $totalAmount = $request->total_amount;
 
             // Prepare request timestamp
             $requestTimestamp = Carbon::now()->utc()->format('Y-m-d\TH:i:s\Z');

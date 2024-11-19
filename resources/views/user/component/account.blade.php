@@ -951,16 +951,16 @@
                 <div class="tab-pane fade" id="my-wishlist" style="min-height:80vh;">
                     <div class="col-12">
                         <div class="row">
-                            @foreach ($profile->wishlist as $wp)
+                            @foreach ($wishlists as $wp)
                                 <div class="col-lg-2 col-md-3 col-6 p-1">
                                     <div
                                         class="bg-white rounded-lg shadow-sm overflow-hidden product-item-wishlist border border-xl">
-                                        <a href="/{{ $wp->product->product_code }}_product"
+                                        <a href="/{{ $wp->product_code }}_product"
                                             class="text-decoration-none">
                                             <div class="position-relative overflow-hidden bg-transparent p-0">
                                                 <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
-                                                    src="{{ Storage::url($wp->product->main_image) }}"
-                                                    alt="{{ $wp->product->product_name }}">
+                                                    src="{{ Storage::url($wp->main_image) }}"
+                                                    alt="{{ $wp->product_name }}">
                                             </div>
                                             <div class="grid gap-1 text-left p-2">
                                                 <div class="flex">
@@ -969,47 +969,60 @@
                                                             style="color:orange;"></i>
                                                         <p
                                                             class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                            5</p>
+                                                            {{ $wp->rating }}</p>
                                                     </div>
                                                     <div class="ml-auto">
                                                         <a href="javascript:void(0);"
                                                             class="col-4 text-decoration-none text-[#183018] p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] grid hover-[#183018] text-center"
-                                                            onclick="removeFromWishlist({{ $wp->product->id }})">
+                                                            onclick="removeFromWishlist({{ $wp->id }})">
                                                             <i class="fas fa-heart"></i> Hapus
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <div class="grid name-price hover:cursor-pointer">
-                                                    <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top"
-                                                        title="{{ $wp->product->product_name }}">
-
-                                                        <a href="/{{ $wp->product->product_code }}_product"
-                                                            class="text-decoration-none">
-                                                            {{ Str::limit($wp->product->product_name, 20) }}
+                                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                                        <a href="/{{ $wp->product_code }}_product" 
+                                                        class="text-decoration-none truncate-ellipsis" 
+                                                        data-bs-toggle="tooltip" 
+                                                        data-bs-placement="top" 
+                                                        title="{{ $wp->product_name }}">
+                                                            {{ $wp->product_name }}
                                                         </a>
                                                     </p>
 
                                                     <div class="flex justify-content-start gap-1">
-                                                        <p
-                                                            class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                            Rp
-                                                            {{ number_format($wp->product->regular_price, 0, ',', '.') }}
+                                                        <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                            @php
+                                                                $activePromo = $wp->promos->first();
+                                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                                            @endphp
+
+                                                            @if ($discountedPrice && $discountedPrice < $wp->regular_price)
+                                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                <del>
+                                                                Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
+                                                                </del>
+                                                            </p>
+                                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                                            @else
+                                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
+                                                            </p>
+                                                            @endif
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="flex justify-content-between px-2">
-                                                @if ($wp->product->stock_quantity == 0)
-                                                    <a
-                                                        class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
+                                                @if ($wp->stock_quantity == 0)
+                                                    <a class="mb-2 py-2 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red">
                                                         Maaf Stok Habis
                                                     </a>
                                                 @else
                                                     @php
                                                         $inCart = collect($profile->cartItems)->contains(
                                                             'product_id',
-                                                            $wp->product->id,
+                                                            $wp->id,
                                                         );
                                                     @endphp
                                                     @if ($inCart)
@@ -1020,7 +1033,7 @@
                                                     @else
                                                         <a href="javascript:void(0);"
                                                             class="mb-2 py-2 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red"
-                                                            onclick="addToCart({{ $wp->product->id }})">
+                                                            onclick="addToCart({{ $wp->id }})">
                                                             + <i class="fas fa-shopping-cart"></i> Keranjang
                                                         </a>
                                                     @endif

@@ -234,9 +234,23 @@
                                         </p>
 
                                         <div class="flex justify-content-start gap-1">
-                                            <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[10px] xl:text-[14px]">
-                                                Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                          @php
+                                              $activePromo = $product->promos->first();
+                                              $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                          @endphp
+
+                                          @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                              <del>
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                              </del>
                                             </p>
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            @else
+                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
+                                              Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}
+                                            </p>
+                                          @endif
                                         </div>
                                         
                                         @if ($product->stock_quantity == 0)
@@ -311,9 +325,23 @@
                                 </p>
                                 
                                 <div class="flex justify-content-start gap-1">
-                                  <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                  </p>
+                                  @php
+                                      $activePromo = $product->promos->first();
+                                      $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                  @endphp
+
+                                  @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                      <del>
+                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                      </del>
+                                    </p>
+                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    @else
+                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                      Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                    </p>
+                                  @endif
                                 </div>
                                 @if ($product->stock_quantity == 0)
                                   <a class="py-1 rounded-sm shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
@@ -361,7 +389,6 @@
     </div>
   </div>
   <!-- Shop End -->
- 
 </div>
 
 <div class="d-flex d-block d-md-none mx-auto justify-content-center rounded-sm w-fit py-2 fixed-bottom mb-12" style="background-color:#183018;">

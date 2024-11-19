@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cart_id');
             $table->foreign('cart_id')->references('id')->on('carts')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('product_id')->nullable();
+            $table->integer('product_variant_id')->nullable();
             $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->integer('quantity');
             $table->boolean('is_choose');

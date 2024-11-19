@@ -95,6 +95,18 @@
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
                 </div>
 
+                <div class="variant d-lg-none">
+                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ ucwords($variantType) }}</p>
+                    <div class="flex gap-2">
+                        @foreach ($variant as $varian)
+                            <a href="{{ route('detail.product', ['id' => $product->product_code, 'varian' => $varian->sku]) }}"
+                                class="flex-1 {{ $firstVariant->sku == $varian->sku ? 'bg-[#183018] text-white' : 'btn-secondary' }} py-2 px-2 rounded-sm text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-center">
+                                {{ $varian->variant_value }}
+                            </a>
+                        @endforeach
+                    </div>  
+                </div>
+
                 <div class="d-flex gap-1">
                     <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between" style="color:orange;"></i>
                     <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between">{{ $product->rating }}</p>
@@ -115,28 +127,25 @@
                     @endif
                 </div>
 
+
+                <!-- VARIANT -->
                 <div>
-                @php
-                    $activePromo = $product->promos->first();
-                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                @endphp
-                
-                @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                    <span class="text-muted text-decoration-line-through font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
-                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                    <span class="font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]" id="price-variant">
+                        Rp{{ number_format($firstVariant->variant_price, 0, ',', '.') }}
                     </span>
-                    <span class="text-[#183018]] font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
-                        Rp{{ number_format($discountedPrice, 0, ',', '.') }}
-                    </span>
-                @else
-                    <span class="font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
-                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                    </span>
-                @endif
                 </div>
-                
-                
-                @if ($product->stock_quantity == 0)
+                <div class="variant d-none d-lg-block py-2">
+                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ ucwords($variantType) }}</p>
+                    <div class="flex gap-2">
+                        @foreach ($variant as $varian)
+                            <a href="{{ route('detail.product', ['id' => $product->product_code, 'varian' => $varian->sku]) }}"
+                                class="flex-1 {{ $firstVariant->sku == $varian->sku ? 'bg-[#183018] text-white' : 'btn-secondary' }} py-2 px-2 rounded-sm text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-center">
+                                {{ $varian->variant_value }}
+                            </a>
+                        @endforeach
+                    </div>  
+                </div>
+                @if ($firstVariant->variant_stock == 0)
                     <div class="flex py-2">
                         <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
                         <span
@@ -157,13 +166,15 @@
                         @endphp
 
                         @if ($inCart)
+                        <div class="d-none d-lg-block">
                             <button onclick="cart()" class="mb-2 py-2 rounded-sm w-full bg-[#183018] hover:bg-neutral-900  text-white p-0 text-[7px] md:text-[10px] lg:text-[12px] xl:text-[14px] flex align-items-center justify-content-center">
                                 Cek Keranjangmu
                             </button>
+                        </div>
                         @else
                             <div class="grid">
                                 <div>
-                                    <p class="text-black">Stok : {{ $product->stock_quantity }}</p>
+                                    <p class="text-black">Stok : {{ $firstVariant->variant_stock }}</p>
                                 </div>
                                 <div class="align-items-center gap-2 d-none d-lg-flex py-3">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -174,30 +185,26 @@
                                         </div>
                                         <input type="number" 
                                             class="form-control bg-secondary text-center px-2  no-spinner" 
-                                            id="total-detail-product-quantity-{{$product->id}}" 
-                                            value="1" 
-                                            min="1"
-                                            max="{{ $product->stock_quantity }}"
+                                            id="total-detail-product-quantity" 
                                             data-unify="Quantity"
-                                            oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                         >
                                         <div class="input-group-btn">
-                                            <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
+                                            <button class="btn btn-plus">
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                     
-                                    <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                    <a onclick="addCartWithQuantity({{$product->id, $firstVariant->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
                                     <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                                 </div>
-                                <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
+                                <p id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</p>
                             </div>
                         @endif
                     @else
                         <div class="grid">
                             <div>
-                                <p class="text-black">Stok : {{ $product->stock_quantity }}</p>
+                                <p class="text-black" id="stock-variant">Stok : {{ $firstVariant->variant_stock }}</p>
                             </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
                                 <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -208,27 +215,24 @@
                                     </div>
                                     <input type="number" 
                                         class="form-control bg-secondary text-center px-2  no-spinner" 
-                                        id="total-detail-product-quantity-{{$product->id}}" 
-                                        value="1" 
-                                        min="1"
-                                        max="{{ $product->stock_quantity }}"
+                                        id="total-detail-product-quantity" 
                                         data-unify="Quantity"
-                                        oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                     >
                                     <div class="input-group-btn">
-                                        <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
+                                        <button class="btn btn-plus">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                                 
-                                <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                <a onclick="addCartWithQuantity({{$product->id, $firstVariant->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
                                 <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                             </div>
-                            <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
+                            <span id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</span>
                         </div>
                     @endif
                 @endif
+                <!-- END VARIANT -->
                 
                 
                 <div class="row">
@@ -515,6 +519,8 @@
   </div>
 </div>
 
+@include('spinner')
+
 <!-- UNTUK MENGATUR ZOOM IN GAMBAR PADA HALAMAN DETAIL PRODUK -->
 @if (!empty($product->video))
     <script>
@@ -535,6 +541,67 @@
     </script>
 @endif
 <script>
+    let productVariant = {!! json_encode($product) !!};
+    let selectedButton = null;
+    let maxQuantity = {{ $firstVariant->variant_stock }}; // Ambil nilai stok maksimal dari server
+    let productCode = {!! json_encode($product->product_code) !!};
+    const warningMessage = document.getElementById("quantity-warning");
+    const inputs = document.querySelectorAll('[data-unify="Quantity"]');
+    // console.log(warningMessage); 
+    console.log({!! json_encode($firstVariant) !!});
+
+    // UPDATE QUANTITY
+    inputs.forEach((input) => {
+        const minusButton = input.previousElementSibling.querySelector(".btn-minus");
+        const plusButton = input.nextElementSibling.querySelector(".btn-plus");
+
+        // Set nilai awal minimum
+        input.value = 1;
+
+        // Fungsi untuk mengubah nilai melalui input manual
+        input.addEventListener("input", function () {
+            let value = parseInt(input.value, 10);
+
+            if (isNaN(value) || value < 1) {
+                warningMessage.classList.add("d-none");
+                warningMessage.classList.remove("d-flex");
+                input.value = 1; // Kembali ke nilai minimum
+            } else if (value > maxQuantity) {
+                warningMessage.classList.remove("d-none");
+                warningMessage.classList.add("d-flex");
+                input.value = maxQuantity; // Set ke nilai maksimum
+            }
+        });
+
+        // Fungsi untuk tombol minus
+        minusButton.addEventListener("click", function () {
+            let value = parseInt(input.value, 10);
+
+            if (value > 1) {
+                warningMessage.classList.add("d-none");
+                warningMessage.classList.remove("d-flex");
+                input.value = value - 1;
+            } else {
+                alert("Nilai tidak bisa kurang dari 1");
+            }
+        });
+
+        // Fungsi untuk tombol plus
+        plusButton.addEventListener("click", function () {
+            let value = parseInt(input.value, 10);
+
+            if (value < maxQuantity) {
+                warningMessage.classList.add("d-none");
+                warningMessage.classList.remove("d-flex");
+                input.value = value + 1;
+            } else {
+                warningMessage.classList.remove("d-none");
+                warningMessage.classList.add("d-flex");
+            }
+        });
+    });
+
+
     document.querySelector('.image-container').addEventListener('mousemove', function(e) {
         const zoomableImage = this.querySelector('.zoomable-image');
         const rect = this.getBoundingClientRect();
@@ -545,8 +612,7 @@
         zoomableImage.style.transformOrigin = `${x}px ${y}px`;
     });
 
-    
-    function addCartWithQuantity(productId) {
+    function addCartWithQuantity(productId, productVariantId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
 
         $.ajax({
@@ -555,6 +621,7 @@
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: productId,
+                product_variant_id: productVariantId,
                 quantity: currentQuantity,
             },
             success: function (response) {
@@ -660,47 +727,6 @@
         });
     }
 
-    // Product Quantity
-    $(".quantity-detail-produk button").on("click", function () {
-        var button = $(this);
-        var input = button.parent().parent().find("input");
-        var oldValue = input.val();
-        var maxQuantity = {{ $product->stock_quantity }};
-
-        var newVal;
-
-        if (button.hasClass("btn-plus")) {
-            newVal = parseFloat(oldValue) + 1;
-        } else {
-            newVal = (oldValue > 1) ? parseFloat(oldValue) - 1 : 1;
-        }
-
-        // Set the new value to the input
-        input.val(newVal);
-
-        checkMaxQuantity(input[0], maxQuantity);
-    });
-
-    
-    const quantityInput = document.querySelector('input[data-unify="Quantity"]');
-    quantityInput.addEventListener('input', () => checkMaxQuantity(quantityInput));
-    quantityInput.addEventListener('blur', () => checkMaxQuantity(quantityInput));
-
-
-    function checkMaxQuantity(input, maxQuantity) {
-        var value = parseFloat(input.value);
-        var warningElement = document.getElementById("quantity-warning-" + input.id.split('-').pop());
-        var plusButton = document.getElementById("btn-plus-" + input.id.split('-').pop());
-
-        if (value >= maxQuantity) {
-            warningElement.style.display = "block"; // Show warning
-            plusButton.disabled = true; // Disable the plus button
-        } else {
-            warningElement.style.display = "none"; // Hide warning
-            plusButton.disabled = false; // Enable the plus button
-        }
-    }
-
     function openFullscreenModal(source, type) {
         var modalContent = document.getElementById('modalContent');
 
@@ -721,7 +747,6 @@
         var modal = new bootstrap.Modal(fullscreenModalElement); // Recreate the modal
         modal.hide(); // Close the modal
     });
-
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>

@@ -7,7 +7,7 @@
     @foreach ($promo as $promo)
       <div class="col my-2 p-0">
         <p class="font-semibold text-[14px] md:text-[12px] lg:text-[14px] xl:text-[24px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
-          {{$promo->promo_name}}
+          {{$promo->promo_name}} 
         </p>
       </div>
     @endforeach
@@ -17,7 +17,7 @@
     </div>
 
     <div id="skeletonLoader" class="skeleton-loader px-1">
-      @for ($i = 0; $i < 8; $i++) <!-- Adjust the number based on how many you want to show -->
+      @for ($i = 0; $i < count($promo->products); $i++) <!-- Adjust the number based on how many you want to show -->
         <div class="skeleton-card">
           <div class="skeleton-image"></div>
           <div class="skeleton-text"></div>
@@ -58,13 +58,18 @@
                   </p>
 
                   <div class="flex justify-content-start gap-1">
-                    @if ($product->price_after_discount)
+                    @php
+                        $activePromo = $product->promos->first();
+                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                    @endphp
+
+                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
                       <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                         <del>
                           Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                         </del>
                       </p>
-                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}</p>
+                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                       @else
                       <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-primary">
                         Rp{{ number_format($product->price_after_discount, 0, ',', '.') }}

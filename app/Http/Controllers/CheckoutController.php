@@ -20,7 +20,9 @@ use App\Models\Promo;
 use App\Models\Province;
 use App\Models\City;
 use App\Models\shippingFee;
+use App\Models\PromoTier;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -59,19 +61,38 @@ class CheckoutController extends Controller
                         ->unique()
                         ->values()
                         ->toArray();
-            
-            
+    
 
                     // dd($checkVoucherUsage);
                     // Check if there are any used vouchers
                     
-                    $vouchers = Promo::whereIn('type', ['voucher', 'product voucher'])
+                    $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+                        ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+                        ->when('product voucher' === 'product voucher', function($query) {
+                            return $query->leftJoin('promo_products', 'promo_products.promo_id', '=', 'promos.id')
+                                        ->leftJoin('products', 'products.id', '=', 'promo_products.product_id');
+                        })
                         ->whereNotIn('promo_code', $checkVoucherUsage)
                         ->whereColumn('total_used', '<', 'usage_quota')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->select(
+                            'brands.name as brand_name',  // Nama brand
+                            'promos.*'                   // Data promo
+                        )
+                        ->distinct()  // Menghindari duplikasi
                         ->get();
+
+                    // dd($vouchers);
+                    $productVouchers = $vouchers->filter(function ($voucher) {
+                        return $voucher->type === 'product voucher';
+                    });
                     
+                    $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+                        return $voucher->promoProducts->pluck('product_id');
+                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                    
+                    // dd($productVoucherIds);
                 // END HANDLE VOUCHER USER
 
 
@@ -96,13 +117,28 @@ class CheckoutController extends Controller
 
                 // MENGAMBIL PRODUK YANG DIBELI MELALUI KERANJANG
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                
                 $cartItems = Cart_item::where('cart_id', $cartId)
+                    ->leftJoin('products', 'products.id', '=', 'cart_items.product_id')
+                    ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
                     ->where('is_choose', true)
                     ->whereHas('product', function ($query) {
                         $query->where('stock_quantity', '!=', 0);
                     })
                     ->with('product')
+                    ->select(
+                        'cart_items.*',        // Semua kolom dari tabel cart_items
+                        'products.brand_id',   // brand_id dari tabel products
+                        'brands.id as brand_id' // id dari tabel brands
+                    )
                     ->get();
+
+
+                    
+            
+                // dd($vouchers);
+
+            
 
                 $totalItem = $cartItems->count();
                 $totalWeight = $cartItems->sum(function ($cartItem) {
@@ -253,8 +289,7 @@ class CheckoutController extends Controller
                 // END ONGKIR
 
                 // dd($vouchers);
-                
-
+                $groupedVouchers = $vouchers->groupBy('type');
                 $data = [
                     'address'       => $address,
                     'shippingAddressId' => $shippingAddressId,
@@ -268,9 +303,30 @@ class CheckoutController extends Controller
                     'totalItem'     => $totalItem,
                     'ongkir'        => $ongkir,
                     'weight'        => $totalWeight,
+                    'productVoucherIds' => $productVoucherIds,
                 ];
+
+                $productIds = $data['cartItems']->pluck('product_id');
                 
-                return view('user.component.checkout')->with('data', $data);
+                // dd($productIds->intersect($data['productVoucherIds'])->isNotEmpty());
+                // dd($data['cartItems']->pluck('product_id'));
+                $brandIds = $cartItems->pluck('brand_id'); // Ambil semua brand_id dari cartItems
+                $productIds = $cartItems->pluck('product_id');
+
+                $unusableVouchers = $vouchers->filter(function ($voucher) use ($data, $brandIds, $productIds) {
+                    // Voucher unusable jika salah satu kondisi tidak terpenuhi
+                    return 
+                        $data['totalPrice'] < $voucher->min_transaction || 
+                        $data['totalItem'] > $voucher->max_quantity_buyer || 
+                        !$brandIds->contains($voucher->brand_id) ||
+                        $productIds->intersect($data['productVoucherIds'])->isEmpty();
+                });
+
+                // dd($unusableVouchers);
+                
+                return view('user.component.checkout', [
+                    'groupedVouchers' => $groupedVouchers,
+                ])->with('data', $data);
             }
             else {
                 session()->flash('register_or_login_first');
@@ -566,7 +622,7 @@ class CheckoutController extends Controller
             $ongkirDiscount = 0;
             $voucher = null;
             $ongkir = null;
-            $ongkirAfter = $request->ongkir;
+            $ongkirAfter = $request->shipping_cost;
     
             // Retrieve promo voucher if `voucherCode` is provided
             if (!empty($voucherCode)) {
@@ -577,17 +633,14 @@ class CheckoutController extends Controller
             if (!empty($ongkirCode)) {
                 $ongkir = Promo::where('promo_code', $ongkirCode)->first();
                 $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
-                $ongkirVoucher = $ongkir ? $ongkir->discount : 0;
                 if($ongkirDiscount <= 100)
                 {
-                    $discount = $requet->shipping_cost * ($ongkirDiscount/100);
-                    $ongkirAfter = $request->shipping_cost - $discount;
+                    $discountong = $request->shipping_cost * ($ongkirDiscount/100);
+                    $ongkirAfter = $request->shipping_cost - $discountong;
                 }
                 else{
-                    if ($request->shipping_cost < $ongkirDiscount) {
-                        $ongkirDiscount = $request->shipping_cost;
-                    }
-                    $ongkirAfter = $request->shipping_cost - $ongkirDiscount;
+                    $discountong = min($request->shipping_cost, $ongkirDiscount);
+                    $ongkirAfter = $request->shipping_cost - $discountong;
                 }
             }
     
@@ -624,7 +677,7 @@ class CheckoutController extends Controller
             $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
             $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
             $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
-            $ongkirFormatted = $ongkirCode ? number_format($ongkirDiscount, 0, ',', '.') : null;
+            $ongkirFormatted = $ongkirCode ? number_format($discountong, 0, ',', '.') : null;
             $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
     
             // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
@@ -754,8 +807,6 @@ class CheckoutController extends Controller
         }
     }
 
-
-    
     public function applyVoucher(Request $request) 
     {
         try {
@@ -875,7 +926,7 @@ class CheckoutController extends Controller
 
                     // Hitung diskon dari voucher
                     if ($voucherCode) {
-                        $voucher = Promo::where('promo_name', '=', 'new user')->first();
+                        $voucher = Promo::where('type', '=', 'new user voucher')->first();
                         $percent = $voucher->discount;
     
                         if ($percent <= 100) {

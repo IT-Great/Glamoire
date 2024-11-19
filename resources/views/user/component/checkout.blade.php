@@ -335,6 +335,8 @@
     // Voucher-related variables
     let selectedPromoCode = null; // Discount voucher code
     let selectedOngkirCode = null; // Shipping voucher code
+    let selectedProductCode = null; // Product voucher code
+    let selectedBrandCode = null; // Brand voucher code
     let discountAmount = 0; // Discount from promo voucher
     let shippingDiscountAmount = 0; // Diskon Paten
     let shippingDiscount = 0; 
@@ -450,6 +452,7 @@
                     $('#button-code-voucher').prop('disabled', true);
                     $('#show-voucher').prop('disabled', true);
                     $("#code-voucher").prop('disabled', true);
+                    $('#validationVoucher').text("Kode promo berhasil diterapkan.").addClass('text-success').show();
                     
                     subTotal = totalPrice + ongkir - response.discountFormatted ;
                     discountAmount = response.discountFormatted;
@@ -473,6 +476,7 @@
         });
     });
     // END GUNAKAN VOUCHER
+    
     function removeCode() {
         subTotal = totalPrice + ongkir;
         $("#discount-use").removeClass("d-flex").addClass("d-none"); // Hapus class d-none dan ubah menjadi d-flex
@@ -495,6 +499,10 @@
     $('#code-voucher').on('keyup', function () {
         var code = $(this).val();
         var cancel = $("#cancelCode");
+        
+        if (code === "") {
+            $('#validationVoucher').text("");
+        } 
         
         if (code) {
             $.ajax({
@@ -559,11 +567,13 @@
     }
 
     function selectPromo(promoElement, promo_code, voucherType) {
-        const isPromoType = voucherType === 'voucher';
-        const isOngkirType = voucherType === 'product voucher';
+        const isPromoType = voucherType === 'limited voucher';
+        const isOngkirType = voucherType === 'ongkir voucher';
+        const isProductType = voucherType === 'product voucher';
+        const isBrandType = voucherType === 'brand voucher';
 
         // Check if the voucher being clicked is already selected
-        if ((isPromoType && selectedPromoCode === promo_code) || (isOngkirType && selectedOngkirCode === promo_code)) {
+        if ((isPromoType && selectedPromoCode === promo_code) || (isOngkirType && selectedOngkirCode === promo_code) || (isProductType && selectedProductCode === promo_code) || (isBrandType && selectedBrandCode === promo_code) ) {
             // Deselect the voucher
             promoElement.querySelector('.grid').classList.remove('border-dark');
             promoElement.querySelector('.fas.fa-check').classList.add('hidden');
@@ -574,6 +584,12 @@
             } else if (isOngkirType) {
                 selectedOngkirCode = null;
                 shippingDiscount = 0; // Reset shipping discount when deselecting
+            } else if (isProductType) {
+                selectedProductCode = null;
+                discountAmount = 0; // Reset shipping discount when deselecting
+            } else if (isBrandType) {
+                selectedBrandCode = null;
+                discountAmount = 0; // Reset shipping discount when deselecting
             }
 
             if (shippingDiscount == 0 && discountAmount == 0) { 
@@ -593,6 +609,12 @@
         } else if (isOngkirType && selectedOngkirCode) {
             document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .grid`).classList.remove('border-dark');
             document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .fas.fa-check`).classList.add('hidden');
+        }  else if (isProductType && selectedProductCode) {
+            document.querySelector(`.promo-item[data-code="${selectedProductCode}"] .grid`).classList.remove('border-dark');
+            document.querySelector(`.promo-item[data-code="${selectedProductCode}"] .fas.fa-check`).classList.add('hidden');
+        } else if (isBrandType && selectedBrandCode) {
+            document.querySelector(`.promo-item[data-code="${selectedBrandCode}"] .grid`).classList.remove('border-dark');
+            document.querySelector(`.promo-item[data-code="${selectedBrandCode}"] .fas.fa-check`).classList.add('hidden');
         }
 
         $(".input-code").addClass("d-none");
@@ -603,6 +625,10 @@
             selectedPromoCode = promo_code;
         } else if (isOngkirType) {
             selectedOngkirCode = promo_code;
+        } else if (isProductType) {
+            selectedProductCode = promo_code;
+        } else if (isBrandType) {
+            selectedBrandCode = promo_code;
         }
 
         // Update UI for the selected voucher
@@ -610,6 +636,13 @@
         promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
 
         // Make AJAX request to get voucher details
+        console.log({
+            code_voucher_promo: selectedPromoCode,
+            code_voucher_ongkir: selectedOngkirCode,
+            code_voucher_product: selectedProductCode,
+            code_voucher_brand: selectedBrandCode,
+            shipping_cost: ongkir,
+        });
         $.ajax({
             url: "{{ route('check.apply.voucher') }}",
             method: 'POST',
@@ -660,9 +693,15 @@
             }
         }
         if (response.ongkir) {
-            shippingDiscountAmount = parseInt(response.ongkirVoucher.replace(/\./g, ''), 10); // Get shipping discount from response
+            shippingDiscountAmount = parseInt(response.ongkirCalculate.replace(/\./g, ''), 10); // Get shipping discount from response
             shippingDiscount = parseInt(response.ongkir.replace(/\./g, ''), 10); // Get shipping discount from response
-            
+            console.log(
+                {
+                    ongkir: response.ongkir,
+                    ongkirCalculate: response.ongkirCalculate,
+
+                }
+            )
             if (response.ongkir !== null) {
                 $("#ongkir").text("-Rp"+formatRupiah(shippingDiscount));
                 // $("#ongkir-after").text("Total setelah diskon :"+formatRupiah(discountOngkirAfter));
@@ -785,28 +824,10 @@
     });
 
     
-    $(document).on('click', '#paynow', function(e) { // Added a dot before paynow
-    e.preventDefault();
-    console.log({
-        subtotal: subTotal,          // Removed the colon inside the key
-        shipping_cost: ongkir,
-        shipping_address_id: shippingAddressId,
-        total_item: totalItem,
-        total_item_price: totalItemPrice,
-        discount_amount: discountAmount,
-        discount_ongkir: shippingDiscount,
-        voucher_promo: selectedPromoCode,
-        voucher_ongkir: selectedOngkirCode,
-    });
-    
-    $.ajax({
-        url: "{{ route('order.payment') }}",
-        type: 'POST',
-        data: {
-            product: productIds,
-            product_quantity: productQuantities,
-            product_price: productPrices,
-            subtotal: subTotal,          // Removed the colon inside the key
+    $(document).on('click', '#paynow', function(e) { 
+        e.preventDefault();
+        console.log({
+            subtotal: subTotal,          
             shipping_cost: ongkir,
             shipping_address_id: shippingAddressId,
             total_item: totalItem,
@@ -815,44 +836,151 @@
             discount_ongkir: shippingDiscount,
             voucher_promo: selectedPromoCode,
             voucher_ongkir: selectedOngkirCode,
-            _token: '{{ csrf_token() }}'
-        },
-        beforeSend: function() {
-            $('.loading-container').show(); // Show the spinner
-        },
-        success: function(response) {
-            Toast.fire({
-                icon: "success",
-                text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-                title: "Pembayaranmu Berhasil",
-                willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-            }).then(function () {
-                location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-            });
-        },
-        complete: function() {
-            $('.loading-container').hide(); // Show the spinner
-        },
-        error: function(xhr) {
-            Toast.fire({
-                icon: "error",
-                text: "Kesalahan Sistem",
-                title: "Oops..",
-                willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-            });
-        }
+        });
+    
+        // $.ajax({
+        //     url: "{{ route('order.payment') }}",
+        //     type: 'POST',
+        //     data: {
+        //         product: productIds,
+        //         product_quantity: productQuantities,
+        //         product_price: productPrices,
+        //         subtotal: subTotal,          // Removed the colon inside the key
+        //         shipping_cost: ongkir,
+        //         shipping_address_id: shippingAddressId,
+        //         total_item: totalItem,
+        //         total_item_price: totalItemPrice,
+        //         discount_amount: discountAmount,
+        //         discount_ongkir: shippingDiscount,
+        //         voucher_promo: selectedPromoCode,
+        //         voucher_ongkir: selectedOngkirCode,
+        //         _token: '{{ csrf_token() }}'
+        //     },
+        //     beforeSend: function() {
+        //         $('.loading-container').show(); // Show the spinner
+        //     },
+        //     success: function(response) {
+        //         Toast.fire({
+        //             icon: "success",
+        //             text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
+        //             title: "Pembayaranmu Berhasil",
+        //             willOpen: () => {
+        //                 const title = document.querySelector('.swal2-title');
+        //                 const content = document.querySelector('.swal2-html-container');
+        //                 if (title) title.style.color = '#ffffff'; // Ubah warna judul
+        //                 if (content) content.style.color = '#ffffff'; // Ubah warna konten
+        //             }
+        //         }).then(function () {
+        //             location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
+        //         });
+        //     },
+        //     complete: function() {
+        //         $('.loading-container').hide(); // Show the spinner
+        //     },
+        //     error: function(xhr) {
+        //         Toast.fire({
+        //             icon: "error",
+        //             text: "Kesalahan Sistem",
+        //             title: "Oops..",
+        //             willOpen: () => {
+        //                 const title = document.querySelector('.swal2-title');
+        //                 const content = document.querySelector('.swal2-html-container');
+        //                 if (title) title.style.color = '#ffffff'; // Ubah warna judul
+        //                 if (content) content.style.color = '#ffffff'; // Ubah warna konten
+        //             }
+        //         });
+        //     }
+        // });
     });
-});
+
+    // Add DOKU payment modal HTML
+    // $('body').append(`
+    //     <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
+    //         <div class="modal-dialog modal-lg">
+    //             <div class="modal-content">
+    //                 <div class="modal-header" style="background-color: #183018">
+    //                     <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="dokuPaymentModalLabel">Pembayaran</h5>
+    //                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    //                 </div>
+    //                 <div class="modal-body" id="dokuPaymentContainer">
+    //                     <div class="text-center" id="loadingPayment">
+    //                         <div class="spinner-border text-primary" role="status">
+    //                             <span class="visually-hidden">Loading...</span>
+    //                         </div>
+    //                         <p class="mt-2">Mempersiapkan pembayaran...</p>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     </div>
+    // `);
+
+    // Handle payment button click
+    // $('#paynow').click(function(e) {
+    //     e.preventDefault();
+
+    //     // Show loading state
+    //     $('#paynow').prop('disabled', true);
+    //     $('#dokuPaymentModal').modal('show');
+
+    //     // Prepare form data
+    //     const formData = {
+    //         total_amount: subTotal,
+    //     };
+
+    //     // Make AJAX request
+    //     $.ajax({
+    //         url: '/initiate-doku-payment',
+    //         method: 'POST',
+    //         data: formData,
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(response) {
+    //             if (response.success && response.payment_url) {
+    //                 // Load DOKU payment iframe
+    //                 $('#dokuPaymentContainer').html(`
+    //             <iframe 
+    //                 src="${response.payment_url}"
+    //                 frameborder="0"
+    //                 width="100%"
+    //                 height="600px"
+    //                 style="overflow: hidden;">
+    //             </iframe>
+    //         `);
+    //             } else {
+    //                 throw new Error('Invalid payment URL');
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // Show error message
+    //             $('#dokuPaymentContainer').html(`
+    //         <div class="alert alert-danger">
+    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
+    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+    //         </div>
+    //     `);
+    //             console.error('Payment error:', error);
+    //         },
+    //         complete: function() {
+    //             $('#paynow').prop('disabled', false);
+    //         }
+    //     });
+    // });
+
+    // Helper function to get products data
+    // function getProductsData() {
+    //     const products = [];
+    //     $('input[name="product[]"]').each(function() {
+    //         const productId = $(this).val();
+    //         products.push({
+    //             product_id: parseInt(productId),
+    //             quantity: parseInt($(`#product-quantity-${productId}`).val()),
+    //             price: parseInt($(`#product-price-${productId}`).val())
+    //         });
+    //     });
+    //     return products;
+    // }
 
 </script>
 
@@ -1214,49 +1342,61 @@
                 <div class="col-12 p-0">
 
                     @php
-                        // Pisahkan voucher berdasarkan kondisi yang bisa digunakan atau tidak
-                        $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data) {
-                            return $data['totalPrice'] >= $voucher->min_transaction && $data['totalItem'] <= $voucher->max_quantity_buyer;
+                        $brandIds = $data['cartItems']->pluck('brand_id'); // Ambil semua brand_id dari cartItems
+                        $productIds = $data['cartItems']->pluck('product_id');
+
+                        // Filter voucher berdasarkan kecocokan dengan brand_id di cartItems
+                        $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
+                            // Voucher usable jika memenuhi kondisi transaksi dan brand cocok
+                            return 
+                                $data['totalPrice'] >= $voucher->min_transaction || 
+                                $data['totalItem'] <= $voucher->max_quantity_buyer || 
+                                $brandIds->contains($voucher->brand_id) ||
+                                $productIds->intersect($data['productVoucherIds'])->isNotEmpty();
                         });
-                        $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data) {
-                            return $data['totalPrice'] < $voucher->min_transaction || $data['totalItem'] > $voucher->max_quantity_buyer;
+
+                        $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
+                            // Voucher unusable jika salah satu kondisi tidak terpenuhi
+                            return 
+                                $data['totalPrice'] < $voucher->min_transaction || 
+                                $data['totalItem'] > $voucher->max_quantity_buyer || 
+                                !$brandIds->contains($voucher->brand_id) ||
+                                $productIds->intersect($data['productVoucherIds'])->isEmpty();
                         });
+
                     @endphp
 
                     @if (count($data['vouchers']) !== 0)
+                    
                         @if ($usableVouchers->isNotEmpty())
-                            <h5 class="text-[#183018] text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher yang Dapat Digunakan</h5>
+                            <h5 class="text-[#183018] text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher yang bisa digunakan</h5>
                             @foreach ($usableVouchers as $voucher)
                                 <div class="col-12 p-0 p-md-2 promo-item" data-code="{{ $voucher->promo_code }}" onclick="selectPromo(this, '{{ $voucher->promo_code }}', '{{$voucher->type}}')">
                                     <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
                                         <div class="flex">
-                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">{{ ucwords($voucher->promo_name) }}</p>
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018] font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
                                             <i class="fas fa-check hidden ml-auto"></i>
                                         </div>
 
                                         <div class="flex">
-                                        @if ($voucher->discount)
-                                            @if ($voucher->discount >= 0 && $voucher->discount <= 100)
-                                                {{-- Diskon dalam bentuk persentase --}}
-                                                <p class="text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px]">Diskon {{ $voucher->discount }}%</p>
-                                            @elseif ($voucher->discount >= 10000 && $voucher->discount <= 1000000)
-                                                {{-- Diskon dalam bentuk nominal --}}
-                                                <p class="text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px]">Diskon Rp{{ number_format($voucher->discount, 0, ',', '.') }}</p>
-                                            @else
-                                                {{-- Nilai diskon tidak valid --}}
-                                                <p class="text-danger">Diskon tidak valid</p>
+                                            @if ($voucher->discount)
+                                                @if ($voucher->discount >= 0 && $voucher->discount <= 100)
+                                                    <p class="text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] text-[#183018]">Diskon {{ $voucher->discount }}%</p>
+                                                @elseif ($voucher->discount >= 10000 && $voucher->discount <= 1000000)
+                                                    <p class="text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] text-[#183018]">Diskon Rp{{ number_format($voucher->discount, 0, ',', '.') }}</p>
+                                                @else
+                                                    <p class="text-danger">Diskon tidak valid</p>
+                                                @endif
                                             @endif
-                                        @endif
                                         </div>
 
                                         <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                            <i class="fas fa-regular fa-clock"></i>
+                                            <i class="fas fa-regular fa-clock text-[#183018]"></i>
                                             @php
-                                                // Ambil tanggal akhir dari rentang tanggal
                                                 $endDate = explode(' - ', $voucher->date_range)[1];
                                             @endphp
 
-                                            <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                            <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-[#183018]">
                                                 Berlaku hingga {{ \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y') }}
                                             </p>
                                             <a class="ml-auto text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-danger text-decoration-none" onclick="toggleDetail(event, '#detail-promo-{{$voucher->id}}', this)">S&K</a>
@@ -1271,6 +1411,11 @@
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                     <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
                                                 </li>
+                                                @if ($voucher->brand_id !== null)
+                                                    <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
+                                                        <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian product brand {{ $voucher->brand_name }}</p>
+                                                    </li>
+                                                @endif
                                             </ol>
                                         </div>
                                     </div>
@@ -1278,13 +1423,14 @@
                             @endforeach
                         @endif
 
+
                         @if ($unusableVouchers->isNotEmpty())
                             <h5 class="text-[#183018] text-[12px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher tersedia</h5>
                             @foreach ($unusableVouchers as $voucher)
-                                <div class="col-12 p-0 promo-item" onclick="event.stopPropagation()">
+                                <div class="col-12 p-0 p-md-2 promo-item" onclick="event.stopPropagation()">
                                     <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
                                         <div class="flex">
-                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-muted font-semibold">{{ ucwords($voucher->promo_name) }}</p>
+                                            <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-muted font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
                                             <i class="fas fa-check hidden ml-auto"></i>
                                         </div>
 
@@ -1323,6 +1469,10 @@
                                             @if ($data['totalItem'] > $voucher->max_quantity_buyer)
                                                 <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Jumlah produk yang kamu beli melebihi S&K voucher ini</p>
                                             @endif
+                                            
+                                            @if ($voucher->type == 'brand voucher')
+                                                <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Hanya bisa digunakan untuk produk brand {{ $voucher->brand_name }}</p>
+                                            @endif
                                         </div>
 
                                         <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
@@ -1334,6 +1484,11 @@
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                     <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
                                                 </li>
+                                                @if ($voucher->brand_id !== null)
+                                                    <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
+                                                        <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian product brand {{ $voucher->brand_name }}</p>
+                                                    </li>
+                                                @endif
                                             </ol>
                                         </div>
                                     </div>
@@ -1515,100 +1670,7 @@
 <!-- PAYMENT DOKUNTUL -->
 {{-- payment gateway --}}
     <script>
-        $(document).ready(function() {
-            // Add DOKU payment modal HTML
-            $('body').append(`
-            <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color: #183018">
-                            <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="dokuPaymentModalLabel">Pembayaran</h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body" id="dokuPaymentContainer">
-                            <div class="text-center" id="loadingPayment">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
-                                <p class="mt-2">Mempersiapkan pembayaran...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-            // Handle payment button click
-            $('#paynow').click(function(e) {
-                e.preventDefault();
-
-                // Show loading state
-                $('#paynow').prop('disabled', true);
-                $('#dokuPaymentModal').modal('show');
-
-                // Prepare form data
-                const formData = {
-                    total_amount: parseInt($('#subtotal-price').val()),
-                    shipping_cost: parseInt($('#shipping-cost').val()),
-                    shipping_address_id: parseInt($('#shipping-address-id').val()),
-                    discount_amount: parseInt($('#discount-amount').val() || 0),
-                    products: getProductsData()
-                };
-
-                // Make AJAX request
-                $.ajax({
-                    url: '/initiate-doku-payment',
-                    method: 'POST',
-                    data: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    success: function(response) {
-                        if (response.success && response.payment_url) {
-                            // Load DOKU payment iframe
-                            $('#dokuPaymentContainer').html(`
-                        <iframe 
-                            src="${response.payment_url}"
-                            frameborder="0"
-                            width="100%"
-                            height="600px"
-                            style="overflow: hidden;">
-                        </iframe>
-                    `);
-                        } else {
-                            throw new Error('Invalid payment URL');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        // Show error message
-                        $('#dokuPaymentContainer').html(`
-                    <div class="alert alert-danger">
-                        <p>Terjadi kesalahan saat memproses pembayaran:</p>
-                        <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-                    </div>
-                `);
-                        console.error('Payment error:', error);
-                    },
-                    complete: function() {
-                        $('#paynow').prop('disabled', false);
-                    }
-                });
-            });
-
-            // Helper function to get products data
-            function getProductsData() {
-                const products = [];
-                $('input[name="product[]"]').each(function() {
-                    const productId = $(this).val();
-                    products.push({
-                        product_id: parseInt(productId),
-                        quantity: parseInt($(`#product-quantity-${productId}`).val()),
-                        price: parseInt($(`#product-price-${productId}`).val())
-                    });
-                });
-                return products;
-            }
-        });
+        
     </script>
 
 @endsection

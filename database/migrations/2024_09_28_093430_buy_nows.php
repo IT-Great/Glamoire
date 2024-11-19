@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('user_id');
             $table->unsignedBigInteger('product_id');
+            $table->integer('product_variant_id')->nullable();
             $table->integer('quantity');
             $table->bigInteger('price');
             $table->boolean('is_buy');

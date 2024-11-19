@@ -156,7 +156,7 @@ Route::get('/belanja-{category}-{subcategory}', [ShopController::class, 'subCate
 Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('shop.category');
 
 // DETAIL PRODUCT
-Route::get('/{id}_product', [ProductController::class, 'detail'])->name('detail.product');
+Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product');
 
 // SHIPPING 
 Route::get('/provinces', [CheckoutController::class, 'getProvinces']);
@@ -173,6 +173,7 @@ Route::get('/about', function () {
 
 // DETAIL PRODUK
 Route::get('/{id}_product', [ProductController::class, 'detail'])->name('detail.product');
+
 // DETAIL BRAND
 Route::get('/{nameBrand}_brand', [BrandController::class, 'brands'])->name('detail.brand.user');
 

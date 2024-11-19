@@ -169,4 +169,21 @@ class Promo extends Model
         $this->save();
         return $this;
     }
+
+    public function promoProducts()
+    {
+        return $this->hasMany(PromoProduct::class, 'promo_id');
+    }
+    
+    public function promoTiers()
+    {
+        return $this->hasManyThrough(
+            PromoTier::class,  // Model tujuan
+            Promo::class,      // Model perantara
+            'product_id',      // Foreign key di tabel promos
+            'promo_id',        // Foreign key di tabel promo_tiers
+            'id',              // Local key di tabel products
+            'id'               // Local key di tabel promos
+        );
+    }
 }

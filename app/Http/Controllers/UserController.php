@@ -13,6 +13,7 @@ use App\Models\Buynow;
 use App\Models\Product;
 use App\Models\RatingAndReview;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -37,9 +38,21 @@ class UserController extends Controller
                 $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
             }])->first();
 
-            // dd($profile);
+
+            $getWishlist = Wishlist::where('user_id', $id)->pluck('product_id');
+            $getProductWishlist  = Product::whereIn('id', $getWishlist)
+            ->with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->wherePivot('discounted_price', '>', 0);
+                }])
+            ->get();
             
-            return view('user.component.account')->with('profile', $profile);
+            return view('user.component.account', [
+                'profile' => $profile,
+                'wishlists' => $getProductWishlist,
+            ]);
         } catch (Exception $err) {
             dd($err);
         }
@@ -90,15 +103,25 @@ class UserController extends Controller
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
                 if($checkCartUser){
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                    $product = Product::where('id', $request->product_id)->first();
-                    $total = $product->regular_price;
+                    $product = Product::with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->where('id', $request->product_id)->first();
+
+                    $activePromo = $product->promos->first();
+                    $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
+                    
+                    $total = $price;
 
                     Cart_item::create([
                         'cart_id'    => $cartId,
                         'product_id' => $request->product_id,
                         'quantity'   =>  1,
                         'is_choose'  => TRUE,
-                        'price'      => $product->regular_price,
+                        'price'      => $price,
                         'total'      => $total,
                     ]);
 
@@ -109,15 +132,25 @@ class UserController extends Controller
                     ]);
                     
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                    $product = Product::where('id', $request->product_id)->first();
-                    $total = $product->regular_price;
+                    $product = Product::with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->where('id', $request->product_id)->first();
+
+                    $activePromo = $product->promos->first();
+                    $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
+                    
+                    $total = $price;
 
                     Cart_item::create([
                         'cart_id'    => $cart->id,
                         'product_id' => $request->product_id,
                         'quantity'   =>  1,
                         'is_choose'  => TRUE,
-                        'price'      => $product->regular_price,
+                        'price'      => $price,
                         'total'      => $total,
                     ]);
                     
@@ -205,6 +238,7 @@ class UserController extends Controller
                         Cart_item::create([
                             'cart_id'    => $cartId,
                             'product_id' => $request->product_id,
+                            'product_variant_id' => $request->product_variant_id,
                             'quantity'   => $request->quantity ? $request->quantity : 1,
                             'is_choose'  => TRUE,
                             'price'      => $product->regular_price,
@@ -217,16 +251,18 @@ class UserController extends Controller
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
-                    
+
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
 
                     Cart_item::create([
                         'cart_id'    => $cart->id,
                         'product_id' => $request->product_id,
                         'quantity'   => $request->quantity ? $request->quantity : 1,
                         'is_choose'  => TRUE,
-                        'price'      => 10000,
-                        'total'      => 10000,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
                     ]);
                     
                 }

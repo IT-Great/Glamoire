@@ -12,7 +12,7 @@
     </div>
 
     <div class="row mb-14">
-        @if (count($data[0]['cartItems']) !== 0)
+        @if (count($data) !== 0)
             <div class="col-lg-9 col-12 pr-lg-0">
                 <div class="container border border-[#183018] rounded shadow-md">
                     <div class="form-check py-2 py-md-3 border-bottom border-[#183018]">
@@ -22,8 +22,7 @@
                         </label>
                     </div>
         
-                @foreach ($data as $cart)
-                    @foreach ($cart->cartItems as $product)
+                    @foreach ($data as $product)
 
                         <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
                             <div class="d-flex">
@@ -41,7 +40,26 @@
                                     </p>
                                     @endif
                                     <p class="hover:cursor-pointer text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
-                                    <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ 'Rp' . number_format($product->product->regular_price, 0, ',', '.') }}</p>
+                                    @php
+                                        $activePromo = $product->product->promos->first();
+                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                    @endphp
+
+                                    <div class="flex gap-1">
+                                        @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                            <del>
+                                            Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @else
+                                        <p class="text-decoration-none  text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
+                                            Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                        @endif
+                                    </div>
+
                                     <!-- BUTTON PLUS & MINUS & DELETE -->
                                     <div class="flex mt-auto bottom">
                                         <div class="flex ml-auto">
@@ -92,7 +110,6 @@
                         </div>
 
                     @endforeach
-                @endforeach
                 </div>
             </div>
 
@@ -104,7 +121,7 @@
                             <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
                         </div>
                         <div class="border-top border-[#183018] pt-2">
-                                <button class="btn w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] bg-[#183018] hover:bg-neutral-900" type="submit" id="paynow" onclick="checkout()" disabled>
+                                <button class="btn w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] bg-[#183018] hover:bg-neutral-900" id="paynow" onclick="checkout()" disabled>
                                     Beli
                                 </button>
                             </a>
@@ -357,8 +374,8 @@
         });
 
         // Update total harga di tampilan
-        $('#totalPrice').text('Rp ' + number_format(total, 0, ',', '.'));
-        $('#totalPriceMobile').text('Rp ' + number_format(total, 0, ',', '.'));
+        $('#totalPrice').text('Rp' + number_format(total, 0, ',', '.'));
+        $('#totalPriceMobile').text('Rp' + number_format(total, 0, ',', '.'));
 
         // Aktifkan atau nonaktifkan tombol "Bayar Sekarang"
         if (hasSelectedProduct) {

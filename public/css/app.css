@@ -45,12 +45,17 @@
 
 @media (max-width: 2560px) {
     .skeleton-card {
-        width: calc(25% - 16px); /* 4 items per row */
+        width: calc(25%); /* 4 items per row */
+    }
+}
+@media (max-width: 1440px) {
+    .skeleton-card {
+        width: calc(20%); /* 4 items per row */
     }
 }
 @media (max-width: 768px) {
     .skeleton-card {
-        width: calc(40% - 16px); /* 4 items per row */
+        width: calc(30%); /* 4 items per row */
     }
 }
 @media (max-width: 375px) {
@@ -113,11 +118,33 @@
     color: #183018;
 }
 
+.promo-image {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.promo-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 .grid-container,
 .grid-container-shop {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-gap: 5px;
+    padding: 5px;
+}
+
+.grid-container-product-promo {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 5px;
+    padding: 5px;
+}
+
+.grid-container-promo {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 10px;
     padding: 5px;
 }
 
@@ -275,14 +302,13 @@
     background-color: #183018; /* Ubah warna latar belakang */
     color: white; /* Ubah warna teks */
     border-radius: 50%; /* Buat menjadi lingkaran */
-    width: 35px; /* Lebar tombol */
-    height: 35px; /* Tinggi tombol */
+    height: 22px; /* Tinggi tombol */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-    background-color: #183018; /* Ubah warna latar saat dihover */
+    background-color: black; /* Ubah warna latar saat dihover */
 }
 
 .swiper-button-next:after,

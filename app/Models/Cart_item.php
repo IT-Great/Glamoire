@@ -24,5 +24,6 @@ class Cart_item extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id'); // Adjust the foreign key as necessary
-    }    
+    }   
 }
+

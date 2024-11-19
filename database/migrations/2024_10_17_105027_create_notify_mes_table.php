@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('user_id'); 
             $table->unsignedBigInteger('product_id');
+            $table->integer('product_variant_id')->nullable();
             $table->string('email');
             $table->boolean('status')->default(0);
             $table->date('send_at')->nullable();
@@ -22,8 +23,6 @@ return new class extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
-            $table->boolean('status')->default(0);
-            $table->date('send_at')->nullable();
         });
     }
 
