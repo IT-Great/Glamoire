@@ -1,3 +1,4 @@
+index.blade.php
 <!DOCTYPE html>
 <html lang="en">
 
@@ -141,53 +142,47 @@
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="row mb-2">
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-primary">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon blue mb-2">
-                                            <i class="bi bi-percent"></i>
-                                        </div>
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Promos</h6>
+                                        <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Active Discounts</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $activeDiscounts ?? 0 }}</h6>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-success">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon green mb-2">
-                                            <i class="bi bi-graph-up"></i>
-                                        </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
+                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Total Sales with Discount</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $totalDiscountSales ?? 0 }}</h6>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-receipt"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-info">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon blue mb-2">
-                                            <i class="bi bi-calendar-check"></i>
-                                        </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Discounts</h6>
+                                        <h3 class="mb-0">{{ $activeDiscounts ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Upcoming Discounts</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $upcomingDiscounts ?? 0 }}</h6>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-percent"></i>
                                     </div>
                                 </div>
                             </div>

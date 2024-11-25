@@ -1,3 +1,4 @@
+index.blade.php
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,10 +31,17 @@
         .stats-card {
             transition: transform 0.3s ease;
             cursor: pointer;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .stats-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-icon {
+            font-size: 1.5rem;
         }
 
         .promo-nav {
@@ -136,53 +144,47 @@
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="row mb-4">
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-primary">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon blue mb-2">
-                                            <i class="bi bi-receipt"></i>
-                                        </div>
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Promos</h6>
+                                        <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Active Promos</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $activePromos ?? 0 }}</h6>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-success">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon green mb-2">
-                                            <i class="bi bi-ticket-perforated"></i>
-                                        </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
+                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Active Vouchers</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $activeVouchers ?? 0 }}</h6>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-receipt"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-danger">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon red mb-2">
-                                            <i class="bi bi-percent"></i>
-                                        </div>
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Discounts</h6>
+                                        <h3 class="mb-0">{{ $activeDiscounts ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Active Discounts</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $activeDiscounts ?? 0 }}</h6>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-percent"></i>
                                     </div>
                                 </div>
                             </div>
@@ -207,8 +209,8 @@
                 <div class="card promo-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">All Promotional Campaigns</h5>
-                        <a href="{{ route('create-promo') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>Create New Promo
+                        <a href="{{ route('create-promo') }}" class="btn btn-sm btn-primary">
+                            <i class="fa fa-plus me-1"></i>Buat Promo
                         </a>
                     </div>
                     {{-- <div class="card-body">
@@ -353,7 +355,7 @@
                                         <th>Discount</th>
                                         <th>Status</th>
                                         <th>Actions</th>
-                                        <th>Is Active</th>
+                                        {{-- <th>Is Active</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -401,16 +403,14 @@
                                             <td>
                                                 @php
                                                     $isActive = $item->end_date
-                                                        ? \Carbon\Carbon::parse($item->end_date)->isFuture() &&
-                                                            $item->is_active
+                                                        ? \Carbon\Carbon::parse($item->end_date)->isFuture()
                                                         : false;
                                                 @endphp
                                                 <span
-                                                    class="badge status-badge {{ $isActive ? 'status-active' : 'status-expired' }}">
+                                                    class="badge {{ $isActive ? 'status-active' : 'status-expired' }}">
                                                     {{ $isActive ? 'Active' : 'Expired' }}
                                                 </span>
                                             </td>
-
                                             <td>
                                                 <div class="action-buttons">
                                                     <a href="{{ url('detail-promo/' . $item->id) }}"
@@ -428,7 +428,7 @@
                                                 </div>
                                             </td>
 
-                                            <!-- Update kode switch toggle pada table -->
+                                            {{-- <!-- Update kode switch toggle pada table -->
                                             <td>
                                                 <div class="form-check form-switch">
                                                     <input class="form-check-input status-toggle" type="checkbox"
@@ -440,7 +440,7 @@
                                                         Toggle Status
                                                     </label>
                                                 </div>
-                                            </td>
+                                            </td> --}}
 
                                         </tr>
                                     @endforeach

@@ -24,6 +24,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DokuPaymentController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
@@ -267,11 +268,21 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/edit-product-admin/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
 
+    // STOCK PRODUCT 
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/outof-stock-product-admin', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
     Route::get('/low-stock-product-admin', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
 
+    Route::get('/check-stock-alerts', [ProductController::class, 'checkStockAlerts'])
+        ->name('check-stock-alerts');
+
+    // product update stock
+    Route::get('/get-stock-details/{id}', [ProductController::class, 'getStockDetails']);
     Route::put('/update-stock/{id}', [ProductController::class, 'updateStock'])->name('update-stock');
+
+    // product variant update stock
+    Route::get('/get-variant-stock-details/{variantId}', [ProductController::class, 'getVariantStockDetails']);
+
 
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
     Route::get('/detail-product-admin/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
@@ -340,7 +351,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
 
     // routes/web.php
-    // web.php atau routes file Anda
     Route::get('/get-products-by-brand/{brand}', [PromoController::class, 'getProductsByBrand'])->name('get.products.by.brand');
 
     // promo voucher produk tertentu
@@ -389,6 +399,12 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/detail-affiliate-admin/{id}', [AffiliateController::class, 'detailAffiliateAdmin'])->name('detail-affiliate-admin');
     Route::post('/admin/affiliate/{id}', [AffiliateController::class, 'sendResponseAffiliate'])->name('send-response-affiliate');
 
+    // faq
+    Route::get('/faq-admin', [FaqController::class, 'indexFaqAdmin'])->name('index-faq-admin');
+    Route::post('/faqs-create', [FaqController::class, 'store'])->name('faqs.store');
+    Route::get('/faqs/render-row/{faq}', [FaqController::class, 'renderRow']);
+    Route::delete('/faqs/{id}', [FaqController::class, 'delete'])->name('faqs.delete');
+
 
     Route::get('/chat-admin', function () {
         return view('admin.chat.index');
@@ -407,12 +423,16 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         return view('admin.shippingfee.create');
     });
 
+
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
     Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
 
     // SEND EMAIL RESPONSE
     Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
     Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
+
+    Route::get('/notifications/contact-us', [ContactusController::class, 'getUnreadQuestionsCount'])
+        ->name('unread-questions-count');
 
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
 });

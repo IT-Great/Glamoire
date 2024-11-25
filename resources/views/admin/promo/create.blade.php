@@ -377,6 +377,7 @@
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Limit Stock Product</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -407,8 +408,25 @@
                                                         </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
+
                                                     <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
                                                     </td>
+
+                                                    <td>
+                                                        <input type="number" class="form-control limit-stock"
+                                                            placeholder="Limit Stock"
+                                                            name="limit_stock[{{ $product->id }}]"
+                                                            data-product-id="{{ $product->id }}" min="1"
+                                                            max="{{ $product->stock_quantity }}"
+                                                            value="{{ old('limit_stock.' . $product->id, '') }}"
+                                                            disabled @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($errors->has('limit_stock.' . $product->id))
+                                                            <small
+                                                                class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
+                                                        @endif
+                                                    </td>
+
+
                                                     <td>
                                                         @if ($product->has_active_promo)
                                                             <span class="text-danger">Not Available</span>
@@ -452,6 +470,66 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle checkbox selection
+            const checkboxes = document.querySelectorAll('.select-item');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const productId = this.value;
+                    const limitStockInput = document.querySelector(
+                        `input[name="limit_stock[${productId}]"]`);
+
+                    if (limitStockInput) {
+                        if (this.checked) {
+                            limitStockInput.removeAttribute('disabled');
+                            limitStockInput.required = true;
+                        } else {
+                            limitStockInput.setAttribute('disabled', 'disabled');
+                            limitStockInput.required = false;
+                            limitStockInput.value = ''; // Clear the value when unchecked
+                        }
+                    }
+                });
+            });
+
+            // Handle "Select All" checkbox if you have one
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(checkbox => {
+                        if (!checkbox.disabled) {
+                            checkbox.checked = this.checked;
+                            const event = new Event('change');
+                            checkbox.dispatchEvent(event);
+                        }
+                    });
+                });
+            }
+
+            // Validate limit stock inputs
+            const limitStockInputs = document.querySelectorAll('.limit-stock');
+
+            limitStockInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const maxStock = parseInt(this.getAttribute('max'));
+                    const value = parseInt(this.value);
+
+                    if (isNaN(value) || value <= 0) {
+                        this.setCustomValidity('Please enter a valid number greater than 0');
+                    } else if (value > maxStock) {
+                        this.setCustomValidity(`Limit stock cannot exceed ${maxStock}`);
+                    } else {
+                        this.setCustomValidity('');
+                    }
+
+                    this.reportValidity();
+                });
+            });
+        });
     </script>
 
     <script>

@@ -123,7 +123,7 @@
                             </nav>
                         </div>
                     </div>
-                </div>             
+                </div>
 
                 <section class="section">
                     <div class="card product-card">
@@ -132,7 +132,7 @@
                             <p class="text-muted">Review all incoming messages and click on a message to view or
                                 respond.</p>
                         </div>
-                        <div class="card-body">                                                        
+                        <div class="card-body">
                             <!-- Messages Table -->
                             <table class="table table-hover" id="table1">
                                 <thead>
@@ -155,29 +155,28 @@
                                                     <div class="product-details">
                                                         <span class="product-name">{{ $contact->fullname }}</span>
                                                         <span class="product-meta">{{ $contact->email }}</span>
-                                                        <span class="product-meta">Phone:
-                                                            {{ $contact->phone ?? 'N/A' }}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div class="message-preview">
-                                                    {{ Str::limit($contact->question, 100, '...') }}
+                                                    {{ Str::limit($contact->question, 40, '...') }}
                                                 </div>
                                             </td>
                                             <td>
                                                 @if ($contact->status === 'read')
-                                                    <span class="stock-badge bg-success text-white">
+                                                    <span class="stock-badge rounded-pill bg-success d-inline-flex align-items-center gap-1 text-white">
                                                         <i class="bi bi-check-circle-fill"></i> Read
                                                     </span>
                                                 @else
-                                                    <span class="stock-badge bg-warning text-dark">
-                                                        <i class="bi bi-exclamation-circle-fill"></i> Unread
+                                                <span class="stock-badge rounded-pill bg-warning d-inline-flex align-items-center gap-1 text-dark">
+                                                    <i class="bi bi-exclamation-circle-fill"></i> Unread
                                                     </span>
                                                 @endif
                                             </td>
+
                                             <td>
-                                                {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
+                                                {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y') }}
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
@@ -185,8 +184,7 @@
                                                         class="badge bg-info mb-2">
                                                         <i class="bi bi-eye"></i> View
                                                     </a>
-                                                    <a href="javascript:void(0);"
-                                                        class="badge bg-danger delete-contact"
+                                                    <a href="javascript:void(0);" class="badge bg-danger delete-contact"
                                                         data-id="{{ $contact->id }}">
                                                         <i class="bi bi-trash"></i> Delete
                                                     </a>
@@ -221,7 +219,7 @@
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
-    
+
     <script>
         // HANDLE FORMAT DATE PICKER
         document.addEventListener('DOMContentLoaded', function() {

@@ -25,7 +25,7 @@ class Promo extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'promo_products', 'promo_id', 'product_id')
-            ->withPivot('discount_product_voucher_item');
+            ->withPivot('discount_product_voucher_item', 'limit_stock');
     }
 
     public function tiers()

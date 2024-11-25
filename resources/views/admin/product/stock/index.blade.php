@@ -115,14 +115,14 @@
                                     <li class="breadcrumb-item active">Stock</li>
                                 </ol>
                             </nav>
-                        </div>                       
+                        </div>
                     </div>
                 </div>
 
                 <!-- Quick Stats Section -->
                 <div class="row quick-stats">
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-primary">
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -136,8 +136,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-success">
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -152,14 +152,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-warning">
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="text-muted mb-2">Low Stock</h6>
                                         <h3 class="mb-0">
-                                            {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }}
+                                            {{ $products->where('stock_quantity', '<=', 15)->where('stock_quantity', '>', 0)->count() }}
                                         </h3>
                                     </div>
                                     <div class="stats-icon yellow">
@@ -169,8 +169,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-danger">
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -190,19 +190,13 @@
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('index-stock-product-admin') }}">Semua Item</a>
+                        <a class="nav-link active" href="{{ route('index-stock-product-admin') }}">All</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('outof-stock-product-admin') }}">Habis Stok</a>
+                        <a class="nav-link" href="{{ route('outof-stock-product-admin') }}">Stok Habis</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('low-stock-product-admin') }}">Stok Rendah</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Diarsipkan & Diblokir</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Produk Khusus</a>
                     </li>
                 </ul>
 
@@ -219,31 +213,6 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
                 </div>
 
-
-                <!-- Search Filters -->
-                <div class="card stock-card mt-4">
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">Location</label>
-                                <input type="text" class="form-control" placeholder="Enter min. 1 word">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Min. Stock</label>
-                                <input type="number" class="form-control" placeholder="Min.">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label">Max. Stock</label>
-                                <input type="number" class="form-control" placeholder="Max.">
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary me-2">Search</button>
-                                <button class="btn btn-outline-secondary">Reset</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Product Table -->
                 <div class="card stock-card mt-4">
                     <div class="card-header bg-white">
@@ -254,19 +223,21 @@
                             <thead>
                                 <tr>
                                     <th>Product Details</th>
-                                    <th>Stock</th>
-                                    <th>Expiry Date</th>
+                                    <th>Total Stock</th>
+                                    <th>Stock Details</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 @foreach ($products as $item)
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
                                                 <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
-                                                    class="product-image">
+                                                    class="product-image"
+                                                    onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
                                                 <div class="product-details">
                                                     <span class="product-name">{{ $item->product_name }}</span>
                                                     <span class="product-meta">SKU: {{ $item->product_code }}</span>
@@ -275,113 +246,235 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $item->stock_quantity }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->date_expired)->translatedFormat('d F Y') }}
+                                        {{-- <td>{{ $item->stock_quantity }}</td> --}}
+                                        <td>{{ $item->total_stock }}</td> <!-- Menampilkan stok total -->
+
+                                        <td>
+                                            @foreach ($item->stocks as $stock)
+                                                <div class="stock-batch mb-1">
+                                                    <span class="badge bg-info">
+                                                        {{ $stock->quantity }} units
+                                                    </span>
+                                                    <span class="text-muted">
+                                                        Exp:
+                                                        {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                                    </span>
+                                                </div>
+                                            @endforeach
                                         </td>
                                         <td>
-                                            @if ($item->stock_quantity > 10)
-                                                <span class="stock-badge bg-success text-white">
-                                                    <i class="bi bi-check-circle-fill"></i> In Stock
+                                            @if ($item->isInitialStock() && $item->stock_quantity > 15)
+                                                <span
+                                                    class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>In Stock (Stock Awal)</span>
                                                 </span>
-                                            @elseif($item->stock_quantity > 0)
-                                                <span class="stock-badge bg-warning text-dark">
-                                                    <i class="bi bi-exclamation-circle-fill"></i> Low Stock
+                                            @elseif ($item->total_stock > 15)
+                                                <span
+                                                    class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>In Stock (Stock Awal + Stock Update)</span>
+                                                </span>
+                                            @elseif ($item->total_stock > 0)
+                                                <span
+                                                    class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                                    <span>Low Stock</span>
                                                 </span>
                                             @else
-                                                <span class="stock-badge bg-danger text-white">
-                                                    <i class="bi bi-x-circle-fill"></i> Out of Stock
+                                                <span
+                                                    class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    <span>Out of Stock</span>
                                                 </span>
                                             @endif
                                         </td>
+
                                         <td>
                                             <button class="btn btn-sm btn-primary update-btn"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
-                                                data-stock="{{ $item->stock_quantity }}"
-                                                data-expired="{{ $item->date_expired }}">
+                                                data-status="{{ $item->stock_quantity > 15 && $item->total_stock <= 15 ? 'stock_awal' : 'stock_update' }}">
                                                 <i class="bi bi-pencil"></i> Update
                                             </button>
                                         </td>
                                     </tr>
+
+                                    <!-- Product Variants Rows -->
+                                    @foreach ($item->productVariations as $variant)
+                                        <tr class="variant-row">
+                                            <td class="ps-5">
+                                                <div class="d-flex align-items-center gap-3">
+                                                    @if ($variant->variant_image)
+                                                        <img src="{{ Storage::url($variant->variant_image) }}"
+                                                            alt="Variant Image" class="product-image"
+                                                            onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
+                                                    @endif
+                                                    <div class="product-details">
+                                                        <span class="product-name">
+                                                            {{ $item->product_name }} -
+                                                            {{ $variant->variant_type }}:
+                                                            {{ $variant->variant_value }}
+                                                        </span>
+                                                        <span class="product-meta">SKU: {{ $variant->sku }}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ $variant->variant_stock ?? 0 }}</td>
+                                            <td>
+                                                @foreach ($variant->stocks as $stock)
+                                                    <div class="stock-batch mb-1">
+                                                        <span class="badge bg-info">
+                                                            {{ $stock->quantity }} units
+                                                        </span>
+                                                        <span class="text-muted">
+                                                            Exp:
+                                                            {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                                        </span>
+                                                    </div>
+                                                @endforeach
+                                            </td>
+
+                                            <td>
+                                                @php
+                                                    $variantStockInitial = $variant->variant_stock ?? 0; // Stock Awal
+                                                    $variantTotalStock = $variant->stocks->sum('quantity'); // Total Stock (Stock Update)
+                                                @endphp
+                                                @if ($variantStockInitial > 15 && $variantTotalStock > 15)
+                                                    <span
+                                                        class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        <span>In Stock (Stock Awal + Stock Update)</span>
+                                                    </span>
+                                                @elseif ($variantStockInitial > 15)
+                                                    <span
+                                                        class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        <span>In Stock (Stock Awal)</span>
+                                                    </span>
+                                                @elseif ($variantStockInitial > 0 || $variantTotalStock > 0)
+                                                    <span
+                                                        class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                                        <i class="bi bi-exclamation-circle-fill"></i>
+                                                        <span>Low Stock</span>
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                                        <i class="bi bi-x-circle-fill"></i>
+                                                        <span>Out of Stock</span>
+                                                    </span>
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                <button class="btn btn-sm btn-primary update-btn"
+                                                    data-id="{{ $item->id }}"
+                                                    data-name="{{ $item->product_name }}"
+                                                    data-status="{{ $item->isInitialStock() ? 'stock_awal' : 'stock_update' }}">
+                                                    <i class="bi bi-pencil"></i> Update
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 @endforeach
                             </tbody>
+
                         </table>
                     </div>
                 </div>
+
             </div>
+            @include('admin.layouts.footer')
         </div>
 
+        {{-- update modal yang sesuai --}}
         <div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header bg-white text-white">
+                    <div class="modal-header bg-white">
                         <h5 class="modal-title">
-                            <i class="bi bi-pencil-square"></i> Update Stok & Expired Date
+                            <i class="bi bi-pencil-square"></i> Update Stok Produk
                         </h5>
-                        <button type="button" class="btn-close btn-close-dark" data-bs-dismiss="modal"
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
 
-                    <form id="updateStockForm" action="" method="POST" enctype="multipart/form-data">
+                    <form id="updateStockForm" action="" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
                             <input type="hidden" id="product_id" name="product_id">
+                            <input type="hidden" id="variant_id" name="variant_id">
 
-                            <!-- Nama Produk -->
+                            <!-- Informasi Produk -->
                             <div class="mb-3">
-                                <label class="form-label fw-medium" for="product_name">Nama Produk</label>
+                                <label class="form-label fw-medium">Nama Produk</label>
                                 <input type="text" class="form-control" id="product_name" readonly>
                             </div>
 
-                            <!-- Stok Saat Ini -->
+                            <!-- Tabel Stok Existing -->
                             <div class="mb-3">
-                                <label class="form-label fw-medium" for="current_stock">Stok Saat Ini</label>
-                                <input type="number" class="form-control" id="current_stock" readonly>
+                                <label class="form-label fw-medium">Detail Stok Saat Ini</label>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Jumlah</th>
+                                                <th>Tanggal Kadaluarsa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stockDetailTable"></tbody>
+                                    </table>
+                                </div>
                             </div>
 
-                            <!-- Update Stok dengan Dropdown Tipe -->
+                            <!-- Form Tambah Stok Baru -->
                             <div class="mb-3">
-                                <label class="form-label fw-medium">Update Stok</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Tambah Stok Baru <span
+                                                class="text-danger">*</span></label>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Tanggal Kadaluarsa <span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                </div>
 
 
-                                <!-- Input Stok -->
-                                <input type="number" class="form-control border-start-0" id="stock_quantity"
-                                    name="stock_quantity" required placeholder="Masukkan jumlah stok">
-
-                                <small class="form-text text-muted mt-1">
-                                    <i class="bi bi-info-circle me-1"></i> Masukkan jumlah stok baru yang ingin
-                                    ditambahkan atau dikurangi.
-                                </small>
-                            </div>
-
-                            <!-- Expired Date -->
-                            <div class="mb-3">
-                                <label class="form-label fw-medium" for="date_expired">Expired Date</label>
-                                <input type="date" class="form-control" id="date_expired" name="date_expired">
-                                <small class="form-text text-muted">
-                                    <i class="bi bi-info-circle me-1"></i> Pilih tanggal kedaluwarsa produk.
-                                </small>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" id="stock_quantity"
+                                            name="stock_quantity" required min="1"
+                                            placeholder="Jumlah stok baru">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="date" class="form-control" id="date_expired"
+                                            name="date_expired" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Modal Footer dengan Tombol -->
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                 <i class="bi bi-x-lg"></i> Batal
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-save"></i> Simpan Perubahan
+                                <i class="bi bi-save"></i> Simpan
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js" async></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -391,97 +484,120 @@
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/js/main.js"></script>
 
+    {{-- yang digunakan  --}}
     <script>
-        // Fungsi untuk membuka modal
-        function openUpdateModal(button) {
-            const productId = button.dataset.id;
-            const productName = button.dataset.name;
-            const productStock = button.dataset.stock;
-            const productExpired = button.dataset.expired;
+        $(document).ready(function() {
+            const updateModal = document.getElementById('updateModal');
+            const modal = new bootstrap.Modal(updateModal);
 
-            // Set nilai ke dalam modal
-            document.getElementById('product_id').value = productId;
-            document.getElementById('product_name').value = productName;
-            document.getElementById('current_stock').value = productStock;
-            document.getElementById('stock_quantity').value = productStock;
-            document.getElementById('date_expired').value = productExpired;
+            // Fungsi untuk membuka modal update
+            async function openUpdateModal(button) {
+                const productId = $(button).data('id');
+                const variantId = $(button).data('variant-id');
+                const productName = $(button).data('name');
+                const stockStatus = $(button).data('status');
 
-            // Buka modal menggunakan Bootstrap 5
-            const modal = new bootstrap.Modal(document.getElementById('updateModal'));
-            modal.show();
-        }
+                // Reset form
+                $('#product_id').val(productId);
+                $('#variant_id').val(variantId || '');
+                $('#product_name').val(productName);
+                $('#stock_quantity').val('');
+                $('#date_expired').val('');
 
-        // Function untuk increment dan decrement stock
-        function incrementStock() {
-            const input = document.getElementById('stock_quantity');
-            input.value = parseInt(input.value || 0) + 1;
-        }
+                // Tampilkan pesan loading
+                $('#stockDetailTable').html('<tr><td colspan="2" class="text-center">Loading...</td></tr>');
 
-        function decrementStock() {
-            const input = document.getElementById('stock_quantity');
-            const newValue = parseInt(input.value || 0) - 1;
-            input.value = newValue >= 0 ? newValue : 0;
-        }
+                // Tampilkan modal sebelum mengambil data
+                modal.show();
 
-        // Event listener ketika DOM sudah ready
-        document.addEventListener('DOMContentLoaded', function() {
-            // Event delegation untuk tombol update
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('update-btn')) {
-                    openUpdateModal(e.target);
+                try {
+                    let endpoint, isVariant;
+                    const stockStatus = $(button).data('status');
+
+                    if (variantId) {
+                        endpoint = `/get-variant-stock-details/${variantId}`;
+                        isVariant = true;
+                    } else {
+                        endpoint = `/get-stock-details/${productId}`;
+                        isVariant = false;
+                    }
+
+                    // Tangani status stok awal
+                    const response = await fetch(endpoint);
+                    const data = await response.json();
+                    const stockData = isVariant ? data.variantStocks : data.mainProduct;
+
+                    if (stockData.length === 0) {
+                        // Ini adalah stok awal
+                        const message = isVariant ?
+                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah Stock Awal Produk Variant. Belum ada update stok product variant.</strong></td></tr>' :
+                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah Stock Awal Produk. Belum ada update stok product.</strong></td></tr>';
+
+                        $('#stockDetailTable').html(message);
+                        return;
+                    }
+
+                    // Generate rows berdasarkan data stok
+                    let rows = '';
+                    stockData.forEach(stock => {
+                        rows += `
+                <tr>
+                    <td>${stock.quantity}</td>
+                    <td>${new Date(stock.date_expired).toLocaleDateString('id-ID')}</td>
+                </tr>`;
+                    });
+
+                    $('#stockDetailTable').html(rows);
+                } catch (error) {
+                    $('#stockDetailTable').html(
+                        '<tr><td colspan="2" class="text-center text-danger">Terjadi kesalahan saat memuat data stok</td></tr>'
+                    );
                 }
+            }
+
+            // Event handler untuk tombol update
+            $(document).on('click', '.update-btn', function() {
+                openUpdateModal(this);
             });
 
-            // Handle form submission
-            const updateForm = document.getElementById('updateStockForm');
-            updateForm.addEventListener('submit', async function(e) {
+            // Handle form submission untuk update stok
+            $('#updateStockForm').on('submit', async function(e) {
                 e.preventDefault();
 
-                const productId = document.getElementById('product_id').value;
+                const productId = $('#product_id').val();
                 const formData = new FormData(this);
-                const data = {
-                    stock_quantity: formData.get('stock_quantity'),
-                    date_expired: formData.get('date_expired')
-                };
 
                 try {
                     const response = await fetch(`/update-stock/${productId}`, {
-                        method: 'PUT',
+                        method: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                         },
-                        body: JSON.stringify(data)
+                        body: formData,
                     });
 
                     const result = await response.json();
 
                     if (response.ok) {
-                        // Tutup modal
-                        const modal = bootstrap.Modal.getInstance(document.getElementById(
-                            'updateModal'));
                         modal.hide();
 
-                        // Tampilkan notifikasi sukses
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: result.message || 'Stok berhasil diperbarui!',
-                            timer: 1500
+                            text: result.message,
+                            timer: 1500,
+                            showConfirmButton: false,
                         }).then(() => {
                             location.reload();
                         });
                     } else {
-                        throw new Error(result.message || 'Gagal memperbarui stok');
+                        throw new Error(result.message);
                     }
                 } catch (error) {
-                    console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: error.message || 'Terjadi kesalahan saat memperbarui stok!'
+                        title: 'Error',
+                        text: error.message || 'Terjadi kesalahan saat memperbarui stok',
                     });
                 }
             });

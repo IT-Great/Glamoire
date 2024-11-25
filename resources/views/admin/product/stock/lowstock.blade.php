@@ -21,15 +21,57 @@
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
     <style>
+        .stats-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stock-card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stock-card:hover {
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image:hover {
+            transform: scale(1.1);
+        }
+
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         .nav-tabs .nav-link.active {
+            border-bottom: 2px solid #435ebe;
             border-top: none;
             border-left: none;
             border-right: none;
+            color: #435ebe;
+            font-weight: 600;
         }
 
         .nav-tabs .nav-link {
             border: none;
             color: #666;
+            padding: 0.8rem 1.5rem;
         }
 
         .form-check-input:checked {
@@ -37,17 +79,21 @@
             border-color: #00C853;
         }
 
-        .modal-header {
-            background-color: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
         }
 
-        .input-group .btn {
-            z-index: 0;
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
         }
 
-        .form-control:read-only {
-            background-color: #e9ecef;
+        .product-meta {
+            font-size: 0.9rem;
+            color: #666;
         }
     </style>
 
@@ -60,26 +106,90 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
+                <div class="page-title mb-4">
                     <div class="row align-items-center">
-                        <div class="col-6">
-                            <h2>Stok Saya</h2>
+                        <div class="col-12 col-md-6">
+                            <h2>Stock Management</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/stock-product-admin">Product</a></li>
+                                    <li class="breadcrumb-item active">Stock</li>
+                                </ol>
+                            </nav>
                         </div>
-                        <div class="col-6 text-end">
-                            <div class="d-flex justify-content-end align-items-center gap-3">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">Peringatan Stok</span>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="stockAlert">
+                    </div>
+                </div>
+
+                <!-- Quick Stats Section -->
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Total Products</h6>
+                                        <h3 class="mb-0">{{ $products->count() }}</h3>
                                     </div>
-                                </div>                               
+                                    <div class="stats-icon purple">
+                                        <i class="bi bi-box fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">In Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '>', 10)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-check-circle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Low Stock</h6>
+                                        <h3 class="mb-0">
+                                            {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon yellow">
+                                        <i class="bi bi-exclamation-triangle fs-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Out of Stock</h6>
+                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '=', 0)->count() }}
+                                        </h3>
+                                    </div>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-x-circle fs-3"></i>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Tab Navigation -->
-                <ul class="nav nav-tabs mt-4">
+                <ul class="nav nav-tabs">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('index-stock-product-admin') }}">All</a>
                     </li>
@@ -87,79 +197,172 @@
                         <a class="nav-link" href="{{ route('outof-stock-product-admin') }}">Stok Habis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('low-stock-product-admin') }}">Stok Sedikit</a>
+                        <a class="nav-link active" href="{{ route('low-stock-product-admin') }}">Stok Rendah</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Diarsipkan & Diblokir</a>
-                    </li>
+                </ul>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Produk Sesuai Permintaan</a>
-                    </li>
-                </ul>              
-
-                <!-- Search Filters -->
-                <div class="card mt-4">
-                    <div class="card-body">
-                        <div class="row g-3">                           
-                            <div class="col-md-4">
-                                <label>Lokasi</label>
-                                <input type="text" class="form-control" placeholder="Masukkan min. 1 kata">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Stock Min.</label>
-                                <input type="number" class="form-control" placeholder="Min.">
-                            </div>
-                            <div class="col-md-2">
-                                <label>Stock Maks.</label>
-                                <input type="number" class="form-control" placeholder="Maks.">
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <button class="btn btn-primary me-2">Cari</button>
-                                <button class="btn btn-outline-secondary">Atur Ulang</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>              
+                <!-- Info Alert -->
+                <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Informasi penting tentang manajemen stok:
+                    <ul class="mb-0">
+                        <li><strong>Lokasi:</strong> Pastikan identifikasi lokasi produk dengan tepat.</li>
+                        <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li>
+                        <li><strong>Stok Tersedia:</strong> Jaga jumlah stok yang akurat.</li>
+                        <li><strong>Pengaturan Stok:</strong> Sesuaikan pengaturan berdasarkan permintaan produk.</li>
+                    </ul>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+                </div>
 
                 <!-- Product Table -->
-                <div class="card mt-3">
+                <div class="card stock-card mt-4">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Stock Inventory</h4>
+                    </div>
                     <div class="card-body">
-                        <table class="table" id="table1">
+                        <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Product</th>
-                                    <th>Stok</th>
-                                    <th>Date Expired</th>
-                                    <th>Aksi</th>
+                                    <th>Product Details</th>
+                                    <th>Total Stock</th>
+                                    <th>Stock Details</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
+                            {{-- data menggunakan stock awal dari stock itu sendiri --}}
+                            {{-- <tbody>
+                                @foreach ($products as $item)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
+                                                    class="product-image"
+                                                    onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
+                                                <div class="product-details">
+                                                    <span class="product-name">{{ $item->product_name }}</span>
+                                                    <span class="product-meta">SKU: {{ $item->product_code }}</span>
+                                                    <span class="product-meta">Category:
+                                                        {{ $item->categoryProduct->name }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="badge bg-dark"> Total Stock: {{ $item->total_stock }}</span>
+                                        </td>
+                                        <td>
+                                            @foreach ($item->stocks()->where('quantity', '>', 0)->orderBy('date_expired', 'desc')->get() as $stock)
+                                                <div class="stock-batch mb-1">
+                                                    <span class="badge bg-info">
+                                                        {{ $stock->quantity }} units
+                                                    </span>
+                                                    <span class="text-muted">
+                                                        Exp:
+                                                        {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            @if ($item->total_stock > 15)
+                                                <span
+                                                    class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>In Stock</span>
+                                                </span>
+                                            @elseif($item->total_stock > 0)
+                                                <span
+                                                    class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                                    <span>Low Stock</span>
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    <span>Out of Stock</span>
+                                                </span>
+                                            @endif
+                                        </td>
+
+                                        <td>
+                                            <button
+                                                class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center gap-1"
+                                                data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
+                                                data-stock="{{ $item->total_stock }}">
+                                                <i class="bi bi-pencil"></i> Update
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody> --}}
+
+                            {{-- data menggunakan stock awal dari halaman create product awal --}}
                             <tbody>
                                 @foreach ($products as $item)
                                     <tr>
                                         <td>
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
                                                 <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
-                                                    class="me-3"
-                                                    style="width: 60px; height: 60px; object-fit: cover;">
-                                                <div>
-                                                    <div class="fw-bold">{{ $item->product_name }}</div>
-                                                    <div class="text-muted">SKU: {{ $item->product_code }}</div>
-                                                    <div class="text-muted" style="font-size: 12px;">Category:
-                                                        {{ $item->categoryProduct->name }}</div>
+                                                    class="product-image"
+                                                    onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
+                                                <div class="product-details">
+                                                    <span class="product-name">{{ $item->product_name }}</span>
+                                                    <span class="product-meta">SKU: {{ $item->product_code }}</span>
+                                                    <span class="product-meta">Category:
+                                                        {{ $item->categoryProduct->name }}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $item->stock_quantity }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->date_expired)->translatedFormat('d F Y') }}</td>
+                                        <td>Stock Awal : {{ $item->stock_quantity }}</td>
+                                        </td>
+                                        <td>
+                                            @foreach ($item->stocks as $stock)
+                                                <div class="stock-batch mb-1">
+                                                    <span class="badge bg-info">
+                                                        {{ $stock->quantity }} units
+                                                    </span>
+                                                    <span class="text-muted">
+                                                        Exp:
+                                                        {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                                    </span>
+                                                </div>
+                                            @endforeach
+                                        </td>
+
+                                        <td>
+                                            @if ($item->stock_quantity > 15 && $item->total_stock > 15)
+                                                <span
+                                                    class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>In Stock (Stock Awal + Stock Update)</span>
+                                                </span>
+                                            @elseif ($item->stock_quantity > 15)
+                                                <span
+                                                    class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                    <span>In Stock (Stock Awal)</span>
+                                                </span>
+                                            @elseif ($item->stock_quantity > 0 || $item->total_stock > 0)
+                                                <span
+                                                    class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                                    <span>Low Stock</span>
+                                                </span>
+                                            @else
+                                                <span
+                                                    class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                                    <i class="bi bi-x-circle-fill"></i>
+                                                    <span>Out of Stock</span>
+                                                </span>
+                                            @endif
+                                        </td>
+
                                         <td>
                                             <button class="btn btn-sm btn-primary update-btn"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
-                                                data-stock="{{ $item->stock_quantity }}"
-                                                data-expired="{{ $item->expired_date }}">
-                                                Ubah
+                                                data-status="{{ $item->stock_quantity > 15 && $item->total_stock <= 15 ? 'stock_awal' : 'stock_update' }}">
+                                                <i class="bi bi-pencil"></i> Update
                                             </button>
                                         </td>
                                     </tr>
@@ -168,64 +371,94 @@
                         </table>
                     </div>
                 </div>
-                
             </div>
+            @include('admin.layouts.footer')
         </div>
 
         <div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Update Stok & Expired Date</h5>
+                    <div class="modal-header bg-white">
+                        <h5 class="modal-title">
+                            <i class="bi bi-pencil-square"></i> Update Stok Produk
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <form id="updateStockForm" method="POST">
+
+                    <form id="updateStockForm" action="" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="modal-body">
                             <input type="hidden" id="product_id" name="product_id">
 
+                            <!-- Informasi Produk -->
                             <div class="mb-3">
-                                <label class="form-label">Nama Produk</label>
+                                <label class="form-label fw-medium">Nama Produk</label>
                                 <input type="text" class="form-control" id="product_name" readonly>
                             </div>
 
+                            <!-- Tabel Stok Existing -->
                             <div class="mb-3">
-                                <label class="form-label">Stok Saat Ini</label>
-                                <input type="number" class="form-control" id="current_stock" readonly>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Update Stok</label>
-                                <div class="input-group">
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        onclick="decrementStock()">-</button>
-                                    <input type="number" class="form-control text-center" id="stock_quantity"
-                                        name="stock_quantity" required>
-                                    <button type="button" class="btn btn-outline-secondary"
-                                        onclick="incrementStock()">+</button>
+                                <label class="form-label fw-medium">Detail Stok Saat Ini</label>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Jumlah</th>
+                                                <th>Tanggal Kadaluarsa</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stockDetailTable"></tbody>
+                                    </table>
                                 </div>
                             </div>
 
+                            <!-- Form Tambah Stok Baru -->
                             <div class="mb-3">
-                                <label class="form-label">Expired Date</label>
-                                <input type="date" class="form-control" id="expired_date" name="expired_date">
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Tambah Stok Baru <span
+                                                class="text-danger">*</span></label>
 
-                            <div class="mb-3">
-                                <label class="form-label">Catatan (Opsional)</label>
-                                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-medium">Tanggal Kadaluarsa <span
+                                                class="text-danger">*</span></label>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="number" class="form-control" id="stock_quantity"
+                                            name="stock_quantity" required min="1"
+                                            placeholder="Jumlah stok baru">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="date" class="form-control" id="date_expired"
+                                            name="date_expired" required>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="bi bi-x-lg"></i> Batal
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Simpan
+                            </button>
                         </div>
                     </form>
                 </div>
+
             </div>
+
+
         </div>
+
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
@@ -239,90 +472,203 @@
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/js/main.js"></script>
 
-    <script>
-        // Inisialisasi variabel untuk menyimpan data modal
-        let currentStock = 0;
+    {{-- handle modal update stock --}}
+    {{-- <script>
+        $(document).ready(function() {
+            // Pastikan modal didefinisikan dengan benar
+            const updateModal = document.getElementById('updateModal');
+            const modal = new bootstrap.Modal(updateModal);
 
-        // Function untuk membuka modal
-        function openUpdateModal(button) {
-            const id = button.dataset.id;
-            const name = button.dataset.name;
-            const stock = button.dataset.stock;
-            const expired = button.dataset.expired;
+            // Fungsi untuk membuka modal
+            async function openUpdateModal(button) {
+                const productId = $(button).data('id');
+                const productName = $(button).data('name');
 
-            // Set nilai ke dalam modal
-            document.getElementById('product_id').value = id;
-            document.getElementById('product_name').value = name;
-            document.getElementById('current_stock').value = stock;
-            document.getElementById('stock_quantity').value = stock;
-            document.getElementById('expired_date').value = expired;
+                // Reset form
+                $('#product_id').val(productId);
+                $('#product_name').val(productName);
+                $('#stock_quantity').val('');
+                $('#date_expired').val('');
 
-            currentStock = parseInt(stock);
+                // Tampilkan loading
+                $('#stockDetailTable').html('<tr><td colspan="2">Loading...</td></tr>');
 
-            // Buka modal
-            const modal = new bootstrap.Modal(document.getElementById('updateModal'));
-            modal.show();
-        }
+                // Tampilkan modal sebelum fetch data
+                modal.show();
 
-        // Function untuk increment dan decrement stock
-        function incrementStock() {
-            const input = document.getElementById('stock_quantity');
-            input.value = parseInt(input.value || 0) + 1;
-        }
+                try {
+                    const response = await fetch(`/get-stock-details/${productId}`);
+                    const stockDetails = await response.json();
 
-        function decrementStock() {
-            const input = document.getElementById('stock_quantity');
-            const newValue = parseInt(input.value || 0) - 1;
-            input.value = newValue >= 0 ? newValue : 0;
-        }
+                    let rows = '';
+                    stockDetails.forEach(stock => {
+                        rows += `
+                    <tr>
+                        <td>${stock.quantity}</td>
+                        <td>${new Date(stock.date_expired).toLocaleDateString('id-ID')}</td>
+                    </tr>
+                `;
+                    });
 
-        // Event listener untuk tombol update
-        document.addEventListener('DOMContentLoaded', function() {
-            const updateButtons = document.querySelectorAll('.update-btn');
-            updateButtons.forEach(button => {
-                button.addEventListener('click', () => openUpdateModal(button));
-            });
+                    $('#stockDetailTable').html(rows);
+                } catch (error) {
+                    console.error('Error:', error);
+                    $('#stockDetailTable').html('<tr><td colspan="2">Error loading data</td></tr>');
+                }
+            }
 
             // Handle form submission
-            const updateForm = document.getElementById('updateStockForm');
-            updateForm.addEventListener('submit', async function(e) {
+            $('#updateStockForm').on('submit', async function(e) {
                 e.preventDefault();
 
-                const productId = document.getElementById('product_id').value;
+                const productId = $('#product_id').val();
+                const formData = new FormData(this);
+                formData.append('_method', 'PUT');
+
+                try {
+                    const response = await fetch(`/update-stock/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        modal.hide();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: result.message,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Terjadi kesalahan saat memperbarui stok'
+                    });
+                }
+            });
+
+            // Event handler untuk tombol update
+            $(document).on('click', '.update-btn', function() {
+                openUpdateModal(this);
+            });
+        });
+    </script> --}}
+
+    {{-- update modif by gpt yang sekarang digunakan --}}
+    <script>
+        $(document).ready(function() {
+            const updateModal = document.getElementById('updateModal');
+            const modal = new bootstrap.Modal(updateModal);
+
+            // Fungsi untuk membuka modal update
+            async function openUpdateModal(button) {
+                const productId = $(button).data('id');
+                const productName = $(button).data('name');
+                const stockStatus = $(button).data('status'); // Ambil status dari data-status pada button
+
+                // Reset form
+                $('#product_id').val(productId);
+                $('#product_name').val(productName);
+                $('#stock_quantity').val('');
+                $('#date_expired').val('');
+
+                // Show loading
+                $('#stockDetailTable').html('<tr><td colspan="2">Loading...</td></tr>');
+
+                // Show modal before fetching data
+                modal.show();
+
+                try {
+                    // Jika status adalah "stock_awal", tampilkan pesan khusus dan hentikan proses fetch
+                    if (stockStatus === 'stock_awal') {
+                        $('#stockDetailTable').html(
+                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah Stock Awal Produk. Belum ada update stok.</strong></td></tr>'
+                        );
+                        return;
+                    }
+
+                    // Fetch data stok jika status bukan "stock_awal"
+                    const response = await fetch(`/get-stock-details/${productId}`);
+                    const data = await response.json();
+
+                    let rows = '';
+                    if (data.mainProduct.length > 0) {
+                        data.mainProduct.forEach(stock => {
+                            rows += `
+                                <tr>
+                                    <td>${stock.quantity}</td>
+                                    <td>${new Date(stock.date_expired).toLocaleDateString('id-ID')}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    $('#stockDetailTable').html(
+                        rows ||
+                        '<tr><td colspan="2" class="text-center text-danger"><strong>Stok habis</strong></td></tr>'
+                    );
+                } catch (error) {
+                    // Jika ada error, tampilkan pesan error umum
+                    $('#stockDetailTable').html('<tr><td colspan="2">Error loading data</td></tr>');
+                }
+            }
+
+            // Event handler untuk tombol update
+            $(document).on('click', '.update-btn', function() {
+                openUpdateModal(this);
+            });
+
+            // Handle form submission untuk update stok
+            $('#updateStockForm').on('submit', async function(e) {
+                e.preventDefault();
+
+                const productId = $('#product_id').val();
                 const formData = new FormData(this);
 
                 try {
                     const response = await fetch(`/update-stock/${productId}`, {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                        },
+                        body: formData,
                     });
 
+                    const result = await response.json();
+
                     if (response.ok) {
-                        const result = await response.json();
-                        // Update tampilan tabel tanpa refresh
-                        const row = document.querySelector(`tr[data-id="${productId}"]`);
-                        if (row) {
-                            row.querySelector('.stock-value').textContent = formData.get(
-                                'stock_quantity');
-                        }
+                        modal.hide();
 
-                        // Tutup modal
-                        bootstrap.Modal.getInstance(document.getElementById('updateModal')).hide();
-
-                        // Tampilkan notifikasi sukses
                         Swal.fire({
                             icon: 'success',
                             title: 'Berhasil',
-                            text: 'Stok berhasil diperbarui!'
+                            text: result.message,
+                            timer: 1500,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            location.reload();
                         });
                     } else {
-                        throw new Error('Gagal memperbarui stok');
+                        throw new Error(result.message);
                     }
                 } catch (error) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Oops...',
-                        text: 'Terjadi kesalahan saat memperbarui stok!'
+                        title: 'Error',
+                        text: error.message || 'Terjadi kesalahan saat memperbarui stok',
                     });
                 }
             });

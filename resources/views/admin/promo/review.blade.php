@@ -130,7 +130,7 @@
 <body>
     <div id="app">
         @include('admin.layouts.sidebar')
-        @include('admin.layouts.navbar')       
+        @include('admin.layouts.navbar')
 
         <div id="main">
             <div class="page-heading">
@@ -144,7 +144,7 @@
                                 </ol>
                             </nav>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
 
                 <div class="container">
@@ -214,6 +214,7 @@
                                                 <tr>
                                                     <th>Product</th>
                                                     <th>Stock</th>
+                                                    <th>Limit Stock</th>
                                                     <th>Regular Price</th>
                                                     <th>Discounted Price</th>
                                                 </tr>
@@ -231,6 +232,17 @@
                                                             </div>
                                                         </td>
                                                         <td>{{ $product->stock_quantity }}</td>
+                                                        <td>
+                                                            @if ($product->pivot->limit_stock)
+                                                                <span class="badge bg-info">
+                                                                    {{ $product->pivot->limit_stock }}
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-secondary">
+                                                                    Unlimited
+                                                                </span>
+                                                            @endif
+                                                        </td>
                                                         <td>Rp.
                                                             {{ number_format($product->regular_price, 0, ',', '.') }}
                                                         </td>
@@ -244,7 +256,6 @@
                                                                 @endif
                                                             </span>
                                                         </td>
-                                                        
                                                     </tr>
                                                 @endforeach
                                             </tbody>

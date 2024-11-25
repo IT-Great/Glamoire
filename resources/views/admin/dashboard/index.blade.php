@@ -34,7 +34,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 12px;
-        }       
+        }
 
         .font-semibold {
             font-weight: 600;
@@ -92,7 +92,8 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                    <!-- Replace with "Unpaid" icon -->
+                                                    <i class="iconly-boldWallet"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -109,8 +110,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon orange">
+                                                    <!-- Replace with "Shipment Needs Processing" icon -->
+                                                    <i class="iconly-boldSend"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -127,8 +129,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon green">
+                                                    <!-- Replace with "Processed Shipments" icon -->
+                                                    <i class="bi bi-box fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -145,8 +148,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon red">
+                                                    <!-- Replace with "Canceled by Buyer" icon -->
+                                                    <i class="bi bi-x-circle fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -166,8 +170,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon blue">
+                                                    <!-- Replace with "New Order" icon -->
+                                                    <i class="bi bi-check-circle fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -184,8 +189,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon blue">
-                                                    <i class="iconly-boldProfile"></i>
+                                                <div class="stats-icon grey">
+                                                    <!-- Replace with "Out Of Stock" icon -->
+                                                    <i class="iconly-boldDanger"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -202,8 +208,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                                                <div class="stats-icon teal">
+                                                    <!-- Replace with "Available Stock" icon -->
+                                                    <i class="iconly-boldBag"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -220,8 +227,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                                                <div class="stats-icon blue">
+                                                    <!-- Replace with "Upcoming Promotion" icon -->
+                                                    <i class="iconly-boldDiscount"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -233,6 +241,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Sales Information Card -->
                         <div class="row">
@@ -886,4 +895,4 @@
     </script> --}}
 </body>
 
-</html>
+</html> 

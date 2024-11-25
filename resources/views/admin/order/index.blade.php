@@ -137,7 +137,7 @@
                             </nav>
                         </div>
                     </div>
-                </div>            
+                </div>
 
                 <!-- Main Tabs -->
                 <div class="border-bottom mb-4">
@@ -261,7 +261,7 @@
                     </div>
                 </div>
 
-                <!-- Orders Table -->         
+                <!-- Orders Table -->
 
                 <div class="card order-table">
                     <div class="card-header bg-white">
@@ -291,7 +291,7 @@
                                                     </div>
                                                     <div class="text-secondary small">
                                                         <i class="bi bi-receipt me-1"></i>
-                                                        {{ $order->invoice->no_invoice }} 
+                                                        Invoice : {{ $order->doku_order_id }}
                                                     </div>
                                                 </div>
                                             </div>

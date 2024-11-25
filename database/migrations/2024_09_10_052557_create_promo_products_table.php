@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->string('discount_product_voucher_item')->nullable(); 
             $table->string('discount_type')->nullable();
+            $table->integer('limit_stock')->nullable(); // Ganti 'column_name' dengan kolom sebelum 'limit_stock'
             $table->decimal('discounted_price', 15, 2)->nullable();
             $table->timestamps();
         });

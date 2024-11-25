@@ -57,7 +57,7 @@ class Product extends Model
     public function hasActivePromoByType($promoType)
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where('type', $promoType)
             ->where(function ($query) use ($currentDate) {
@@ -71,7 +71,7 @@ class Product extends Model
     public function getActivePromoByType($promoType)
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where('type', $promoType)
             ->where(function ($query) use ($currentDate) {
@@ -101,7 +101,7 @@ class Product extends Model
     public function getActivePromo()
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where(function ($query) use ($currentDate) {
                 $query->whereRaw("SUBSTRING_INDEX(date_range, ' - ', 1) <= ?", [$currentDate])
@@ -118,5 +118,30 @@ class Product extends Model
         }
 
         return $activePromo->pivot->discounted_price ?? $this->regular_price;
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(ProductStocks::class);
+    }
+
+
+
+    public function isInitialStock()
+    {
+        return $this->stocks()->count() === 0;
+    }
+
+    public function getTotalStockAttribute()
+    {
+        $updatedStockTotal = $this->stocks()->sum('quantity');
+
+        // Jika tidak ada pembaruan stok, kembalikan stock_quantity saja
+        if ($updatedStockTotal === 0) {
+            return $this->stock_quantity;
+        }
+
+        // Jika ada pembaruan stok, jumlahkan dengan stock_quantity
+        return $this->stock_quantity + $updatedStockTotal;
     }
 }

@@ -26,25 +26,77 @@ class FormController extends Controller
         return response()->json(['exists' => $emailExists]);
     }
 
+    // public function sendQuestion(Request $request)
+    // {
+    //     try { 
+    //         $question = Question::create([
+    //             'fullname'   => $request->fullname,
+    //             'email'      => $request->email,
+    //             'question'   => $request->question,
+    //             'created_at' => now(),
+    //         ]);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Pertanyaan Anda Sudah Kami Terima. 
+    //             Tunggu Balasan Email Dari Kami Yaa'
+    //         ]);
+    //     } catch (Exception $err) {
+    //         dd($err);
+    //     }
+    // }
+
     public function sendQuestion(Request $request)
     {
-        try { 
-            $question = Question::create([
-                'fullname'   => $request->fullname,
-                'email'      => $request->email,
-                'question'   => $request->question,
+        // Validasi input
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'question' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Max 2MB
+            'video' => 'nullable|mimes:mp4,mov,avi|max:10240', // Max 10MB
+        ]);
+
+        try {
+            $data = [
+                'fullname' => $request->fullname,
+                'email' => $request->email,
+                'question' => $request->question,
                 'created_at' => now(),
-            ]);
+            ];
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
+                $data['image'] = $imagePath;
+            }
+
+            // Handle video upload
+            if ($request->hasFile('video')) {
+                $video = $request->file('video');
+                $videoName = time() . '_' . $video->getClientOriginalName();
+                $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
+                $data['video'] = $videoPath;
+            }
+
+            // Simpan ke database
+            Question::create($data);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pertanyaan Anda Sudah Kami Terima. 
-                Tunggu Balasan Email Dari Kami Yaa'
+                'message' => 'Pertanyaan Anda Sudah Kami Terima. Tunggu Balasan Email Dari Kami Yaa',
             ]);
-        } catch (Exception $err) {
-            dd($err);
+        } catch (\Exception $err) {
+            // Tangani error
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+            ], 500);
         }
     }
+
 
     public function files(Request $request)
     {
@@ -93,7 +145,6 @@ class FormController extends Controller
 
             session()->flash('send_success');
             return redirect()->back()->with('success', 'File berhasil diupload');
-
         } catch (Exception $err) {
             dd($err);
         }
@@ -103,7 +154,7 @@ class FormController extends Controller
     {
         try {
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Komentar Berhasil Ditambahkan'
             ]);
         } catch (Exception $err) {

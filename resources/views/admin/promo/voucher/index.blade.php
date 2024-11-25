@@ -1,3 +1,4 @@
+index.blade.php
 <!DOCTYPE html>
 <html lang="en">
 
@@ -28,10 +29,16 @@
         .stats-card {
             transition: transform 0.3s ease;
             cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .stats-card:hover {
             transform: translateY(-5px);
+        }
+
+        .stats-icon {
+            font-size: 2rem;
         }
 
         .promo-nav {
@@ -123,61 +130,57 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
-                <div class="row">
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-primary">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon blue mb-2">
-                                            <i class="bi bi-ticket-detailed"></i>
-                                        </div>
+                <!-- Stats Cards -->               
+                <div class="row quick-stats">
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
+                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Active Vouchers</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $activeVouchers ?? 0 }}</h6>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-success">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon green mb-2">
-                                            <i class="bi bi-people"></i>
-                                        </div>
+                
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Voucher Usage</h6>
+                                        <h3 class="mb-0">{{ $voucherUsage ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Voucher Usage</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $voucherUsage ?? 0 }}</h6>
+                                    <div class="stats-icon green">
+                                        <i class="bi bi-receipt fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-sm-4 mb-3">
-                        <div class="card stats-card bg-light-danger">
-                            <div class="card-body px-4 py-4-5">
-                                <div class="row">
-                                    <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start">
-                                        <div class="stats-icon red mb-2">
-                                            <i class="bi bi-clock-history"></i>
-                                        </div>
+                
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted mb-2">Expired Vouchers</h6>
+                                        <h3 class="mb-0">{{ $expiredVouchers ?? 0 }}</h3>
                                     </div>
-                                    <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                        <h6 class="text-muted font-semibold">Expired Vouchers</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $expiredVouchers ?? 0 }}</h6>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-x-circle fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">

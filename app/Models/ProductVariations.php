@@ -21,6 +21,16 @@ class ProductVariations extends Model
         'weight_variant',
     ];
 
+    public function stocks()
+    {
+        return $this->hasMany(ProductStocks::class, 'variation_id', 'id');
+    }
+
+    public function getTotalStockAttribute()
+    {
+        return $this->variant_stock + $this->stocks->sum('quantity');
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -217,18 +217,13 @@
                                 </ol>
                             </nav>
                         </div>
-                        <div class="col-12 col-md-6 text-md-end">
-                            <a href="{{ route('create-product-admin') }}" class="btn btn-primary">
-                                <i class="fa fa-plus-circle"></i> Add New Product
-                            </a>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Quick Stats Section -->
                 <div class="row quick-stats">
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-primary">
+                    <div class="col-12 col-md-3 mb-2">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -242,8 +237,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-success">
+                    <div class="col-12 col-md-3 mb-2">
+                        <div class="card stats-card ">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -258,14 +253,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-warning">
+                    <div class="col-12 col-md-3 mb-2">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div>
+                                    {{-- <div>
                                         <h6 class="text-muted mb-2">Low Stock</h6>
                                         <h3 class="mb-0">
                                             {{ $products->where('stock_quantity', '<', 10)->where('stock_quantity', '>', 0)->count() }}
+                                        </h3>
+                                    </div> --}}
+
+                                    <div>
+                                        <h6 class="text-muted mb-2">Low Stock</h6>
+                                        <h3 class="mb-0">
+                                            {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }}
                                         </h3>
                                     </div>
                                     <div class="stats-icon yellow">
@@ -275,8 +277,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-3 mb-4">
-                        <div class="card stats-card bg-light-danger">
+                    <div class="col-12 col-md-3 mb-2">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -296,14 +298,24 @@
                 <!-- Products Table Section -->
                 <div class="card product-card">
                     <div class="card-header bg-white">
-                        <h4 class="mb-0">Product Inventory</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h4>Product Inventory</h4>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                                <a href="{{ route('create-product-admin') }}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-plus"></i> Buat Produk
+                                </a>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="card-body">
                         <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
                                     <th>Product Details</th>
-                                    <th>Sales</th>
+                                    <th>Stock</th>
                                     <th>Stock Status</th>
                                     <th>Price</th>
                                     <th>Actions</th>
@@ -330,7 +342,7 @@
                                         </td>
                                         <td>{{ $item->stock_quantity }}</td>
                                         <td>
-                                            @if ($item->stock_quantity > 10)
+                                            @if ($item->stock_quantity > 15)
                                                 <span class="stock-badge bg-success text-white">
                                                     <i class="bi bi-check-circle-fill"></i> In Stock
                                                 </span>
@@ -348,9 +360,11 @@
                                             <div class="d-flex flex-column">
                                                 @php
                                                     $activePromo = $item->promos->first();
-                                                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                                    $discountedPrice = $activePromo
+                                                        ? $activePromo->pivot->discounted_price
+                                                        : null;
                                                 @endphp
-                                                
+
                                                 @if ($discountedPrice && $discountedPrice < $item->regular_price)
                                                     <span class="text-danger fw-bold">
                                                         Rp {{ number_format($discountedPrice, 0, ',', '.') }}
@@ -375,7 +389,8 @@
                                                     class="badge bg-warning mb-2">
                                                     <i class="bi bi-pencil"></i> Edit
                                                 </a>
-                                                <a href="javascript:void(0);" class="badge bg-danger delete-product"
+                                                <a href="javascript:void(0);"
+                                                    class="badge bg-danger delete-product mb-2"
                                                     data-id="{{ $item->id }}">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>

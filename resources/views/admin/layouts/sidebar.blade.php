@@ -92,7 +92,7 @@
 
                     <li class="sidebar-item {{ Request::is('contact-us-admin') ? 'active' : '' }}">
                         <a href="/contact-us-admin" class='sidebar-link'>
-                            <i class="bi bi-patch-question"></i>
+                            <i class="bi bi-telephone-plus-fill"></i>
                             <span>Contact Us</span>
                         </a>
                     </li>
@@ -101,6 +101,13 @@
                         <a href="/affiliate-admin" class='sidebar-link'>
                             <i class="bi bi-person-lines-fill"></i>
                             <span>Affiliate</span>
+                        </a>
+                    </li>
+                   
+                    <li class="sidebar-item {{ Request::is('faq-admin') ? 'active' : '' }}">
+                        <a href="/faq-admin" class='sidebar-link'>
+                            <i class="bi bi-patch-question-fill"></i>
+                            <span>FAQ</span>
                         </a>
                     </li>
 
