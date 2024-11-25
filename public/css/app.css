@@ -50,7 +50,7 @@
 }
 @media (max-width: 1440px) {
     .skeleton-card {
-        width: calc(20%); /* 4 items per row */
+        width: calc(20% - 7px); /* 4 items per row */
     }
 }
 @media (max-width: 768px) {
@@ -130,7 +130,7 @@
 .grid-container-shop {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
+    grid-gap: 10px;
     padding: 5px;
 }
 
@@ -200,8 +200,6 @@
     border-bottom: #183018;
     background-color: #183018;
     color: #ffffff;
-    text-color: #ffffff;
-    font-color: #ffffff;
 }
 
 .aclonica-regular {
@@ -264,7 +262,7 @@
     .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        grid-gap: 5px;
+        grid-gap: 10px;
         padding: 5px;
     }
 }
@@ -282,10 +280,12 @@
     .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 5px;
+        grid-gap: 10px;
         padding: 5px;
     }
 
+    .swiper-next,
+    .swiper-prev,
     .swiper-button-next,
     .swiper-button-prev {
         background-color: #183018; /* Ubah warna latar belakang */
@@ -297,6 +297,8 @@
     }
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next,
 .swiper-button-prev {
     background-color: #183018; /* Ubah warna latar belakang */
@@ -306,11 +308,15 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
     background-color: black; /* Ubah warna latar saat dihover */
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next:after,
 .swiper-button-prev:after {
     font-size: 10px; /* Ubah ukuran ikon */
@@ -436,8 +442,7 @@
 }
 
 .custom-shadow {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15); /* Bayangan seragam di semua sisi */
-    border-radius: 4px; /* Sesuaikan sudut membulat sesuai kebutuhan */
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.15); /* Bayangan seragam di semua sisi */
 }
 
 .image-container {
@@ -2707,7 +2712,7 @@ pre code {
     .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 5px;
+        grid-gap: 10px;
         padding: 5px;
     }
 }

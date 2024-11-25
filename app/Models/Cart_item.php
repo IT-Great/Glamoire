@@ -17,6 +17,7 @@ class Cart_item extends Model
         'price',
         'total',
         'is_choose',
+        'product_variant_id',
         'created_at',
         'updated_at',
     ];
@@ -24,6 +25,11 @@ class Cart_item extends Model
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id'); // Adjust the foreign key as necessary
+    }   
+
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariations::class, 'product_variant_id'); // Adjust the foreign key as necessary
     }   
 }
 

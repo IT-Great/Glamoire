@@ -835,7 +835,7 @@
                       if (content) content.style.color = '#ffffff'; // Ubah warna konten
                     }
                   }).then(function () {
-                    window.location.href = "/"; // Redirect ke halaman utama atau halaman lain
+                    $("#loginUser1").show(); // Redirect ke halaman utama atau halaman lain
                   });
                 }
             },
@@ -843,7 +843,7 @@
               Swal.close();
               Toast.fire({
                 icon: "error",
-                text: response.message,
+                text: "Kesalahan Sistem",
                 
                 willOpen: () => {
                   const title = document.querySelector('.swal2-title');

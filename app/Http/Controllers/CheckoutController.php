@@ -19,14 +19,14 @@ use App\Models\Invoice;
 use App\Models\Promo;
 use App\Models\Province;
 use App\Models\City;
-use App\Models\shippingFee;
-use App\Models\PromoTier;
-
+use App\Models\PromoProduct;
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 use App\Services\DokuService;
+use PDO;
 
 class CheckoutController extends Controller
 {
@@ -69,8 +69,7 @@ class CheckoutController extends Controller
                     $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
                         ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
                         ->when('product voucher' === 'product voucher', function($query) {
-                            return $query->leftJoin('promo_products', 'promo_products.promo_id', '=', 'promos.id')
-                                        ->leftJoin('products', 'products.id', '=', 'promo_products.product_id');
+                            return $query->with('products');
                         })
                         ->whereNotIn('promo_code', $checkVoucherUsage)
                         ->whereColumn('total_used', '<', 'usage_quota')
@@ -125,18 +124,68 @@ class CheckoutController extends Controller
                     ->whereHas('product', function ($query) {
                         $query->where('stock_quantity', '!=', 0);
                     })
-                    ->with('product')
+                    ->with(['product' => function ($query) {
+                        $query->with(['promos' => function ($query) {
+                            $query->with(['tiers']);
+                        }]);
+                    }, 'productVariant'])
                     ->select(
                         'cart_items.*',        // Semua kolom dari tabel cart_items
                         'products.brand_id',   // brand_id dari tabel products
                         'brands.id as brand_id' // id dari tabel brands
                     )
                     ->get();
-
-
-                    
             
-                // dd($vouchers);
+                    foreach ($cartItems as $item) {
+                        if ($item->product && $item->product->promos) {
+                            foreach ($item->product->promos as $promo) {
+                                if ($promo->tiers) {
+                                    foreach ($promo->tiers as $tier) {
+                                        switch ($tier->discount_type) {
+                                            case 'percentage':
+                                                // Contoh logika untuk diskon persentase
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'nominal':
+                                                // Contoh logika untuk diskon nominal
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total - $tier->discount_value;
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'package':
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                                    $item->total = $tier->package_price;
+                                                }
+                                                break;
+                    
+                                            default:
+                                                // Logika default jika tidak ada kasus yang cocok
+                                                $item->discounted_price = $item->product->price;
+                                                break;
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                
+                foreach($cartItems as $prod){
+                    if($prod->promos || $prod->promoTiers){
+                        $voucherDisabled = TRUE;
+                    }
+                    else{
+                        $voucherDisabled = FALSE;
+                    }
+                }
 
             
 
@@ -304,6 +353,8 @@ class CheckoutController extends Controller
                     'ongkir'        => $ongkir,
                     'weight'        => $totalWeight,
                     'productVoucherIds' => $productVoucherIds,
+                    'voucherDisabled' => $voucherDisabled,
+
                 ];
 
                 $productIds = $data['cartItems']->pluck('product_id');
@@ -312,6 +363,7 @@ class CheckoutController extends Controller
                 // dd($data['cartItems']->pluck('product_id'));
                 $brandIds = $cartItems->pluck('brand_id'); // Ambil semua brand_id dari cartItems
                 $productIds = $cartItems->pluck('product_id');
+
 
                 $unusableVouchers = $vouchers->filter(function ($voucher) use ($data, $brandIds, $productIds) {
                     // Voucher unusable jika salah satu kondisi tidak terpenuhi
@@ -586,7 +638,7 @@ class CheckoutController extends Controller
             }
 
         } catch (Exception $err) {
-            error(404);
+            dd($err);
         }
     }
     
@@ -622,7 +674,9 @@ class CheckoutController extends Controller
             $ongkirDiscount = 0;
             $voucher = null;
             $ongkir = null;
+            $discountOngkir = 0;
             $ongkirAfter = $request->shipping_cost;
+            
     
             // Retrieve promo voucher if `voucherCode` is provided
             if (!empty($voucherCode)) {
@@ -635,12 +689,12 @@ class CheckoutController extends Controller
                 $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
                 if($ongkirDiscount <= 100)
                 {
-                    $discountong = $request->shipping_cost * ($ongkirDiscount/100);
-                    $ongkirAfter = $request->shipping_cost - $discountong;
+                    $discountOngkir = $request->shipping_cost * ($ongkirDiscount/100);
+                    $ongkirAfter = $request->shipping_cost - $discountOngkir;
                 }
                 else{
-                    $discountong = min($request->shipping_cost, $ongkirDiscount);
-                    $ongkirAfter = $request->shipping_cost - $discountong;
+                    $discountOngkir = min($request->shipping_cost, $ongkirDiscount);
+                    $ongkirAfter = $request->shipping_cost - $discountOngkir;
                 }
             }
     
@@ -659,25 +713,109 @@ class CheckoutController extends Controller
                 ->with(['product.brand'])
                 ->get();
     
-            $totalProduct = $cartItems->sum('quantity');
-            $totalPrice = $cartItems->sum('total');
+                $totalPrice = $cartItems->sum('total');
+                $totalProduct = $cartItems->sum('quantity');
     
             // Calculate discount if `voucher` exists
             if ($voucher) {
                 $percent = $voucher->discount;
-    
-                // Apply percentage discount if `percent` <= 100, otherwise fixed amount
-                $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
+                
+                if($voucher->type == 'limited voucher'){
+                    $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
+                    $totalShopping = $totalPrice - $discount + $request->shipping_cost - $discountOngkir;
+                }
+                elseif($voucher->type == 'product voucher'){
+                    $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                    $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                    // Filter cart items yang eligible untuk diskon
+                    $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                        return $eligibleProductIds->contains($cartItem->product_id);
+                    });
+
+                    // Hitung total harga dari semua produk yang eligible
+                    $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                    // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                    $percent = $voucher->discount;
+
+                    if ($percent <= 100) {
+                        // Logika diskon presentase
+                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                            $product->discPrice = $product->price - ($product->price * $percent/100);
+                            $product->afterPrecentage = $product->quantity * ($product->price * $percent/100);
+                            return $product->quantity * $product->discPrice;
+                        });
+
+                        $discount = $eligibleCartItems->sum('afterPrecentage');
+                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                    } else {
+                        // Logika diskon nominal
+                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                            $product->discPrice =  $product->price - $percent;
+                            $product->afterPrecentage = $product->quantity * $percent;
+                            return $product->quantity * $product->discPrice;
+                        });
+
+                        $discount =  $eligibleCartItems->sum('afterPrecentage');
+                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                    }
+                }
+                elseif($voucher->type == 'brand voucher'){
+                    $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                    $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                    // Filter cart items yang eligible untuk diskon
+                    $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                        return $eligibleProductIds->contains($cartItem->product_id);
+                    });
+
+                    // Hitung total harga dari semua produk yang eligible
+                    $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                    // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                    $percent = $voucher->discount;
+
+                    if ($percent <= 100) {
+                        // Logika diskon presentase
+                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                            $product->discPrice = $product->price - ($product->price * $percent/100);
+                            $product->afterPrecentage = $product->quantity * ($product->price * $percent/100);
+                            return $product->quantity * $product->discPrice;
+                        });
+
+                        $discount = $eligibleCartItems->sum('afterPrecentage');
+                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                    } else {
+                        // Logika diskon nominal
+                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                            $product->discPrice =  $product->price - $percent;
+                            $product->afterPrecentage = $product->quantity * $percent;
+                            return $product->quantity * $product->discPrice;
+                        });
+
+                        $discount =  $eligibleCartItems->sum('afterPrecentage');
+                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                    }
+                }
+            }
+            else{
+                // Cuma Ongkir
+                $totalShopping = $totalPrice + $request->shipping_cost - $discountOngkir;
             }
     
             // Calculate `totalShopping`
-            $totalShopping = $totalPrice - $discount + $request->ongkir - $ongkirDiscount;
     
             // Format outputs
+
             $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
             $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
             $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
-            $ongkirFormatted = $ongkirCode ? number_format($discountong, 0, ',', '.') : null;
+            $ongkirFormatted = $ongkirCode ? number_format($discountOngkir, 0, ',', '.') : null;
             $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
     
             // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
@@ -686,6 +824,9 @@ class CheckoutController extends Controller
     
             return response()->json([
                 'success' => true,
+                'tes' => $discount,
+                'discountFormatted' => $discountFormatted,
+                'totalShoppingFormatted' => $totalShopping,
                 'discount' => $discountFormatted,  // Null if no promo voucher
                 'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
                 'hemat' => $hematFormatted,
@@ -703,109 +844,109 @@ class CheckoutController extends Controller
         }
     }
 
-    public function checkApplyVoucherBuyNow(Request $request) 
-    {
-        try {
-            $userId = session('id_user');
-            $voucherCode = $request->code_voucher_promo;
-            $ongkirCode = $request->code_voucher_ongkir;
+    // public function checkApplyVoucherBuyNow(Request $request) 
+    // {
+    //     try {
+    //         $userId = session('id_user');
+    //         $voucherCode = $request->code_voucher_promo;
+    //         $ongkirCode = $request->code_voucher_ongkir;
     
-            // Basic response if user ID is not found
-            if (!$userId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not found.'
-                ]);
-            }
+    //         // Basic response if user ID is not found
+    //         if (!$userId) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'User not found.'
+    //             ]);
+    //         }
     
-            // Initialize variables
-            $totalPrice = 0;
-            $discount = 0;
-            $ongkirVoucher = 0;
-            $ongkirDiscount = 0;
-            $voucher = null;
-            $ongkir = null;
-            $ongkirAfter = $request->ongkir;
+    //         // Initialize variables
+    //         $totalPrice = 0;
+    //         $discount = 0;
+    //         $ongkirVoucher = 0;
+    //         $ongkirDiscount = 0;
+    //         $voucher = null;
+    //         $ongkir = null;
+    //         $ongkirAfter = $request->ongkir;
             
     
-            // Fetch cart items and calculate `totalPrice`
-            $cartItems = Buynow::where('user_id', $userId)
-                ->with(['product.brand'])
-                ->get();
+    //         // Fetch cart items and calculate `totalPrice`
+    //         $cartItems = Buynow::where('user_id', $userId)
+    //             ->with(['product.brand'])
+    //             ->get();
     
-            $totalProduct = $cartItems->sum('quantity');
-            $totalPrice = $cartItems->sum('total');
+    //         $totalProduct = $cartItems->sum('quantity');
+    //         $totalPrice = $cartItems->sum('total');
     
-            // Calculate discount if `voucher` exists
-            if ($voucher) {
-                $percent = $voucher->discount;
+    //         // Calculate discount if `voucher` exists
+    //         if ($voucher) {
+    //             $percent = $voucher->discount;
     
-                // Apply percentage discount if `percent` <= 100, otherwise fixed amount
-                $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
-            }
+    //             // Apply percentage discount if `percent` <= 100, otherwise fixed amount
+    //             $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
+    //         }
 
-            // Retrieve promo voucher if `voucherCode` is provided
-            if (!empty($voucherCode)) {
-                $voucher = Promo::where('promo_code', $voucherCode)->first();
-            }
+    //         // Retrieve promo voucher if `voucherCode` is provided
+    //         if (!empty($voucherCode)) {
+    //             $voucher = Promo::where('promo_code', $voucherCode)->first();
+    //         }
     
-            // Retrieve ongkir discount if `ongkirCode` is provided
-            if (!empty($ongkirCode)) {
-                $ongkir = Promo::where('promo_code', $ongkirCode)->first();
-                $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
-                $ongkirVoucher = $ongkir ? $ongkir->discount : 0;
-                if($ongkirDiscount <= 100)
-                {
-                    $discount = $requet->shipping_cost * ($ongkirDiscount/100);
-                    $ongkirAfter = $request->shipping_cost - $discount;
-                }
-                else{
-                    if ($request->shipping_cost < $ongkirDiscount) {
-                        $ongkirDiscount = $request->shipping_cost;
-                    }
-                    $ongkirAfter = $request->shipping_cost - $ongkirDiscount;
-                }
-            }
+    //         // Retrieve ongkir discount if `ongkirCode` is provided
+    //         if (!empty($ongkirCode)) {
+    //             $ongkir = Promo::where('promo_code', $ongkirCode)->first();
+    //             $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
+    //             $ongkirVoucher = $ongkir ? $ongkir->discount : 0;
+    //             if($ongkirDiscount <= 100)
+    //             {
+    //                 $discount = $request->shipping_cost * ($ongkirDiscount/100);
+    //                 $ongkirAfter = $request->shipping_cost - $discount;
+    //             }
+    //             else{
+    //                 if ($request->shipping_cost < $ongkirDiscount) {
+    //                     $ongkirDiscount = $request->shipping_cost;
+    //                 }
+    //                 $ongkirAfter = $request->shipping_cost - $ongkirDiscount;
+    //             }
+    //         }
     
-            // Return error if neither `voucher` nor `ongkir` is valid
-            if (!$voucher && !$ongkir) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Kode promo tidak valid atau sudah tidak aktif.'
-                ]);
-            }
+    //         // Return error if neither `voucher` nor `ongkir` is valid
+    //         if (!$voucher && !$ongkir) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Kode promo tidak valid atau sudah tidak aktif.'
+    //             ]);
+    //         }
     
-            // Calculate `totalShopping`
-            $totalShopping = $totalPrice - $discount + $request->ongkir - $ongkirDiscount;
+    //         // Calculate `totalShopping`
+    //         $totalShopping = $totalPrice - $discount + $request->ongkir - $ongkirDiscount;
     
-            // Format outputs
-            $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
-            $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
-            $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
-            $ongkirFormatted = $ongkirCode ? number_format($ongkirDiscount, 0, ',', '.') : null;
-            $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
+    //         // Format outputs
+    //         $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
+    //         $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
+    //         $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
+    //         $ongkirFormatted = $ongkirCode ? number_format($ongkirDiscount, 0, ',', '.') : null;
+    //         $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
 
-            // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
-            $hemat = ($voucherCode && $ongkirCode) ? $discount + $ongkirDiscount : ($voucherCode ? $discount : $ongkirDiscount);
-            $hematFormatted = number_format($hemat, 0, ',', '.');
+    //         // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
+    //         $hemat = ($voucherCode && $ongkirCode) ? $discount + $ongkirDiscount : ($voucherCode ? $discount : $ongkirDiscount);
+    //         $hematFormatted = number_format($hemat, 0, ',', '.');
     
-            return response()->json([
-                'success' => true,
-                'discount' => $discountFormatted,  // Null if no promo voucher
-                'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
-                'hemat' => $hematFormatted,
-                'ongkirCalculate' => $ongkirCalculated,
-                'request' => $request->all(),
-            ]);
+    //         return response()->json([
+    //             'success' => true,
+    //             'discount' => $discountFormatted,  // Null if no promo voucher
+    //             'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
+    //             'hemat' => $hematFormatted,
+    //             'ongkirCalculate' => $ongkirCalculated,
+    //             'request' => $request->all(),
+    //         ]);
     
-        } catch (Exception $err) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat menerapkan kode voucher.',
-                'error' => $err->getMessage(),
-            ]);
-        }
-    }
+    //     } catch (Exception $err) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Terjadi kesalahan saat menerapkan kode voucher.',
+    //             'error' => $err->getMessage(),
+    //         ]);
+    //     }
+    // }
 
     public function applyVoucher(Request $request) 
     {
@@ -859,7 +1000,6 @@ class CheckoutController extends Controller
                     $discount = $percent;
                 }
             } else {
-                // Ensure discount is null if only ongkir is selected
                 $discount = null;
             }
     
@@ -869,7 +1009,7 @@ class CheckoutController extends Controller
             }
     
             // Calculate the total shopping amount based on selected vouchers
-            $totalShopping = $totalPrice - ($discount ?? 0) + $request->ongkir - $ongkirDiscount;
+            $totalShopping = $totalPrice - ($discount ?? 0) + $request->shipping_cost - $ongkirDiscount;
     
             // Format discount and total price for response
             $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
@@ -886,9 +1026,9 @@ class CheckoutController extends Controller
             return response()->json([
                 'success' => true,
                 'totalPriceFormatted' => $totalPriceFormatted,
-                'discountFormatted' => $discountFormatted, // Null if only ongkir is selected
-                'totalShoppingFormatted' => $totalShoppingFormatted,
-                'discount' => $discount, // Null if only ongkir is selected
+                'discountFormatted' => $discountFormatted,
+                'totalShoppingFormatted' => $totalShopping,
+                'discount' => $discount,
                 'code' => $voucherCode,
                 'ongkir' => $ongkirDiscount,
                 'hemat' => $hemat,
@@ -970,45 +1110,125 @@ class CheckoutController extends Controller
     }
 
     // BUYNOW
+    // public function addProductBuyNow(Request $request)
+    // {
+    //     try {
+    //         $userId = session('id_user');
+            
+    //         if ($userId) {
+    //             $checkBuyNow = Buynow::where('user_id', $userId)->exists();
+    //             $price = Product::where('id', $request->product_id)->value('regular_price');
+
+    //             // Periksa apakah user sudah memiliki data di tabel Buynow
+    //             if ($checkBuyNow) {
+    //                 $buynow = Buynow::where('user_id', $userId)->first();
+    //                 $buynow->update([
+    //                     'user_id'    => $userId,
+    //                     'product_id' => $request->product_id,
+    //                     'quantity'   => $request->quantity,
+    //                     'price'      => $price, // Kamu bisa mengganti harga ini secara dinamis
+    //                     'total'      => $request->quantity * $price,
+    //                     'is_buy'     => 0,    
+    //                 ]);
+    //             } else {
+    //                 Buynow::create([
+    //                     'user_id'    => $userId,
+    //                     'product_id' => $request->product_id,
+    //                     'quantity'   => $request->quantity,
+    //                     'price'      => $price, // Harga default, bisa diganti dinamis
+    //                     'total'      => $request->quantity * $price,
+    //                     'is_buy'     => 0,
+    //                 ]);
+    //             }
+
+    //             // Return response success jika proses berhasil
+    //             return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke Buy Now']);
+    //         } else {
+    //             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
+    //         }
+    //     } catch (Exception $err) {
+    //         // Return error dengan pesan yang lebih spesifik
+    //         return response()->json(['success' => false, 'message' => $err->getMessage()]);
+    //     }
+    // }
+
     public function addProductBuyNow(Request $request)
     {
         try {
             $userId = session('id_user');
             
-            if ($userId) {
-                $checkBuyNow = Buynow::where('user_id', $userId)->exists();
-                $price = Product::where('id', $request->product_id)->value('regular_price');
+            if (session('id_user')) {
+                $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
+                $cartId = Cart::where('user_id', session('id_user'))->value('id');
 
-                // Periksa apakah user sudah memiliki data di tabel Buynow
-                if ($checkBuyNow) {
-                    $buynow = Buynow::where('user_id', $userId)->first();
-                    $buynow->update([
-                        'user_id'    => $userId,
-                        'product_id' => $request->product_id,
-                        'quantity'   => $request->quantity,
-                        'price'      => $price, // Kamu bisa mengganti harga ini secara dinamis
-                        'total'      => $request->quantity * $price,
-                        'is_buy'     => 0,    
+                // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
+                if($checkCartUser){
+                    $checkCartItem = Cart_item::where('cart_id', $cartId)
+                    ->where('product_id', $request->product_id)->exists();
+
+                    // JIKA PRODUK SUDAH ADA DI CART USER
+                    if ($checkCartItem) {
+                        $cartItem  = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $request->product_id)->first();
+
+                        $itemPrice = $cartItem->price; 
+                        $itemQuantity = $cartItem->quantity;
+
+                        // Tingkatkan kuantitas item dengan 1
+                        $newQuantity = $itemQuantity + $request->quantity;
+    
+                        // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
+                        $newPrice = $itemPrice * $newQuantity;
+
+                        // Update kuantitas dan harga di database
+                        $cartItem->update([
+                            'quantity' => $newQuantity,
+                            'total'    => $newPrice, 
+                        ]);
+                    }
+                    // JIKA PRODUK BELUM ADA DI CART USER
+                    else{
+                        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                        $product = Product::where('id', $request->product_id)->first();
+                        $total = $product->regular_price;
+
+                        Cart_item::create([
+                            'cart_id'    => $cartId,
+                            'product_id' => $request->product_id,
+                            'quantity'   => $request->quantity ? $request->quantity : 1,
+                            'is_choose'  => TRUE,
+                            'price'      => $product->regular_price,
+                            'total'      => $total,
+                        ]);
+                    }
+
+                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                }else{
+                    $cart = Cart::create([
+                        'user_id' => $userId,
                     ]);
-                } else {
-                    Buynow::create([
-                        'user_id'    => $userId,
+
+                    $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
+
+                    Cart_item::create([
+                        'cart_id'    => $cart->id,
                         'product_id' => $request->product_id,
-                        'quantity'   => $request->quantity,
-                        'price'      => $price, // Harga default, bisa diganti dinamis
-                        'total'      => $request->quantity * $price,
-                        'is_buy'     => 0,
+                        'quantity'   => $request->quantity ? $request->quantity : 1,
+                        'is_choose'  => TRUE,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
                     ]);
+                    
                 }
 
-                // Return response success jika proses berhasil
-                return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke Buy Now']);
-            } else {
-                return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
+            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+
         } catch (Exception $err) {
-            // Return error dengan pesan yang lebih spesifik
-            return response()->json(['success' => false, 'message' => $err->getMessage()]);
+            return response()->json(['success' => false, 'message' => $err]);
         }
     }
 

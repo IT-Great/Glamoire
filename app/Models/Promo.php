@@ -10,7 +10,7 @@ class Promo extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
-    protected $appends = ['price_after_discount', 'formatted_discount', 'all_discount_tiers'];
+    protected $appends = ['formatted_discount', 'all_discount_tiers'];
 
     public function categoryProduct()
     {

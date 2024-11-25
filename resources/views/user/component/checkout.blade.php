@@ -226,28 +226,73 @@
                         <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
                     </div>  
     
-                    <div class="flex">
-                        <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
-                            <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
-                        </div>
-                        <div class="col p-0">
-                            <div class="flex col-12 gap-1 gap-md-2 pl-1 pl-md-3">
-                                <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
+                    @if ($product->productVariant == null)
+                        <div class="flex">
+                            <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                                <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
                             </div>
-                            <div class="grid lg:flex">
-                                <div class="col-lg-9 pl-1 pl-md-3">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                            <div class="col p-0">
+                                <div class="flex col-12 gap-1 gap-md-2 pl-1 pl-md-3">
+                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
                                 </div>
-                                <div class="col-lg-3 p-lg-0 pl-1 pl-md-3">
-                                    <div class="d-flex gap-1 font-semibold ml-auto">
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                <div class="grid lg:flex">
+                                    <div class="col-lg-8 pl-1 pl-md-3">
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                                    </div>
+                                    <div class="col-lg-4 p-lg-0 pl-1 pl-md-3">
+                                        @if ($product->bundle_price !== null)
+                                            <div class="grid gap-1 font-semibold">
+                                                <div>
+                                                    <del class="d-flex gap-1">
+                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">{{ $product->quantity }}</p>
+                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">X</p>
+                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                                    </del>
+                                                </div>
+                                                <div class="d-flex gap-1">
+                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beli {{ $product->quantity }}</p>
+                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">jadi</p>
+                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->bundle_price, 0, ',', '.') }}</p>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="d-flex gap-1 font-semibold ml-auto">
+                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
+                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
+                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="flex">
+                            <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                                <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="gambar produk" class="rounded-sm border">
+                            </div>
+                            <div class="col p-0">
+                                <div class="flex col-12 gap-1 gap-md-2 pl-1 pl-md-3">
+                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
+                                </div>
+                                <div class="grid lg:flex">
+                                    <div class="col-lg-9 pl-1 pl-md-3">
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
+                                        <span class="w-fit bg-[#183018] text-white py-1 px-2 rounded-sm text-[9px] md:text-[9px] lg:text-[9px] xl:text-[11px] text-center text-decoration-non">
+                                            {{ $product->productVariant->variant_value }}
+                                        </span>
+                                    </div>
+                                    <div class="col-lg-3 p-lg-0 pl-1">
+                                        <div class="d-flex gap-1 font-semibold">
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->quantity }}</p>
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">X</p>
+                                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>
@@ -305,7 +350,7 @@
                         <p class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" id="choose-voucher">Pilih Voucher</p>
                         <i class="fas fa-solid fa-arrow-right ml-auto text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"></i>
                     </button>
-                    <button class="btn w-full rounded-sm text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] bg-[#183018] hover:bg-neutral-900" type="button" id="paynow">
+                    <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="paynow">
                         Bayar Sekarang
                     </button>
                 </div>
@@ -445,7 +490,7 @@
                 button.prop('disabled', false);
                 
                 if (response.success) {
-                    // console.log(response);
+                    console.log(response.discountFormatted);
                     $("#discount").text("-Rp" + formatRupiah(response.discountFormatted));
                     $("#discount-use").removeClass("d-none").addClass("d-flex");
                     $("#choose-voucher").text("Kode promo berhasil diterapkan.").addClass('text-success').show();
@@ -454,7 +499,7 @@
                     $("#code-voucher").prop('disabled', true);
                     $('#validationVoucher').text("Kode promo berhasil diterapkan.").addClass('text-success').show();
                     
-                    subTotal = totalPrice + ongkir - response.discountFormatted ;
+                    subTotal = totalPrice + ongkir - response.discountFormatted;
                     discountAmount = response.discountFormatted;
                     selectedPromoCode = voucherCode;
                     $("#total-shopping").text("Rp"+formatRupiah(subTotal));
@@ -567,54 +612,52 @@
     }
 
     function selectPromo(promoElement, promo_code, voucherType) {
+        // Constants for different voucher types
         const isPromoType = voucherType === 'limited voucher';
         const isOngkirType = voucherType === 'ongkir voucher';
         const isProductType = voucherType === 'product voucher';
         const isBrandType = voucherType === 'brand voucher';
 
         // Check if the voucher being clicked is already selected
-        if ((isPromoType && selectedPromoCode === promo_code) || (isOngkirType && selectedOngkirCode === promo_code) || (isProductType && selectedProductCode === promo_code) || (isBrandType && selectedBrandCode === promo_code) ) {
-            // Deselect the voucher
+        if ((isPromoType && selectedPromoCode === promo_code) ||
+            (isOngkirType && selectedOngkirCode === promo_code) ||
+            (isProductType && selectedPromoCode === promo_code) ||
+            (isBrandType && selectedPromoCode === promo_code)) {
+
+            // UI Update: Remove border and check icon
             promoElement.querySelector('.grid').classList.remove('border-dark');
             promoElement.querySelector('.fas.fa-check').classList.add('hidden');
 
+            // Reset the appropriate selected code
             if (isPromoType) {
                 selectedPromoCode = null;
-                discountAmount = 0; // Reset discount amount when deselecting
+                discountAmount = 0; // Reset discount
             } else if (isOngkirType) {
                 selectedOngkirCode = null;
-                shippingDiscount = 0; // Reset shipping discount when deselecting
+                shippingDiscount = 0; // Reset shipping discount
             } else if (isProductType) {
-                selectedProductCode = null;
-                discountAmount = 0; // Reset shipping discount when deselecting
+                selectedPromoCode = null; // Reset product voucher
+                discountAmount = 0;
             } else if (isBrandType) {
-                selectedBrandCode = null;
-                discountAmount = 0; // Reset shipping discount when deselecting
+                selectedPromoCode = null; // Reset brand voucher
+                discountAmount = 0;
             }
 
-            if (shippingDiscount == 0 && discountAmount == 0) { 
+            // Restore UI if no discounts are active
+            if (shippingDiscount === 0 && discountAmount === 0) {
                 $(".input-code").removeClass("d-none");
             }
 
-            // Restore the original calculations
-            restoreOriginalValues();
+            restoreOriginalValues(); // Reset calculations
             $("#choose-voucher").text("Pilih Voucher").removeClass("text-success").addClass("text-dark").show();
             return;
         }
-        
-        // Clear previously selected voucher of the same type
-        if (isPromoType && selectedPromoCode) {
-            document.querySelector(`.promo-item[data-code="${selectedPromoCode}"] .grid`).classList.remove('border-dark');
-            document.querySelector(`.promo-item[data-code="${selectedPromoCode}"] .fas.fa-check`).classList.add('hidden');
-        } else if (isOngkirType && selectedOngkirCode) {
-            document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .grid`).classList.remove('border-dark');
-            document.querySelector(`.promo-item[data-code="${selectedOngkirCode}"] .fas.fa-check`).classList.add('hidden');
-        }  else if (isProductType && selectedProductCode) {
-            document.querySelector(`.promo-item[data-code="${selectedProductCode}"] .grid`).classList.remove('border-dark');
-            document.querySelector(`.promo-item[data-code="${selectedProductCode}"] .fas.fa-check`).classList.add('hidden');
-        } else if (isBrandType && selectedBrandCode) {
-            document.querySelector(`.promo-item[data-code="${selectedBrandCode}"] .grid`).classList.remove('border-dark');
-            document.querySelector(`.promo-item[data-code="${selectedBrandCode}"] .fas.fa-check`).classList.add('hidden');
+
+
+
+        // Ensure only one voucher is selected among limited, brand, and product categories
+        if (isPromoType || isProductType || isBrandType) {
+            resetAllVouchersExceptOngkir(); // Reset all vouchers in the limited/brand/product categories
         }
 
         $(".input-code").addClass("d-none");
@@ -626,9 +669,9 @@
         } else if (isOngkirType) {
             selectedOngkirCode = promo_code;
         } else if (isProductType) {
-            selectedProductCode = promo_code;
+            selectedPromoCode = promo_code;
         } else if (isBrandType) {
-            selectedBrandCode = promo_code;
+            selectedPromoCode = promo_code;
         }
 
         // Update UI for the selected voucher
@@ -636,13 +679,6 @@
         promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
 
         // Make AJAX request to get voucher details
-        console.log({
-            code_voucher_promo: selectedPromoCode,
-            code_voucher_ongkir: selectedOngkirCode,
-            code_voucher_product: selectedProductCode,
-            code_voucher_brand: selectedBrandCode,
-            shipping_cost: ongkir,
-        });
         $.ajax({
             url: "{{ route('check.apply.voucher') }}",
             method: 'POST',
@@ -652,11 +688,12 @@
                 code_voucher_ongkir: selectedOngkirCode,
                 shipping_cost: ongkir,
             },
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.loading-container').show(); // Show the spinner
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
+                    console.log(response.tes);
                     if (shippingDiscountAmount !== 0) {
                         if (shippingDiscountAmount > ongkir) {
                             shippingDiscount = ongkir;
@@ -672,14 +709,42 @@
                     $("#validationVoucher").text(response.message).show();
                 }
             },
-            complete: function() {
-                $('.loading-container').hide(); // Show the spinner
+            complete: function () {
+                $('.loading-container').hide(); // Hide the spinner
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();
             }
         });
     }
+
+    // Fungsi untuk mereset semua voucher selain ongkir
+    function resetAllVouchersExceptOngkir() {
+        const voucherTypes = ['limited voucher', 'product voucher', 'brand voucher'];
+        voucherTypes.forEach(type => {
+            let selectedCode = null;
+            if (type === 'limited voucher') selectedCode = selectedPromoCode;
+            if (type === 'product voucher') selectedCode = selectedProductCode;
+            if (type === 'brand voucher') selectedCode = selectedBrandCode;
+
+            if (selectedCode) {
+                const prevElement = document.querySelector(`.promo-item[data-code="${selectedCode}"]`);
+                if (prevElement) {
+                    prevElement.querySelector('.grid').classList.remove('border-dark');
+                    prevElement.querySelector('.fas.fa-check').classList.add('hidden');
+                }
+            }
+
+            // Clear the selected codes
+            if (type === 'limited voucher') selectedPromoCode = null;
+            if (type === 'product voucher') selectedProductCode = null;
+            if (type === 'brand voucher') selectedBrandCode = null;
+        });
+
+        // Reset discounts
+        discountAmount = 0;
+    }
+
 
     // Function to update totals based on selected vouchers
     function updateTotals(response) {
@@ -711,7 +776,8 @@
             }
         }
 
-        subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        // subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        subTotal = response.totalShoppingFormatted;
         
         // Update the display with the new total
         $("#total-shopping").text("Rp"+formatRupiah(subTotal));
@@ -838,59 +904,59 @@
             voucher_ongkir: selectedOngkirCode,
         });
     
-        // $.ajax({
-        //     url: "{{ route('order.payment') }}",
-        //     type: 'POST',
-        //     data: {
-        //         product: productIds,
-        //         product_quantity: productQuantities,
-        //         product_price: productPrices,
-        //         subtotal: subTotal,          // Removed the colon inside the key
-        //         shipping_cost: ongkir,
-        //         shipping_address_id: shippingAddressId,
-        //         total_item: totalItem,
-        //         total_item_price: totalItemPrice,
-        //         discount_amount: discountAmount,
-        //         discount_ongkir: shippingDiscount,
-        //         voucher_promo: selectedPromoCode,
-        //         voucher_ongkir: selectedOngkirCode,
-        //         _token: '{{ csrf_token() }}'
-        //     },
-        //     beforeSend: function() {
-        //         $('.loading-container').show(); // Show the spinner
-        //     },
-        //     success: function(response) {
-        //         Toast.fire({
-        //             icon: "success",
-        //             text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-        //             title: "Pembayaranmu Berhasil",
-        //             willOpen: () => {
-        //                 const title = document.querySelector('.swal2-title');
-        //                 const content = document.querySelector('.swal2-html-container');
-        //                 if (title) title.style.color = '#ffffff'; // Ubah warna judul
-        //                 if (content) content.style.color = '#ffffff'; // Ubah warna konten
-        //             }
-        //         }).then(function () {
-        //             location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-        //         });
-        //     },
-        //     complete: function() {
-        //         $('.loading-container').hide(); // Show the spinner
-        //     },
-        //     error: function(xhr) {
-        //         Toast.fire({
-        //             icon: "error",
-        //             text: "Kesalahan Sistem",
-        //             title: "Oops..",
-        //             willOpen: () => {
-        //                 const title = document.querySelector('.swal2-title');
-        //                 const content = document.querySelector('.swal2-html-container');
-        //                 if (title) title.style.color = '#ffffff'; // Ubah warna judul
-        //                 if (content) content.style.color = '#ffffff'; // Ubah warna konten
-        //             }
-        //         });
-        //     }
-        // });
+        $.ajax({
+            url: "{{ route('order.payment') }}",
+            type: 'POST',
+            data: {
+                product: productIds,
+                product_quantity: productQuantities,
+                product_price: productPrices,
+                subtotal: subTotal,          // Removed the colon inside the key
+                shipping_cost: ongkir,
+                shipping_address_id: shippingAddressId,
+                total_item: totalItem,
+                total_item_price: totalItemPrice,
+                discount_amount: discountAmount,
+                discount_ongkir: shippingDiscount,
+                voucher_promo: selectedPromoCode,
+                voucher_ongkir: selectedOngkirCode,
+                _token: '{{ csrf_token() }}'
+            },
+            beforeSend: function() {
+                $('.loading-container').show(); // Show the spinner
+            },
+            success: function(response) {
+                Toast.fire({
+                    icon: "success",
+                    text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
+                    title: "Pembayaranmu Berhasil",
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                }).then(function () {
+                    location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
+                });
+            },
+            complete: function() {
+                $('.loading-container').hide(); // Show the spinner
+            },
+            error: function(xhr) {
+                Toast.fire({
+                    icon: "error",
+                    text: "Kesalahan Sistem",
+                    title: "Oops..",
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                });
+            }
+        });
     });
 
     // Add DOKU payment modal HTML
@@ -1348,21 +1414,58 @@
                         // Filter voucher berdasarkan kecocokan dengan brand_id di cartItems
                         $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
                             // Voucher usable jika memenuhi kondisi transaksi dan brand cocok
-                            return 
-                                $data['totalPrice'] >= $voucher->min_transaction || 
-                                $data['totalItem'] <= $voucher->max_quantity_buyer || 
-                                $brandIds->contains($voucher->brand_id) ||
-                                $productIds->intersect($data['productVoucherIds'])->isNotEmpty();
+
+                            if ($voucher->type == 'brand voucher') {
+                                if ( $brandIds->contains($voucher->brand_id)) {
+                                    return 
+                                        $data['voucherDisabled'] = TRUE &&
+                                        $data['totalPrice'] >= $voucher->min_transaction &&
+                                        $data['totalItem'] <= $voucher->max_quantity_buyer;
+                                }
+                            }
+                            elseif ($voucher->type == 'product voucher') {
+                                if ($productIds->intersect($data['productVoucherIds'])->isNotEmpty()) {
+                                    return 
+                                        $data['voucherDisabled'] = TRUE &&
+                                        $data['totalPrice'] >= $voucher->min_transaction &&
+                                        $data['totalItem'] <= $voucher->max_quantity_buyer;
+                                }
+                            }
+                            else{
+                                return
+                                    $data['voucherDisabled'] = TRUE &&
+                                    $data['totalPrice'] >= $voucher->min_transaction &&
+                                    $data['totalItem'] <= $voucher->max_quantity_buyer;
+                            }
                         });
 
                         $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
-                            // Voucher unusable jika salah satu kondisi tidak terpenuhi
-                            return 
-                                $data['totalPrice'] < $voucher->min_transaction || 
-                                $data['totalItem'] > $voucher->max_quantity_buyer || 
-                                !$brandIds->contains($voucher->brand_id) ||
-                                $productIds->intersect($data['productVoucherIds'])->isEmpty();
+                            if ($voucher->type == 'brand voucher') {
+                                // Periksa apakah brand_id sesuai
+                                $isBrandValid = $brandIds->contains($voucher->brand_id);
+
+                                // Voucher tidak dapat digunakan jika salah satu kondisi ini terpenuhi
+                                return !$isBrandValid || 
+                                    $data['voucherDisabled'] = FALSE ||
+                                    $data['totalPrice'] < $voucher->min_transaction || 
+                                    $data['totalItem'] > $voucher->max_quantity_buyer;
+                            } elseif ($voucher->type == 'product voucher') {
+                                // Periksa apakah productVoucherIds memiliki kesamaan dengan productIds
+                                $isProductValid = !$productIds->intersect($data['productVoucherIds'])->isEmpty();
+
+                                // Voucher tidak dapat digunakan jika salah satu kondisi ini terpenuhi
+                                return !$isProductValid || 
+                                    $data['voucherDisabled'] = FALSE ||
+                                    $data['totalPrice'] < $voucher->min_transaction || 
+                                    $data['totalItem'] > $voucher->max_quantity_buyer;
+                            } else {
+                                return 
+                                    $data['voucherDisabled'] = FALSE ||
+                                    $data['totalPrice'] < $voucher->min_transaction || 
+                                    $data['totalItem'] > $voucher->max_quantity_buyer;
+                            }
                         });
+
 
                     @endphp
 
@@ -1372,7 +1475,7 @@
                             <h5 class="text-[#183018] text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher yang bisa digunakan</h5>
                             @foreach ($usableVouchers as $voucher)
                                 <div class="col-12 p-0 p-md-2 promo-item" data-code="{{ $voucher->promo_code }}" onclick="selectPromo(this, '{{ $voucher->promo_code }}', '{{$voucher->type}}')">
-                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer  custom-shadow">
                                         <div class="flex">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018] font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
                                             <i class="fas fa-check hidden ml-auto"></i>
@@ -1404,16 +1507,29 @@
 
                                         <div class="grid mt-1 mt-md-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                            <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                            <ol class="list-group-numbered overflow-y-auto custom-scroll" style="max-height:100px;">
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                     <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Minimal transaksi sebesar Rp{{ number_format($voucher->min_transaction, 0, ',', '.') }}</p>
                                                 </li>
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
-                                                    <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
+                                                    <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} jenis produk</p>
                                                 </li>
                                                 @if ($voucher->brand_id !== null)
                                                     <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                         <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian product brand {{ $voucher->brand_name }}</p>
+                                                    </li>
+                                                @endif
+                                                @if ($voucher->products->first() !== null)
+                                                    <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
+                                                        <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian produk :<br> 
+                                                            @if ($voucher->products->isNotEmpty())
+                                                                @foreach ($voucher->products as $index => $product)
+                                                                    - {{ $product->product_name }} <br>
+                                                                @endforeach
+                                                            @else
+                                                                Tidak ada produk khusus.
+                                                            @endif
+                                                        </p>
                                                     </li>
                                                 @endif
                                             </ol>
@@ -1428,7 +1544,7 @@
                             <h5 class="text-[#183018] text-[12px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher tersedia</h5>
                             @foreach ($unusableVouchers as $voucher)
                                 <div class="col-12 p-0 p-md-2 promo-item" onclick="event.stopPropagation()">
-                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer">
+                                    <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer custom-shadow">
                                         <div class="flex">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-muted font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
                                             <i class="fas fa-check hidden ml-auto"></i>
@@ -1462,6 +1578,10 @@
                                         </div>
 
                                         <div>
+                                            @if ($data['voucherDisabled'] = TRUE)
+                                                <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Voucher tidak bisa digunakan bersama dengan promo produk lainnya</p>
+                                            @endif
+
                                             @if ($data['totalPrice'] < $voucher->min_transaction)
                                                 <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Oops.. Kurang Rp{{ number_format($voucher->min_transaction - $data['totalPrice'], 0, ',', '.') }} lagi</p>
                                             @endif
@@ -1477,16 +1597,29 @@
 
                                         <div class="grid mt-3 detail-promo" id="detail-promo-{{$voucher->id}}" style="display: none;">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-black font-semibold">Syarat & Ketentuan</p>
-                                            <ol class="list-group-numbered overflow-y-auto" style="max-height:100px;">
+                                            <ol class="list-group-numbered overflow-y-auto custom-scroll" style="max-height:100px;">
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                     <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Minimal transaksi sebesar Rp{{ number_format($voucher->min_transaction, 0, ',', '.') }}</p>
                                                 </li>
                                                 <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
-                                                    <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} barang</p>
+                                                    <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Maksimal pembelian {{ $voucher->max_quantity_buyer }} jenis produk</p>
                                                 </li>
                                                 @if ($voucher->brand_id !== null)
                                                     <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
                                                         <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian product brand {{ $voucher->brand_name }}</p>
+                                                    </li>
+                                                @endif
+                                                @if ($voucher->products->first() !== null)
+                                                    <li class="list-group-item p-1 border-none d-flex align-items-start text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px]">
+                                                        <p class="ml-2 text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] mb-0">Khusus pembelian produk :<br> 
+                                                            @if ($voucher->products->isNotEmpty())
+                                                                @foreach ($voucher->products as $index => $product)
+                                                                    - {{ $product->product_name }} <br>
+                                                                @endforeach
+                                                            @else
+                                                                Tidak ada produk khusus.
+                                                            @endif
+                                                        </p>
                                                     </li>
                                                 @endif
                                             </ol>
@@ -1669,8 +1802,5 @@
 
 <!-- PAYMENT DOKUNTUL -->
 {{-- payment gateway --}}
-    <script>
-        
-    </script>
 
 @endsection

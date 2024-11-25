@@ -267,7 +267,7 @@ class BrandController extends Controller
 
             $allbrand = Brand::where('name', $name)
                 ->with(['products' => function ($query) {
-                    // Load promos for products, but allow products without promos to be included
+                    // Load promos for products, but allow products without promos to be included   
                     $query->with(['promos' => function ($promoQuery) {
                         $promoQuery->select('promos.*', 'promo_products.discounted_price')
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])

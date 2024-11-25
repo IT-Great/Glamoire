@@ -315,7 +315,7 @@
                                                                     Pilih Provinsi</option>
                                                             </select>
                                                             <input type="hidden" name="province_name"
-                                                                id="change_province_name"">
+                                                                id="change_province_name">
                                                         </div>
 
                                                         <div class="col-12 p-0">
@@ -331,7 +331,7 @@
                                                                     Pilih Kabupaten/Kota</option>
                                                             </select>
                                                             <input type="hidden" name="regency_name"
-                                                                id="change_regency_name"">
+                                                                id="change_regency_name">
                                                         </div>
 
                                                         <div class="col-12 p-0">
@@ -422,18 +422,18 @@
                                                 {{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
                                             <span
                                                 class="badge 
-                        @if ($order->status == 'done') badge-success
+                        @if ($order->status == 'completed') badge-success
                         @elseif($order->status == 'waiting confirm') badge-secondary
-                        @elseif($order->status == 'in process') badge-info
-                        @elseif($order->status == 'in delivery') badge-warning @endif
+                        @elseif($order->status == 'pending') badge-info
+                        @elseif($order->status == 'proccessing') badge-warning @endif
                         d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">
-                                                {{ $order->status == 'done'
+                                                {{ $order->status == 'completed'
                                                     ? 'Selesai'
                                                     : ($order->status == 'waiting confirm'
                                                         ? 'Menunggu Konfirmasi'
-                                                        : ($order->status == 'in process'
+                                                        : ($order->status == 'pending'
                                                             ? 'Sedang Diproses'
-                                                            : ($order->status == 'in delivery'
+                                                            : ($order->status == 'proccessing'
                                                                 ? 'Dalam Pengiriman'
                                                                 : 'Unknown'))) }}
                                             </span>
@@ -486,7 +486,7 @@
                                                         Lihat Detail Transaksi
                                                     </a>
                                                 </div>
-                                                @if ($order->status == 'done')
+                                                @if ($order->status == 'completed')
                                                     @if (count($order->ratingAndReviews) == 0)
                                                         <button type="submit"
                                                             class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
@@ -537,7 +537,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'in process' || $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -545,7 +545,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -553,7 +553,7 @@
                                                                             Diambil Kurir</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-truck"></i>
                                                                         </span>
                                                                         <span
@@ -561,7 +561,7 @@
                                                                             Pengiriman</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-box"></i>
                                                                         </span>
                                                                         <span
@@ -580,9 +580,9 @@
                                                                     <p
                                                                         class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
                                                                         No. Invoice</p>
-                                                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-blue hover:cursor-pointer hover:text-decoration-underlined"
+                                                                    <a class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-danger hover:cursor-pointer hover:text-decoration-underlined"
                                                                         onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">
-                                                                        {{ $order->invoice->no_invoice }}</p>
+                                                                        {{ $order->invoice->no_invoice }}</a>
                                                                 </div>
                                                                 <div class="d-flex">
                                                                     <p
@@ -649,7 +649,7 @@
                                                                     <p
                                                                         class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                                                                         :</p>
-                                                                    @if ($order->status == 'in delivery' || $order->status == 'done')
+                                                                    @if ($order->status == 'proccessing' || $order->status == 'completed')
                                                                         <p
                                                                             class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                                                                             JNE</p>
@@ -666,7 +666,7 @@
                                                                     <p
                                                                         class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                                                                         :</p>
-                                                                    @if ($order->status == 'in delivery' || $order->status == 'done')
+                                                                    @if ($order->status == 'proccessing' || $order->status == 'completed')
                                                                         <p
                                                                             class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                                                                             082723615</p>
@@ -775,7 +775,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'in process' || $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -783,7 +783,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -791,7 +791,7 @@
                                                                             Diambil Kurir</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'in delivery' || $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-truck"></i>
                                                                         </span>
                                                                         <span
@@ -799,7 +799,7 @@
                                                                             Pengiriman</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'done' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-box"></i>
                                                                         </span>
                                                                         <span
@@ -818,7 +818,7 @@
                                 </div>
                                 <!-- END DETAIL TRANSAKSI -->
 
-                                @if ($order->status == 'done')
+                                @if ($order->status == 'completed')
                                     <!-- RATING & REVIEW -->
                                     <div class="modal fade" id="form-rating-review-{{ $order->id }}" tabindex="-1"
                                         aria-labelledby="form-rating-review-{{ $order->id }}" aria-hidden="true">
@@ -826,10 +826,8 @@
                                             <div class="modal-content overflow-y-auto custom-scroll"
                                                 style="max-height:90vh;">
                                                 <div class="modal-header pb-0 border-none">
-                                                    <h1 class="modal-title text-[#183018]" id="exampleModalLabel">Ulasan
-                                                        Produk</h1>
-                                                    <button type="button" class="btn-close" style="color:#183018;"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <h1 class="modal-title text-[#183018]">Ulasan Produk</h1>
+                                                    <button type="button" class="btn-close" style="color:#183018;" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
 
                                                 <div class="modal-body overflow-y-auto" style="max-height:100vh;">
@@ -837,7 +835,8 @@
                                                         <form action="{{ route('rating.and.review') }}" method="POST"
                                                             id="review-and-rating-form-{{ $order->id }}-{{ $item->product->id }}"
                                                             multiple accept="image/*,video/*"
-                                                            enctype="multipart/form-data">
+                                                            enctype="multipart/form-data"
+                                                            class="grid gap-2">
                                                             @csrf
                                                             @foreach ($order->items as $item)
                                                                 <input type="number" name="ratingReviewOrderId"
@@ -845,7 +844,7 @@
                                                                 <input type="number" name="ratingReviewProductId[]"
                                                                     id="productId-{{ $order->id }}-{{ $item->product->id }}"
                                                                     value="{{ $item->product->id }}" hidden>
-                                                                <div class="grid pb-4">
+                                                                <div class="grid pb-4 border border-secondary custom-shadow">
                                                                     <div class="d-flex mb-1">
                                                                         <div class="col-2 col-md-2 p-0 m-0">
                                                                             <img class="border"
@@ -853,19 +852,18 @@
                                                                                 alt="{{ $item->product->product_name }}">
                                                                         </div>
                                                                         <div class="col-10">
-                                                                            <div
-                                                                                class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
-                                                                                <p
-                                                                                    class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                    {{ $item->product->brand->name }}</p>
+                                                                            <div class="d-flex align-items-center mb-2 gap-1 max-w-[40px] max-w-md-[50px]">
+                                                                                <p class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->brand->name }}
+                                                                                </p>
                                                                             </div>
-                                                                            <p
-                                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                {{ $item->product->product_name }}</p>
+                                                                            <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                {{ $item->product->product_name }}
+                                                                            </p>
                                                                             <div>
-                                                                                <p
-                                                                                    class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
-                                                                                    Berikan ulasan untuk produk ini</p>
+                                                                                <p class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
+                                                                                    Berikan ulasan untuk produk ini
+                                                                                </p>
                                                                                 <div class="grid gap-1">
                                                                                     <!-- RATING -->
                                                                                     <div
@@ -902,9 +900,8 @@
                                                                                     </div>
                                                                                     <div>
                                                                                         <label
-                                                                                            class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer"
-                                                                                            for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload
-                                                                                            Gambar</label>
+                                                                                            class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
+                                                                                            for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload Gambar</label>
                                                                                         <input type="file"
                                                                                             name="upload[{{ $item->product->id }}][]"
                                                                                             multiple
@@ -919,7 +916,6 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-
                                                                 </div>
                                                             @endforeach
                                                             <div class="col-12 p-0">
@@ -1826,8 +1822,11 @@
                 position: "center",
                 background: "#183018",
                 showConfirmButton: false,
-                timer: 5000,
+                timer: 2500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -1836,7 +1835,6 @@
             Toast.fire({
                 icon: "success",
                 text: "Horeee... Ulasanmu kami terima. Terimakasih sudah memberikan ulasan.",
-                title: "Berhasil",
                 willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');

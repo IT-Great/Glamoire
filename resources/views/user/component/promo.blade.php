@@ -53,7 +53,7 @@
           Voucher Brand
         </p>
       </div>
-      <div class="container p-0">
+      <div class="container">
         <div class="grid-container-promo">
           @foreach ($brandVouchers as $brand)
             <div class="bg-white rounded-lg shadow-md overflow-hidden h-fit">
@@ -84,6 +84,144 @@
                   </div>
                 </div>
 
+                <div>
+                  <p class="text-[10px] lg:text-[12px] hover:cursor-pointer" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">Lihat Detail Produk</p>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Modal untuk setiap produk -->
+            <div class="modal fade" id="detail-brand-voucher-{{$brand->id}}" tabindex="-1" aria-labelledby="detail-product-voucher-{{$brand->id}}" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+                  <div class="modal-header bg-[#183018]">
+                    <h1 class="modal-title text-white text-[12px] lg:text-[16px]">Produk</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
+                  </div>
+
+                  <div class="modal-body border-top border-1 p-2 overflow-y-auto custom-scroll">
+                    <div class="grid-container-product-promo">
+                      @if (session('id_user'))
+                        @foreach ($brand->products as $item)
+                        <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
+                            <a href="/{{ $item->product_code }}_product" class="text-decoration-none">
+                                <div class="product-image-container">
+                                    <img class="card-img-top product-image {{ $item->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
+                                </div>
+
+                                <div class="grid text-left p-1 p-md-2">
+                                    <div class="flex gap-1">
+                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
+                                        @php
+                                            $inWishlist = collect($wishlist)->contains('product_id', $item->id);
+                                        @endphp
+                                        <i 
+                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
+                                            onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $item->id . ')' : 'addToWishlist(' . $item->id . ')' }}">
+                                        </i>
+                                    </div>
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
+                                        <a href="/{{ $item->product_code }}_product" 
+                                        class="text-decoration-none truncate-ellipsis" 
+                                        data-bs-toggle="tooltip" 
+                                        data-bs-placement="top" 
+                                        title="{{ $item->product_name }}">
+                                            {{ $item->product_name }}
+                                        </a>
+                                    </p>
+
+                                    <div class="flex justify-content-start gap-1">
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($item->regular_price, 0, ',', '.') }}</p>
+                                    </div>
+                                    
+                                    
+                                    {{-- @if ($item->stock_quantity == 0)
+                                        <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Beritahu Saya Jika Stok Sudah Ada" 
+                                            type="button" 
+                                            style="color:#183018"
+                                            id="notify-me-{{$item->id}}"
+                                            onclick="event.stopPropagation();notifyMe({{$item->id}})"
+                                        >
+                                            Stok Habis
+                                        </a>
+                                    @else
+                                        @php
+                                            $inCart = collect($cartItems)->contains('product_id', $item->id);
+                                        @endphp
+    
+                                        @if($inCart)
+                                            <a href="/cart" class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] hover:bg-neutral-900 text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                                Cek Keranjang
+                                            </a>
+                                        @else
+                                            <a class="gap-1 py-1 rounded-sm border border-[#183018] hover:cursor-pointer hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$item->id}})">
+                                                + <i class="fas fa-shopping-cart"></i> Keranjang
+                                            </a>
+                                        @endif
+                                    @endif --}}
+                                </div>
+                            </a>
+                        </div>
+                        @endforeach
+                      @else
+                        @foreach ($brand->products as $item)
+                          <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
+                            <div class="position-relative overflow-hidden bg-transparent p-0">
+                              <img class="card-img-top" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
+                            </div>
+                            <div class="grid text-left p-1 p-md-2">
+                              <div class="flex gap-1">
+                                <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
+                                <i 
+                                  class="fas fa-heart hover:cursor-pointer ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                  onclick="event.stopPropagation();addToWishlist({{$item->id}})">
+                                </i>
+                              </div>
+      
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
+                                <a href="/{{ $item->product_code }}_product" 
+                                class="text-decoration-none truncate-ellipsis" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="{{ $item->product_name }}">
+                                    {{ $item->product_name }}
+                                </a>
+                              </p>
+      
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                Rp{{ number_format($item->regular_price, 0, ',', '.') }}
+                              </p>
+      
+                              {{-- @if ($item->stock_quantity == 0)
+                                <a class="py-1 rounded-sm shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                    data-bs-toggle="tooltip" 
+                                    data-bs-placement="top" 
+                                    title="Beritahu Saya Jika Stok Sudah Ada" 
+                                    type="button" 
+                                    style="color:#183018"
+                                    id="notify-me-{{$item->id}}"
+                                    onclick="event.stopPropagation();notifyMe({{$item->id}})"
+                                >
+                                    Stok Habis
+                                </a>
+                              @else
+                                <a class="py-1 rounded-sm hover:cursor-pointer hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$item->id}})">
+                                  + <i class="fas fa-shopping-cart"></i> Keranjang
+                                </a>
+                              @endif --}}
+                            </div>
+                          </div>
+                        @endforeach
+                      @endif
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           @endforeach
@@ -183,7 +321,7 @@
               <div class="modal-dialog modal-lg">
                 <div class="modal-content overflow-y-auto" style="max-height:90vh;">
                   <div class="modal-header bg-[#183018]">
-                    <h1 class="modal-title text-white text-[12px] lg:text-[16px]" id="exampleModalLabel">Produk yang masuk kategori</h1>
+                    <h1 class="modal-title text-white text-[12px] lg:text-[16px]">Produk</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                   </div>
 
@@ -191,13 +329,13 @@
                     <div class="grid-container-product-promo">
                       @if (session('id_user'))
                         @foreach ($product->products as $item)
-                        <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                        <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <a href="/{{ $item->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
                                     <img class="card-img-top product-image {{ $item->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                         <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
@@ -209,7 +347,7 @@
                                             onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $item->id . ')' : 'addToWishlist(' . $item->id . ')' }}">
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                         <a href="/{{ $item->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -220,10 +358,10 @@
                                     </p>
 
                                     <div class="flex justify-content-start gap-1">
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($item->regular_price, 0, ',', '.') }}</p>
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($item->regular_price, 0, ',', '.') }}</p>
                                     </div>
                                     
-                                    @if ($item->stock_quantity == 0)
+                                    {{-- @if ($item->stock_quantity == 0)
                                         <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
@@ -249,18 +387,18 @@
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </a>
                         </div>
                         @endforeach
                       @else
                         @foreach ($product->products as $item)
-                          <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow overflow-hidden h-fit hover:cursor-pointer">
+                          <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <div class="position-relative overflow-hidden bg-transparent p-0">
                               <img class="card-img-top" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
                             </div>
-                            <div class="grid gap-1 text-left p-1 p-md-2">
+                            <div class="grid text-left p-1 p-md-2">
                               <div class="flex gap-1">
                                 <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                 <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
@@ -270,7 +408,7 @@
                                 </i>
                               </div>
       
-                              <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                 <a href="/{{ $item->product_code }}_product" 
                                 class="text-decoration-none truncate-ellipsis" 
                                 data-bs-toggle="tooltip" 
@@ -280,11 +418,11 @@
                                 </a>
                               </p>
       
-                              <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                 Rp{{ number_format($item->regular_price, 0, ',', '.') }}
                               </p>
       
-                              @if ($item->stock_quantity == 0)
+                              {{-- @if ($item->stock_quantity == 0)
                                 <a class="py-1 rounded-sm shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
@@ -300,7 +438,7 @@
                                 <a class="py-1 rounded-sm hover:cursor-pointer hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$item->id}})">
                                   + <i class="fas fa-shopping-cart"></i> Keranjang
                                 </a>
-                              @endif
+                              @endif --}}
                             </div>
                           </div>
                         @endforeach
@@ -354,7 +492,7 @@
               <div class="modal-dialog modal-lg">
                 <div class="modal-content overflow-y-auto" style="max-height:90vh;">
                   <div class="modal-header bg-[#183018]">
-                    <h1 class="modal-title text-white text-[12px] lg:text-[16px]" id="exampleModalLabel">Produk yang masuk kategori</h1>
+                    <h1 class="modal-title text-white text-[12px] lg:text-[16px]">Produk</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1);"></button>
                   </div>
 
@@ -362,13 +500,13 @@
                     <div class="grid-container-product-promo">
                       @if (session('id_user'))
                         @foreach ($product->products as $item)
-                        <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                        <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <a href="/{{ $item->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
                                     <img class="card-img-top product-image {{ $item->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                         <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
@@ -380,7 +518,7 @@
                                             onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $item->id . ')' : 'addToWishlist(' . $item->id . ')' }}">
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                         <a href="/{{ $item->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -391,10 +529,10 @@
                                     </p>
 
                                     <div class="flex justify-content-start gap-1">
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($item->regular_price, 0, ',', '.') }}</p>
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($item->regular_price, 0, ',', '.') }}</p>
                                     </div>
                                     
-                                    @if ($item->stock_quantity == 0)
+                                    {{-- @if ($item->stock_quantity == 0)
                                         <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
@@ -420,18 +558,18 @@
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </a>
                         </div>
                         @endforeach
                       @else
                         @foreach ($product->products as $item)
-                          <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow overflow-hidden h-fit hover:cursor-pointer">
+                          <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <div class="position-relative overflow-hidden bg-transparent p-0">
                               <img class="card-img-top" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
                             </div>
-                            <div class="grid gap-1 text-left p-1 p-md-2">
+                            <div class="grid text-left p-1 p-md-2">
                               <div class="flex gap-1">
                                 <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                 <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $item->rating }}</p>
@@ -441,7 +579,7 @@
                                 </i>
                               </div>
       
-                              <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                 <a href="/{{ $item->product_code }}_product" 
                                 class="text-decoration-none truncate-ellipsis" 
                                 data-bs-toggle="tooltip" 
@@ -451,11 +589,11 @@
                                 </a>
                               </p>
       
-                              <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                              <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                 Rp{{ number_format($item->regular_price, 0, ',', '.') }}
                               </p>
       
-                              @if ($item->stock_quantity == 0)
+                              {{-- @if ($item->stock_quantity == 0)
                                 <a class="py-1 rounded-sm shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                     data-bs-toggle="tooltip" 
                                     data-bs-placement="top" 
@@ -471,7 +609,7 @@
                                 <a class="py-1 rounded-sm hover:cursor-pointer hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$item->id}})">
                                   + <i class="fas fa-shopping-cart"></i> Keranjang
                                 </a>
-                              @endif
+                              @endif --}}
                             </div>
                           </div>
                         @endforeach
