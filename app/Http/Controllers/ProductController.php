@@ -17,6 +17,7 @@ use App\Models\Promo;
 use App\Models\NotifyMe;
 use App\Models\ProductStocks;
 use Exception;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -1076,6 +1077,7 @@ class ProductController extends Controller
             $userId = session('id_user');
 
             if ($userId) {
+                $date = now()->format('Y-m-d');
                 $data = User::where('id', $userId)->first();
                 $wishlist = Wishlist::where('user_id', $userId)->get();
 
@@ -1083,21 +1085,80 @@ class ProductController extends Controller
                 $cartItems = Cart_item::where('cart_id', $cartId)->get();
 
                 $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
-                $promos = Promo::where('type', '=', 'promo')->get();
+
+                $topsell = Product::with(['promos' => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('sale', 'desc')
+                ->take(10)
+                ->get();
+                
+                $new     = Product::with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                    ->wherePivot('discounted_price', '>', 0)
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('created_at', 'asc')->take(10)->get();
+
+                $date = now()->format('Y-m-d');
+                $promos = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->get();
+
+                $mainPromo = Promo::where('type', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->latest() // Order by latest created/updated promo
+                    ->first();
+
+                $promoModal = $mainPromo;
 
                 $data = [
                     'wishlist'  => $wishlist,
                     'product'   => $product,
                     'cartItems' => $cartItems,
                     'promos'    => $promos,
+                    'promoModal' => $promoModal,
+                    'topsell' => $topsell,
+                    'new'     => $new,
                 ];
 
                 return view('user.component.home')->with('data', $data);
             } else {
                 $product = Product::withCount('ratingAndReviews')->withAvg('ratingAndReviews', 'rating')->get();
-                $promos = Promo::where('type', '=', 'promo')->get();
+                
+                $topsell = Product::with(['promos' => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('sale', 'desc')
+                ->take(10)
+                ->get();
+
+                $new = Product::with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                    ->wherePivot('discounted_price', '>', 0)
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('created_at', 'asc')->take(10)->get();
+                
+                $date = now()->format('Y-m-d');
+                $promos = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->get();       
 
                 $data = [
+                    'topsell' => $topsell,
+                    'new'     => $new,
                     'product' => $product,
                     'promos'  => $promos,
                 ];
@@ -1116,11 +1177,14 @@ class ProductController extends Controller
         }
     }
 
-    public function detail($code)
+    public function detail(Request $request, $code)
     {
         try {
             $product = Product::where('product_code', $code)
-                ->with(['ratingAndReviews.user'])
+                ->with(['ratingAndReviews.user', 'promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                    ->wherePivot('discounted_price', '>', 0);
+                }])
                 ->withCount('ratingAndReviews')   // Count the total number of reviews
                 ->withAvg('ratingAndReviews', 'rating')
                 ->first();
@@ -1128,30 +1192,132 @@ class ProductController extends Controller
             $averageRating = number_format($product->rating_and_reviews_avg_rating, 1);
             $totalReviews = $product->rating_and_reviews_count;
 
-            $youlike = Product::with(['ratingAndReviews'])->withAvg('ratingAndReviews', 'rating')->get();
+            $categoryMainProduct = $product->category_product_id;
+            $getParent = CategoryProduct::where('id', $categoryMainProduct)->value('parent_id');
+            $subCategories = CategoryProduct::where('parent_id', $getParent)->pluck('id')->toArray();
+            
+            $youlike = Product::whereIn('category_product_id', $subCategories)
+            ->with(['promos'  => function ($query) {
+            $query->select('promos.*', 'promo_products.discounted_price')
+                ->wherePivot('discounted_price', '>', 0);
+            }])
+            ->orderBy('sale', 'desc')->get();
+            
             $product->images = json_decode($product->images, true);
             $product->dimensions = json_decode($product->dimensions, true);
 
+            // Cek Varian
+            $checkVariant = ProductVariations::where('product_id', $product->id)->get();
+            $variantType = $checkVariant->pluck('variant_type')->first();
+
+            // dd($variantType);
             $userId = session('id_user');
 
-            if ($userId) {
-                $wishlists = Wishlist::where('user_id', $userId)->get();
-                $cartId = Cart::where('user_id', $userId)->value('id');
-                $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            // dd(count($variant));
 
-                return view('user.component.detail', [
-                    'averageRating' => $averageRating,
-                    'product'       => $product,
-                    'youlike'       => $youlike,
-                    'wishlists'     => $wishlists,
-                    'cartItems'     => $cartItems,
-                ]);
-            } else {
-                return view('user.component.detail', [
-                    'averageRating' => $averageRating,
-                    'product'       => $product,
-                    'youlike'       => $youlike,
-                ]);
+            if (count($checkVariant) == 0) {
+                if ($userId) {
+                    $wishlists = Wishlist::where('user_id', $userId)->get();
+                    $cartId = Cart::where('user_id', $userId)->value('id');
+                    $cartItems = Cart_item::where('cart_id', $cartId)->get();
+    
+                    return view('user.component.detail', [
+                        'averageRating' => $averageRating,
+                        'product'       => $product,
+                        'youlike'       => $youlike,
+                        'wishlists'     => $wishlists,
+                        'cartItems'     => $cartItems,
+                    ]);
+                } else {
+                    return view('user.component.detail', [
+                        'averageRating' => $averageRating,
+                        'product'       => $product,
+                        'youlike'       => $youlike,
+                    ]);
+                }
+            }
+
+            // PRODUK VARIAN
+            else {
+                if ($userId) {
+                    $wishlists = Wishlist::where('user_id', $userId)->get();
+                    $cartId = Cart::where('user_id', $userId)->value('id');
+                    $cartItems = Cart_item::where('cart_id', $cartId)->get();
+
+                    $query = Product::where('product_code', $code)
+                        ->with('ratingAndReviews.user')
+                        ->withCount('ratingAndReviews')
+                        ->withAvg('ratingAndReviews', 'rating');
+                        
+                    if ($request->varian) {
+                        // Filter berdasarkan varian jika ada
+                        $sku = $request->varian;
+                        $query->with(['productVariations' => function ($q) use ($sku) {
+                            $q->where('sku', $sku);
+                        }]);
+                    } else {
+                        // Ambil semua varian jika tidak ada filter
+                        $query->with('productVariations');
+                    }
+
+                    $product = $query->first();
+
+                    if (!$product) {
+                        abort(404);
+                    }
+
+                    $product->images = json_decode($product->images, true);
+                    $product->dimensions = json_decode($product->dimensions, true);
+
+                    $firstVariant = $product->productVariations->first();
+    
+                    return view('user.component.detail-varian', [
+                        'averageRating' => $averageRating,
+                        'product'       => $product,
+                        'youlike'       => $youlike,
+                        'wishlists'     => $wishlists,
+                        'cartItems'     => $cartItems,
+                        'firstVariant'  => $firstVariant,
+                        'variant'       => $checkVariant,
+                        'variantType'   => $variantType,
+                    ]);
+                } else {
+                    $query = Product::where('product_code', $code)
+                        ->with('ratingAndReviews.user')
+                        ->withCount('ratingAndReviews')
+                        ->withAvg('ratingAndReviews', 'rating');
+                        
+                    if ($request->varian) {
+                        // Filter berdasarkan varian jika ada
+                        $sku = $request->varian;
+                        $query->with(['productVariations' => function ($q) use ($sku) {
+                            $q->where('sku', $sku);
+                        }]);
+                    } else {
+                        // Ambil semua varian jika tidak ada filter
+                        $query->with('productVariations');
+                    }
+
+                    $product = $query->first();
+
+                    if (!$product) {
+                        abort(404);
+                    }
+
+                    $product->images = json_decode($product->images, true);
+                    $product->dimensions = json_decode($product->dimensions, true);
+
+                    $firstVariant = $product->productVariations->first();
+                    
+                    return view('user.component.detail-varian', [
+                        'averageRating' => $averageRating,
+                        'product'       => $product,
+                        'firstVariant'  => $firstVariant,
+                        'youlike'       => $youlike,
+                        'variant'       => $checkVariant,
+                        'variantType'   => $variantType,
+                    ]);
+                }
             }
         } catch (Exception $err) {
             dd($err);
@@ -1169,7 +1335,27 @@ class ProductController extends Controller
         $sort = $request->sort;
         // dd($request);
 
-        $products = Product::where('product_name', 'like', '%' . $product_search . '%')
+        $products = Product::where(function ($query) use ($product_search) {
+            $query->where('product_name', 'like', '%' . $product_search . '%')
+                ->orWhere('description', 'like', '%' . $product_search . '%')
+                ->orWhere('information_product', 'like', '%' . $product_search . '%');
+        })
+        ->with(['promos'  => function ($query) {
+            $query->select('promos.*', 'promo_products.discounted_price')
+                ->wherePivot('discounted_price', '>', 0);
+        }])
+        ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
+            return $query->where('brand_id', $brand);
+        })
+        ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
+            return $query->where('rating', $rating);
+        })
+        ->when($minPrice !== null, function ($query) use ($minPrice) {
+            return $query->where('regular_price', '>=', $minPrice);
+        })
+        ->when($maxPrice !== null, function ($query) use ($maxPrice) {
+            return $query->where('regular_price', '<=', $maxPrice);
+        })
             ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                 return $query->where('brand_id', $brand);
             })
@@ -1366,10 +1552,12 @@ class ProductController extends Controller
     public function storeProductAdmin(Request $request)
     {
         try {
+            
+            // dd($request->regular_price);
             $request->validate([
                 'product_name' => 'required',
-                // 'stock_quantity' => 'required',
-                // 'regular_price' => 'required',
+                'stock_quantity' => 'required',
+                'regular_price' => 'required',
 
                 'stock_quantity' => 'required|integer',
                 'regular_price' => 'required|numeric',

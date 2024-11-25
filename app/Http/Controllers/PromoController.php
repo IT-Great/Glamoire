@@ -28,15 +28,67 @@ class PromoController extends Controller
             $promos = Promo::where('type', '=', 'promo')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
-                ->with(['products'])
                 ->get();
 
-            $vouchers = Promo::where('type', '=', 'voucher')->get();
+            $brandVouchers   = Promo::where('type', '=' , 'brand voucher')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
 
-            return view('user.component.promo', [
-                'promos' => $promos,
-                'vouchers' => $vouchers,
-            ]);
+            $limitedVouchers = Promo::where('type', '=' , 'limited voucher')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+            
+            $ongkirVouchers  = Promo::where('type', '=' , 'ongkir voucher')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+
+            $productVouchers  = Promo::where('type', '=' , 'product voucher')
+                ->with(['products'])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+
+            $promoBundlings  = Promo::where('type', '=' , 'discount')
+                ->with(['products'])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+
+            // dd($promoBundling);
+
+            $userId = session('id_user');
+            if ($userId) {
+                $wishlist = Wishlist::where('user_id', $userId)->get();
+
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $cartItems = Cart_item::where('cart_id', $cartId)->get();
+                
+                return view('user.component.promo', [
+                    'promos' => $promos,
+                    'brandVouchers' => $brandVouchers,
+                    'limitedVouchers' => $limitedVouchers,
+                    'ongkirVouchers' => $ongkirVouchers,
+                    'productVouchers' => $productVouchers,
+                    'promoBundlings' => $promoBundlings,
+                    'wishlist'  => $wishlist,
+                    'cartItems' => $cartItems,
+                ]);
+            }
+            else{
+                return view('user.component.promo', [
+                    'promos' => $promos,
+                    'brandVouchers' => $brandVouchers,
+                    'limitedVouchers' => $limitedVouchers,
+                    'ongkirVouchers' => $ongkirVouchers,
+                    'productVouchers' => $productVouchers,
+                    'promoBundlings' => $promoBundlings,
+                ]);
+            }
+
+
         } catch (Exception $err) {
             dd($err);
         }
@@ -48,20 +100,12 @@ class PromoController extends Controller
         $userId = session('id_user');
 
         if ($userId) {
-            $promo = Promo::where('promo_name', $name)->with(['products.brand'])
+            $promo = Promo::where('promo_name', $name)
+                ->with(['products'  => function ($query) {
+                $query->select('products.*', 'promo_products.discounted_price')
+                    ->wherePivot('discounted_price', '>', 0);
+                }])
                 ->get();
-
-            foreach ($promo as $promoItem) {
-                foreach ($promoItem->products as $product) {
-
-                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
-                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
-
-                    // Masukkan hasil diskon ke objek promo
-                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
-                    $product->price_after_discount = $priceAfterDiscount;
-                }
-            }
 
             $cartId = Cart::where('user_id', $userId)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)->get();
@@ -79,14 +123,15 @@ class PromoController extends Controller
                 ->get();
 
             foreach ($promo as $promoItem) {
-                // Pastikan products adalah koleksi 
                 foreach ($promoItem->products as $product) {
-                    // Hitung diskon untuk setiap produk
-                    $priceDiscount = ($product->regular_price * $promoItem->discount) / 100;
-                    $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    if ($promoItem->discount > 100) {
+                        $priceAfterDiscount = $product->regular_price - $promoItem->discount;
+                    }
+                    elseif ($promoItem->discount <= 100) {
+                        $priceDiscount = ($product->regular_price) * ($promoItem->discount/100);
+                        $priceAfterDiscount = $product->regular_price - $priceDiscount;
+                    }
 
-                    // Masukkan hasil diskon ke objek promo
-                    // Misalkan kita menyimpan hasil diskon ke dalam array untuk setiap produk
                     $product->price_after_discount = $priceAfterDiscount;
                 }
             }
@@ -698,10 +743,6 @@ class PromoController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
-
-
-
-
 
     // PROMO BRAND VOUCHER
     public function createPromoBrandVoucher()

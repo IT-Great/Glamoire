@@ -18,10 +18,14 @@ class Order extends Model
         'total_item_price',
         'shipping_cost',
         'voucher_promo',
+        'voucher_ongkir',
+        'discount_ongkir',
         'discount_amount',
         'total_amount',
         'order_date',
         'status',
+        'kurir',
+        'resi',
     ];
     
     public function shippingAddress()

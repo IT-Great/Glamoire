@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('voucher_new_users', function (Blueprint $table) {
             $table->id();
-            $table->uuid('user_id');
+            $table->uuid('user_id')->nullable();
+            $table->string('email')->nullable();
             $table->string('code');
             $table->boolean('is_use');
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();

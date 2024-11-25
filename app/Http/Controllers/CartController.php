@@ -7,40 +7,138 @@ use App\Models\Shipping_address;
 use App\Models\User;
 use App\Models\Cart;
 use App\Models\Cart_item;
-
+use App\Models\Promo;
+use App\Models\Product;
+use Carbon\Carbon;
 
 class CartController extends Controller
 {
     public function index(){
-        $userId = session('id_user');
+        try {
+            $userId = session('id_user');
+            if ($userId) {
+                // UPDATE PRICE PRODUCT KETIKA DISKON SUDAH TIDAK ADA
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $promoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') < ?", [Carbon::today()])
+                    ->with(['products' => function ($query) {
+                        $query->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->get()
+                    ->pluck('products.*.id')
+                    ->flatten();
 
-        if ($userId) {
-            $data = Cart::where('user_id', $userId)
-            ->with('cartItems.product') // Ambil relasi cartItems dengan produk
-            ->get()
-            ->map(function ($cart) {
-                // Urutkan cartItems berdasarkan stock_quantity dari produk
-                $cart->cartItems = $cart->cartItems->sortByDesc(function ($cartItem) {
-                    return $cartItem->product->stock_quantity;
-                });
-                return $cart;
-            });
+                $getRegularPrices = Product::whereIn('id', $promoProductIds)
+                    ->pluck('regular_price', 'id'); // Mengambil harga regular dengan key berupa product_id
 
+                $getCartItems = Cart_item::where('cart_id', $cartId)
+                    ->whereIn('product_id', $promoProductIds)
+                    ->get(); // Mengambil item cart yang sesuai dengan promo dan cart_id
+
+                foreach ($getCartItems as $cartItem) {
+                    $productId = $cartItem->product_id;
+                    
+                    // Ambil harga regular untuk product_id saat ini
+                    if (isset($getRegularPrices[$productId])) {
+                        $regularPrice = $getRegularPrices[$productId];
+                        
+                        // Update price dan total pada cart item
+                        $cartItem->price = $regularPrice;
+                        $cartItem->total = $regularPrice * $cartItem->quantity;
+                        $cartItem->save();
+                    }
+                }
+
+
+                // UPDATE PRICE DISKON KETIKA ADA PROMO BARU
+                $promoDiscProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->where('status', '=', 'Active') // Pastikan status promo "Active"
+                    ->with(['products' => function ($query) {
+                        $query->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->get()
+                    ->pluck('products.*.id')
+                    ->flatten();
+
+                // dd($promoDiscProductIds);   
+
+                $getDiscountedPrices = Product::whereIn('id', $promoDiscProductIds)
+                    ->with(['promos' => function ($query) {
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->wherePivot('discounted_price', '>', 0)
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                    }])
+                    ->get()
+                    ->mapWithKeys(function ($product) {
+                        // Mendapatkan harga promo untuk setiap produk
+                        $discountedPrice = $product->promos->first()->pivot->discounted_price ?? $product->regular_price;
+                        return [$product->id => $discountedPrice];
+                    });
+
+                // dd($getDiscountedPrices);
+
+                $getCartItems = Cart_item::where('cart_id', $cartId)
+                    ->whereIn('product_id', $promoDiscProductIds)
+                    ->get();
+
+                foreach ($getCartItems as $cartItem) {
+                    $productId = $cartItem->product_id;
+                    
+                    // Ambil harga promo untuk product_id saat ini jika tersedia
+                    if (isset($getDiscountedPrices[$productId])) {
+                        $discountedPrice = $getDiscountedPrices[$productId];
+                        
+                        // Update price dan total pada cart item
+                        $cartItem->price = $discountedPrice;
+                        $cartItem->total = $discountedPrice * $cartItem->quantity;
+                        $cartItem->save();
+                    }
+                }
+
+                $date = Carbon::today();
+
+                $data = Cart_item::where('cart_id', $cartId)
+                ->with(['product' => function ($query) {
+                    // Load promos for products, but allow products without promos to be included
+                    $query->with(['promos' => function ($promoQuery) {
+                        $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])                        
+                        ->where('promo_products.discounted_price', '>', 0);
+                    }]);
+                }])
+                ->get();
             
-            $total = $data->sum(function($cart) {
-                return $cart->cartItems->sum('total'); // Menjumlahkan total setiap cartItems dalam setiap cart
-            });
-        }
-        else {
-            session()->flash('register_or_login_first');
-            return redirect()->back();
-        }
 
-        // dd($data);
-        return view('user.component.cart', [
-            'data' => $data,
-            'total' => $total,
-        ]);
+                // If data is found, map and process it
+                if ($data->isNotEmpty()) {
+                    // Sort by product stock_quantity within cartItems
+                    $data = $data->sortByDesc(function ($cartItem) {
+                        return $cartItem->product->stock_quantity ?? 0;
+                    });
+
+                    // Calculate total by summing 'total' field in cartItems
+                    $total = $data->sum('total');
+                    
+                    // dd($data);
+                } else {
+                    $data = collect(); // Return as an empty collection for consistency
+                    $total = 0;
+                }
+
+                return view('user.component.cart', [
+                    'data' => $data,
+                    'total' => $total,
+                ]);
+            }
+            else {
+                session()->flash('register_or_login_first');
+                return redirect()->back();
+            }
+        } catch (Exception $err) {
+            dd($err);
+        }
     }
 
     // DELETE PRODUCT ITEM IN CART
@@ -93,8 +191,7 @@ class CartController extends Controller
                     ->first();
 
                 $totalQuantity = $cart->cartItems->sum('quantity');
-                
-                
+            
                 // Jika cart ditemukan, return jumlah item
                 return response()->json($totalQuantity);
             }
@@ -114,7 +211,11 @@ class CartController extends Controller
             // Jika "Pilih Semua" diklik
             if ($request->has('select_all')) {
                 // Update semua item di keranjang
-                Cart_item::where('cart_id', $cartId)->update([
+                Cart_item::where('cart_id', $cartId)
+                ->whereHas('product', function ($query) {
+                    $query->where('stock_quantity', '!=', 0);
+                })
+                ->update([
                     'is_choose' => $request->is_choose
                 ]);
             } else {

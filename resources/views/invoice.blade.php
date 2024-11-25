@@ -168,6 +168,12 @@
                     <p class="text-xs ml-auto text-black">-Rp{{ number_format($order->discount_amount) }}</p>
                 </div>
                 @endif
+                @if ($order->discount_ongkir !== null)
+                <div class="flex">
+                    <p class="text-xs text-black">Total Diskon Ongkos Kirim</p>
+                    <p class="text-xs ml-auto text-black">-Rp{{ number_format($order->discount_ongkir) }}</p>
+                </div>
+                @endif
                 <div class="flex border-top-dashed pt-1">
                     <p class="text-xs font-semibold text-black">TOTAL BELANJA</p>
                     <p class="text-xs ml-auto text-black font-semibold">Rp{{ number_format($order->total_amount) }}</p>

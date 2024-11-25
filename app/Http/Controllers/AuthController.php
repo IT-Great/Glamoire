@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Shipping_address;
 use App\Models\User;
 use App\Models\VoucherNewUser;
+use App\Models\Cart;
 use Exception;
 
 use Illuminate\Auth\Events\Registered;
@@ -76,47 +77,71 @@ class AuthController extends Controller
                 'updated_at' => now(),
             ]);
 
+            Cart::create([
+                'user_id' => $user['id'],
+            ]);
+            
             event(new Registered($user));
-
             $userLogin = User::where('email', $user->email)->first();
 
+
+
+            // CHECK UNTUK VOUCHER 
             if ($userLogin) {
-                // Email ditemukan, sekarang cek apakah password cocok
+                $checkVoucherNewUser = VoucherNewUser::where('email', $user->email)->exists();
 
-                // Increment: hitung jumlah voucher yang sudah ada dan tambah 1
-                $increment = VoucherNewUser::count() + 1;
+                if($checkVoucherNewUser){
+                    Auth::login($userLogin);
+                    session()->put([
+                        'id_user' => $user['id'],
+                        'username' => $user['fullname'],
+                    ]);
 
-                // Ambil 4 karakter pertama dari ID user
-                $idFragment = substr($userLogin->id, 0, 4);
-
-                // Buat kode voucher sesuai format "increment-4hurufID"
-                $codeUser = "{$increment}-{$idFragment}";
-
-                VoucherNewUser::create([
-                    'code' => $codeUser,
-                    'user_id' => $userLogin->id,
-                    'is_use' => 0,
-                ]);
-
-                Auth::login($userLogin);
-
-                $data = [
-                    'code' => $codeUser,
-                    'fullname' => $userLogin->fullname,
-                ];
-                $email_target = $userLogin->email;
-                
-                Mail::to($email_target)->send(new sendMailCodeNewUser($data));
-
-                session()->put([
-                    'id_user' => $user['id'],
-                    'username' => $user['fullname'],
-                ]);
-
-                return response()->json([
-                    'success' => true, 
-                    'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
-                ]);
+                    $voucherNewUser = VoucherNewUser::where('email', $request->email)->first();
+                    $voucherNewUser->update([
+                        'user_id' => $userLogin->id,
+                    ]);
+    
+                    return response()->json([
+                        'success' => true, 
+                        'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi'
+                    ]);
+                }else{
+                    $increment = VoucherNewUser::count() + 1;
+    
+                    // Ambil 4 karakter pertama dari ID user
+                    $idFragment = substr($userLogin->id, 0, 4);
+    
+                    // Buat kode voucher sesuai format "increment-4hurufID"
+                    $codeUser = "{$increment}-{$idFragment}";
+    
+                    VoucherNewUser::create([
+                        'code' => $codeUser,
+                        'user_id' => $userLogin->id,
+                        'is_use' => 0,
+                        'email' => $user->email,
+                    ]);
+    
+                    Auth::login($userLogin);
+    
+                    $data = [
+                        'code' => $codeUser,
+                        'fullname' => $userLogin->fullname,
+                    ];
+                    $email_target = $userLogin->email;
+                    
+                    Mail::to($email_target)->send(new sendMailCodeNewUser($data));
+    
+                    session()->put([
+                        'id_user' => $user['id'],
+                        'username' => $user['fullname'],
+                    ]);
+    
+                    return response()->json([
+                        'success' => true, 
+                        'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
+                    ]);
+                }
 
             } else {
                 return response()->json(['error' => true, 'message' => 'Oops Email Gagal Didaftarkan']);
@@ -129,87 +154,6 @@ class AuthController extends Controller
             ]); // Mengembalikan status 500 untuk menandakan error server
         }
     }
-
-    // public function register(Request $request)
-    // {
-    //     try {
-    //         // Periksa apakah email sudah terdaftar
-    //         if (User::where('email', $request->email)->exists()) {
-    //             return response()->json(['error' => true, 'message' => 'Email Sudah Terdaftar']);
-    //         }
-
-    //         // Periksa apakah handphone sudah terdaftar
-    //         if (User::where('handphone', $request->handphone)->exists()) {
-    //             return response()->json(['error' => true, 'message' => 'Handphone Sudah Terdaftar']);
-    //         }
-
-    //         // Set nilai role secara langsung
-    //         $role = 'user';  // Bisa disesuaikan
-
-    //         // Simpan pengguna baru ke variabel $user
-    //         $user = User::create([
-    //             'fullname'   => $request->fullname,
-    //             'email'      => $request->email,
-    //             'password'   => Hash::make($request->password),
-    //             'handphone'  => $request->handphone,
-    //             'date'       => $request->date,
-    //             'gender'     => $request->gender,
-    //             'role'       => $role,
-    //             'created_at' => now(),
-    //             'updated_at' => now(),
-    //         ]);
-
-    //         // Trigger event Registered dengan variabel $user
-    //         event(new Registered($user));
-
-    //         // Cari pengguna berdasarkan email
-    //         $userLogin = User::where('email', $user->email)->first();
-
-    //         if ($userLogin) {
-    //             // Increment voucher dan buat kode voucher
-    //             $increment = VoucherNewUser::count() + 1;
-    //             $idFragment = substr($userLogin->id, 0, 4);
-    //             $codeUser = "{$increment}-{$idFragment}";
-
-    //             // Simpan voucher baru untuk pengguna
-    //             VoucherNewUser::create([
-    //                 'code' => $codeUser,
-    //                 'user_id' => $userLogin->id,
-    //                 'is_use' => 0,
-    //             ]);
-
-    //             // Login pengguna
-    //             Auth::login($userLogin);
-
-    //             // Kirim email dengan kode voucher
-    //             $data = [
-    //                 'code' => $codeUser,
-    //                 'fullname' => $userLogin->fullname,
-    //             ];
-    //             $email_target = $userLogin->email;
-    //             Mail::to($email_target)->send(new sendMailCodeNewUser($data));
-
-    //             // Simpan data pengguna ke session
-    //             session()->put([
-    //                 'id_user' => $userLogin->id,
-    //                 'username' => $userLogin->fullname,
-    //             ]);
-
-    //             return response()->json([
-    //                 'success' => true,
-    //                 'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
-    //             ]);
-    //         } else {
-    //             return response()->json(['error' => true, 'message' => 'Oops Email Gagal Didaftarkan']);
-    //         }
-    //     } catch (Exception $err) {
-    //         return response()->json([
-    //             'error'   => true,
-    //             'message' => $err->getMessage(),
-    //         ]);
-    //     }
-    // }
-
 
     public function checkEmail(Request $request)
     {

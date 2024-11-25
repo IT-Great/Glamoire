@@ -25,6 +25,8 @@ return new class extends Migration
 
             $table->bigInteger('shipping_cost');
             $table->string('voucher_promo')->nullable();
+            $table->string('voucher_ongkir')->nullable();
+            $table->bigInteger('discount_ongkir')->nullable();
             $table->bigInteger('discount_amount')->nullable();
             $table->bigInteger('total_amount');
             $table->date('order_date');

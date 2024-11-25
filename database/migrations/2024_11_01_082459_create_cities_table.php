@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('product_id');
-            $table->integer('product_variant_id')->nullable();
-            $table->integer('quantity');
-            $table->bigInteger('price');
-            $table->bigInteger('subtotal');
+            $table->string('city_id')->unique();
+            $table->string('province_id');
+            $table->string('province');
+            $table->string('type');
+            $table->string('city_name');
+            $table->string('postal_code');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('cities');
     }
 };

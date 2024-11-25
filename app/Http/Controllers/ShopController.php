@@ -9,6 +9,7 @@ use App\Models\Cart_item;
 use App\Models\Wishlist;
 use App\Models\Product;
 use App\Models\CategoryProduct;
+use Carbon\Carbon;
 
 
 class ShopController extends Controller
@@ -26,6 +27,12 @@ class ShopController extends Controller
             $userId = session('id_user');
 
             $query = Product::where('product_name', '!=', 'NULL')
+            ->with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->wherePivot('discounted_price', '>', 0);
+            }])
             ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                 return $query->where('brand_id', $brand);
             })
@@ -46,10 +53,10 @@ class ShopController extends Controller
                     $query->orderBy('created_at', 'desc');
                     $sort = "Terbaru";
                     break;
-                case 'popular':
-                    // Assuming you have a 'popularity' field
-                    $query->orderBy('popularity', 'desc');
-                    break;
+                // case 'popular':
+                //     // Assuming you have a 'popularity' field
+                //     $query->orderBy('sale', 'desc');
+                //     break;
                 case 'high_price':
                     $query->orderBy('regular_price', 'desc');
                     $sort = "Harga Tertinggi";
@@ -61,7 +68,7 @@ class ShopController extends Controller
             }
     
             // Execute query and get filtered products
-            $products = $query->get();
+            $products = $query->orderBy('sale', 'desc')->paginate(15);
     
             $totalProduct = $products->count();
             $categories = CategoryProduct::whereNull('parent_id')->get();
@@ -131,7 +138,13 @@ class ShopController extends Controller
             // Base query to get products
             $query = Product::whereHas('categoryProduct', function ($query) use ($categoryId) {
                 $query->where('parent_id', $categoryId);
-            })->withAvg('ratingAndReviews', 'rating')
+            })
+            ->with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->wherePivot('discounted_price', '>', 0);
+            }])
             ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                 return $query->where('brand_id', $brand);
             })
@@ -141,7 +154,7 @@ class ShopController extends Controller
             ->when($maxPrice !== null, function ($query) use ($maxPrice) {
                 return $query->where('regular_price', '<=', $maxPrice);
             })
-            ->when($rating !== null, function ($query) use ($rating) {
+            ->when($rating !== null && $rating !== 'all', function ($query) use ($rating) {
                 return $query->where('rating', '=', $rating);
             });
     
@@ -166,7 +179,7 @@ class ShopController extends Controller
             }
     
             // Execute query and get filtered products
-            $products = $query->get();
+            $products = $query->paginate(15);
     
             $totalProduct = $products->count();
             $subCategories = CategoryProduct::where('parent_id', $categoryId)->get();
@@ -227,7 +240,12 @@ class ShopController extends Controller
                 $subCategoryId = CategoryProduct::where('name', $subcategory)->value('id');
 
                 $products = Product::where('category_product_id', $subCategoryId)
-                    ->withAvg('ratingAndReviews', 'rating')
+                    ->with(['promos'  => function ($query) {
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->wherePivot('discounted_price', '>', 0);
+                    }])
                     ->when($brand !== null && $brand !== 'allbrand', function ($query) use ($brand) {
                         return $query->where('brand_id', $brand);
                     })
@@ -259,7 +277,7 @@ class ShopController extends Controller
                         $sort = "Harga Terendah";
                         break;
                 }
-                $products = $products->get();
+                $products = $products->paginate(15);
 
 
                 $brands = Brand::get();

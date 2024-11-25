@@ -39,6 +39,19 @@ class Product extends Model
             ->withPivot('discounted_price', 'discount_product_voucher_item', 'discount_type');
     }
 
+    public function promoTiers()
+    {
+        return $this->hasManyThrough(
+            PromoTier::class,  // Model tujuan
+            Promo::class,      // Model perantara
+            'product_id',      // Foreign key di tabel promos
+            'promo_id',        // Foreign key di tabel promo_tiers
+            'id',              // Local key di tabel products
+            'id'               // Local key di tabel promos
+        );
+    }
+    
+
     public function productVariations()
     {
         return $this->hasMany(ProductVariations::class);

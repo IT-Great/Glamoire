@@ -12,18 +12,18 @@
     </div>
 
     <div class="row mb-14">
-        <div class="col-lg-9 col-12 pr-lg-0">
-            <div class="container border border-[#183018] rounded shadow-md">
-                <div class="form-check py-2 py-md-3 border-bottom border-[#183018]">
-                    <input class="form-check-input" type="checkbox" value="" id="select-all" onclick="toggleCheckboxes(this)" onchange="toggleSelectAll()">
-                    <label class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" for="checkAll">
-                        Pilih Semua 
-                    </label>
-                </div>
-    
-                @foreach ($data as $cart)
-                    @foreach ($cart->cartItems as $product)
-    
+        @if (count($data) !== 0)
+            <div class="col-lg-9 col-12 pr-lg-0">
+                <div class="container border border-[#183018] rounded shadow-md">
+                    <div class="form-check py-2 py-md-3 border-bottom border-[#183018]">
+                        <input class="form-check-input" type="checkbox" value="" id="select-all" onclick="toggleCheckboxes(this)" onchange="toggleSelectAll()">
+                        <label class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" for="checkAll">
+                            Pilih Semua 
+                        </label>
+                    </div>
+        
+                    @foreach ($data as $product)
+
                         <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
                             <div class="d-flex">
                                 <div class="col-lg-2 col-md-4 col-4 pl-1">
@@ -40,7 +40,26 @@
                                     </p>
                                     @endif
                                     <p class="hover:cursor-pointer text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
-                                    <p class="text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}">{{ 'Rp' . number_format($product->product->regular_price, 0, ',', '.') }}</p>
+                                    @php
+                                        $activePromo = $product->product->promos->first();
+                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                    @endphp
+
+                                    <div class="flex gap-1">
+                                        @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                            <del>
+                                            Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @else
+                                        <p class="text-decoration-none  text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
+                                            Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                        @endif
+                                    </div>
+
                                     <!-- BUTTON PLUS & MINUS & DELETE -->
                                     <div class="flex mt-auto bottom">
                                         <div class="flex ml-auto">
@@ -89,28 +108,40 @@
                                 </div>
                             </div>
                         </div>
-    
-                    @endforeach
-                @endforeach 
-            </div>
-        </div>
 
-        <div class="col-lg-3 col-12 mt-2 mt-md-0 d-none d-lg-block">
-            <div class="position-sticky" style="top: 4rem">
-                <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
-                    <div class="d-flex py-2">
-                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]">Total Harga</p>
-                        <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="border-top border-[#183018] pt-2">
-                            <button class="btn w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" style="background-color: #183018" type="submit" id="paynow" onclick="checkout()" disabled>
-                                Beli
-                            </button>
-                        </a>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-12 mt-2 mt-md-0 d-none d-lg-block">
+                <div class="position-sticky" style="top: 4rem">
+                    <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
+                        <div class="d-flex py-2">
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]">Total Harga</p>
+                            <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="border-top border-[#183018] pt-2">
+                                <button class="btn w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] bg-[#183018] hover:bg-neutral-900" id="paynow" onclick="checkout()" disabled>
+                                    Beli
+                                </button>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
+
+        @else
+        <div style="min-height:10vh;">
+            <div class="flex align-items-center justify-content-center">
+                <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+            </div>
+            <div class="grid align-items-center justify-content-center">
+                <p class="text-danger text-md">Keranjang belanjamu masih kosong nih</p>
+                <button class="btn btn-success rounded-sm w-full" onclick="location.href='/shop'" >Mulai Belanja</button>
+            </div>
         </div>
+            
+        @endif
     </div>
   </div>
 </div>
@@ -122,7 +153,7 @@
         <p id="totalPriceMobile" class="text-[12px] ml-auto text-white">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
     </div>
     <a href="/checkout">
-        <button class="btn px-8 w-full h-fit font-semibold rounded-sm text-[#183018] text-[12px]" style="background-color: #ffffff" type="submit" id="paynowmobile" disabled>
+        <button class="btn px-8 w-full h-fit font-semibold rounded-sm text-[#183018] text-[12px] bg-[#183018] hover:bg-neutral-900" type="submit" id="paynowmobile" disabled>
             Beli
         </button>
     </a>
@@ -135,7 +166,6 @@
      $(document).on('click', 'button[name="delete-product-cart"]', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        console.log(id);
         $.ajax({
             url: "{{ route('delete.product.cart') }}",
             type: 'POST',
@@ -147,7 +177,6 @@
                 Toast.fire({
                     icon: "success",
                     text: response.message,
-                    title: "Berhasil",
                     willOpen: () => {
                     const title = document.querySelector('.swal2-title');
                     const content = document.querySelector('.swal2-html-container');
@@ -179,9 +208,20 @@
         let totalCheckboxes = $('.item-checkbox').length;  // Jumlah semua checkbox item
         let checkedCheckboxes = $('.item-checkbox:checked').length;  // Jumlah checkbox item yang dipilih
 
-        if (totalCheckboxes === checkedCheckboxes) {
-            $('#select-all').prop('checked', true);  // Pilih Semua jika semua item dipilih
-        } else {
+        console.log({
+            totalCheckboxes : totalCheckboxes,
+            checkedCheckboxes : checkedCheckboxes,
+        });
+
+        if (totalCheckboxes !== 0 && checkedCheckboxes !== 0) {
+            if (totalCheckboxes === checkedCheckboxes) {
+                $('#select-all').prop('checked', true);  // Pilih Semua jika semua item dipilih
+            } 
+        }
+        else if(totalCheckboxes === 0 && checkedCheckboxes === 0) {
+            $('#select-all').prop('checked', false);  // Hapus Pilih Semua jika tidak semua item dipilih
+        }
+        else {
             $('#select-all').prop('checked', false);  // Hapus Pilih Semua jika tidak semua item dipilih
         }
     }
@@ -201,11 +241,6 @@
                 is_choose: selectAllChecked ? 1 : 0 // TRUE jika semua dipilih, FALSE jika tidak
             },
             success: function(response) {
-                if (response.success) {
-                    console.log('Semua produk berhasil diupdate.');
-                } else {
-                    alert(response.message);
-                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -228,11 +263,6 @@
                 is_choose: isChecked ? 1 : 0
             },
             success: function(response) {
-                if (response.success) {
-                    console.log('Produk ' + productId + ' berhasil diupdate.');
-                } else {
-                    alert(response.message);
-                }
             },
             error: function(xhr) {
                 console.log(xhr.responseText);
@@ -311,11 +341,6 @@
                     quantity: newQuantity
                 },
                 success: function(response) {
-                    if (response.success) {
-                        console.log('Quantity updated successfully for product ' + productId);
-                    } else {
-                        alert(response.message);
-                    }
                 },
                 error: function(xhr) {
                     console.log(xhr.responseText);
@@ -343,17 +368,14 @@
             // Mengambil harga dari elemen yang sesuai
             let price = parseFloat($(this).data('price')); // Mengambil harga dari data atribut
 
-            console.log('Quantity setelah klik: ' + quantity);
-            console.log('Harga: ' + price);
-
             // Hitung total harga untuk produk ini
             total += price * quantity; 
             hasSelectedProduct = true; // Tandai bahwa ada produk yang dipilih
         });
 
         // Update total harga di tampilan
-        $('#totalPrice').text('Rp ' + number_format(total, 0, ',', '.'));
-        $('#totalPriceMobile').text('Rp ' + number_format(total, 0, ',', '.'));
+        $('#totalPrice').text('Rp' + number_format(total, 0, ',', '.'));
+        $('#totalPriceMobile').text('Rp' + number_format(total, 0, ',', '.'));
 
         // Aktifkan atau nonaktifkan tombol "Bayar Sekarang"
         if (hasSelectedProduct) {
@@ -492,6 +514,34 @@
         window.location.href = productCode+"_product";
     }
 </script>
+
+@if (session('stock_empty'))
+    <script>
+        var Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            background: "#183018",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Gagal checkout",
+            text: "{{ session('stock_empty') }}",  // Pass session message here
+            willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Change title color
+                if (content) content.style.color = '#ffffff'; // Change content color
+            }
+        });
+    </script>
+@endif
 
 
 

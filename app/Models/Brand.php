@@ -15,6 +15,17 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class);
     }
+    
+    public function productsNewest()
+    {
+        return $this->hasMany(Product::class)->orderBy('created_at', 'desc')->limit(10);
+    }
+
+    public function productsTop()
+    {
+        return $this->hasMany(Product::class)->orderBy('sale', 'desc')->limit(10);
+    }
+
 
     // public function products()
     // {
