@@ -136,53 +136,12 @@
         text-align: center;
         line-height: 1rem;
         box-shadow: 0 0 8px rgba(15, 15, 15, 0.5);
-        /* Glow effect */
-        animation: pulse 1.5s infinite;
-        /* Add animation */
         transform-origin: center;
         z-index: 10;
     }
 
-    /* Pulse Animation */
-    @keyframes pulse {
-        0% {
-            transform: scale(1);
-            opacity: 1;
-        }
-
-        50% {
-            transform: scale(1.2);
-            opacity: 0.8;
-        }
-
-        100% {
-            transform: scale(1);
-            opacity: 1;
-        }
-    }
-
-
     .nav-item.dropdown.position-relative {
         margin-right: 15px;
-    }
-
-    #low-stock-alert,
-    #out-stock-alert {
-        display: none;
-        /* Hidden by default */
-        width: 100%;
-    }
-
-    #low-stock-alert .text-warning,
-    #out-stock-alert .text-danger {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .dropdown-item:hover #low-stock-alert .text-warning,
-    .dropdown-item:hover #out-stock-alert .text-danger {
-        opacity: 0.8;
     }
 </style>
 
@@ -200,12 +159,13 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
                         <!-- Bell Icon with Dropdown -->
                         <li class="nav-item dropdown position-relative">
                             <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="bi bi-bell-fill me-3"></i>
+                                data-bs-auto-close="true" aria-expanded="false">
+
+                                <i class="bi bi-bell-fill me-1"></i>
                                 <span id="stock-alert-badge" class="badge-notification d-none">0</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
@@ -214,28 +174,15 @@
                                 </li>
                                 <li>
                                     <div class="dropdown-item">
-                                        <span id="low-stock-alert">
-                                            <i class="bi bi-exclamation-circle-fill text-warning"></i>
-                                            <span class="text-warning"><span class="count">0</span> Products Low
-                                                Stock</span>
+                                        <span id="low-stock-alert" class="text-warning">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            1 Product Low Stock
                                         </span>
                                     </div>
-                                </li>
-                                <li>
-                                    <div class="dropdown-item">
-                                        <span id="out-stock-alert">
-                                            <i class="bi bi-x-circle-fill text-danger"></i>
-                                            <span class="text-danger"><span class="count">0</span> Products Out of
-                                                Stock</span>
-                                        </span>
-                                    </div>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
                                 </li>
                                 <li>
                                     <a class="dropdown-item" href="{{ route('index-stock-product-admin') }}">
-                                        View All Stock
+                                        View Stock
                                     </a>
                                 </li>
                             </ul>
@@ -244,7 +191,7 @@
                         <!-- Envelope Icon with Dropdown -->
                         <li class="nav-item dropdown position-relative">
                             <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown"
-                                aria-expanded="false">
+                                data-bs-auto-close="true" aria-expanded="false">
                                 <i class="bi bi-envelope-fill me-1"></i>
                                 <span id="contact-us-notif" class="badge-notification d-none">3</span>
                             </a>
@@ -265,21 +212,6 @@
                                         View Messages
                                     </a>
                                 </li>
-                            </ul>
-                        </li>
-
-
-
-                        <!-- Cart Icon with Dropdown -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-cart-check-fill me-3"></i>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li>
-                                    <h6 class="dropdown-header">Cart</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">View Cart</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -330,10 +262,6 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-
 
 {{-- info contact us --}}
 <script>
@@ -366,45 +294,52 @@
 
 
 {{-- info stock --}}
-{{-- <script>
+<script>
     document.addEventListener('DOMContentLoaded', function() {
-        function checkStockAlerts() {
+        function fetchStockAlerts() {
             fetch("{{ route('check-stock-alerts') }}")
                 .then(response => response.json())
                 .then(data => {
-                    // Update badge total
                     const badge = document.getElementById('stock-alert-badge');
-                    badge.textContent = data.totalAlerts;
-                    badge.classList.toggle('d-none', data.totalAlerts === 0);
+                    const lowStockAlert = document.getElementById('low-stock-alert');
+                    const outOfStockAlert = document.getElementById(
+                    'out-of-stock-alert'); // Tambahkan elemen untuk out of stock
 
-                    // Update low stock count with animation
-                    const lowStockSpan = document.querySelector('#low-stock-alert span');
-                    if (lowStockSpan) {
-                        lowStockSpan.textContent = data.lowStockCount;
-                        if (data.lowStockCount > 0) {
-                            lowStockSpan.closest('.dropdown-item').classList.add('text-warning');
-                        } else {
-                            lowStockSpan.closest('.dropdown-item').classList.remove('text-warning');
-                        }
+
+                    // Update badge (kombinasi low stock + out of stock)
+                    const totalAlerts = data.lowStockCount + data.outOfStockCount;
+                    if (totalAlerts > 0) {
+                        badge.textContent = totalAlerts;
+                        badge.classList.remove('d-none');
+                    } else {
+                        badge.textContent = '';
+                        badge.classList.add('d-none');
                     }
 
-                    // Update out of stock count with animation
-                    const outStockSpan = document.querySelector('#out-stock-alert span');
-                    if (outStockSpan) {
-                        outStockSpan.textContent = data.outOfStockCount;
-                        if (data.outOfStockCount > 0) {
-                            outStockSpan.closest('.dropdown-item').classList.add('text-danger');
-                        } else {
-                            outStockSpan.closest('.dropdown-item').classList.remove('text-danger');
-                        }
+                    // Update low stock alert
+                    if (data.lowStockCount > 0) {
+                        lowStockAlert.innerHTML = `
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                            ${data.lowStockCount} Product${data.lowStockCount > 1 ? 's' : ''} Low Stock
+                        `;
+                    } else {
+                        lowStockAlert.innerHTML = `
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                            No Low Stock Products
+                        `;
                     }
 
-                    // Add visual feedback for updates
-                    const dropdown = document.querySelector('.dropdown-menu');
-                    if (data.totalAlerts > 0) {
-                        dropdown.style.animation = 'none';
-                        dropdown.offsetHeight; // Trigger reflow
-                        dropdown.style.animation = 'pulse 0.5s ease-in-out';
+                    // Update out of stock alert
+                    if (data.outOfStockCount > 0) {
+                        outOfStockAlert.innerHTML = `
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            ${data.outOfStockCount} Product${data.outOfStockCount > 1 ? 's' : ''} Out of Stock
+                        `;
+                    } else {
+                        outOfStockAlert.innerHTML = `
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            No Out of Stock Products
+                        `;
                     }
                 })
                 .catch(error => {
@@ -413,71 +348,24 @@
         }
 
         // Check initially
-        checkStockAlerts();
+        fetchStockAlerts();
 
         // Check every 30 seconds
-        setInterval(checkStockAlerts, 30000);
-
-        // Add CSS animation for updates
-        const style = document.createElement('style');
-        style.textContent = `
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-    `;
-        document.head.appendChild(style);
+        setInterval(fetchStockAlerts, 30000);
     });
-</script> --}}
-
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        function checkStockAlerts() {
-            fetch("{{ route('check-stock-alerts') }}")
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Received data:', data); // Debug line
+        // Inisialisasi Bootstrap Dropdown
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+        var dropdownList = dropdownElementList.map(function(dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl);
+        });
 
-                    // Update badge total
-                    const badge = document.getElementById('stock-alert-badge');
-                    badge.textContent = data.totalAlerts;
-                    badge.classList.toggle('d-none', data.totalAlerts === 0);
-
-                    // Update low stock count
-                    const lowStockCount = document.querySelector('#low-stock-alert .count');
-                    if (lowStockCount) {
-                        lowStockCount.textContent = data.lowStockCount;
-                        const lowStockAlert = document.querySelector('#low-stock-alert');
-                        lowStockAlert.style.display = data.lowStockCount > 0 ? 'block' : 'none';
-                    }
-
-                    // Update out of stock count
-                    const outStockCount = document.querySelector('#out-stock-alert .count');
-                    if (outStockCount) {
-                        outStockCount.textContent = data.outOfStockCount;
-                        const outStockAlert = document.querySelector('#out-stock-alert');
-                        outStockAlert.style.display = data.outOfStockCount > 0 ? 'block' : 'none';
-                    }
-
-                    // Add visual feedback for updates
-                    const dropdown = document.querySelector('.dropdown-menu');
-                    if (data.totalAlerts > 0) {
-                        dropdown.style.animation = 'none';
-                        dropdown.offsetHeight; // Trigger reflow
-                        dropdown.style.animation = 'pulse 0.5s ease-in-out';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching stock alerts:', error);
-                });
-        }
-
-        // Check initially
-        checkStockAlerts();
-
-        // Check every 30 seconds
-        setInterval(checkStockAlerts, 30000);
+        // Menghindari konflik jQuery
+        $(document).on('click', '.dropdown-toggle', function() {
+            $(this).dropdown('toggle');
+        });
     });
 </script>

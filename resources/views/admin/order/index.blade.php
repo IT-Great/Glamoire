@@ -193,76 +193,7 @@
                         aria-label="Close"></button>
                 </div>
 
-
-                <!-- Status Filters -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="row align-items-center mb-4">
-                            <div class="text-secondary mb-2">Status Pesanan</div>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="btn btn-outline-primary btn-sm rounded-pill">
-                                    Perlu diproses (28)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Telah diproses (18)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Tertunda (17)
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Search and Filters -->
-                        <form action="{{ route('index-admin-order') }}" method="GET" class="mb-4">
-                            <div class="row g-3">
-                                <div class="col-12 col-lg-6">
-                                    <div class="input-group">
-                                        <select name="search_type" class="form-select" style="max-width: 150px;">
-                                            <option value="order_number">No. Pesanan</option>
-                                            <option value="product">Produk</option>
-                                            <option value="customer">Pelanggan</option>
-                                        </select>
-                                        <input type="text" name="search" value="{{ request()->get('search') }}"
-                                            class="form-control" placeholder="Masukkan no. pesanan">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <select name="shipping_method" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Jasa Kirim</option>
-                                        </select>
-                                        <select name="action" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Tindakan</option>
-                                            <option value="process">Proses</option>
-                                            <option value="cancel">Batalkan</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-primary">
-                                            Terapkan
-                                        </button>
-                                        <a href="{{ route('index-admin-order') }}"
-                                            class="btn btn-outline-secondary">Reset</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Order Count and Actions -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="h5 mb-0">28 Pesanan</div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-down-up me-1"></i> Urutkan
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            <i class="bi bi-send me-1"></i> Pengiriman Massal
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Orders Table -->
-
                 <div class="card order-table">
                     <div class="card-header bg-white">
                         <h4>Order List</h4>
@@ -296,30 +227,37 @@
                                                 </div>
                                             </div>
                                             <div class="product-details">
-                                                @foreach ($order->groupedOrderItems as $item)
-                                                    <div class="d-flex gap-3 mb-3">
-                                                        <img src="{{ Storage::url($item['product']->main_image) }}"
-                                                            alt="{{ $item['product']->product_name }}"
-                                                            onclick="openImageInNewTab('{{ Storage::url($item['product']->main_image) }}')"
-                                                            loading="lazy">
-                                                        <div class="product-info">
-                                                            <div class="product-name">
-                                                                {{ $item['product']->product_name }}</div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-box me-1"></i>
-                                                                Qty: {{ $item['total_quantity'] }}
+                                                @if (isset($order->groupedOrderItems) && count($order->groupedOrderItems) > 0)
+                                                    @foreach ($order->groupedOrderItems as $item)
+                                                        @if (isset($item['product']))
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <img src="{{ Storage::url($item['product']->main_image) }}"
+                                                                    alt="{{ $item['product']->product_name }}"
+                                                                    onclick="openImageInNewTab('{{ Storage::url($item['product']->main_image) }}')"
+                                                                    loading="lazy">
+                                                                <div class="product-info">
+                                                                    <div class="product-name">
+                                                                        {{ $item['product']->product_name }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-box me-1"></i>
+                                                                        Qty: {{ $item['total_quantity'] }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-upc me-1"></i>
+                                                                        {{ $item['product']->product_code }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-tag me-1"></i>
+                                                                        {{ $item['product']->categoryProduct->name ?? 'Uncategorized' }}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-upc me-1"></i>
-                                                                {{ $item['product']->product_code }}
-                                                            </div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-tag me-1"></i>
-                                                                {{ $item['product']->categoryProduct->name }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <div class="text-muted">No products found</div>
+                                                @endif
                                             </div>
                                         </td>
                                         <td>
@@ -380,6 +318,144 @@
                         </table>
                     </div>
                 </div>
+
+                {{-- <div class="card">
+                    <div class="card-header bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-lg-4">Produk</div>
+                            <div class="col-12 col-lg-2">Jumlah Harus Dibayar</div>
+                            <div class="col-12 col-lg-2">Status</div>
+                            <div class="col-6 col-lg-1">Jasa Kirim</div>
+                            <div class="col-12 col-lg-2">Aksi</div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0">
+                        @foreach ($orders as $order)
+                            <div class="border-bottom p-3">
+                                <!-- Order Header -->
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-person-fill"></i>
+                                        <span class="fw-medium">{{ $order->user->fullname }}</span>
+                                    </div>
+                                    <div class="text-secondary">No. Pesanan {{ $order->doku_order_id }}</div>
+                                </div>
+
+                                <!-- Order Details -->
+                                <div class="row g-3">
+                                    <div class="col-12 col-lg-4">
+                                        @foreach ($order->orderItems as $item)
+                                            <div class="d-flex gap-3 mb-3">
+                                                <img src="{{ Storage::url($item->product->main_image) }}"
+                                                    alt="{{ $item->product->product_name }}" class="rounded"
+                                                    style="width: 80px; height: 80px; object-fit: cover;">
+                                                <div>
+                                                    <div class="fw-medium">{{ $item->product->product_name }}</div>
+                                                    <div class="text-secondary small">x{{ $item->quantity }}</div>
+                                                    <div class="text-secondary small">Variasi:
+                                                        {{ $item->variant ?? '-' }}</div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+
+                                    <div class="col-12 col-lg-2">
+                                        <div>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</div>
+                                        <div class="text-secondary small">{{ $order->payment_method }}</div>
+                                    </div>
+
+                                    <div class="col-12 col-lg-2">
+                                        <span class="badge bg-warning">Perlu Dikirim</span>
+                                        <div class="small text-secondary">
+                                            Mohon kirim sebelum<br>
+                                            {{ \Carbon\Carbon::parse($order->deadline)->format('d-m-Y') }}
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6 col-lg-1">
+                                        <div>{{ $order->shipping_method ?? 'J&T Express' }}</div>
+                                    </div>
+
+                                    <div class="col-6 col-lg-2">
+                                        <a href="#" type="button" class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal" data-bs-target="#sentModal">
+                                            <i class="bi bi-truck"></i> Atur Pengiriman
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="sentModal" tabindex="-1" aria-labelledby="sentModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0">
+                                            <h5 class="modal-title" id="sentModalLabel">Kirim Pesanan</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+
+                                        <!-- Order Number -->
+                                        <div class="modal-body pt-0">
+                                            <div class="d-flex align-items-center mb-4">
+                                                <i class="bi bi-arrow-left me-2"></i>
+                                                <span class="text-secondary">{{ $order->invoice->no_invoice }}</span>
+                                            </div>
+
+                                            <!-- Shipping Options -->
+                                            <div class="row g-4">
+                                                <!-- Counter Option -->
+                                                <div class="col-md-6">
+                                                    <label class="card h-100 border rounded position-relative p-3"
+                                                        style="cursor: pointer;">
+                                                        <input type="radio" name="shipping_method" value="counter"
+                                                            class="position-absolute" style="top: 10px; right: 10px;">
+                                                        <div class="text-center">
+                                                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                                                                style="width: 60px; height: 60px;">
+                                                                <i class="bi bi-shop fs-4"></i>
+                                                            </div>
+                                                            <h6 class="mb-2">Saya Akan Antar Ke Counter</h6>
+                                                            <p class="text-secondary small mb-0">Anda dapat mengirimkan
+                                                                paket Anda di
+                                                                cabang J&T Express terdekat di kota Anda</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+
+                                                <!-- Pickup Option -->
+                                                <div class="col-md-6">
+                                                    <label class="card h-100 border rounded position-relative p-3"
+                                                        style="cursor: pointer;">
+                                                        <input type="radio" name="shipping_method" value="pickup"
+                                                            class="position-absolute" style="top: 10px; right: 10px;">
+                                                        <div class="text-center">
+                                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                                                                style="width: 60px; height: 60px;">
+                                                                <i class="bi bi-truck fs-4"></i>
+                                                            </div>
+                                                            <h6 class="mb-2">Saya Akan Gunakan Jasa Pick-up (Jemput)
+                                                            </h6>
+                                                            <p class="text-secondary small mb-0">J&T Express akan
+                                                                mengambil paket dari
+                                                                alamat Anda</p>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-danger px-4"
+                                                id="konfirmasi">Konfirmasi</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div> --}}
 
             </div>
             <!-- Pagination Links -->

@@ -39,19 +39,6 @@ class Product extends Model
             ->withPivot('discounted_price', 'discount_product_voucher_item', 'discount_type');
     }
 
-    public function promoTiers()
-    {
-        return $this->hasManyThrough(
-            PromoTier::class,  // Model tujuan
-            Promo::class,      // Model perantara
-            'product_id',      // Foreign key di tabel promos
-            'promo_id',        // Foreign key di tabel promo_tiers
-            'id',              // Local key di tabel products
-            'id'               // Local key di tabel promos
-        );
-    }
-    
-
     public function productVariations()
     {
         return $this->hasMany(ProductVariations::class);
@@ -138,23 +125,22 @@ class Product extends Model
         return $this->hasMany(ProductStocks::class);
     }
 
-
-
     public function isInitialStock()
     {
         return $this->stocks()->count() === 0;
     }
 
+    // public function getTotalStockAttribute()
+    // {
+    //     $updatedStockTotal = $this->stocks()->sum('quantity');
+
+    //     // Kembalikan jumlah stok awal ditambah dengan stok update
+    //     return $this->stock_quantity + $updatedStockTotal;
+    // }
+
     public function getTotalStockAttribute()
     {
-        $updatedStockTotal = $this->stocks()->sum('quantity');
-
-        // Jika tidak ada pembaruan stok, kembalikan stock_quantity saja
-        if ($updatedStockTotal === 0) {
-            return $this->stock_quantity;
-        }
-
-        // Jika ada pembaruan stok, jumlahkan dengan stock_quantity
-        return $this->stock_quantity + $updatedStockTotal;
+        // Total stok langsung mengacu pada stock_quantity
+        return $this->stock_quantity;
     }
 }

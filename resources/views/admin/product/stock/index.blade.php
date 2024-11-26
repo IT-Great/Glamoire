@@ -300,7 +300,7 @@
                                     </tr>
 
                                     <!-- Product Variants Rows -->
-                                    @foreach ($item->productVariations as $variant)
+                                    {{-- @foreach ($item->productVariations as $variant)
                                         <tr class="variant-row">
                                             <td class="ps-5">
                                                 <div class="d-flex align-items-center gap-3">
@@ -375,7 +375,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 @endforeach
                             </tbody>
 
@@ -478,12 +478,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/js/main.js"></script>
 
+    {{-- fungsi untuk handle update stock product utama dan variant --}}
     {{-- yang digunakan  --}}
     <script>
         $(document).ready(function() {
