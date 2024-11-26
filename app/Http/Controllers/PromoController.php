@@ -24,28 +24,34 @@ class PromoController extends Controller
     public function index()
     {
         try {
-            $date = now()->format('Y-m-d');
+            $date = Carbon::today();
             $promos = Promo::where('type', '=', 'promo')
+                ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
             $brandVouchers   = Promo::where('type', '=' , 'brand voucher')
+                ->with(['products'])
+                ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
             $limitedVouchers = Promo::where('type', '=' , 'limited voucher')
+                ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
             
             $ongkirVouchers  = Promo::where('type', '=' , 'ongkir voucher')
+                ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
             $productVouchers  = Promo::where('type', '=' , 'product voucher')
+                ->whereColumn('total_used', '<', 'usage_quota')
                 ->with(['products'])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
@@ -57,7 +63,7 @@ class PromoController extends Controller
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            // dd($promoBundling);
+            // dd($promoBundlings);
 
             $userId = session('id_user');
             if ($userId) {
@@ -119,25 +125,13 @@ class PromoController extends Controller
         } else {
 
             $promo = Promo::where('promo_name', $name)
-                ->with(['products.brand'])
+                ->with(['products'  => function ($query) {
+                $query->select('products.*', 'promo_products.discounted_price')
+                    ->wherePivot('discounted_price', '>', 0);
+                }])
                 ->get();
 
-            foreach ($promo as $promoItem) {
-                foreach ($promoItem->products as $product) {
-                    if ($promoItem->discount > 100) {
-                        $priceAfterDiscount = $product->regular_price - $promoItem->discount;
-                    }
-                    elseif ($promoItem->discount <= 100) {
-                        $priceDiscount = ($product->regular_price) * ($promoItem->discount/100);
-                        $priceAfterDiscount = $product->regular_price - $priceDiscount;
-                    }
-
-                    $product->price_after_discount = $priceAfterDiscount;
-                }
-            }
-
-            // dd($promo);
-            return view('user.component.detail-promo', [
+                return view('user.component.detail-promo', [
                 'promo' => $promo,
             ]);
         }

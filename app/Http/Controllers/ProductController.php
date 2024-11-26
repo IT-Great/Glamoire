@@ -77,6 +77,8 @@ class ProductController extends Controller
 
                 $promoModal = $mainPromo;
 
+                // dd($mainPromo);
+
                 $data = [
                     'wishlist'  => $wishlist,
                     'product'   => $product,
@@ -201,7 +203,7 @@ class ProductController extends Controller
                 if ($userId) {
                     $wishlists = Wishlist::where('user_id', $userId)->get();
                     $cartId = Cart::where('user_id', $userId)->value('id');
-                    $cartItems = Cart_item::where('cart_id', $cartId)->get();
+                    
 
                     $query = Product::where('product_code', $code)
                         ->with('ratingAndReviews.user')
@@ -230,6 +232,10 @@ class ProductController extends Controller
 
                     $firstVariant = $product->productVariations->first();
 
+                    $cartItems = Cart_item::where('cart_id', $cartId)
+                    ->where('product_variant_id', $firstVariant->id)
+                    ->get();
+    
                     return view('user.component.detail-varian', [
                         'averageRating' => $averageRating,
                         'product'       => $product,
@@ -348,7 +354,7 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $products->get();
+        $products = $products->paginate(15);
         $userId = session('id_user');
 
         if ($userId) {

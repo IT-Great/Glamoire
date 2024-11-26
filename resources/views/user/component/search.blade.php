@@ -193,11 +193,11 @@
                       @if (count($data['products']) !== 0)
                         <div class="grid-container-shop" style="min-height:48vh;">
                         @foreach ($data['products'] as $product)
-                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <div class="position-relative overflow-hidden bg-transparent p-0">
                                 <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
                             </div>
-                            <div class="grid gap-1 text-left p-1 p-md-2">
+                            <div class="grid text-left p-1 p-md-2">
                                 <div class="flex gap-1">
                                     <i class="text-decoration-none fas fa-star text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                     <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -209,7 +209,7 @@
                                         onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
                                     </i>
                                 </div>
-                                <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                     <a href="/{{ $product->product_code }}_product" 
                                     class="text-decoration-none truncate-ellipsis" 
                                     data-bs-toggle="tooltip" 
@@ -226,20 +226,20 @@
                                   @endphp
 
                                   @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                         <del>
                                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                                         </del>
                                     </p>
-                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                   @else
-                                    <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                                     </p>
                                   @endif
                                 </div>
                                 
-                                @if ($product->stock_quantity == 0)
+                                {{-- @if ($product->stock_quantity == 0)
                                     <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
@@ -265,7 +265,7 @@
                                           + <i class="fas fa-shopping-cart"></i> Keranjang
                                         </a>
                                     @endif
-                                @endif
+                                @endif --}}
                             </div>
                           </div>
                         @endforeach 
@@ -285,10 +285,10 @@
                     @if (count($data['products']) !== 0)
                       <div class="grid-container-shop">
                         @foreach ($data['products'] as $product)
-                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
+                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
 
-                            <div class="grid gap-1 text-left p-1 p-md-2">
+                            <div class="grid text-left p-1 p-md-2">
                                 <div class="flex gap-1">
                                   <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                   <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -298,7 +298,7 @@
                                   </i>
                                 </div>
 
-                                <p class="text-decoration-none text-black text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                   <a href="/{{ $product->product_code }}_product" 
                                   class="text-decoration-none truncate-ellipsis" 
                                   data-bs-toggle="tooltip" 
@@ -315,19 +315,19 @@
                                   @endphp
 
                                   @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                         <del>
                                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                                         </del>
                                     </p>
-                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                   @else
-                                    <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                                     </p>
                                   @endif
                                 </div>
-                                @if ($product->stock_quantity == 0)
+                                {{-- @if ($product->stock_quantity == 0)
                                   <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                       data-bs-toggle="tooltip" 
                                       data-bs-placement="top" 
@@ -343,7 +343,7 @@
                                   <a class="py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px] flex gap-1 align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$product->id}})">
                                     + <i class="fas fa-shopping-cart"></i> Keranjang
                                   </a>
-                                @endif
+                                @endif --}}
                             </div>
                           </div>
                         @endforeach
@@ -362,6 +362,8 @@
                 </div>
                 <!-- End Card Items -->
               </div>
+
+              {{ $data['products']->links('vendor.pagination.bootstrap-5') }}
 
               <!-- Repeat this block for each card -->
               <!-- Pagination and Navigation -->

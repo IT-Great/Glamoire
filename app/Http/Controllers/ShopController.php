@@ -10,6 +10,7 @@ use App\Models\Wishlist;
 use App\Models\Product;
 use App\Models\CategoryProduct;
 use Carbon\Carbon;
+use Exception;
 
 
 class ShopController extends Controller
@@ -338,7 +339,7 @@ class ShopController extends Controller
                         $sort = "Harga Terendah";
                         break;
                 }
-                $products = $products->get();
+                $products = $products->paginate(15);
                 
                 $totalProduct = $totalProducts = Product::where('category_product_id', $subCategoryId)->count();
 

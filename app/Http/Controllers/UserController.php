@@ -12,7 +12,9 @@ use App\Models\Wishlist;
 use App\Models\Buynow;
 use App\Models\Product;
 use App\Models\RatingAndReview;
+use App\Models\ProductVariations;
 
+use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -166,7 +168,6 @@ class UserController extends Controller
     }
 
     public function addToCartBuyNow(Request $request){
-        
         $cartId = Cart::where('user_id', session('id_user'))->value('id');
         foreach ($request->product_id as $productId) {
             $checkStockProduct = Product::where('id', $productId)->value('stock_quantity');
@@ -238,10 +239,94 @@ class UserController extends Controller
                         Cart_item::create([
                             'cart_id'    => $cartId,
                             'product_id' => $request->product_id,
-                            'product_variant_id' => $request->product_variant_id,
                             'quantity'   => $request->quantity ? $request->quantity : 1,
                             'is_choose'  => TRUE,
                             'price'      => $product->regular_price,
+                            'total'      => $total,
+                        ]);
+                    }
+
+                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                }else{
+                    $cart = Cart::create([
+                        'user_id' => $userId,
+                    ]);
+
+                    $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
+
+                    Cart_item::create([
+                        'cart_id'    => $cart->id,
+                        'product_id' => $request->product_id,
+                        'quantity'   => $request->quantity ? $request->quantity : 1,
+                        'is_choose'  => TRUE,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
+                    ]);
+                    
+                }
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }
+            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+
+        } catch (Exception $err) {
+            return response()->json(['success' => false, 'message' => $err]);
+        }
+    }
+
+    public function addToChartWithQuantityVariant(Request $request){
+        try {
+            $userId = session('id_user');
+            
+            if (session('id_user')) {
+                $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
+                $cartId = Cart::where('user_id', session('id_user'))->value('id');
+
+                // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
+                if($checkCartUser){
+                    $checkCartItem = Cart_item::where('cart_id', $cartId)
+                    ->where('product_id', $request->product_id)
+                    ->where('product_variant_id', $request->product_variant_id)
+                    ->exists();
+
+                    // JIKA PRODUK SUDAH ADA DI CART USER
+                    if ($checkCartItem) {
+                        $cartItem  = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $request->product_id)->first();
+
+                        $itemPrice = $cartItem->price; 
+                        $itemQuantity = $cartItem->quantity;
+
+                        // Tingkatkan kuantitas item dengan 1
+                        $newQuantity = $itemQuantity + $request->quantity;
+    
+                        // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
+                        $newPrice = $itemPrice * $newQuantity;
+
+                        // Update kuantitas dan harga di database
+                        $cartItem->update([
+                            'quantity' => $newQuantity,
+                            'total'    => $newPrice, 
+                        ]);
+                    }
+                    // JIKA PRODUK BELUM ADA DI CART USER
+                    else{
+                        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                        $product = ProductVariations::where('id', $request->product_variant_id)
+                        ->where('product_id', $request->product_id)
+                        ->first();
+
+                        $total = $product->variant_price;
+
+                        Cart_item::create([
+                            'cart_id'    => $cartId,
+                            'product_id' => $request->product_id,
+                            'product_variant_id' => $request->product_variant_id,
+                            'quantity'   => $request->quantity ? $request->quantity : 1,
+                            'is_choose'  => TRUE,
+                            'price'      => $product->variant_price,
                             'total'      => $total,
                         ]);
                     }

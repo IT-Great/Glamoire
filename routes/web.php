@@ -40,14 +40,6 @@ Route::get('/{user}_account', [UserController::class, 'account'])
     ->name('account');
 
 // Rute untuk memverifikasi email
-// Route::get('/email-verify', function () {
-//     if (auth()->user()->hasVerifiedEmail()) {
-//         return redirect('/'); // Ganti dengan route yang diinginkan
-//     }
-//     return view('user.component.verify-email');
-// })->middleware('auth')->name('verification.notice');
-
-// Rute untuk memverifikasi email
 Route::get('/email-verify', function () {
     // Cek apakah pengguna sudah login
     if (auth()->check()) {
@@ -144,6 +136,7 @@ Route::post('/set-active-tab', [UserController::class, 'setActiveTab'])->name('s
 // CART
 Route::get('/get-total-cart', [CartController::class, 'getTotalCart'])->name('get.total.cart');
 Route::post('/choose-product-cart', [CartController::class, 'chooseProductCart'])->name('choose.product.cart');
+Route::post('/choose-product-variant-cart', [CartController::class, 'chooseProductVariantCart'])->name('choose.product.variant.cart');
 
 // FORM 
 Route::post('/subscribe', [UserController::class, 'subscribe'])->name('subscribe');
@@ -181,8 +174,11 @@ Route::get('/{nameBrand}_brand', [BrandController::class, 'brands'])->name('deta
 // ADD REMOVE CART ITEMS
 Route::post('/chart', [UserController::class, 'addToChart'])->name('add.to.chart');
 Route::post('/chart-with-quantity', [UserController::class, 'addToChartWithQuantity'])->name('add.to.chart.with.quantity');
+Route::post('/chart-with-quantity-variant', [UserController::class, 'addToChartWithQuantityVariant'])->name('add.to.chart.with.quantity.variant');
 Route::post('/remove-product-cart', [CartController::class, 'deleteProductItem'])->name('delete.product.cart');
+Route::post('/remove-product-variant-cart', [CartController::class, 'deleteProductVariantItem'])->name('delete.product.variant.cart');
 Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
+Route::post('/update-cart-quantity-variant', [CartController::class, 'updateCartQuantityVariant'])->name('update.cart.quantity.variant');
 
 // ADD & REMOVE WISHLIST
 Route::post('/wishlist', [UserController::class, 'addToWishlist'])->name('add.to.wishlist');
@@ -237,7 +233,7 @@ Route::prefix('/cart')->group(function () {
 // CHECKOUT
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/check-apply-voucher', [CheckoutController::class, 'checkApplyVoucher'])->name('check.apply.voucher');
-Route::post('/check-apply-voucher-buy-now', [CheckoutController::class, 'checkApplyVoucherBuyNow'])->name('check.apply.voucher.buy.now');
+// Route::post('/check-apply-voucher-buy-now', [CheckoutController::class, 'checkApplyVoucherBuyNow'])->name('check.apply.voucher.buy.now');
 Route::post('/apply-voucher', [CheckoutController::class, 'applyVoucher'])->name('apply.voucher');
 Route::post('/apply-voucher-new-user', [CheckoutController::class, 'applyVoucherNewUser'])->name('apply.voucher.new.user');
 Route::post('/apply-voucher-buy-now', [CheckoutController::class, 'applyVoucherBuyNow'])->name('apply.voucher.buy.now');

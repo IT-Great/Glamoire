@@ -22,15 +22,29 @@
                 <div class="position-sticky" style="top: 4rem">
                     <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiperShow p-0">
                         <div class="swiper-wrapper">
-                            @if (!empty($product->main_image))
+                            @if ($firstVariant->use_variant_image == 1)
                                 <div class="swiper-slide">
                                     <div class="image-container border border-b-zinc-700 rounded-sm">
-                                        <img class="zoomable-image main-display" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
+                                        <img class="zoomable-image main-display" src="{{ Storage::url($firstVariant->variant_image) }}" alt="product Image 1" />
+                                    </div>
+                                </div>
+                            @elseif ($firstVariant->use_variant_image !== 1)
+                                <div class="swiper-slide">
+                                    <div class="image-container border border-b-zinc-700 rounded-sm">
+                                        <img class="zoomable-image main-display" src="{{ Storage::url($product->main_image) }}" alt="product Image 2" />
                                     </div>
                                 </div>
                             @endif
 
-                            @if (!empty($product->images))
+                            @if (!empty($firstVariant->main_image))
+                                @foreach ($firstVariant->main_image as $variantImage)
+                                    <div class="swiper-slide">
+                                        <div class="image-container border border-b-zinc-700 rounded-sm">
+                                            <img class="zoomable-image main-display" src="{{ Storage::url($variantImage) }}" alt="product Image" />
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
                                 @foreach ($product->images as $image)
                                     <div class="swiper-slide">
                                         <div class="image-container border border-b-zinc-700 rounded-sm">
@@ -52,7 +66,13 @@
 
                     <div class="swiper mySwiperProduct p-0">
                         <div class="swiper-wrapper">
-                            @if (!empty($product->main_image))
+                            @if ($firstVariant->use_variant_image == 1)
+                                <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="variant_image">
+                                    <a data-src="{{ Storage::url($firstVariant->variant_image) }}" data-type="image">
+                                        <img src="{{ Storage::url($firstVariant->variant_image) }}" alt="{{ $product->product_name }}" />
+                                    </a>
+                                </div>
+                            @elseif ($firstVariant->use_variant_image !== 1)
                                 <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="main_image">
                                     <a data-src="{{ Storage::url($product->main_image) }}" data-type="image">
                                         <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" />
@@ -62,7 +82,7 @@
 
                             @if (!empty($product->images))
                                 @foreach ($product->images as $image)
-                                    <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="main_image">
+                                    <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm">
                                         <a data-src="{{ Storage::url($image) }}" data-type="image">
                                             <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}" />
                                         </a>
@@ -89,7 +109,7 @@
                 </div>
             </div>
 
-            <div class="grid col-lg-8 gap-1 pl-lg-0">
+            <div class="grid gap-1 col-lg-8 pl-lg-0">
                 <div class="grid gap-1">
                     <!-- <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> -->
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
@@ -134,19 +154,19 @@
                         Rp{{ number_format($firstVariant->variant_price, 0, ',', '.') }}
                     </span>
                 </div>
-                <div class="variant d-none d-lg-block py-2">
+                <div class="variant d-none d-lg-block">
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ ucwords($variantType) }}</p>
                     <div class="flex gap-2">
                         @foreach ($variant as $varian)
                             <a href="{{ route('detail.product', ['id' => $product->product_code, 'varian' => $varian->sku]) }}"
-                                class="flex-1 {{ $firstVariant->sku == $varian->sku ? 'bg-[#183018] text-white' : 'btn-secondary' }} py-2 px-2 rounded-sm text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-center">
+                                class="{{ $firstVariant->sku == $varian->sku ? 'bg-[#183018] text-white' : 'btn-secondary' }} py-2 px-2 rounded-sm text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-center w-[100px] text-decoration-none">
                                 {{ $varian->variant_value }}
                             </a>
                         @endforeach
                     </div>  
                 </div>
                 @if ($firstVariant->variant_stock == 0)
-                    <div class="flex py-2">
+                    <div class="flex">
                         <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
                         <span
                             class="text-danger rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
@@ -195,8 +215,8 @@
                                         </div>
                                     </div>
                                     
-                                    <a onclick="addCartWithQuantity({{$product->id, $firstVariant->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                    <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                    <a onclick="addToChartWithQuantityVariant({{ $product->id }}, {{ $firstVariant->id }})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                    <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                                 </div>
                                 <p id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</p>
                             </div>
@@ -225,8 +245,8 @@
                                     </div>
                                 </div>
                                 
-                                <a onclick="addCartWithQuantity({{$product->id, $firstVariant->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                <a onclick="addToChartWithQuantityVariant({{ $product->id }}, {{ $firstVariant->id }})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                             </div>
                             <span id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</span>
                         </div>
@@ -236,7 +256,7 @@
                 
                 
                 <div class="row">
-                    <div class="col tabbable py-3">
+                    <div class="col tabbable">
                         <div class="nav nav-tabs justify-content-start border-secondary mb-4">
                             <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
                             <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
@@ -331,13 +351,13 @@
             @if (session('id_user'))
                 @foreach ($youlike as $yl)
                     <div class="swiper-slide">
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
+                        <div class="bg-white rounded-lg custom-shadow overflow-hidden h-fit border border-secondary">
                             <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
                                     <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                         <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
@@ -350,7 +370,7 @@
                                             >
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                         <a href="/{{ $yl->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -367,20 +387,20 @@
                                         @endphp
 
                                         @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                             <del>
                                                 Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
                                             </del>
                                             </p>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                             @else
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                             Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
                                             </p>
                                         @endif
                                     </div>
                                     
-                                    @if ($yl->stock_quantity == 0)
+                                    {{-- @if ($yl->stock_quantity == 0)
                                         <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
@@ -406,7 +426,7 @@
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </a>
                         </div>
@@ -417,13 +437,13 @@
             @else
                 @foreach ($youlike as $yl)
                     <div class="swiper-slide">
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
+                        <div class="bg-white rounded-lg custom-shadow overflow-hidden h-fit border border-secondary">
                             <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
                                     <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                         <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
@@ -432,7 +452,7 @@
                                             onclick="event.stopPropagation();addToWishlist({{ $yl->id }})">
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
                                         <a href="/{{ $yl->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -449,20 +469,20 @@
                                         @endphp
 
                                         @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                             <del>
                                                 Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
                                             </del>
                                             </p>
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                             @else
-                                            <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                             Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
                                             </p>
                                         @endif
                                     </div>
                                     
-                                    @if ($yl->stock_quantity == 0)
+                                    {{-- @if ($yl->stock_quantity == 0)
                                         <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                             data-bs-toggle="tooltip" 
                                             data-bs-placement="top" 
@@ -478,7 +498,7 @@
                                         <a class="gap-1 py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$yl->id}})">
                                             + <i class="fas fa-shopping-cart"></i> Keranjang
                                         </a>
-                                    @endif
+                                    @endif --}}
                                 </div>
                             </a>
                         </div>
@@ -513,7 +533,7 @@
     <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
         + Keranjang
     </a>
-    <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+    <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
         Beli Sekarang
     </a>
   </div>
@@ -540,6 +560,7 @@
         });
     </script>
 @endif
+
 <script>
     let productVariant = {!! json_encode($product) !!};
     let selectedButton = null;
@@ -612,11 +633,17 @@
         zoomableImage.style.transformOrigin = `${x}px ${y}px`;
     });
 
-    function addCartWithQuantity(productId, productVariantId) {
-        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
+    function addToChartWithQuantityVariant(productId, productVariantId) {
+        var currentQuantity = parseInt($('#total-detail-product-quantity').val());
 
+        console.log({
+            productId : productId,
+            productVariantId: productVariantId,
+            quantity: currentQuantity,
+        });
+        
         $.ajax({
-            url: "{{ route('add.to.chart.with.quantity') }}", // Route register di Laravel
+            url: "{{ route('add.to.chart.with.quantity.variant') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
@@ -658,6 +685,7 @@
                         if (content) content.style.color = '#ffffff'; // Ubah warna konten
                     }
                     });
+
                 }
             },
             error: function (response) {
@@ -677,7 +705,7 @@
     }
 
     function buyNow(productId) {
-        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
+        var currentQuantity = parseInt($('#total-detail-product-quantity').val());
 
         $.ajax({
             url: "{{ route('add.product.buy.now') }}", // Route register di Laravel
@@ -689,7 +717,7 @@
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.href = "/buy-now";
+                    window.location.href = "/cart";
                 } else {
                     let errors = response.errors;
                     let errorMessages = response.message;
