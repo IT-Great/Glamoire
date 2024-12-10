@@ -66,7 +66,7 @@
     <!-- END PROMO FIRST USER-->
 
     <!-- CAROUSEL -->
-    <div class="container-fluid p-0 mx-12 md:mx-0">
+    <div class="container-fluid p-0 md:mx-0">
         <div class="swiper mySwiperCarousel">
             <div class="swiper-wrapper">
                 @foreach ($data['promos'] as $promo)
@@ -90,7 +90,7 @@
     <!-- TOP SELLING Start -->
     <div class="container-fluid">
         <div class="text-center py-3">
-            <h2 class="section-title px-5 text-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terlaris</span></h2>
+            <h2 class="section-title px-5 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terlaris</span></h2>
         </div>
 
         <div class="swiper mySwiper">
@@ -104,7 +104,7 @@
                                         <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                     </div>
 
-                                    <div class="grid gap-1 text-left p-1 p-md-2">
+                                    <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                             <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -127,23 +127,29 @@
                                         </p>
 
                                         <div class="flex justify-content-start gap-1">
-                                        @php
-                                            $activePromo = $product->promos->first();
-                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                        @endphp
+                                            @php
+                                                $activePromo = $product->promos->first();
+                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                            @endphp
 
-                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                            <del>
-                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                            </del>
-                                        </p>
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                        @else
-                                        <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </p>
-                                        @endif
+                                            @if ($product->priceVariation !== null)
+                                                <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                    {{ $product->priceVariation }}
+                                                </p>
+                                            @else
+                                                @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                    <del>
+                                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </del>
+                                                </p>
+                                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                                @else
+                                                <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </p>
+                                                @endif
+                                            @endif
                                         </div>
                                             
                                             {{-- @if ($product->stock_quantity == 0)
@@ -188,7 +194,7 @@
                                 <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                             </div>
 
-                            <div class="grid gap-1 text-left p-1 p-md-2">
+                            <div class="grid text-left p-1 p-md-2">
                                 <div class="flex gap-1">
                                     <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                     <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -213,17 +219,23 @@
                                         $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                     @endphp
 
-                                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                        <del>
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </del>
-                                    </p>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    @if ($product->priceVariation !== null)
+                                        <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                            {{ $product->priceVariation }}
+                                        </p>
                                     @else
-                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                    </p>
+                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                            <del>
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @else
+                                        <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                        @endif
                                     @endif
                                 </div>
                                 
@@ -262,7 +274,7 @@
     <!-- NEW ARRIVAL Start -->
     <div class="container-fluid">
         <div class="text-center py-3">
-            <h2 class="section-title px-5 text-[16px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terbaru</span></h2>
+            <h2 class="section-title px-5 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]"><span class="px-2">Produk Terbaru</span></h2>
         </div>
 
         <div class="swiper mySwiper">
@@ -276,7 +288,7 @@
                                     <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                 </div>
 
-                                <div class="grid gap-1 text-left p-1 p-md-2">
+                                <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
                                         <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                         <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -304,17 +316,23 @@
                                             $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                         @endphp
 
-                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                            <del>
-                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                            </del>
-                                        </p>
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @if ($product->priceVariation !== null)
+                                            <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                {{ $product->priceVariation }}
+                                            </p>
                                         @else
-                                        <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </p>
+                                            @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                <del>
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </del>
+                                            </p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            @else
+                                            <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </p>
+                                            @endif
                                         @endif
                                     </div>
                                     
@@ -360,7 +378,7 @@
                             <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                         </div>
 
-                        <div class="grid gap-1 text-left p-1 p-md-2">
+                        <div class="grid text-left p-1 p-md-2">
                             <div class="flex gap-1">
                                 <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                 <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
@@ -385,17 +403,23 @@
                                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                 @endphp
 
-                                @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                    <del>
-                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                    </del>
-                                </p>
-                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                @if ($product->priceVariation !== null)
+                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                        {{ $product->priceVariation }}
+                                    </p>
                                 @else
-                                <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                    Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                </p>
+                                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                        <del>
+                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </del>
+                                    </p>
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    @else
+                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                    </p>
+                                    @endif
                                 @endif
                             </div>
                             
@@ -458,7 +482,7 @@
     <!-- END -->
 
     <!-- KEUNGGULAN -->
-    <div class="container-fluid my-2 my-md-4 my-lg-6 my-xl-8">
+    <div class="container-fluid py-4 my-2 my-md-4 my-lg-6 my-xl-8">
         <div class="row px-3">
             <div class="col-4 p-0">
                 <h6 class="text-[10px] mb-2 md:text-[14px] lg:text-[16px] xl:text-[18px]">Plant-Based Cruelty-free</h6>

@@ -4,7 +4,7 @@
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2 mb-4">
   <div class="container-fluid px-0 px-md-3">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
-      <div class="d-flex gap-2 px-3 px-md-0">
+      <div class="d-flex gap-1 px-3 px-md-0">
         <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="/shop" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
@@ -221,17 +221,17 @@
                                 </div>
                                 <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
-                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                                        <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
                                         @php
                                             $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                                         @endphp
                                         <i 
-                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
+                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
                                             onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
                                         <a href="/{{ $product->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -247,17 +247,23 @@
                                           $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                       @endphp
 
-                                      @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                      <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                          <del>
-                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                          </del>
-                                      </p>
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                      @if ($product->priceVariation !== null)
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            {{ $product->priceVariation }}
+                                        </p>
                                       @else
-                                      <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                      </p>
+                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            <del>
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @else
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                        @endif
                                       @endif
                                     </div>
                                     
@@ -337,17 +343,23 @@
                                               $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                           @endphp
 
-                                          @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                          <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              <del>
-                                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                              </del>
-                                          </p>
-                                          <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                          @if ($product->priceVariation !== null)
+                                            <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                {{ $product->priceVariation }}
+                                            </p>
                                           @else
-                                          <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                          </p>
+                                            @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                <del>
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </del>
+                                            </p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            @else
+                                            <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </p>
+                                            @endif    
                                           @endif
                                         </div>
                                         {{-- @if ($product->stock_quantity == 0)
@@ -400,8 +412,8 @@
 
 <div class="d-flex d-block d-md-none mx-auto justify-content-center rounded-sm w-fit py-2 fixed-bottom mb-12" style="background-color:#183018;" data-bs-toggle="modal" data-bs-target="#filter">
   <div class="col d-flex justify-content-center gap-1 hover:cursor-pointer">
-    <i class="fas fa-regular fa-filter" style="color: #ffffff;"></i>
-    <a class="text-white text-[12px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Filter</a>
+    <i class="fas fa-regular fa-filter text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px]" style="color: #ffffff;"></i>
+    <a class="text-white text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Filter</a>
   </div>
 </div>
 

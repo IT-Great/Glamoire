@@ -38,6 +38,34 @@ class PromoController extends Controller
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
+            foreach ($brandVouchers as $bv) {
+                foreach ($bv->products as $product) {
+                    $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+     
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                        // dd($product->priceVariation);
+                    }
+                    elseif($variationPrices->count() == 0){
+                        $product->priceVariation = null;
+                    } 
+                    else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+            }
+
+            $voucherGlamoire = Promo::whereIn('type', ['limited voucher', 'ongkir voucher'])
+                ->whereColumn('total_used', '<', 'usage_quota')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+
+            // dd($voucherGlamoire);
+
             $limitedVouchers = Promo::where('type', '=' , 'limited voucher')
                 ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
@@ -57,13 +85,52 @@ class PromoController extends Controller
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
+            foreach ($productVouchers as $pv) {
+                foreach ($pv->products as $product) {
+                    $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+            
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                        // dd($product->priceVariation);
+                    }
+                    elseif($variationPrices->count() == 0){
+                        $product->priceVariation = null;
+                    } 
+                    else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+            }
+
             $promoBundlings  = Promo::where('type', '=' , 'discount')
                 ->with(['products'])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            // dd($promoBundlings);
+            foreach ($promoBundlings as $pb) {
+                foreach ($pb->products as $product) {
+                    $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+    
+                    
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                        // dd($product->priceVariation);
+                    }
+                    elseif($variationPrices->count() == 0){
+                        $product->priceVariation = null;
+                    } 
+                    else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+            }
 
             $userId = session('id_user');
             if ($userId) {
@@ -79,6 +146,7 @@ class PromoController extends Controller
                     'ongkirVouchers' => $ongkirVouchers,
                     'productVouchers' => $productVouchers,
                     'promoBundlings' => $promoBundlings,
+                    'voucherGlamoire' => $voucherGlamoire,
                     'wishlist'  => $wishlist,
                     'cartItems' => $cartItems,
                 ]);
@@ -90,6 +158,7 @@ class PromoController extends Controller
                     'limitedVouchers' => $limitedVouchers,
                     'ongkirVouchers' => $ongkirVouchers,
                     'productVouchers' => $productVouchers,
+                    'voucherGlamoire' => $voucherGlamoire,
                     'promoBundlings' => $promoBundlings,
                 ]);
             }
@@ -993,7 +1062,7 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'discount' => 'required|numeric|min:0|max:100',
-                'max_discount' => 'required|numeric|min:0',
+                // 'max_discount' => 'required|numeric|min:0',
                 'brand_id' => 'required|exists:brands,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 use App\Mail\sendMailCodeNewUser;
 use App\Models\User;
@@ -42,23 +43,61 @@ class FormController extends Controller
 
     public function sendQuestion(Request $request)
     {
-        try { 
-            $question = Question::create([
-                'fullname'   => $request->fullname,
-                'email'      => $request->email,
-                'question'   => $request->question,
-                'created_at' => now(),
+        try {
+            $request->validate([
+                'fullname' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'question' => 'required|string',
+                'upload.*' => 'file|mimes:jpeg,png,jpg,mp4|max:5120', // Max 5MB per file
             ]);
 
+            $imagePaths = [];
+            $videoPath = null;
+
+            // dd($request->file('upload'));
+
+            if ($request->file('upload')) {
+                foreach ($request->file('upload') as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $mimeType = $file->getMimeType();
+                        $fileName = time() . '_' . $file->getClientOriginalName();
+
+                        if (strpos($mimeType, 'image/') === 0) {
+                            $imagePath = $file->storeAs('contact_us_images', $fileName, 'public');
+                            $imagePaths[] = $imagePath;
+                        } elseif (strpos($mimeType, 'video/') === 0) {
+                            $videoPath = $file->storeAs('contact_us_videos', $fileName, 'public');
+                        }
+                    }
+                }
+            }
+
+            // dd($videoPath);
+            $dataToSave = [
+                'fullname' => $request->fullname,
+                'email' => $request->email,
+                'question' => $request->question,
+                'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
+                'videos' => $videoPath,
+                'created_at' => now(),
+            ];
+
+            Log::info('Saving data:', $dataToSave);
+
+            Question::create($dataToSave);
+
+
+            return view('user.component.contact');
+        } catch (\Exception $err) {
+            Log::error('Error saving question:', ['error' => $err->getMessage()]);
             return response()->json([
-                'success' => true,
-                'message' => 'Pertanyaan Anda Sudah Kami Terima. 
-                Tunggu Balasan Email Dari Kami Yaa'
-            ]);
-        } catch (Exception $err) {
-            dd($err);
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menyimpan pertanyaan',
+                'error' => $err->getMessage()
+            ], 500);
         }
     }
+
 
     public function files(Request $request)
     {

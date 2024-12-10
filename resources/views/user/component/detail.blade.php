@@ -4,7 +4,7 @@
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96">
     <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
-            <div class="d-flex gap-2 pl-2">
+            <div class="d-flex gap-1 pl-2">
                 <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
                 <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
                 <a href="/shop" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
@@ -89,7 +89,7 @@
                 </div>
             </div>
 
-            <div class="grid col-lg-8 pl-lg-0">
+            <div class="grid col-lg-8 pl-lg-0 h-fit gap-1">
                 <div class="grid gap-1">
                     <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> 
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
@@ -136,12 +136,11 @@
                 @endif
                 </div>
                 
-                
                 @if ($product->stock_quantity == 0)
-                    <div class="flex">
-                        <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
+                    <div class="d-lg-flex d-none d-lg-block">
+                        <span class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
                         <span
-                            class="text-danger rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
+                            class="text-danger rounded-sm ml-auto text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="top" 
                             title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -158,13 +157,13 @@
                         @endphp
 
                         @if ($inCart)
-                            <button onclick="cart()" class="rounded-sm w-full bg-[#183018] hover:bg-neutral-900 text-white p-0 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] flex align-items-center justify-content-center">
+                            <button onclick="cart()" class="d-none d-lg-block rounded-sm w-full bg-[#183018] hover:bg-neutral-900 text-white py-1 p-0 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] flex align-items-center justify-content-center">
                                 Cek Keranjangmu
                             </button>
                         @else
                             <div class="grid">
                                 <div>
-                                    <p class="text-black">Stok : {{ $product->stock_quantity }}</p>
+                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
                                 <div class="align-items-center gap-2 d-none d-lg-flex">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -198,7 +197,7 @@
                     @else
                         <div class="grid">
                             <div>
-                                <p class="text-black">Stok : {{ $product->stock_quantity }}</p>
+                                <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stok : {{ $product->stock_quantity }}</p>
                             </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
                                 <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -230,10 +229,26 @@
                         </div>
                     @endif
                 @endif
+
+                {{-- <div class="d-flex pt-2">
+                    <p class="text-dark text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold mb-0 mr-2">Bagikan Produk ke:</p>
+                    <div class="d-inline-flex">
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div> --}}
+
                 
-                
+                {{-- Desc/Inf/Ulasan --}}
                 <div class="row">
-                    <div class="col tabbable mt-2 mt-md-3">
+                    <div class="col tabbable mt-1 mt-md-2">
                         <div class="nav nav-tabs justify-content-start border-secondary mb-4">
                             <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
                             <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
@@ -259,7 +274,7 @@
                                                         <div class="grid">
                                                             <div class="flex w-full">
                                                                 <div class="grid">
-                                                                    <h6 class="mb-2 text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $ratingAndReviews->user->fullname }}<small> - <i>{{ \Carbon\Carbon::parse($ratingAndReviews->created_at)->format('d F Y') }}</i></small></h6>
+                                                                    <h6 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $ratingAndReviews->user->fullname }}<small> - <i>{{ \Carbon\Carbon::parse($ratingAndReviews->created_at)->format('d F Y') }}</i></small></h6>
                                                                     <div class="mr-2">
                                                                         <small class="fas fa-star text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
                                                                         <small class="text-[12px] md:text-[10px] lg:text-[12x] xl:text-[14px] text-black">{{ $ratingAndReviews->rating }}</small>
@@ -271,17 +286,17 @@
                                                             </div>
                                                             <div class="d-flex">
                                                                 @if ($ratingAndReviews->video !== null)
-                                                                <div class="col-4 pr-1 pl-0">
-                                                                    <video class="zoomable-video" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
-                                                                        <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
-                                                                    </video>
-                                                                </div>
+                                                                <video class="zoomable-video video-rating-review" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
+                                                                    <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
+                                                                </video>
+                                                                    {{-- <div class="col-3 pr-1 pl-0">
+                                                                    </div> --}}
                                                                 @endif
                                                                 @if ($ratingAndReviews->images !== null)
                                                                     @foreach (json_decode($ratingAndReviews->images, true) as $index => $image)
-                                                                    <div class="col-4 pr-1 pl-0">
-                                                                    <img src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
-                                                                    </div>
+                                                                        {{-- <div class="col-4 pr-1 pl-0"> --}}
+                                                                            <img class="image-rating-review" src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
+                                                                        {{-- </div> --}}
                                                                     @endforeach
                                                                 @endif
                                                             </div>
@@ -297,23 +312,66 @@
                     </div>
                 </div>
 
-                <div class="d-flex py-2 py-md-0 py-lg-4">
-                    <p class="text-dark text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold mb-0 mr-2">Bagikan Produk ke:</p>
-                    <div class="d-inline-flex">
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-instagram"></i>
-                        </a>
+                @if ($product->stock_quantity == 0)
+                    <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
+                        <div class="container-fluid d-flex gap-2 py-1">
+                            <span class="text-danger py-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
+                            <span
+                                class="text-light py-2 rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
+                                data-bs-toggle="tooltip" 
+                                data-bs-placement="top" 
+                                title="Beritahu Saya Jika Stok Sudah Ada" 
+                                type="button" 
+                                id="notify-me-{{$product->id}}"
+                                onclick="notifyMe({{$product->id}})">
+                                Beritahu Saya
+                            </span>
+                        </div>
                     </div>
-                </div>
+                @else
+                    @if (session('id_user'))
+                        @php
+                            $inCart = collect($cartItems)->contains('product_id', $product->id);
+                        @endphp
+
+                        @if ($inCart)
+                        <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
+                            <div class="container-fluid d-flex gap-2 py-1">
+                                <a onclick="cart()" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                    Cek Keranjangmu
+                                </a>
+                            </div>
+                        </div>
+                        @else
+                            <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
+                                <div class="container-fluid d-flex gap-2 py-1">
+                                    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                        + Keranjang
+                                    </a>
+                                    <a onclick="buyNow({{$product->id}})" class="btn hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+                                        Beli Sekarang
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
+                            <div class="container-fluid d-flex gap-2 py-1">
+                                <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                    + Keranjang
+                                </a>
+                                <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+                                    Beli Sekarang
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+                
             </div>
         </div>
         <!-- END IMAGE PRODUCT -->
+
     </div>
     <!-- Shop Detail End -->
 
@@ -334,15 +392,15 @@
                                         <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                     </div>
 
-                                    <div class="grid gap-1 text-left p-1 p-md-2">
+                                    <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
+                                            <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
                                             @php
                                                 $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
                                             @endphp
                                             <i 
-                                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
                                                 onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}"
                                                 >
                                             </i>
@@ -363,17 +421,23 @@
                                                 $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                             @endphp
 
-                                            @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                <del>
-                                                    Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                </del>
+                                            @if ($yl->priceVariation !== null)
+                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                    {{ $yl->priceVariation }}
                                                 </p>
-                                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                @else
-                                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                </p>
+                                            @else
+                                                @if ($discountedPrice && $discountedPrice < $yl->regular_price)
+                                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                    <del>
+                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                    </del>
+                                                    </p>
+                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                                    @else
+                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                    </p>
+                                                @endif
                                             @endif
                                         </div>
                                         
@@ -420,12 +484,12 @@
                                         <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                     </div>
 
-                                    <div class="grid gap-1 text-left p-1 p-md-2">
+                                    <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
+                                            <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
                                             <i 
-                                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
                                                 onclick="event.stopPropagation();addToWishlist({{ $yl->id }})">
                                             </i>
                                         </div>
@@ -483,10 +547,6 @@
                     @endforeach
                 @endif
             </div>
-            <div class="d-flex align-items-center justify-content-center">
-            <div class="swiper-next"></div>
-            <div class="swiper-prev"></div>
-            </div>
         </div>
     </div>
     <!-- Products End -->
@@ -505,17 +565,6 @@
   </div>
 </div>
 
-
-<div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-  <div class="container-fluid d-flex gap-2 py-1">
-    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
-        + Keranjang
-    </a>
-    <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
-        Beli Sekarang
-    </a>
-  </div>
-</div>
 
 <!-- UNTUK MENGATUR ZOOM IN GAMBAR PADA HALAMAN DETAIL PRODUK -->
 @if (!empty($product->video))

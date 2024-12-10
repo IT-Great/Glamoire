@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\VoucherNewUser;
+use App\Models\ProductVariations;
+use App\Models\Product;
+use App\Models\Promo;
 use App\Models\Payment;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
@@ -150,7 +156,7 @@ class DokuPaymentController extends Controller
             $orderId = 'ORDER-' . time() . '-' . Str::random(5);
 
             // Calculate total amount
-            $totalAmount = $request->total_amount;
+            $totalAmount = intval( $request->total_amount);
 
             // Prepare request timestamp
             $requestTimestamp = Carbon::now()->utc()->format('Y-m-d\TH:i:s\Z');
@@ -200,15 +206,31 @@ class DokuPaymentController extends Controller
                     'Request-Timestamp' => $requestTimestamp,
                     'Signature' => 'HMACSHA256=' . $signature,
                     'Content-Type' => 'application/json',
-                    'Digest' => 'SHA-256=' . $digestValue
+                    'Digest' => 'SHA-256=' . $digestValue,
                 ],
                 'json' => $requestBody
             ]);
 
             $result = json_decode($response->getBody(), true);
 
-            // Store order in database
-            $this->createOrder($request, $orderId, $totalAmount);
+            $shippingAddressId = $request->shipping_address_id;
+            $shippingCost = $request->shipping_cost;
+            $discountAmount = $request->discount_amount;
+            $discountOngkir = $request->discount_ongkir;
+            $totalAmount = $request->total_amount;
+            $totalItem = $request->total_item;
+            $totalItemPrice = $request->total_item_price;
+            $voucherPromo = $request->voucher_promo;
+            $voucherOngkir = $request->voucher_ongkir;
+            
+
+            $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountAmount, $discountOngkir, $totalItem, $totalItemPrice, $voucherOngkir, $voucherPromo, $selectedPaymentMethods);
+
+            // Simpan data ke session
+            session(['order_data' => $orderData]);
+
+            // $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountAmount, $totalAmount, $totalItem, $totalItemPrice);
+            // $this->createOrder($request, $orderId, $totalAmount, $payment_url);
 
             return response()->json([
                 'success' => true,
@@ -227,28 +249,42 @@ class DokuPaymentController extends Controller
     public function callback(Request $request)
     {
         try {
-            Log::info('DOKU Callback received:', [
+            Log::info('Callback Request Details:', [
                 'method' => $request->method(),
                 'headers' => $request->headers->all(),
-                'body' => $request->all()
-            ]);
+                'query' => $request->query(),
+                'body' => $request->all(),
+                'raw_content' => $request->getContent(),
+            ]);            
 
             if ($request->isMethod('get')) {
                 // Handle GET request (usually redirect from payment page)
                 // $order = Order::where('order_id', $request->get('order_id'))->first();
 
-                $order = Order::where('invoice_id', $request->get('order_id'))->first();
+                // $order = Order::where('invoice_id', $request->get('order_id'))->first();
 
-                if (!$order) {
-                    throw new \Exception('Order not found');
-                }
+                // if (!$order) {
+                //     throw new \Exception('Order not found');
+                // }
+
+                // $message = $request->transaction('status'); // Ambil parameter `message` dari GET
+
+                // if (!$message) {
+                //     throw new \Exception('Message parameter is missing in callback');
+                // }
 
                 // Redirect based on payment status
-                if ($request->get('status') === 'SUCCESS') {
-                    return redirect()->route('payment.success', ['order_id' => $order->order_id]);
-                } else {
-                    return redirect()->route('payment.failed', ['order_id' => $order->order_id]);
-                }
+                // if ($request->response === 'PAID') {
+                //     return redirect()->route('account', ['user' => session('id_user')]);
+                //     // return redirect()->route('payment.success', ['order_id' => $order->order_id]);
+                // } else {
+                //     return redirect()->route('checkout');
+                //     // return redirect()->route('payment.failed', ['order_id' => $order->order_id]);
+                // }
+
+                $orderData = session('order_data');
+                $this->createNewOrder($orderData);
+                return redirect()->route('account', ['user' => session('id_user')]);
             }
 
             // Handle POST request (server notification from DOKU)
@@ -304,18 +340,45 @@ class DokuPaymentController extends Controller
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            Log::error('DOKU Callback Error: ' . $e->getMessage(), [
+            Log::error('DOKU Callback Error: ' . $e, [
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
 
-    private function createOrder($request, $orderId, $totalAmount)
+    private function createOrder($request, $orderId, $totalAmount, $payment_url)
     {
+        $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+
+        if ($lastInvoice) {
+            // Split the invoice by '/' and take the last part
+            $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
+
+            // Increment the number
+            $invoiceNumber = $lastNoInvoice + 1;
+        } else {
+            // Start from 1 if there is no previous invoice
+            $invoiceNumber = 1;
+        }
+
+        // Get the current day, month, and year
+        $day = date('d');
+        $month = date('m');
+        $year = date('Y');
+
+        // Format the new invoice number
+        $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
+
+        // Create a new invoice with the formatted invoice number
+        $invoiceCreate = Invoice::create([
+            'no_invoice' => $formattedInvoice,
+        ]);
+
         $order = Order::create([
-            'order_id' => $orderId,
-            'user_id' => auth()->id(),
+            'doku_order_id' => $orderId,
+            'invoice_id' => $invoiceCreate->id,
+            'user_id' => auth()->id(), 
             'shipping_address_id' => $request->shipping_address_id,
             'shipping_cost' => $request->shipping_cost,
             'discount_amount' => $request->discount_amount ?? 0,
@@ -326,17 +389,277 @@ class DokuPaymentController extends Controller
             'total_item_price' => $request->total_item_price,
         ]);
 
-        // Create order items
-        foreach ($request->products as $product) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $product['product_id'],
-                'quantity' => $product['quantity'],
-                'price' => $product['price'],
-                'subtotal' => $product['price'] * $product['quantity']
-            ]);
+        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+        $cartItems = Cart_item::where('cart_id', $cartId)
+            ->where('is_choose', true)
+            ->with(['product.brand'])
+            ->get();
+
+        foreach ($cartItems as $item) {
+            if ($item->product && $item->product->promos) {
+                foreach ($item->product->promos as $promo) {
+                    if ($promo->tiers) {
+                        foreach ($promo->tiers as $tier) {
+                            switch ($tier->discount_type) {
+                                case 'percentage':
+                                    // Contoh logika untuk diskon persentase
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'nominal':
+                                    // Contoh logika untuk diskon nominal
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total - $tier->discount_value;
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'package':
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                        $item->total = $tier->package_price;
+                                    }
+                                    break;
+        
+                                default:
+                                    // Logika default jika tidak ada kasus yang cocok
+                                    $item->discounted_price = $item->product->price;
+                                    break;
+                                }
+                            }
+                        }
+                }
+
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                    'is_tier' => $item->bundle_price,
+                    'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+                ]);
+            }
         }
 
+        
         return $order;
+    }
+
+
+    private function createNewOrder(array $orderData)
+    {
+        $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+
+        if ($lastInvoice) {
+            // Split the invoice by '/' and take the last part
+            $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
+
+            // Increment the number
+            $invoiceNumber = $lastNoInvoice + 1;
+        } else {
+            // Start from 1 if there is no previous invoice
+            $invoiceNumber = 1;
+        }
+
+        // Get the current day, month, and year
+        $day = date('d');
+        $month = date('m');
+        $year = date('Y');
+
+        // Format the new invoice number
+        $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
+
+        // Create a new invoice with the formatted invoice number
+        $invoiceCreate = Invoice::create([
+            'no_invoice' => $formattedInvoice,
+        ]);
+
+        $order = Order::create([
+            'doku_order_id' => $orderData['orderId'],
+            'invoice_id' => $invoiceCreate->id,
+            'user_id' => auth()->id(), 
+            'shipping_address_id' => $orderData['shippingAddressId'],
+            'shipping_cost' => $orderData['shippingCost'],
+            'discount_amount' => $orderData['discountAmount'] ?? 0,
+            'total_amount' => $orderData['totalAmount'],
+            'voucher_promo' => $orderData['voucherPromo'],
+            'voucher_ongkir' => $orderData['voucherOngkir'],
+            'order_date' => now(),
+            // 'status' => 'pending',
+            'total_item' => $orderData['totalItem'],
+            'total_item_price' => $orderData['totalItemPrice'],
+        ]);
+
+        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+        $cartItems = Cart_item::where('cart_id', $cartId)
+            ->where('is_choose', true)
+            ->with(['product.brand'])
+            ->get();
+
+        foreach ($cartItems as $item) {
+            if ($item->product && $item->product->promos) {
+                foreach ($item->product->promos as $promo) {
+                    if ($promo->tiers) {
+                        foreach ($promo->tiers as $tier) {
+                            switch ($tier->discount_type) {
+                                case 'percentage':
+                                    // Contoh logika untuk diskon persentase
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'nominal':
+                                    // Contoh logika untuk diskon nominal
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total - $tier->discount_value;
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'package':
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                        $item->total = $tier->package_price;
+                                    }
+                                    break;
+        
+                                default:
+                                    // Logika default jika tidak ada kasus yang cocok
+                                    $item->discounted_price = $item->product->price;
+                                    break;
+                                }
+                            }
+                        }
+                }
+
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'product_id' => $item->product_id,
+                    'product_variant_id' => $item->product_variant_id,
+                    'quantity' => $item->quantity,
+                    'price' => $item->price,
+                    'is_tier' => $item->bundle_price,
+                    'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+                ]);
+            }
+        }
+
+        $userId = session('id_user');
+
+        $payment = Payment::create([
+            'user_id'        => $userId,
+            'order_id'       => $order->id,
+            'payment_method' => "tes",
+            'transaction_id' => "",
+            'status'         => 'completed',
+            'amount'         => $orderData['totalAmount'],
+            'payment_date'   => now(),
+        ]);
+
+        // Update status voucher jika digunakan
+        $useVoucherNewUser = VoucherNewUser::where('user_id', $userId)
+            ->where('code', $orderData['voucherPromo'])
+            ->first();
+        
+        if ($useVoucherNewUser) {
+            $useVoucherNewUser->is_use = 1;
+            $useVoucherNewUser->save();
+        }
+
+        if($useVoucherNewUser == NULL){
+            $voucherUsed = Promo::where('promo_code', $orderData['voucherPromo'])->first();
+        }
+        else {
+            $voucherUsed = NULL;
+        }
+
+        if ($orderData['voucherOngkir'] !== null) {
+            $ongkirUsed = Promo::where('promo_code', $orderData['voucherOngkir'])->first();
+        }
+
+        // Jika pembayaran selesai
+       
+        if ($payment->status == "completed") {
+            // Ambil cart berdasarkan user_id sekali di luar loop
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            
+            if ($voucherUsed !== NULL) {
+                $voucherUsed->total_used += 1;
+                $voucherUsed->save();
+            }
+
+            if ($orderData['voucherOngkir'] !== null) {
+                if ($ongkirUsed) {
+                    $ongkirUsed->total_used += 1;
+                    $ongkirUsed->save();
+                }
+            }
+            
+            foreach($cartItems as $product){
+                // Temukan produk berdasarkan ID\
+                if($product['product_variant_id'] !== null){
+                    $productVariant = ProductVariations::find($product['product_variant_id']);
+                    
+                    // Jika produk ditemukan, lakukan update stok
+                    if ($productVariant) {
+                        $productVariant->variant_stock -= $product['quantity'];
+                        $productVariant->sale += $product['quantity'];
+                        $productVariant->save();
+                    }
+        
+                    // Hapus item dari cart berdasarkan cart_id dan product_id
+                    Cart_item::where('cart_id', $cartId)
+                        ->where('product_variant_id', $product['product_variant_id'])
+                        ->delete();
+                }
+                else{
+                    $products = Product::find($product['product_id']);
+                    
+                    // Jika produk ditemukan, lakukan update stok
+                    if ($products) {
+                        $products->stock_quantity -= $product['quantity'];
+                        $products->sale += $product['quantity'];
+                        $products->save();
+                    }
+        
+                    // Hapus item dari cart berdasarkan cart_id dan product_id
+                    Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $product['product_id'])
+                        ->delete();
+                }
+                 
+                session(['activeTab' => '#my-order']);
+            }
+        }
+       
+        return $order;
+    }
+
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $selectedPaymentMethods){
+        $data = [
+            'orderId' => $orderId,
+            'totalAmount' => $totalAmount,
+            'shippingAddressId' => $shippingAddressId,
+            'shippingCost' => $shippingCost,
+            'discountAmount' => $discountAmount,
+            'discountOngkir' => $discountOngkir,
+            'totalItem' => $totalItem,
+            'totalItemPrice' => $totalItemPrice,
+            'voucherPromo' => $voucherPromo,
+            'voucherOngkir' => $voucherOngkir,
+            'selectedPaymentMethods' => $selectedPaymentMethods,
+        ];
+
+        return $data;
     }
 }

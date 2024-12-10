@@ -81,19 +81,37 @@ Route::post('/notify-me', function (Request $request) {
     $email = User::where('id', $userId)->value('email');
 
     if ($userId) {
-        $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
-            ->where('email', $email)
-            ->exists();
+        if($request->product_variant_id !== null) {
+            $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
+                ->where('product_variant_id', $request->product_variant_id)
+                ->where('email', $email)
+                ->exists();
+        }else{
+            $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
+                ->where('email', $email)
+                ->exists();    
+        }
 
         if ($checkIsAlreadyExists) {
             return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
         }else{
-            NotifyMe::create([
-                'user_id' => $userId,
-                'product_id' => $request->product_id,
-                'email' => $email,
-            ]);
-            return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+            if($request->product_variant_id !== null){
+                NotifyMe::create([
+                    'user_id' => $userId,
+                    'product_id' => $request->product_id,
+                    'product_variant_id' => $request->product_variant_id,
+                    'email' => $email,
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+            }
+            else{
+                NotifyMe::create([
+                    'user_id' => $userId,
+                    'product_id' => $request->product_id,
+                    'email' => $email,
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+            }
         }
     }
     return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
@@ -149,7 +167,7 @@ Route::get('/belanja-{category}-{subcategory}', [ShopController::class, 'subCate
 Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('shop.category');
 
 // DETAIL PRODUCT
-Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product');
+Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product.varian');
 
 // SHIPPING 
 Route::get('/provinces', [CheckoutController::class, 'getProvinces']);
@@ -175,6 +193,7 @@ Route::post('/chart', [UserController::class, 'addToChart'])->name('add.to.chart
 Route::post('/chart-with-quantity', [UserController::class, 'addToChartWithQuantity'])->name('add.to.chart.with.quantity');
 Route::post('/chart-with-quantity-variant', [UserController::class, 'addToChartWithQuantityVariant'])->name('add.to.chart.with.quantity.variant');
 Route::post('/remove-product-cart', [CartController::class, 'deleteProductItem'])->name('delete.product.cart');
+Route::post('/remove-all-product-cart', [CartController::class, 'deleteAllProductItem'])->name('delete.all.product.cart');
 Route::post('/remove-product-variant-cart', [CartController::class, 'deleteProductVariantItem'])->name('delete.product.variant.cart');
 Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
 Route::post('/update-cart-quantity-variant', [CartController::class, 'updateCartQuantityVariant'])->name('update.cart.quantity.variant');
@@ -186,6 +205,7 @@ Route::post('/remove-wishlist', [UserController::class, 'removeFromWishlist'])->
 
 // BUY NOW
 Route::post('/add-product-buy-now', [CheckoutController::class, 'addProductBuyNow'])->name('add.product.buy.now');
+Route::post('/add-product-variant-buy-now', [CheckoutController::class, 'addProductVariantBuyNow'])->name('add.product.variant.buy.now');
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->middleware(['auth', 'verified'])->name('buy.now');
 Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'updateCartQuantityBuyNow'])->name('update.cart.quantity.buy.now');
 

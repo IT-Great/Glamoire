@@ -192,84 +192,93 @@
                   @if (session('id_user'))
                       @if (count($data['products']) !== 0)
                         <div class="grid-container-shop" style="min-height:48vh;">
-                        @foreach ($data['products'] as $product)
-                          <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-                            <div class="position-relative overflow-hidden bg-transparent p-0">
-                                <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
-                            </div>
-                            <div class="grid text-left p-1 p-md-2">
-                                <div class="flex gap-1">
-                                    <i class="text-decoration-none fas fa-star text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
-                                    @php
-                                        $inWishlist = collect($data['wishlists'])->contains('product_id', $product->id);
-                                    @endphp
-                                    <i 
-                                        class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
-                                        onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
-                                    </i>
-                                </div>
-                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
-                                    <a href="/{{ $product->product_code }}_product" 
-                                    class="text-decoration-none truncate-ellipsis" 
-                                    data-bs-toggle="tooltip" 
-                                    data-bs-placement="top" 
-                                    title="{{ $product->product_name }}">
-                                        {{ $product->product_name }}
-                                    </a>
-                                </p>
+                          @foreach ($data['products'] as $product)
+                            <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
+                              <div class="position-relative overflow-hidden bg-transparent p-0">
+                                  <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                              </div>
+                              <div class="grid text-left p-1 p-md-2">
+                                  <div class="flex gap-1">
+                                      <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                                      @php
+                                          $inWishlist = collect($data['wishlists'])->contains('product_id', $product->id);
+                                      @endphp
+                                      <i 
+                                          class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
+                                          onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
+                                      </i>
+                                  </div>
+                                  <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
+                                      <a href="/{{ $product->product_code }}_product" 
+                                      class="text-decoration-none truncate-ellipsis" 
+                                      data-bs-toggle="tooltip" 
+                                      data-bs-placement="top" 
+                                      title="{{ $product->product_name }}">
+                                          {{ $product->product_name }}
+                                      </a>
+                                  </p>
 
-                                <div class="flex justify-content-start gap-1">
-                                  @php
-                                      $activePromo = $product->promos->first();
-                                      $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                  @endphp
-
-                                  @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                        <del>
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </del>
-                                    </p>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                  @else
-                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                    </p>
-                                  @endif
-                                </div>
-                                
-                                {{-- @if ($product->stock_quantity == 0)
-                                    <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="top" 
-                                        title="Beritahu Saya Jika Stok Sudah Ada" 
-                                        type="button" 
-                                        style="color:#183018"
-                                        id="notify-me-{{$product->id}}"
-                                        onclick="event.stopPropagation();notifyMe({{$product->id}})"
-                                    >
-                                        Stok Habis
-                                    </a>
-                                @else
+                                  <div class="flex justify-content-start gap-1">
                                     @php
-                                        $inCart = collect($data['cartItems'])->contains('product_id', $product->id);
+                                        $activePromo = $product->promos->first();
+                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                     @endphp
 
-                                    @if($inCart)
-                                        <a href="/cart" class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
-                                            Cek Keranjang
-                                        </a>
+                                    
+                                    @if ($product->priceVariation !== null)
+                                      <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                          {{ $product->priceVariation }}
+                                      </p>
                                     @else
-                                        <a class="gap-1 py-1 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$product->id}})">
-                                          + <i class="fas fa-shopping-cart"></i> Keranjang
-                                        </a>
+                                      @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            <del>
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                      @else
+                                        <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                      @endif
                                     @endif
-                                @endif --}}
+                                  </div>
+                                  
+                                  {{-- @if ($product->stock_quantity == 0)
+                                      <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                          data-bs-toggle="tooltip" 
+                                          data-bs-placement="top" 
+                                          title="Beritahu Saya Jika Stok Sudah Ada" 
+                                          type="button" 
+                                          style="color:#183018"
+                                          id="notify-me-{{$product->id}}"
+                                          onclick="event.stopPropagation();notifyMe({{$product->id}})"
+                                      >
+                                          Stok Habis
+                                      </a>
+                                  @else
+                                      @php
+                                          $inCart = collect($data['cartItems'])->contains('product_id', $product->id);
+                                      @endphp
+
+                                      @if($inCart)
+                                          <a href="/cart" class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                              Cek Keranjang
+                                          </a>
+                                      @else
+                                          <a class="gap-1 py-1 rounded-sm border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$product->id}})">
+                                            + <i class="fas fa-shopping-cart"></i> Keranjang
+                                          </a>
+                                      @endif
+                                  @endif --}}
+                              </div>
                             </div>
-                          </div>
-                        @endforeach 
+                          @endforeach 
                         </div>
+
+                        {{ $data['products']->links('vendor.pagination.bootstrap-5') }}
                       @else
                         <div style="min-height:48vh;">
                           <div style="display:flex; align-items:center; justify-content:center;">
@@ -314,17 +323,24 @@
                                       $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                   @endphp
 
-                                  @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                        <del>
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                        </del>
-                                    </p>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                  @else
+                                  
+                                  @if ($product->priceVariation !== null)
                                     <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        {{ $product->priceVariation }}
                                     </p>
+                                  @else
+                                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                      <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                          <del>
+                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                          </del>
+                                      </p>
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                    @else
+                                      <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                      </p>
+                                    @endif
                                   @endif
                                 </div>
                                 {{-- @if ($product->stock_quantity == 0)
@@ -348,6 +364,8 @@
                           </div>
                         @endforeach
                       </div>
+
+                      {{ $data['products']->links('vendor.pagination.bootstrap-5') }}
                     @else
                       <div style="min-height:48vh;">
                         <div style="display:flex; align-items:center; justify-content:center;">
@@ -363,7 +381,7 @@
                 <!-- End Card Items -->
               </div>
 
-              {{ $data['products']->links('vendor.pagination.bootstrap-5') }}
+              
 
               <!-- Repeat this block for each card -->
               <!-- Pagination and Navigation -->

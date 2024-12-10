@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('variant_stock')->nullable();
             $table->bigInteger('variant_price')->nullable();
             $table->string('weight_variant')->nullable();
+            $table->integer('sale')->nullable()->default(0);
             $table->timestamps();
         });
     }

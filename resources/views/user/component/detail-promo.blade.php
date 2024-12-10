@@ -1,7 +1,7 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 py-2">
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
 
   <div class="container-fluid px-0 px-md-3">
     @foreach ($promo as $promo)
@@ -11,14 +11,9 @@
           $startDate = \Carbon\Carbon::parse($dateRange[0])->translatedFormat('d F Y');
           $endDate = \Carbon\Carbon::parse($dateRange[1])->translatedFormat('d F Y');
         @endphp
-        <p class="font-semibold text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
+        <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] bg-[#183018] text-white w-fit py-2 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">
           {{ $promo->promo_name }} <br>
-          Diskon @if ($promo->discount <= 100)
-            {{ $promo->discount }}%
-          @else
-            Rp{{ number_format($promo->discount, 0, ',', '.') }}
-          @endif <br>
-          {{ $startDate }} - {{ $endDate }}
+          Berlaku hingga {{ $endDate }}
         </p>
       </div>
     @endforeach
@@ -38,7 +33,7 @@
       @endfor
     </div>
 
-    <div id="productList" style="display: none;" class="px-1 px-md-2 mb-12 mb-md-0">                
+    <div id="productList" style="display: none;">                
       <div class="grid-container p-0">
         @if (session('id_user'))
           @foreach ($promo->products as $product)
@@ -48,13 +43,13 @@
               </div>
               <div class="grid text-left p-1 p-md-2">
                   <div class="flex gap-1">
-                    <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                    <i class="text-decoration-none fas fa-star text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                    <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
                     @php
                         $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                     @endphp
                     <i 
-                        class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018]' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                        class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018]' }} text-[8px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
                         onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
                     </i>
                   </div>
@@ -118,10 +113,10 @@
 
               <div class="grid text-left p-1 p-md-2">
                 <div class="flex gap-1">
-                  <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                  <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                  <i class="text-decoration-none fas fa-star text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                  <p class="text-decoration-none text-black text-[8px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
                   <i 
-                    class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                    class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[8px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
                     onclick="event.stopPropagation();addToWishlist({{$product->id}})">
                   </i>
                 </div>

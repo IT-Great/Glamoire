@@ -1,10 +1,10 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="grid md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2">
-  <div class="container-fluid">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-96 pt-2 py-2">
+  <div class="container-fluid px-0 px-md-3">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-1 my-md-3">
-      <div class="d-flex gap-2 pl-2">
+      <div class="d-flex gap-1 pl-3">
         <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Mitra Bisnis</a>
@@ -19,7 +19,7 @@
     </div>  
     
     <div class="grid md:flex">
-      <div class="col-12 col-md-4">
+      <div class="col-12 col-md-4 p-0 p-md-2">
         <div class="position-sticky" style="top: 4rem">
           <div class="grid border rounded-sm p-3 p-lg-4 gap-1 gap-md-3 bg-[#183018]">
             <h1 class="text-white font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[24px]">Siap mengembangkan bisnis Anda?</h1>

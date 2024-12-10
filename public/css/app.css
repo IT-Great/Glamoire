@@ -30,6 +30,13 @@
         "Liberation Mono", "Courier New", monospace;
 }
 
+
+
+.dropdown-akun {
+    z-index: 9999;
+    position: relative; /* Pastikan elemen memiliki posisi untuk menerapkan z-index */
+}
+
 .skeleton-loader {
     display: flex;
     flex-wrap: wrap;
@@ -47,28 +54,78 @@
     .skeleton-card {
         width: calc(25%); /* 4 items per row */
     }
+    .image-rating-review {
+        max-width: 180px;
+        max-height: 180px;
+    }
+    .video-rating-review {
+        max-width: 180px;
+        max-height: 180px;
+    }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
 }
 @media (max-width: 1440px) {
     .skeleton-card {
         width: calc(20% - 7px); /* 4 items per row */
+    }
+    .image-rating-review {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    .video-rating-review {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
     }
 }
 @media (max-width: 768px) {
     .skeleton-card {
         width: calc(30%); /* 4 items per row */
     }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+@media (max-width:428px) {
+    .skeleton-image {
+        height: 80px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
 }
 @media (max-width: 375px) {
     .skeleton-card {
         width: calc(30%); /* 3 items per row */
     }
-}
+    .image-rating-review {
+        max-width: 80px;
+        max-height: 80px;
+    }
+    .video-rating-review {
+        max-width: 80px;
+        max-height: 80px;
+    }
 
-.skeleton-image {
-    height: 150px;
-    background: #c0c0c0;
-    border-radius: 4px;
-    margin-bottom: 8px;
+    .skeleton-image {
+        height: 50px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
 }
 
 .skeleton-text {
@@ -134,19 +191,6 @@
     padding: 5px;
 }
 
-.grid-container-product-promo {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
-    padding: 5px;
-}
-
-.grid-container-promo {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 10px;
-    padding: 5px;
-}
 
 .custom-scroll {
     scrollbar-width: thin; /* Membuat scrollbar lebih tipis */
@@ -533,15 +577,18 @@
 }
 
 .product-image-container {
-    position: relative;
-    width: 100%;
-    max-width: 300px; /* Adjust as needed */
+    width: 100%;  /* Atur tinggi sesuai kebutuhan */
+    overflow: hidden; 
 }
 
 .product-image {
     width: 100%;
-    height: auto;
+    height: 100%; /* Buat gambar menyesuaikan tinggi kontainer */
+    object-fit: cover; /* Memastikan gambar mengisi seluruh kontainer */
+    display: block;
 }
+
+
 
 /* Darken the product image when stock is 0 */
 .dark-overlay {
@@ -604,6 +651,28 @@
         min-height: 371px;
         max-height: 371px;
     }
+
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
 }
 
 @media (max-width: 1024px) {
@@ -622,6 +691,24 @@
     .product-item-detail {
         min-height: 266px;
         max-height: 266px;
+    }
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        padding: 5px;
+    }
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
     }
 }
 
@@ -758,6 +845,20 @@
         min-height: 215px;
         max-height: 215px;
     }
+    
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
 }
 
 @media (max-width: 320px) {
@@ -785,6 +886,26 @@
     .product-item-detail {
         min-height: 195px;
         max-height: 195px;
+    }
+
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
     }
 }
 
@@ -2712,7 +2833,7 @@ pre code {
     .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 10px;
+        grid-gap: 5px;
         padding: 5px;
     }
 }

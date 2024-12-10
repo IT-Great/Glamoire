@@ -6,7 +6,7 @@
     <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
             <div class="d-flex gap-1 px-3 px-md-0">
-                <a href="/home" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+                <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
                 <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
                 <a href="/cart" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Keranjang</a>
                 <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
@@ -226,6 +226,7 @@
                         <h1 class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] mb-1 mb-md-2">Produk - {{ $cart + 1 }}</h1>
                     </div>  
     
+                    {{-- Produk Biasa --}}
                     @if ($product->productVariant == null)
                         <div class="flex">
                             <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
@@ -236,10 +237,10 @@
                                     <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->brand->name }}</p>
                                 </div>
                                 <div class="grid lg:flex">
-                                    <div class="col-lg-8 pl-1 pl-md-3">
+                                    <div class="col-lg-9 pl-1 pl-md-3">
                                         <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $product->product->product_name }}</p>
                                     </div>
-                                    <div class="col-lg-4 p-lg-0 pl-1 pl-md-3">
+                                    <div class="col-lg-3 p-lg-0 pl-1 pl-md-3">
                                         @if ($product->bundle_price !== null)
                                             <div class="grid gap-1 font-semibold">
                                                 <div>
@@ -266,6 +267,8 @@
                                 </div>
                             </div>
                         </div>
+
+                    {{-- Produk varian --}}
                     @else
                         <div class="flex">
                             <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
@@ -367,6 +370,7 @@
     let ongkir = null;
     let productItems = {!! json_encode($data['cartItems']) !!};
     let productIds = [];
+    let productVariantIds = {};
     let productQuantities = {};
     let productPrices = {};
     let voucher = null;
@@ -386,6 +390,21 @@
     let shippingDiscountAmount = 0; // Diskon Paten
     let shippingDiscount = 0; 
 
+    let formattedData = {}; // Objek hasil akhir
+
+    productItems.forEach((product, index) => {
+        formattedData[index] = {
+            product_id: product.product_id,
+            quantity: product.quantity,
+            price: product.price,
+            product_variant_id: product.product_variant_id || null // Gunakan null jika product_variant_id tidak ada
+        };
+    });
+
+    // Output example
+    // console.log(formattedData);
+
+
     // ONGKIR - Shipping
     const shippingFee = document.getElementById("choose_shipping_fee");
 
@@ -404,6 +423,7 @@
                 success: function(response) {
                     ongkir = response.ongkir;
                     // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+                    shippingDiscountAmount = 0;
                     shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
 
                     // Update displayed prices with the latest values
@@ -461,6 +481,7 @@
         productIds.push(product.product_id);
         productQuantities[product.product_id] = product.quantity;
         productPrices[product.product_id] = product.price;
+        productVariantIds[product.product_id] = product.product_variant_id;
     });
     // END ITEM PRODUK
 
@@ -529,7 +550,8 @@
         $("#code-voucher").prop('disabled', false);
         $("#total-shopping").text("Rp"+formatRupiah(subTotal));
         $('#button-code-voucher').prop('disabled', true);
-        $("#choose-voucher").text("Pilih Voucher").addClass("text-danger").show();
+        $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+        $("#choose-voucher").removeClass("text-success").addClass("text-dark");
         $('#show-voucher').prop('disabled', false);
         
 
@@ -776,8 +798,8 @@
             }
         }
 
-        // subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-        subTotal = response.totalShoppingFormatted;
+        subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        // subTotal = response.totalShoppingFormatted;
         
         // Update the display with the new total
         $("#total-shopping").text("Rp"+formatRupiah(subTotal));
@@ -890,27 +912,105 @@
     });
 
     
-    $(document).on('click', '#paynow', function(e) { 
-        e.preventDefault();
-        console.log({
-            subtotal: subTotal,          
-            shipping_cost: ongkir,
-            shipping_address_id: shippingAddressId,
-            total_item: totalItem,
-            total_item_price: totalItemPrice,
-            discount_amount: discountAmount,
-            discount_ongkir: shippingDiscount,
-            voucher_promo: selectedPromoCode,
-            voucher_ongkir: selectedOngkirCode,
-        });
+    // $(document).on('click', '#paynow', function(e) { 
+    //     e.preventDefault();
     
+    //     $.ajax({
+    //         url: "{{ route('order.payment') }}",
+    //         type: 'POST',
+    //         data: {
+    //             products: formattedData,
+    //             subtotal: subTotal,          // Removed the colon inside the key
+    //             shipping_cost: ongkir,
+    //             shipping_address_id: shippingAddressId,
+    //             total_item: totalItem,
+    //             total_item_price: totalItemPrice,
+    //             discount_amount: discountAmount,
+    //             discount_ongkir: shippingDiscount,
+    //             voucher_promo: selectedPromoCode,
+    //             voucher_ongkir: selectedOngkirCode,
+    //             _token: '{{ csrf_token() }}'
+    //         },
+    //         beforeSend: function() {
+    //             $('.loading-container').show(); // Show the spinner
+    //         },
+    //         success: function(response) {
+    //             Toast.fire({
+    //                 icon: "success",
+    //                 text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
+    //                 title: "Pembayaranmu Berhasil",
+    //                 willOpen: () => {
+    //                     const title = document.querySelector('.swal2-title');
+    //                     const content = document.querySelector('.swal2-html-container');
+    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
+    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    //                 }
+    //             }).then(function () {
+    //                 location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
+    //             });
+    //         },
+    //         complete: function() {
+    //             $('.loading-container').hide(); // Show the spinner
+    //         },
+    //         error: function(xhr) {
+    //             Toast.fire({
+    //                 icon: "error",
+    //                 text: "Kesalahan Sistem",
+    //                 title: "Oops..",
+    //                 willOpen: () => {
+    //                     const title = document.querySelector('.swal2-title');
+    //                     const content = document.querySelector('.swal2-html-container');
+    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
+    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
+
+    // Add DOKU payment modal HTML
+    $('body').append(`
+        <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #183018">
+                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="dokuPaymentModalLabel">Pembayaran</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="dokuPaymentContainer">
+                        <div class="text-center" id="loadingPayment">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Mempersiapkan pembayaran...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    // Handle payment button click
+    $('#paynow').click(function(e) {
+        // console.log(subTotal);
+        e.preventDefault();
+
+        // Show loading state
+        $('#paynow').prop('disabled', true);
+        $('#dokuPaymentModal').modal('show');
+
+        // Prepare form data
+        // const formData = {
+        //     total_amount: subTotal,
+        // };
+
+        // Make AJAX request
         $.ajax({
-            url: "{{ route('order.payment') }}",
-            type: 'POST',
+            url: '/initiate-doku-payment',
+            method: 'POST',
             data: {
-                product: productIds,
-                product_quantity: productQuantities,
-                product_price: productPrices,
+                total_amount: subTotal,
+                products: formattedData,
                 subtotal: subTotal,          // Removed the colon inside the key
                 shipping_cost: ongkir,
                 shipping_address_id: shippingAddressId,
@@ -920,133 +1020,42 @@
                 discount_ongkir: shippingDiscount,
                 voucher_promo: selectedPromoCode,
                 voucher_ongkir: selectedOngkirCode,
-                _token: '{{ csrf_token() }}'
             },
-            beforeSend: function() {
-                $('.loading-container').show(); // Show the spinner
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(response) {
-                Toast.fire({
-                    icon: "success",
-                    text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-                    title: "Pembayaranmu Berhasil",
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                }).then(function () {
-                    location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-                });
+                if (response.success && response.payment_url) {
+                    // console.log(response.payment_url);
+                    // Load DOKU payment iframe
+                    $('#dokuPaymentContainer').html(`
+                <iframe 
+                    src="${response.payment_url}"
+                    frameborder="0"
+                    width="100%"
+                    height="600px"
+                    style="overflow: hidden;">
+                </iframe>
+            `);
+                } else {
+                    throw new Error('Invalid payment URL');
+                }
+            },
+            error: function(xhr, status, error) {
+                // Show error message
+                $('#dokuPaymentContainer').html(`
+            <div class="alert alert-danger">
+                <p>Terjadi kesalahan saat memproses pembayaran:</p>
+                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+            </div>
+        `);
+                console.error('Payment error:', error);
             },
             complete: function() {
-                $('.loading-container').hide(); // Show the spinner
-            },
-            error: function(xhr) {
-                Toast.fire({
-                    icon: "error",
-                    text: "Kesalahan Sistem",
-                    title: "Oops..",
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                });
+                $('#paynow').prop('disabled', false);
             }
         });
     });
-
-    // Add DOKU payment modal HTML
-    // $('body').append(`
-    //     <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
-    //         <div class="modal-dialog modal-lg">
-    //             <div class="modal-content">
-    //                 <div class="modal-header" style="background-color: #183018">
-    //                     <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]" id="dokuPaymentModalLabel">Pembayaran</h5>
-    //                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-    //                 </div>
-    //                 <div class="modal-body" id="dokuPaymentContainer">
-    //                     <div class="text-center" id="loadingPayment">
-    //                         <div class="spinner-border text-primary" role="status">
-    //                             <span class="visually-hidden">Loading...</span>
-    //                         </div>
-    //                         <p class="mt-2">Mempersiapkan pembayaran...</p>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>
-    // `);
-
-    // Handle payment button click
-    // $('#paynow').click(function(e) {
-    //     e.preventDefault();
-
-    //     // Show loading state
-    //     $('#paynow').prop('disabled', true);
-    //     $('#dokuPaymentModal').modal('show');
-
-    //     // Prepare form data
-    //     const formData = {
-    //         total_amount: subTotal,
-    //     };
-
-    //     // Make AJAX request
-    //     $.ajax({
-    //         url: '/initiate-doku-payment',
-    //         method: 'POST',
-    //         data: formData,
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         success: function(response) {
-    //             if (response.success && response.payment_url) {
-    //                 // Load DOKU payment iframe
-    //                 $('#dokuPaymentContainer').html(`
-    //             <iframe 
-    //                 src="${response.payment_url}"
-    //                 frameborder="0"
-    //                 width="100%"
-    //                 height="600px"
-    //                 style="overflow: hidden;">
-    //             </iframe>
-    //         `);
-    //             } else {
-    //                 throw new Error('Invalid payment URL');
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Show error message
-    //             $('#dokuPaymentContainer').html(`
-    //         <div class="alert alert-danger">
-    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
-    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-    //         </div>
-    //     `);
-    //             console.error('Payment error:', error);
-    //         },
-    //         complete: function() {
-    //             $('#paynow').prop('disabled', false);
-    //         }
-    //     });
-    // });
-
-    // Helper function to get products data
-    // function getProductsData() {
-    //     const products = [];
-    //     $('input[name="product[]"]').each(function() {
-    //         const productId = $(this).val();
-    //         products.push({
-    //             product_id: parseInt(productId),
-    //             quantity: parseInt($(`#product-quantity-${productId}`).val()),
-    //             price: parseInt($(`#product-price-${productId}`).val())
-    //         });
-    //     });
-    //     return products;
-    // }
 
 </script>
 
@@ -1405,65 +1414,63 @@
             </div>
 
             <div class="modal-body p-2 p-md-3 overflow-y-auto custom-scroll">
-                <div class="col-12 p-0">
+                <div class="col-12 p-0 gap-1">
 
                     @php
                         $brandIds = $data['cartItems']->pluck('brand_id'); // Ambil semua brand_id dari cartItems
                         $productIds = $data['cartItems']->pluck('product_id');
 
+                        $voucherDisabled = $data['voucherDisabled'];
                         // Filter voucher berdasarkan kecocokan dengan brand_id di cartItems
-                        $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
-                            // Voucher usable jika memenuhi kondisi transaksi dan brand cocok
-
-                            if ($voucher->type == 'brand voucher') {
-                                if ( $brandIds->contains($voucher->brand_id)) {
+                        $usableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds, $voucherDisabled) {
+                            if ($voucherDisabled == false) {
+                                if ($voucher->type == 'brand voucher') {
                                     return 
-                                        $data['voucherDisabled'] = TRUE &&
+                                        $productIds->intersect($data['brandVoucherIds'])->isNotEmpty() &&
                                         $data['totalPrice'] >= $voucher->min_transaction &&
                                         $data['totalItem'] <= $voucher->max_quantity_buyer;
-                                }
-                            }
-                            elseif ($voucher->type == 'product voucher') {
-                                if ($productIds->intersect($data['productVoucherIds'])->isNotEmpty()) {
+                                } elseif ($voucher->type == 'product voucher') {
                                     return 
-                                        $data['voucherDisabled'] = TRUE &&
+                                        $productIds->intersect($data['productVoucherIds'])->isNotEmpty() &&
                                         $data['totalPrice'] >= $voucher->min_transaction &&
                                         $data['totalItem'] <= $voucher->max_quantity_buyer;
+                                } else {
+                                    return 
+                                        $data['totalPrice'] >= $voucher->min_transaction &&
+                                        $data['totalItem'] <= $voucher->max_quantity_buyer;
+                                    }
+                                }else {
+                                    if ($voucher->type == 'ongkir voucher') {
+                                        return 
+                                            $data['totalPrice'] >= $voucher->min_transaction &&
+                                            $data['totalItem'] <= $voucher->max_quantity_buyer;
                                 }
-                            }
-                            else{
-                                return
-                                    $data['voucherDisabled'] = TRUE &&
-                                    $data['totalPrice'] >= $voucher->min_transaction &&
-                                    $data['totalItem'] <= $voucher->max_quantity_buyer;
                             }
                         });
 
-                        $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds) {
-                            if ($voucher->type == 'brand voucher') {
-                                // Periksa apakah brand_id sesuai
-                                $isBrandValid = $brandIds->contains($voucher->brand_id);
-
-                                // Voucher tidak dapat digunakan jika salah satu kondisi ini terpenuhi
-                                return !$isBrandValid || 
-                                    $data['voucherDisabled'] = FALSE ||
-                                    $data['totalPrice'] < $voucher->min_transaction || 
-                                    $data['totalItem'] > $voucher->max_quantity_buyer;
-                            } elseif ($voucher->type == 'product voucher') {
-                                // Periksa apakah productVoucherIds memiliki kesamaan dengan productIds
-                                $isProductValid = !$productIds->intersect($data['productVoucherIds'])->isEmpty();
-
-                                // Voucher tidak dapat digunakan jika salah satu kondisi ini terpenuhi
-                                return !$isProductValid || 
-                                    $data['voucherDisabled'] = FALSE ||
-                                    $data['totalPrice'] < $voucher->min_transaction || 
-                                    $data['totalItem'] > $voucher->max_quantity_buyer;
-                            } else {
-                                return 
-                                    $data['voucherDisabled'] = FALSE ||
-                                    $data['totalPrice'] < $voucher->min_transaction || 
-                                    $data['totalItem'] > $voucher->max_quantity_buyer;
-                            }
+                        $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds, $voucherDisabled) {
+                                if ($voucher->type == 'brand voucher') {
+                                    return
+                                        $voucherDisabled == true ||
+                                        $productIds->intersect($data['brandVoucherIds'])->isEmpty() ||
+                                        $data['totalPrice'] < $voucher->min_transaction ||
+                                        $data['totalItem'] > $voucher->max_quantity_buyer;
+                                } elseif ($voucher->type == 'product voucher') {
+                                    return 
+                                        $voucherDisabled == true ||
+                                        $productIds->intersect($data['productVoucherIds'])->isEmpty() ||
+                                        $data['totalPrice'] < $voucher->min_transaction ||
+                                        $data['totalItem'] > $voucher->max_quantity_buyer;
+                                } elseif ($voucher->type == 'ongkir voucher') {
+                                    return 
+                                        $data['totalPrice'] < $voucher->min_transaction ||
+                                        $data['totalItem'] > $voucher->max_quantity_buyer;
+                                } else {
+                                    return 
+                                        $voucherDisabled == true ||
+                                        $data['totalPrice'] < $voucher->min_transaction ||
+                                        $data['totalItem'] > $voucher->max_quantity_buyer;
+                                }
                         });
 
 
@@ -1474,7 +1481,7 @@
                         @if ($usableVouchers->isNotEmpty())
                             <h5 class="text-[#183018] text-[10px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher yang bisa digunakan</h5>
                             @foreach ($usableVouchers as $voucher)
-                                <div class="col-12 p-0 p-md-2 promo-item" data-code="{{ $voucher->promo_code }}" onclick="selectPromo(this, '{{ $voucher->promo_code }}', '{{$voucher->type}}')">
+                                <div class="col-12 p-1 p-md-2 promo-item" data-code="{{ $voucher->promo_code }}" onclick="selectPromo(this, '{{ $voucher->promo_code }}', '{{$voucher->type}}')">
                                     <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer  custom-shadow">
                                         <div class="flex">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-[#183018] font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
@@ -1543,7 +1550,7 @@
                         @if ($unusableVouchers->isNotEmpty())
                             <h5 class="text-[#183018] text-[12px] md:text-[10px] lg:text-[11px] xl:text-[13px] mt-1 mt-md-0 font-semibold mb-1">Voucher tersedia</h5>
                             @foreach ($unusableVouchers as $voucher)
-                                <div class="col-12 p-0 p-md-2 promo-item" onclick="event.stopPropagation()">
+                                <div class="col-12 p-1 p-md-2 promo-item" onclick="event.stopPropagation()">
                                     <div class="grid gap-1 p-2 border rounded-sm bg-light cursor-pointer custom-shadow">
                                         <div class="flex">
                                             <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] text-muted font-semibold">{{ ucwords($voucher->type) }} - {{ ucwords($voucher->promo_name) }}</p>
@@ -1578,8 +1585,10 @@
                                         </div>
 
                                         <div>
-                                            @if ($data['voucherDisabled'] = TRUE)
-                                                <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Voucher tidak bisa digunakan bersama dengan promo produk lainnya</p>
+                                            @if($voucher->type !== 'ongkir voucher')
+                                                @if ($data['voucherDisabled'] == true)
+                                                    <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Voucher tidak bisa digunakan bersama dengan promo produk lainnya</p>
+                                                @endif
                                             @endif
 
                                             @if ($data['totalPrice'] < $voucher->min_transaction)
@@ -1592,6 +1601,10 @@
                                             
                                             @if ($voucher->type == 'brand voucher')
                                                 <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Hanya bisa digunakan untuk produk brand {{ $voucher->brand_name }}</p>
+                                            @endif
+
+                                            @if ($voucher->type == 'product voucher')
+                                                <p class="text-[10px] md:text-[10px] lg:text-[9px] xl:text-[11px] text-danger">- Tidak bisa digunakan untuk produk yang kamu beli</p>
                                             @endif
                                         </div>
 
@@ -1669,108 +1682,108 @@
     });
 </script>
 
-    <!-- API WILAYAH FOR ADDRESS -->
-    <script>
-        fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-            .then((response) => response.json())
-            .then((provinces) => {
-                const provinceSelect = document.getElementById("add_checkout_province");
+<!-- API WILAYAH FOR ADDRESS -->
+<script>
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+        .then((response) => response.json())
+        .then((provinces) => {
+            const provinceSelect = document.getElementById("add_checkout_province");
 
-                provinces.forEach((province) => {
-                    let option = document.createElement("option");
-                    option.value = province.id;
-                    option.text = province.name;
-                    provinceSelect.appendChild(option);
-                });
-            })
-            .catch((error) => console.error("Error fetching provinces:", error));
-
-        // Event listener for province selection
-        // PILIH PROVINSI
-        document
-            .getElementById("add_checkout_province")
-            .addEventListener("change", function() {
-                const provinceId = this.value;
-                const provinceName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("add_checkout_province_name").value =
-                    provinceName; // Save name in hidden input
-
-                const regencySelect = document.getElementById("add_checkout_regency");
-                regencySelect.innerHTML =
-                    '<option value="">Pilih Kabupaten/Kota</option>';
-                document.getElementById("add_checkout_regency_name").value = ""; // Clear previous regency name
-
-                // GET DATA REGENCIES FROM PROVINCE
-                if (provinceId) {
-                    fetch(
-                            `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
-                        )
-                        .then((response) => response.json())
-                        .then((regencies) => {
-                            regencies.forEach((regency) => {
-                                let option = document.createElement("option");
-                                option.value = regency.id;
-                                option.text = regency.name;
-                                regencySelect.appendChild(option);
-                            });
-                        })
-                        .catch((error) =>
-                            console.error("Error fetching regencies:", error)
-                        );
-                }
+            provinces.forEach((province) => {
+                let option = document.createElement("option");
+                option.value = province.id;
+                option.text = province.name;
+                provinceSelect.appendChild(option);
             });
+        })
+        .catch((error) => console.error("Error fetching provinces:", error));
 
-        document
-            .getElementById("add_checkout_regency")
-            .addEventListener("change", function() {
-                const regenciesId = this.value;
-                const regenciesName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("add_checkout_regency_name").value =
-                    regenciesName; // Save name in hidden input
+    // Event listener for province selection
+    // PILIH PROVINSI
+    document
+        .getElementById("add_checkout_province")
+        .addEventListener("change", function() {
+            const provinceId = this.value;
+            const provinceName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_province_name").value =
+                provinceName; // Save name in hidden input
 
-                const districtSelect = document.getElementById("add_checkout_district");
-                districtSelect.innerHTML =
-                    '<option value="">Pilih Kecamatan</option>';
-                document.getElementById("add_checkout_district_name").value = ""; // Clear previous regency name
+            const regencySelect = document.getElementById("add_checkout_regency");
+            regencySelect.innerHTML =
+                '<option value="">Pilih Kabupaten/Kota</option>';
+            document.getElementById("add_checkout_regency_name").value = ""; // Clear previous regency name
 
-                // GET DATA DISTRICT FROM REGENCY
-                if (regenciesId) {
-                    fetch(
-                            `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
-                        )
-                        .then((response) => response.json())
-                        .then((districts) => {
-                            districts.forEach((district) => {
-                                let option = document.createElement("option");
-                                option.value = district.id;
-                                option.text = district.name;
-                                districtSelect.appendChild(option);
-                            });
-                        })
-                        .catch((error) =>
-                            console.error("Error fetching districts:", error)
-                        );
-                }
-            });
+            // GET DATA REGENCIES FROM PROVINCE
+            if (provinceId) {
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
+                    )
+                    .then((response) => response.json())
+                    .then((regencies) => {
+                        regencies.forEach((regency) => {
+                            let option = document.createElement("option");
+                            option.value = regency.id;
+                            option.text = regency.name;
+                            regencySelect.appendChild(option);
+                        });
+                    })
+                    .catch((error) =>
+                        console.error("Error fetching regencies:", error)
+                    );
+            }
+        });
 
-        // Event listener for regency selection
-        document
-            .getElementById("add_checkout_regency")
-            .addEventListener("change", function() {
-                const regencyName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("add_checkout_regency_name").value = regencyName; // Save name in hidden input
-            });
+    document
+        .getElementById("add_checkout_regency")
+        .addEventListener("change", function() {
+            const regenciesId = this.value;
+            const regenciesName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_regency_name").value =
+                regenciesName; // Save name in hidden input
 
-        // Event listener for district selection
-        document
-            .getElementById("add_checkout_district")
-            .addEventListener("change", function() {
-                const districtName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("add_checkout_district_name").value =
-                    districtName; // Save name in hidden input
-            });
-        // END API WILAYAH REGISTER
-    </script>
+            const districtSelect = document.getElementById("add_checkout_district");
+            districtSelect.innerHTML =
+                '<option value="">Pilih Kecamatan</option>';
+            document.getElementById("add_checkout_district_name").value = ""; // Clear previous regency name
+
+            // GET DATA DISTRICT FROM REGENCY
+            if (regenciesId) {
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
+                    )
+                    .then((response) => response.json())
+                    .then((districts) => {
+                        districts.forEach((district) => {
+                            let option = document.createElement("option");
+                            option.value = district.id;
+                            option.text = district.name;
+                            districtSelect.appendChild(option);
+                        });
+                    })
+                    .catch((error) =>
+                        console.error("Error fetching districts:", error)
+                    );
+            }
+        });
+
+    // Event listener for regency selection
+    document
+        .getElementById("add_checkout_regency")
+        .addEventListener("change", function() {
+            const regencyName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_regency_name").value = regencyName; // Save name in hidden input
+        });
+
+    // Event listener for district selection
+    document
+        .getElementById("add_checkout_district")
+        .addEventListener("change", function() {
+            const districtName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_district_name").value =
+                districtName; // Save name in hidden input
+        });
+    // END API WILAYAH REGISTER
+</script>
 
 @if(session('after_add_address'))
     <script>
@@ -1779,8 +1792,11 @@
             position: "center",
             background: "#183018",
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2500,
             timerProgressBar: true,
+            customClass: {
+                popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
@@ -1799,8 +1815,5 @@
     </script>  
 @endif
 
-
-<!-- PAYMENT DOKUNTUL -->
-{{-- payment gateway --}}
 
 @endsection

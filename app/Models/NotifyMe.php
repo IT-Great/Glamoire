@@ -13,6 +13,7 @@ class NotifyMe extends Model
         'id',
         'user_id',
         'product_id',
+        'product_variant_id',
         'email',
         'status',
         'send_at',

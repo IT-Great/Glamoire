@@ -134,8 +134,15 @@
         <div class="grid border-2 border-start-0 border-top-0 border-end-0">
             @foreach ($orderItem as $index => $item)
             <div class="flex">
-                <div class="col-7">
-                    <p class="text-xs text-black font-semibold py-3">{{ $item->product->product_name }}</p>
+                <div class="col-7 grid">
+                    @if ($item->product_variant_id !== null)
+                        <div>
+                            <p class="text-xs text-black font-semibold pt-2">{{ $item->product->product_name }}</p>
+                            <p class="text-xs text-black font-semibold">Varian {{ $item->productVariant->variant_value }}</p>
+                        </div>
+                        @else
+                        <p class="text-xs text-black font-semibold py-3">{{ $item->product->product_name }}</p>
+                    @endif
                 </div>
                 <div class="col-1 p-0 text-center">
                     <p class="text-xs text-black font-semibold py-3">{{ $item->quantity }}</p>

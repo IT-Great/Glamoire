@@ -1,26 +1,51 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 mb-12 mb-md-0 py-2">
-  <div class="container-fluid">
-    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
-        <div class="d-flex gap-2 pl-2">
-            <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-            <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-            <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Keranjang</a>
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 mb-12 mb-md-0 py-2">
+    <div class="container-fluid px-0 px-md-3">
+        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
+            <div class="d-flex gap-1 pl-3">
+                <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+                <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Keranjang</a>
+            </div>
         </div>
     </div>
 
-    <div class="row mb-14">
+    <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
         @if (count($data) !== 0)
-            <div class="col-lg-9 col-12 pr-lg-0">
+            <div class="col-lg-9 grid gap-2 px-0 px-md-3">
                 <div class="container border border-[#183018] rounded shadow-md">
-                    <div class="form-check py-2 py-md-3 border-bottom border-[#183018]">
-                        <input class="form-check-input" type="checkbox" value="" id="select-all" onclick="toggleCheckboxes(this)" onchange="toggleSelectAll()">
-                        <label class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" for="checkAll">
-                            Pilih Semua 
-                        </label>
+                    <div class="flex justify-between items-center py-2 py-md-3 border-bottom border-[#183018]">
+                        <!-- Pilih Semua -->
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                value="" 
+                                id="select-all" 
+                                onclick="toggleCheckboxes(this)" 
+                                onchange="toggleSelectAll()"
+                            >
+                            <label 
+                                class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                                for="select-all"
+                            >
+                                Pilih Semua
+                            </label>
+                        </div>
+                    
+                        <!-- Hapus Semua -->
+                        <button 
+                            class="btn btn-delete" 
+                            name="delete-all-product-cart" 
+                            title="Hapus semua produk terpilih dari keranjang" 
+                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                        > 
+                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                        </button>
                     </div>
+                    
         
                     @foreach ($data as $product)
 
@@ -33,7 +58,7 @@
                                         <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{$product->product_variant_id}}" data-type="variant"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
                                         @else
                                         @endif
-                                        <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
                                     </div>
                                     <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
                                         @if ($product->productVariant->variant_stock == 0)
@@ -41,8 +66,8 @@
                                             Stok Habis
                                         </p>
                                         @endif
-                                        <p class="hover:cursor-pointer text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
-                                        <a class="w-fit bg-[#183018] text-white py-1 px-2 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[12px] text-center">
+                                        <p class="hover:cursor-pointer text-[8px] text-black md:text-[10px] lg:text-[10px] xl:text-[12px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
+                                        <a class="w-fit bg-[#183018] text-white p-1 rounded-sm text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px] text-center">
                                             {{ $product->productVariant->variant_value }}
                                         </a>
                                         
@@ -131,14 +156,13 @@
                                             Stok Habis
                                         </p>
                                         @endif
-                                        <p class="hover:cursor-pointer text-[10px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
+                                        <p class="hover:cursor-pointer text-[8px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
                                         @php
                                             $activePromo = $product->product->promos->first(); // Mengambil promo pertama yang aktif
                                             $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                         
                                             // Mengambil produk terkait dari promo tier
-                                            $promoTiers = $activePromo->all_discount_tiers;
-                                            
+                                            $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
                                         @endphp
                                     
                                         <div class="flex gap-1">
@@ -178,7 +202,7 @@
 
                                                 @if ($product->product->stock_quantity == 0)
                                                     <button
-                                                        class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
+                                                        class="btn btn-danger text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
                                                         data-bs-toggle="tooltip" 
                                                         data-bs-placement="top" 
                                                         title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -223,14 +247,14 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-12 mt-2 mt-md-0 d-none d-lg-block">
+            <div class="col-lg-3 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0 mt-2 mt-md-0 d-none d-lg-block">
                 <div class="position-sticky" style="top: 4rem">
                     <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
                         <div class="d-flex py-2">
-                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]">Total Harga</p>
-                            <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Harga</p>
+                            <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
                         </div>
-                        <div class="border-top border-[#183018] pt-2">
+                        <div class="border-top border-[#183018] pt-2 mr-2">
                                 <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
                                     Beli
                                 </button>
@@ -246,27 +270,27 @@
                 <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
             </div>
             <div class="grid align-items-center justify-content-center">
-                <p class="text-danger text-md">Keranjang belanjamu masih kosong nih</p>
-                <button class="btn btn-success rounded-sm w-full" onclick="location.href='/shop'" >Mulai Belanja</button>
+                <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
+                <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
             </div>
         </div>
             
         @endif
     </div>
-  </div>
-</div>
 
-<div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-  <div class="container-fluid d-flex justify-content-end align-items-center gap-2">
-    <div class="grid py-2 text-end">
-        <p class="text-white text-[12px]">Total</p>
-        <p id="totalPriceMobile" class="text-[12px] ml-auto text-white">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
-    </div calss="ml-auto">
-        <button class="btn btn-light px-8 w-fit h-fit font-semibold rounded-sm text-[#183018] text-[12px]" type="submit" id="paynowmobile" onclick="checkout()" disabled>
-            Beli
-        </button>
+    <div class="d-lg-none bg-[#183018] fixed-bottom px-0 d-flex justify-content-end align-items-center gap-2" style="width: 100%; box-sizing: border-box;">
+        <div class="grid py-2 text-end" style="flex: 1;">
+            <p class="text-white text-[12px]">Total</p>
+            <p id="totalPriceMobile" class="text-[12px] ml-auto text-white">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+        </div>
+        <div class="pr-2">
+            <button class="btn btn-light w-fit h-fit font-semibold rounded-sm text-[#183018] text-[12px]" type="submit" id="paynowmobile" onclick="checkout()" disabled>
+                Beli
+            </button>
+        </div>
     </div>
 </div>
+
 
 
 <!-- DELETE PRODUCT FROM CART -->
@@ -333,6 +357,35 @@
             });
         }
         
+    });
+
+    $(document).on('click', 'button[name="delete-all-product-cart"]', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "{{ route('delete.all.product.cart') }}",
+            type: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                Toast.fire({
+                    icon: "success",
+                    text: response.message,
+                    willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                }).then(function () {
+                    location.reload(); // Redirect ke halaman utama atau halaman lain
+                });
+            },
+            error: function(xhr) {
+                console.log(xhr.responseText);
+                alert("Error occurred!");
+            }
+        });
     });
 </script>
 
