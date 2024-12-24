@@ -11,14 +11,14 @@
 
     <!-- Modal Login -->
     <div class="modal fade" id="loginUser1" tabindex="-1" aria-labelledby="loginUser" aria-hidden="true" z-index="9999">
-      <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background-color: #183018">
           <div class="modal-header border-none">
             <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="container-fluid px-4 px-md-0">
+          <div class="container-fluid">
               <div class="d-flex justify-content-center align-items-center p-0 p-md-2">
-                <img src="images/l-1.png" alt="logo glamoire" class="w-1/2 w-md-full">
+                <img src="images/l-1.png" alt="logo glamoire" class="w-3/4 w-md-full">
               </div>
 
               <form method="POST" action="" class="mb-2 px-0 px-md-4">
@@ -67,7 +67,7 @@
           
           <div class="container-fluid">
               <div class="d-flex justify-content-center align-items-center text-center">
-                <img src="images/l-1.png" alt="logo glamoire" class="w-1/2">
+                <img src="images/l-1.png" alt="logo glamoire" class="w-1/4">
               </div>
               
               <form class="px-0 px-md-4 grid" id="register-user-form">
@@ -205,8 +205,8 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('js/easing/easing.min.js') }}"></script>
+    <script src="js/main.js"></script>
+    <script src="js/easing/easing.min.js"></script>
     
 
     <!-- UNTUK MENGATUR JUMLAH CARD MENGGUNAKAN SWIPERJS PADA HALAMAN HOME -->
@@ -319,135 +319,90 @@
         spaceBetween: 15,
         cssMode: true,
         navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
         breakpoints: {
-            2560: {
+          2560: {
             slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1440: {
+          },
+          1440: {
             slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1024: {
+          },
+          1024: {
             slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            // Tablet
-            768: {
+          },
+          // Tablet
+          768: {
             slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
-            },
-            425: {
+          },
+          425: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
-            },
-            375: {
+          },
+          375: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
-            },
-            // Mobile
-            320: {
+          },
+          // Mobile
+          320: {
             slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
             spaceBetween: 5,  // Menyusun jarak antar slide
             navigation: false,
-            },
+          },
         },
-    });
+      });
 
-    var swiperTop = new Swiper(".mySwiperTop", {
+      var swiperTop = new Swiper(".mySwiperTop", {
         slidesPerView: 5,
         spaceBetween: 15,
         cssMode: true,
         navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
         },
         breakpoints: {
-            2560: {
+          2560: {
             slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1440: {
+          },
+          1440: {
             slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1024: {
+          },
+          1024: {
             slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            // Tablet
-            768: {
+          },
+          // Tablet
+          768: {
             slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
-            },
-            425: {
+          },
+          425: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
-            },
-            375: {
+          },
+          375: {
             slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
-            },
-            // Mobile
-            320: {
+          },
+          // Mobile
+          320: {
             slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
             spaceBetween: 5,  // Menyusun jarak antar slide
             navigation: false,
-            },
+          },
         },
-    });
-
-    var swiperTop = new Swiper(".mySwiperVoucher", {
-        slidesPerView: 5,
-        spaceBetween: 15,
-        cssMode: true,
-        navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-            2560: {
-            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1440: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1024: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            // Tablet
-            768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            },
-            425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-            },
-            375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-            },
-            // Mobile
-            320: {
-            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
-            spaceBetween: 5,  // Menyusun jarak antar slide
-            navigation: false,
-            },
-        },
-    });
+      });
     </script>
 
     <!-- UNTUK MENGATUR RANGE DI FILTER SHOP -->
@@ -563,15 +518,13 @@
       }
 
       // Function for adding to wishlist
-      function addToWishlist(produkId, productVariantId) {  
-        console.log(productVariantId);      
+      function addToWishlist(produkId) {        
         $.ajax({
             url: "{{ route('add.to.wishlist') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: produkId,
-                product_variant_id: productVariantId,
             },
             success: function (response) {
                 if (response.success) {
@@ -624,14 +577,13 @@
         });
       }
 
-      function removeFromWishlist(produkId, productVariantId) {        
+      function removeFromWishlist(produkId) {        
         $.ajax({
             url: "{{ route('remove.from.wishlist') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: produkId,
-                product_variant_id: productVariantId,
             },
             success: function (response) {
                 if (response.success) {
@@ -724,8 +676,7 @@
         // console.log({province,regency,district,date});
         Swal.fire({
           text: "Akun Anda Sedang Kami Proses ...",
-          allowOutsideClick: 
-          false,
+          allowOutsideClick: false,
           didOpen: () => {
             Swal.showLoading();
           }
@@ -839,6 +790,7 @@
             if (content) content.style.color = '#ffffff'; // Ubah warna konten
           }
         });
+        // console.log({email, password});
 
         $.ajax({
             url: "{{ route('login.user') }}", // Route register di Laravel
@@ -999,23 +951,13 @@
 
           let email = $("#forgot_password_email").val();
 
-          // Swal.fire({
-          //     title: "Sedang mengirim token verifikasi ke emailmu",
-          //     text: "Mohon tunggu sebentar ...",
-          //     allowOutsideClick: false,
-          //     didOpen: () => {
-          //         Swal.showLoading();
-          //     }
-          // });
-
-          Toast.fire({
-            text: "Sedang mengirim token verifikasi ke emailmu ...",
-            allowOutsideClick: false,
-            didOpen: () => {
-              Toast.showLoading();
-              const content = document.querySelector('.swal2-html-container');
-              if (content) content.style.color = '#ffffff'; // Ubah warna konten
-            }
+          Swal.fire({
+              title: "Sedang mengirim token verifikasi ke emailmu",
+              text: "Mohon tunggu sebentar ...",
+              allowOutsideClick: false,
+              didOpen: () => {
+                  Swal.showLoading();
+              }
           });
 
           $.ajax({
@@ -1026,7 +968,7 @@
                   email: email,
               },
               success: function (response) {
-                  Toast.close();
+                  Swal.close();
 
                   if (response.success) {
                       Toast.fire({
@@ -1075,7 +1017,7 @@
                   }
               },
               error: function (response) {
-                  Toast.close();
+                  Swal.close();
                   let errorMessage = "Maaf, terjadi kesalahan."; // Definisikan errorMessage di awal
 
                   // Cek apakah ada response JSON dari server
@@ -1152,15 +1094,13 @@
 
     <!-- NOITFY ME -->
     <script>
-      function notifyMe(produkId, productVariantId) {
-        // console.log(productVariantId);
+      function notifyMe(produkId) {
         $.ajax({
             url: "{{ route('notify.me') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: produkId,
-                product_variant_id: productVariantId,
             },
             success: function (response) {
               if (response.success) {
@@ -1261,12 +1201,9 @@
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
-          customClass: {
-            popup: "small-swal", // Add custom class
-          },
           didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
           },
         });
 
@@ -1347,11 +1284,8 @@
             position: "center",
             background: "#183018",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 1500,
             timerProgressBar: true,
-            customClass: {
-                popup: "small-swal", // Add custom class
-            },
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;

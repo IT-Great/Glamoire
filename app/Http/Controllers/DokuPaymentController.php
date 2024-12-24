@@ -17,12 +17,15 @@ use App\Models\Payment;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ProcessPaymentStatus;
+use PDO;
 
 class DokuPaymentController extends Controller
 {
     private $clientId;
     private $secretKey;
     private $baseUrl;
+    // protected $currentOrderId;
 
     private $paymentMethods = [
         // Virtual Account Banks
@@ -170,12 +173,13 @@ class DokuPaymentController extends Controller
                     'amount' => $totalAmount,
                     'invoice_number' => $orderId,
                     'currency' => 'IDR',
-                    'callback_url' => route('doku.callback'),
+                    'callback_url' => route('doku.callback', ['order_id' => $orderId]),
+                    // 'callback_url' => 'https://1f14-114-5-223-146.ngrok-free.app/doku-callback',
                     'language' => 'ID',
                     'auto_redirect' => true
                 ],
                 'payment' => [
-                    'payment_due_date' => 60,
+                    'payment_due_date' => 1,
                     'payment_method_types' => $selectedPaymentMethods
                 ],
                 'customer' => [
@@ -225,16 +229,15 @@ class DokuPaymentController extends Controller
             
 
             $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountAmount, $discountOngkir, $totalItem, $totalItemPrice, $voucherOngkir, $voucherPromo, $selectedPaymentMethods);
-
-            // Simpan data ke session
             session(['order_data' => $orderData]);
 
             // $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountAmount, $totalAmount, $totalItem, $totalItemPrice);
-            // $this->createOrder($request, $orderId, $totalAmount, $payment_url);
+            // $this->createNewOrder($request, $orderId, $totalAmount, $payment_url);
 
             return response()->json([
                 'success' => true,
-                'payment_url' => $result['response']['payment']['url']
+                'payment_url' => $result['response']['payment']['url'],
+                'tes' => $result,
             ]);
         } catch (\Exception $e) {
             Log::error('DOKU Payment Error: ' . $e->getMessage());
@@ -249,208 +252,45 @@ class DokuPaymentController extends Controller
     public function callback(Request $request)
     {
         try {
-            Log::info('Callback Request Details:', [
-                'method' => $request->method(),
-                'headers' => $request->headers->all(),
-                'query' => $request->query(),
-                'body' => $request->all(),
-                'raw_content' => $request->getContent(),
-            ]);            
-
             if ($request->isMethod('get')) {
-                // Handle GET request (usually redirect from payment page)
-                // $order = Order::where('order_id', $request->get('order_id'))->first();
+                $payment_status = $this->getPaymentStatus($request->order_id);
 
-                // $order = Order::where('invoice_id', $request->get('order_id'))->first();
+                Log::info('Payment status setelah callback', [
+                    'payment' => $payment_status
+                ]);
 
-                // if (!$order) {
-                //     throw new \Exception('Order not found');
-                // }
-
-                // $message = $request->transaction('status'); // Ambil parameter `message` dari GET
-
-                // if (!$message) {
-                //     throw new \Exception('Message parameter is missing in callback');
-                // }
-
-                // Redirect based on payment status
-                // if ($request->response === 'PAID') {
-                //     return redirect()->route('account', ['user' => session('id_user')]);
-                //     // return redirect()->route('payment.success', ['order_id' => $order->order_id]);
-                // } else {
-                //     return redirect()->route('checkout');
-                //     // return redirect()->route('payment.failed', ['order_id' => $order->order_id]);
-                // }
-
-                $orderData = session('order_data');
-                $this->createNewOrder($orderData);
-                return redirect()->route('account', ['user' => session('id_user')]);
-            }
-
-            // Handle POST request (server notification from DOKU)
-            $notificationHeader = $request->header('Signature');
-            $notificationBody = $request->getContent();
-            $notificationTimestamp = $request->header('Request-Timestamp');
-            $notificationRequestId = $request->header('Request-Id');
-
-            // Verify signature only for POST notifications
-            if ($request->isMethod('post')) {
-                // Build signature component
-                $componentToSign = "Client-Id:" . $this->clientId . "\n"
-                    . "Request-Id:" . $notificationRequestId . "\n"
-                    . "Request-Timestamp:" . $notificationTimestamp . "\n"
-                    . "Request-Target:/doku-callback" . "\n"
-                    . "Digest:" . base64_encode(hash('sha256', $notificationBody, true));
-
-                // Generate expected signature
-                $expectedSignature = 'HMACSHA256=' . base64_encode(
-                    hash_hmac('sha256', $componentToSign, $this->secretKey, true)
-                );
-
-                // Verify signature
-                if ($notificationHeader !== $expectedSignature) {
-                    Log::error('Invalid DOKU signature', [
-                        'received' => $notificationHeader,
-                        'expected' => $expectedSignature
-                    ]);
-                    throw new \Exception('Invalid signature');
+                if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
+                    return $payment_status; // Redirect ke route checkout
                 }
+                
+                // Jika payment status tidak ditemukan
+                if (is_null($payment_status)) {
+                    return redirect()->route('checkout')->with('error', 'Payment status not found.');
+                }
+                
+                if (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'SUCCESS') {
+                    $this->createNewOrder(session('order_data'));
+                    session()->flash('payment_success');
+                    return redirect()->route('account', ['user' => session('id_user')]);
+                } elseif (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'PENDING') {
+                    return redirect()->route('checkout');
+                }elseif (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'FAILED') {
+                    session()->flash('payment_failed');
+                    return redirect()->route('checkout');
+                }
+                else {
+                    return redirect()->route('checkout');
+                }
+                
             }
 
-            // Process notification
-            $notificationData = json_decode($notificationBody, true);
+            return redirect()->route('checkout');
 
-            // Update order status
-            $order = Order::where('order_id', $notificationData['order']['invoice_number'])->first();
-
-            if ($order) {
-                $order->status = $notificationData['transaction']['status'];
-                $order->save();
-
-                // Log successful update
-                Log::info('Order status updated successfully', [
-                    'order_id' => $order->order_id,
-                    'new_status' => $order->status
-                ]);
-            } else {
-                Log::error('Order not found for update', [
-                    'invoice_number' => $notificationData['order']['invoice_number']
-                ]);
-            }
-
-            return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            Log::error('DOKU Callback Error: ' . $e, [
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('DOKU Callback Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);
         }
     }
-
-    private function createOrder($request, $orderId, $totalAmount, $payment_url)
-    {
-        $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
-
-        if ($lastInvoice) {
-            // Split the invoice by '/' and take the last part
-            $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
-
-            // Increment the number
-            $invoiceNumber = $lastNoInvoice + 1;
-        } else {
-            // Start from 1 if there is no previous invoice
-            $invoiceNumber = 1;
-        }
-
-        // Get the current day, month, and year
-        $day = date('d');
-        $month = date('m');
-        $year = date('Y');
-
-        // Format the new invoice number
-        $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
-
-        // Create a new invoice with the formatted invoice number
-        $invoiceCreate = Invoice::create([
-            'no_invoice' => $formattedInvoice,
-        ]);
-
-        $order = Order::create([
-            'doku_order_id' => $orderId,
-            'invoice_id' => $invoiceCreate->id,
-            'user_id' => auth()->id(), 
-            'shipping_address_id' => $request->shipping_address_id,
-            'shipping_cost' => $request->shipping_cost,
-            'discount_amount' => $request->discount_amount ?? 0,
-            'total_amount' => $totalAmount,
-            'order_date' => now(),
-            // 'status' => 'pending',
-            'total_item' => $request->total_item,
-            'total_item_price' => $request->total_item_price,
-        ]);
-
-        $cartId = Cart::where('user_id', session('id_user'))->value('id');
-        $cartItems = Cart_item::where('cart_id', $cartId)
-            ->where('is_choose', true)
-            ->with(['product.brand'])
-            ->get();
-
-        foreach ($cartItems as $item) {
-            if ($item->product && $item->product->promos) {
-                foreach ($item->product->promos as $promo) {
-                    if ($promo->tiers) {
-                        foreach ($promo->tiers as $tier) {
-                            switch ($tier->discount_type) {
-                                case 'percentage':
-                                    // Contoh logika untuk diskon persentase
-                                    if ($item->quantity == $tier->min_quantity) {
-                                        $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
-                                        $item->bundle_price = $discountedPrice;
-                                        $item->total = $discountedPrice;
-                                    }
-                                    break;
-        
-                                case 'nominal':
-                                    // Contoh logika untuk diskon nominal
-                                    if ($item->quantity == $tier->min_quantity) {
-                                        $discountedPrice = $item->total - $tier->discount_value;
-                                        $item->bundle_price = $discountedPrice;
-                                        $item->total = $discountedPrice;
-                                    }
-                                    break;
-        
-                                case 'package':
-                                    if ($item->quantity == $tier->min_quantity) {
-                                        $item->bundle_price = $tier->package_price; // Tetapkan harga paket
-                                        $item->total = $tier->package_price;
-                                    }
-                                    break;
-        
-                                default:
-                                    // Logika default jika tidak ada kasus yang cocok
-                                    $item->discounted_price = $item->product->price;
-                                    break;
-                                }
-                            }
-                        }
-                }
-
-                OrderItem::create([
-                    'order_id'      => $order->id,
-                    'product_id' => $item->product_id,
-                    'product_variant_id' => $item->product_variant_id,
-                    'quantity' => $item->quantity,
-                    'price' => $item->price,
-                    'is_tier' => $item->bundle_price,
-                    'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                ]);
-            }
-        }
-
-        
-        return $order;
-    }
-
 
     private function createNewOrder(array $orderData)
     {
@@ -491,7 +331,6 @@ class DokuPaymentController extends Controller
             'voucher_promo' => $orderData['voucherPromo'],
             'voucher_ongkir' => $orderData['voucherOngkir'],
             'order_date' => now(),
-            // 'status' => 'pending',
             'total_item' => $orderData['totalItem'],
             'total_item_price' => $orderData['totalItemPrice'],
         ]);
@@ -556,13 +395,14 @@ class DokuPaymentController extends Controller
 
         $userId = session('id_user');
 
+        $payment_status = $this->getPaymentStatus($orderData['orderId']);
         $payment = Payment::create([
             'user_id'        => $userId,
             'order_id'       => $order->id,
-            'payment_method' => "tes",
-            'transaction_id' => "",
-            'status'         => 'completed',
-            'amount'         => $orderData['totalAmount'],
+            'payment_method' => $payment_status['acquirer']['name'],
+            'transaction_id' => $payment_status['transaction']['original_request_id'],
+            'status'         => $payment_status['transaction']['status'],
+            'amount'         => $payment_status['order']['amount'],
             'payment_date'   => now(),
         ]);
 
@@ -589,7 +429,7 @@ class DokuPaymentController extends Controller
 
         // Jika pembayaran selesai
        
-        if ($payment->status == "completed") {
+        if ($payment->status == "SUCCESS") {
             // Ambil cart berdasarkan user_id sekali di luar loop
             $cartId = Cart::where('user_id', $userId)->value('id');
             
@@ -662,4 +502,59 @@ class DokuPaymentController extends Controller
 
         return $data;
     }
+
+    private function getPaymentStatus($orderId)
+    {
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $requestId = 'REQUEST-' . time() . '-' . Str::random(5);
+            $requestTimestamp = Carbon::now()->utc()->format('Y-m-d\TH:i:s\Z');
+
+            // Build signature component
+            $componentToSign = "Client-Id:" . $this->clientId . "\n"
+                . "Request-Id:" . $requestId . "\n"
+                . "Request-Timestamp:" . $requestTimestamp . "\n"
+                . "Request-Target:/orders/v1/status/" . $orderId;
+
+            // Generate signature
+            $signature = 'HMACSHA256=' . base64_encode(
+                hash_hmac('sha256', $componentToSign, $this->secretKey, true)
+            );
+
+            // Make GET request to DOKU
+            $response = $client->get($this->baseUrl . '/orders/v1/status/' . $orderId, [
+                'headers' => [
+                    'Client-Id' => $this->clientId,
+                    'Request-Id' => $requestId,
+                    'Request-Timestamp' => $requestTimestamp,
+                    'Signature' => $signature,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $result = json_decode($response->getBody(), true);
+
+            return $result;
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+            if ($response->getStatusCode() === 404) {
+                Log::warning('Payment status not found', [
+                    'orderId' => $orderId,
+                    'error_message' => 'Invoice Number or Request ID not found',
+                ]);
+                return redirect()->route('checkout')->with('error', 'Payment status not found.');
+            }
+
+            Log::error('Failed to get payment status', [
+                'orderId' => $orderId,
+                'error' => $e->getMessage(),
+            ]);
+            throw new \Exception('Unable to fetch payment status');
+        } catch (\Exception $e) {
+            Log::error('Unexpected error while fetching payment status: ' . $e->getMessage());
+            throw new \Exception('Unable to fetch payment status');
+        }
+    }
+
 }

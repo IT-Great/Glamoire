@@ -142,7 +142,7 @@
                                             data-bs-toggle="modal" data-bs-target="#form-address">
                                             <i
                                                 class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
-                                            <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">
+                                            <p class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">
                                                 Tambahkan Alamat</p>
                                         </button>
                                     </div>
@@ -182,7 +182,7 @@
 
                                                 <div class="input-group-btn mt-2">
                                                     <button type="button"
-                                                        class="btn border text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]"
+                                                        class="btn border btn-light text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#form-edit-address-{{ $sa->id }}">
                                                         Ubah Alamat
@@ -218,7 +218,7 @@
 
                                                 <div class="d-flex gap-2 input-group-btn mt-2">
                                                     <button type="button"
-                                                        class="btn border text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]"
+                                                        class="btn border btn-light text-[#183018] bg-light w-full rounded-sm text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#form-edit-address-{{ $sa->id }}">
                                                         Ubah Alamat
@@ -226,15 +226,13 @@
 
                                                     <button data-id="{{ $sa->id }}" type="button"
                                                         name="setMainAddress"
-                                                        class="btn border text-white bg-dark w-full rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] hover-shadow-md"
-                                                        style="background-color: #183018">
+                                                        class="btn border btn-dark w-full rounded-sm text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">
                                                         Jadikan Alamat Utama
                                                     </button>
 
                                                     <button data-id="{{ $sa->id }}" name="deleteAddress"
                                                         type="button"
-                                                        class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                        style="background-color: #ffffff">
+                                                        class="btn w-fit rounded-sm text-[10px] md:text-[12px] lg:text-[12px] xl:text-[15px]">
                                                         <i aria-hidden="true" class="fas fa-solid fa-trash"
                                                             title="Hapus Alamat"></i>
                                                     </button>
@@ -387,17 +385,15 @@
                             <div class="flex align-items-center justify-content-center">
                                 <img src="images/about-2.png" class="img-fluid" style="width:30%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                             </div>
-                            <div class="grid align-items-center justify-content-center">
-                                <p class="text-danger text-md">Alamat pengirimanmu masih kosong nih</p>
+                            <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 100%;">
+                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Alamat pengirimanmu masih kosong nih</p>
                                 <button type="button"
-                                    class="btn border btn-light d-flex align-items-center rounded-sm mb-2"
+                                    class="btn border btn-light w-auto d-flex align-items-center rounded-sm mb-2"
                                     data-bs-toggle="modal" data-bs-target="#form-address">
-                                    <i
-                                        class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
-                                    <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">
-                                        Tambahkan Alamat</p>
+                                    <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
+                                    <p class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Tambahkan Alamat</p>
                                 </button>
-                            </div>
+                            </div>                            
                         </div>
                     @endif
                 </div>
@@ -424,25 +420,29 @@
                                 <div class="col-12 p-0 m-0">
                                     <div class="p-2 p-md-3 custom-shadow">
                                         <div class="d-flex align-items-center mb-2">
-                                            <svg class="d-flex align-items-center justify-content-center"
+                                            <svg class="d-none d-md-block align-items-center justify-content-center"
                                                 xmlns="http://www.w3.org/2000/svg" width="15" height="15"
                                                 viewBox="0 0 448 512">
                                                 <path
                                                     d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z" />
                                             </svg>
                                             <p
-                                                class="font-semibold text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] mx-2">
+                                                class="font-semibold text-black mb-0 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px] mx-2 d-none d-md-block">
                                                 Belanja</p>
                                             <p
-                                                class="text-black mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px]">
+                                                class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
                                                 {{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
+                                            <p
+                                                class="text-danger mb-0 mx-2 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
+                                                {{ $order->invoice->no_invoice }}
+                                            </p>
                                             <span
-                                                class="badge 
-                                                @if ($order->status == 'completed') badge-success
-                                                @elseif($order->status == 'waiting confirm') badge-secondary
-                                                @elseif($order->status == 'pending') badge-info
-                                                @elseif($order->status == 'proccessing') badge-warning @endif
-                                                d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] mx-2">
+                                                class=" 
+                                                @if ($order->status == 'completed') text-success
+                                                @elseif($order->status == 'waiting confirm') text-secondary
+                                                @elseif($order->status == 'pending') text-info
+                                                @elseif($order->status == 'proccessing') text-warning @endif
+                                                d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                 {{ $order->status == 'completed'
                                                     ? 'Selesai'
                                                     : ($order->status == 'waiting confirm'
@@ -453,85 +453,105 @@
                                                                 ? 'Dalam Pengiriman'
                                                                 : 'Unknown'))) }}
                                             </span>
-                                            <p
-                                                class="text-primary mb-0 text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] d-none d-md-block">
-                                                {{ $order->invoice->no_invoice }}
-                                            </p>
                                         </div>
 
-                                        @foreach ($order->items as $item)
-                                            <div class="flex">
-                                                @if ($item->product_variant_id !== NULL)
-                                                    <div class="flex hover:cursor-pointer hover:text-italic"
-                                                        onclick="detailProduct('{{ $item->product->product_code }}')">
-                                                        <div class="col-2 col-md-1 p-0 m-0">
-                                                            <img class="border border-[#183018] rounded-sm"
-                                                                src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                alt="{{ $item->product->product_name }}">
+                                        {{-- SELAIN MOBILE --}}
+                                        <div class="desktop-only">
+                                            @foreach ($order->items as $item)
+                                                <div class="flex">
+                                                    @if ($item->product_variant_id !== NULL)
+                                                        <div class="flex hover:cursor-pointer hover:text-italic"
+                                                            onclick="detailProduct('{{ $item->product->product_code }}')">
+                                                            <div class="col-2 col-md-1 p-0 m-0">
+                                                                <img class="border border-[#183018] rounded-sm"
+                                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
+                                                                    alt="{{ $item->product->product_name }}">
+                                                            </div>
+                                                            <div class="col-7 col-md-8 px-2 px-md-3">
+                                                                <p
+                                                                    class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->brand->name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->product_name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                    Varian {{ $item->productVariant->variant_value }}</p>
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                            </div>
+                                                            <div class="col-1 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                                                                <p
+                                                                    class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                    Total Belanja</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-7 col-md-8 px-2 px-md-3">
-                                                            <p
-                                                                class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
-                                                                {{ $item->product->brand->name }}</p>
-                                                            <p
-                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                {{ $item->product->product_name }}</p>
-                                                            <p
-                                                                class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                Varian {{ $item->productVariant->variant_value }}</p>
-                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                    @else
+                                                        <div class="flex hover:cursor-pointer hover:text-italic"
+                                                            onclick="detailProduct('{{ $item->product->product_code }}')">
+                                                            <div class="col-2 col-md-1 p-0 m-0">
+                                                                <img class="border border-[#183018] rounded-sm"
+                                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                                    alt="{{ $item->product->product_name }}">
+                                                            </div>
+                                                            <div class="col-7 col-md-8 px-1 px-md-3">
+                                                                <p
+                                                                    class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->brand->name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->product_name }}</p>
+                                                                @if ($item->is_tier !== null)
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                                @else
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                                @endif
+                                                            </div>
+                                                            <div class="col-1 col-md-3 flex-column align-items-start justify-content-center border-left">
+                                                                <p
+                                                                    class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                    Total Belanja</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-1 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                                                            <p
-                                                                class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                Total Belanja</p>
-                                                            <p
-                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
-                                                        </div>
-                                                    </div>
-                                                @else
-                                                    <div class="flex hover:cursor-pointer hover:text-italic"
-                                                        onclick="detailProduct('{{ $item->product->product_code }}')">
-                                                        <div class="col-2 col-md-1 p-0 m-0">
-                                                            <img class="border border-[#183018] rounded-sm"
-                                                                src="{{ Storage::url($item->product->main_image) }}"
-                                                                alt="{{ $item->product->product_name }}">
-                                                        </div>
-                                                        <div class="col-7 col-md-8 px-1 px-md-3">
-                                                            <p
-                                                                class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
-                                                                {{ $item->product->brand->name }}</p>
-                                                            <p
-                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                {{ $item->product->product_name }}</p>
-                                                            @if ($item->is_tier !== null)
-                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
-                                                            @else
-                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
-                                                            @endif
-                                                        </div>
-                                                        <div class="col-1 col-md-3 flex-column align-items-start justify-content-center border-left">
-                                                            <p
-                                                                class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                Total Belanja</p>
-                                                            <p
-                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
-                                                        </div>
-                                                    </div>
-                                                @endif
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        {{-- END SELAIN MOBILE --}}
+                                    
+                                        {{-- GUNAKAN CONTAINER INI KETKA DETEKSI MOBILE--}}
+                                        <div class="mobile-only">
+                                            <div class="grid-container-order px-0 hover:cursor-pointer hover:text-italic">
+                                            @foreach ($order->items as $item)
+                                                <img class="border border-[#183018] rounded-sm"
+                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                    alt="{{ $item->product->product_name }}">
+                                            @endforeach 
+                                            </div>   
+                                            <div class="flex items-center justify-start">
+                                                <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
+                                                <p class="ml-1 text-black text-[10px]">
+                                                    Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
+                                                </p>
                                             </div>
-                                        @endforeach
+                                            
+                                        </div>    
+                                        {{-- END KHUSUS MOBILE --}}
+                                        
 
 
                                         <div class="d-flex justify-content-end input-group-btn mt-2">
                                             <div class="col-12 d-flex p-0 justify-content-end gap-2">
                                                 <div class="d-flex align-items-center justify-content-center">
-                                                    <a class="hover:cursor-pointer text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] text-red-700"
+                                                    <a class="hover:cursor-pointer text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] text-red-700"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#transaction-detail-{{ $order->invoice->no_invoice }}">
                                                         Lihat Detail Transaksi
@@ -540,7 +560,7 @@
                                                 @if ($order->status == 'completed')
                                                     @if (count($order->ratingAndReviews) == 0)
                                                         <button type="submit"
-                                                            class="btn border rounded-sm w-fit text-[#183018] text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
+                                                            class="btn border rounded-sm w-fit text-[#183018] text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#form-rating-review-{{ $order->id }}"
                                                             style="background-color: #ffffff">
@@ -549,7 +569,7 @@
                                                     @else
                                                     @endif
                                                     <button type="button"
-                                                        class="btn border rounded-sm w-fit text-white text-[9px] md:text-[11px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
+                                                        class="btn border rounded-sm w-fit text-white text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
                                                         style="background-color: #183018"
                                                         data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
                                                         Beli Lagi
@@ -1115,8 +1135,8 @@
                                     <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                                 </div>
                                 <div class="grid align-items-center justify-content-center">
-                                    <p class="text-danger text-md">Kamu belum melakukan transaksi apapun</p>
-                                    <button class="btn btn-success rounded-sm w-full" onclick="location.href='/shop'" >Belanja Sekarang</button>
+                                    <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kamu belum melakukan transaksi apapun</p>
+                                    <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]" onclick="location.href='/shop'" >Belanja Sekarang</button>
                                 </div>
                             </div>
                         @endif
@@ -1132,7 +1152,7 @@
                         <div class="col-12">
                             <div class="row">
                                 @foreach ($wishlists as $wp)
-                                    <div class="col-lg-2 col-md-3 col-6 p-1">
+                                    <div class="col-lg-3 col-md-4 col-6 p-1">
                                         <div
                                             class="bg-white rounded-lg shadow-sm overflow-hidden border border-xl h-fit">
                                             <a href="/{{ $wp->product_code }}_product"
@@ -1172,7 +1192,7 @@
                                                                 @endphp
 
                                                                 @if ($wp->priceVariation !== null)
-                                                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                                                         {{ $wp->priceVariation }}
                                                                     </p>
                                                                 @else
@@ -1205,8 +1225,8 @@
                                 <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                             </div>
                             <div class="grid align-items-center justify-content-center">
-                                <p class="text-danger text-md">Belum ada produk yang ditambahkan</p>
-                                <button class="btn btn-success rounded-sm w-full" onclick="location.href='/shop'">Cari Produk Pilihanmu</button>
+                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Belum ada produk yang ditambahkan</p>
+                                <button class="btn btn-success rounded-sm w-ful text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]" onclick="location.href='/shop'">Cari Produk Pilihanmu</button>
                             </div>
                         </div>
                     @endif
@@ -1219,11 +1239,11 @@
                         <div class="p-2 p-md-3 p-lg-3 p-xl-3 rounded-sm custom-shadow">
                             <div class="row align-items-center mb-2 mb-md-3 border-bottom pb-2 pb-md-3">
                                 <div class="col-md-6 col-12">
-                                    <p class="text-black mb-0 text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">
+                                    <p class="text-black mb-0 text-[7px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
                                         Belanja - 2 September</p>
                                 </div>
                                 <div class="col-md-6 col-12 text-start text-md-end  text-lg-end  text-xl-end text-red-800">
-                                    <p class="text-[7px] md:text-[11px] lg:text-[13px] xl:text-[15px]">Bayar Sebelum, 3
+                                    <p class="text-[7px] md:text-[10px] lg:text-[13px] xl:text-[15px]">Bayar Sebelum, 3
                                         September 2024 17:00 WIB</p>
                                 </div>
                             </div>
@@ -1287,11 +1307,15 @@
     <div class="modal fade" id="form-address" tabindex="-1" aria-labelledby="form-address" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-                <div class="modal-header">
-                    <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]"
+                <div class="modal-header bg-[#183018]">
+                    <div class="flex gap-3 justify-content-center align-items-center">
+                        <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
+                        <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Tambahkan Alamat Baru</h1>
+                    </div>
+                    {{-- <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]"
                         id="exampleModalLabel">Tambahkan Alamat Baru</h1>
                     <button type="button" class="btn-close" style="color:#FFFFFF;" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                        aria-label="Close"></button> --}}
                 </div>
 
                 <div class="modal-body overflow-y-auto" style="max-height:100vh;">
@@ -1318,7 +1342,7 @@
                                     class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
                                 <div class="input-group">
                                     <span
-                                        class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                        class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
                                         id="basic-addon1">+62</span>
                                     <input type="number"
                                         class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
@@ -1965,6 +1989,9 @@
                 showConfirmButton: false,
                 timer: 5000,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -1972,7 +1999,7 @@
             });
             Toast.fire({
                 icon: "success",
-                text: "Pembayaran Berhasil. Cek Tab Orderanku untuk melihat perkembangan orderanmu",
+                text: "Pembayaran Berhasil. Cek Detail Orderanmu",
                 title: "Berhasil",
                 willOpen: () => {
                     const title = document.querySelector('.swal2-title');

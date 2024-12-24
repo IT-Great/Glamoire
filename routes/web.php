@@ -133,7 +133,7 @@ Route::post('/check-email-voucher', [FormController::class, 'checkEmailVoucher']
 Route::post('/check-handphone', [AuthController::class, 'checkHandphone'])->name('check.handphone');
 
 Route::get('/forgot-password-user', [PasswordResetController::class, 'showForgotPasswordForm'])->name('forgot.password.form');
-Route::post('/forgot-password-user', [PasswordResetController::class, 'sendResetLink'])->withoutMiddleware('throttle:60,1')->name('forgot.password.link');
+Route::post('/forgot-password-link', [PasswordResetController::class, 'sendResetLink'])->withoutMiddleware('throttle:60,1')->name('forgot.password.link');
 Route::get('/reset-password-user-form/{email}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('/reset-password-user', [PasswordResetController::class, 'resetPassword'])->name('reset.password');
 

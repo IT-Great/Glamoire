@@ -669,7 +669,7 @@
 
     .grid-container-product-promo {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         grid-gap: 5px;
         padding: 5px;
     }
@@ -706,7 +706,7 @@
     }
     .grid-container-product-promo {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         grid-gap: 5px;
         padding: 5px;
     }
@@ -855,7 +855,14 @@
 
     .grid-container-product-promo {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-order {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         grid-gap: 5px;
         padding: 5px;
     }
@@ -903,11 +910,38 @@
 
     .grid-container-product-promo {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-order {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
         grid-gap: 5px;
         padding: 5px;
     }
 }
+
+/* Default: Hide Mobile View and Show Desktop View */
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+/* Mobile View (width <= 768px) */
+@media (max-width: 425px) {
+    .mobile-only {
+        display: block;
+    }
+    .desktop-only {
+        display: none;
+    }
+}
+
 
 .truncate-ellipsis {
     display: -webkit-box;

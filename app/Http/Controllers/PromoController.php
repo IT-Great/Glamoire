@@ -36,7 +36,10 @@ class PromoController extends Controller
                 ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->orderBy('created_at', 'desc')
                 ->get();
+
+            // dd($brandVouchers);
 
             foreach ($brandVouchers as $bv) {
                 foreach ($bv->products as $product) {
@@ -176,7 +179,7 @@ class PromoController extends Controller
 
         if ($userId) {
             $promo = Promo::where('promo_name', $name)
-                ->with(['products'  => function ($query) {
+            ->with(['products'  => function ($query) {
                 $query->select('products.*', 'promo_products.discounted_price')
                     ->wherePivot('discounted_price', '>', 0);
                 }])
@@ -199,6 +202,8 @@ class PromoController extends Controller
                     ->wherePivot('discounted_price', '>', 0);
                 }])
                 ->get();
+
+                // dd($promo);
 
                 return view('user.component.detail-promo', [
                 'promo' => $promo,

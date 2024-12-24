@@ -73,7 +73,7 @@ class ProductController extends Controller
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('created_at', 'asc')->take(10)->get();
+                ->orderBy('created_at', 'desc')->take(10)->get();
 
                 foreach ($new as $prodnew) {
                     $variationPrices = $prodnew->productVariations->pluck('variant_price')->unique()->sort();
@@ -165,7 +165,7 @@ class ProductController extends Controller
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('created_at', 'asc')->take(10)->get();
+                ->orderBy('created_at', 'desc')->take(10)->get();
 
                 foreach ($new as $prodnew) {
                     $variationPrices = $prodnew->productVariations->pluck('variant_price')->unique()->sort();

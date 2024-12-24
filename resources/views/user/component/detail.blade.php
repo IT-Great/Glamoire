@@ -91,7 +91,24 @@
 
             <div class="grid col-lg-8 pl-lg-0 h-fit gap-1">
                 <div class="grid gap-1">
-                    <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> 
+                    <div class="d-flex gap-1">
+                        <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> 
+                        @if (session('id_user'))
+                            @php
+                                $inWishlist = collect($wishlists)->contains('product_id', $product->id);
+                            @endphp
+                            <i 
+                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" 
+                                title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
+                            </i>
+                        @else
+                            <i 
+                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                                onclick="{{ 'addToWishlist(' . $product->id . ')' }}" title="Tambah ke Favorit">
+                            </i>
+                        @endif
+                    </div>
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
                 </div>
 
@@ -99,21 +116,6 @@
                     <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between" style="color:orange;"></i>
                     <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between">{{ $product->rating }}</p>
                     <p class="text-decoration-none text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">({{ $product->rating_and_reviews_count }} Ulasan)</p>
-                    @if (session('id_user'))
-                        @php
-                            $inWishlist = collect($wishlists)->contains('product_id', $product->id);
-                        @endphp
-                        <i 
-                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
-                            onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" 
-                            title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
-                        </i>
-                    @else
-                        <i 
-                            class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
-                            onclick="{{ 'addToWishlist(' . $product->id . ')' }}" title="Tambah ke Favorit">
-                        </i>
-                    @endif
                 </div>
 
                 <div>
@@ -165,7 +167,7 @@
                                 <div>
                                     <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
-                                <div class="align-items-center gap-2 d-none d-lg-flex">
+                                <div class="align-items-center flex gap-2">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
                                         <div class="input-group-btn">
                                             <button class="btn btn-minus">
@@ -188,8 +190,8 @@
                                         </div>
                                     </div>
                                     
-                                    <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                    <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                    <a onclick="addCartWithQuantity({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                    <a onclick="buyNow({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                                 </div>
                                 <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                             </div>
@@ -248,25 +250,25 @@
                 
                 {{-- Desc/Inf/Ulasan --}}
                 <div class="row">
-                    <div class="col tabbable mt-1 mt-md-2">
-                        <div class="nav nav-tabs justify-content-start border-secondary mb-4">
+                    <div class="col tabbable mt-1 mt-md-2 border-bottom mx-3 mx-0 px-0">
+                        <div class="nav nav-tabs justify-content-start border-secondary mb-2">
                             <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
                             <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
                             <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#ulasan">Ulasan ({{ $product->rating_and_reviews_count }})</a>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane fade show active" id="deskripsi">
-                                <h4 class="mb-3">Deskripsi Produk</h4>
+                            <div class="tab-pane fade show active p-1" id="deskripsi">
+                                <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Deskripsi Produk</h4>
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->description }}</p>
                             </div>
-                            <div class="tab-pane fade" id="informasi">
-                                <h4 class="mb-3">Informasi terkait produk</h4>
+                            <div class="tab-pane fade p-1" id="informasi">
+                                <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Informasi terkait produk</h4>
                                 <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->information_product }}</p>
                             </div>
-                            <div class="tab-pane fade" id="ulasan">
+                            <div class="tab-pane fade p-1" id="ulasan">
                                 <div class="row">
                                     <div class="col-12 overflow-y-auto custom-scroll" style="max-height:60vh;">
-                                        <h4 class="mb-4 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
+                                        <h4 class="mb-2 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
                                         @foreach ($product->ratingAndReviews as $ratingAndReviews)
                                             <div class="comment mb-4">
                                                 <div class="media-body grid border border-[#183018] rounded-sm shadow-md p-2">
@@ -673,7 +675,7 @@
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.href = "/cart";
+                    window.location.href = "/buy-now";
                 } else {
                     let errors = response.errors;
                     let errorMessages = response.message;
@@ -696,9 +698,24 @@
                 }
             },
             error: function (response) {
+                if (response.responseJSON) {
+                    if (response.responseJSON.message) {
+                        errorMessage = response.responseJSON.message; // Pesan error dari Laravel
+                    } else if (response.responseJSON.errors) {
+                        // Jika ada beberapa pesan error, tampilkan semuanya
+                        errorMessage = "";
+                        $.each(response.responseJSON.errors, function (key, value) {
+                            errorMessage += value[0] + "<br>"; // Menggabungkan pesan error
+                        });
+                    }
+                } else if (response.statusText) {
+                    // Jika tidak ada response JSON, tampilkan status text dari request
+                    errorMessage = response.statusText;
+                }
+                
                 Toast.fire({
                     icon: "error",
-                    text: "Kesalahan Sistem",
+                    text:  errorMessage,
                     
                     willOpen: () => {
                     const title = document.querySelector('.swal2-title');
@@ -804,22 +821,22 @@
           },
           // Tablet
           768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
           },
           425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 2, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 2, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           // Mobile
           320: {
-            slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
             spaceBetween: 5,  // Menyusun jarak antar slide
             navigation: false,
           },

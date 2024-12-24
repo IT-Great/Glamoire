@@ -175,7 +175,7 @@
                     <p class="text-xs ml-auto text-black">-Rp{{ number_format($order->discount_amount) }}</p>
                 </div>
                 @endif
-                @if ($order->discount_ongkir !== 0)
+                @if ($order->discount_ongkir !== NULL)
                 <div class="flex">
                     <p class="text-xs text-black">Total Diskon Ongkos Kirim</p>
                     <p class="text-xs ml-auto text-black">-Rp{{ number_format($order->discount_ongkir) }}</p>

@@ -316,45 +316,49 @@
 
 <!-- KATEGORI MOBILE -->
 <script>
-  document.getElementById('shop-link').addEventListener('click', function(event) {
-    event.preventDefault();
-    const categoriesDiv = document.getElementById('categories');
-    const brandsDiv = document.getElementById('brands');
-    
-    // Close the brands section if it's open
-    if (!brandsDiv.classList.contains('d-none')) {
-      brandsDiv.classList.add('d-none');
-    }
-
-    const categories = document.getElementById('categories');
-    
-    // Toggle kelas 'open' untuk mengontrol animasi
-    if (categories.classList.contains('open')) {
-        categories.classList.remove('open'); // Tutup animasi
-    } else {
-        categories.classList.add('open'); // Buka animasi
-    }
-
-    // Toggle the categories section
-    categoriesDiv.classList.toggle('d-none');
-  });
+  if (window.innerWidth <= 425){
+    document.getElementById('shop-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      const categoriesDiv = document.getElementById('categories');
+      const brandsDiv = document.getElementById('brands');
+      
+      // Close the brands section if it's open
+      if (!brandsDiv.classList.contains('d-none')) {
+        brandsDiv.classList.add('d-none');
+      }
+  
+      const categories = document.getElementById('categories');
+      
+      // Toggle kelas 'open' untuk mengontrol animasi
+      if (categories.classList.contains('open')) {
+          categories.classList.remove('open'); // Tutup animasi
+      } else {
+          categories.classList.add('open'); // Buka animasi
+      }
+  
+      // Toggle the categories section
+      categoriesDiv.classList.toggle('d-none');
+    });
+  }
 </script>
 
 <!-- BRAND MOBILE -->
 <script>
-  document.getElementById('brand-link').addEventListener('click', function(event) {
-    event.preventDefault();
-    const brandsDiv = document.getElementById('brands');
-    const categoriesDiv = document.getElementById('categories');
-
-    // Close the categories section if it's open
-    if (!categoriesDiv.classList.contains('d-none')) {
-      categoriesDiv.classList.add('d-none');
-    }
-
-    // Toggle the brands section
-    brandsDiv.classList.toggle('d-none');
-  });
+  if (window.innerWidth <= 425){
+    document.getElementById('brand-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      const brandsDiv = document.getElementById('brands');
+      const categoriesDiv = document.getElementById('categories');
+  
+      // Close the categories section if it's open
+      if (!categoriesDiv.classList.contains('d-none')) {
+        categoriesDiv.classList.add('d-none');
+      }
+  
+      // Toggle the brands section
+      brandsDiv.classList.toggle('d-none');
+    });
+  }
 </script>
 
 <!-- Logout -->
