@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Voucher - Glamoire</title>
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -428,6 +427,8 @@
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Limit Stock</th>
+                                                <th>Status</th>
                                                 <th>Discount Per Product</th>
                                             </tr>
                                         </thead>
@@ -436,13 +437,18 @@
                                         </tbody>
                                     </table>
                                     <div class="col-12 d-flex justify-content-end">
+                                        <a href="{{ route('index-promo-voucher') }}"
+                                            class="btn btn-secondary btn-sm me-3"
+                                            style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                        </a>
+
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
                                             Voucher</button>
                                         <button type="submit" class="btn btn-sm btn-primary me-1">Submit
                                             Voucher</button>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>
@@ -464,10 +470,10 @@
                                             <label>Brand Name <span style="color: red">*</span></label>
                                             <input type="text" class="form-control" id="newBrandName"
                                                 name="name">
-                                                <small class="text-muted" style="font-size: 14px;">
-                                                    Berikan nama yang unik untuk Brand Anda yang akan
-                                                    mudah dikenali oleh pengguna.
-                                                </small>
+                                            <small class="text-muted" style="font-size: 14px;">
+                                                Berikan nama yang unik untuk Brand Anda yang akan
+                                                mudah dikenali oleh pengguna.
+                                            </small>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label>Description <span style="color: red">*</span></label>
@@ -481,10 +487,10 @@
                                             <label>Brand Logo <span style="color: red">*</span></label>
                                             <input type="file" class="form-control" id="newBrandLogo"
                                                 name="brand_logo" accept="image/*">
-                                                <small class="text-muted" style="font-size: 14px;">
-                                                    Logo Brand Anda harus dalam format gambar (misalnya,
-                                                    JPG, JPEG, PNG) dan tidak boleh melebihi 2MB.
-                                                </small>
+                                            <small class="text-muted" style="font-size: 14px;">
+                                                Logo Brand Anda harus dalam format gambar (misalnya,
+                                                JPG, JPEG, PNG) dan tidak boleh melebihi 2MB.
+                                            </small>
                                         </div>
 
                                         <div id="imagePreview" class="mt-2" style="display: none;">
@@ -523,8 +529,9 @@
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
 
-    {{-- handle input group discount --}}
-    <script>
+    {{-- menampilkan data pada tabel --}}
+
+    {{-- <script>
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
 
@@ -741,8 +748,251 @@
             // Initialize components on page load
             reinitializeComponents();
         });
-    </script>
+    </script> --}}
 
+    <script>
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+
+        $(document).ready(function() {
+            const formatRupiah = (number) => {
+                const formatted = number.toString().replace(/\D/g, '');
+                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
+            };
+
+            // Initialize select2
+            $('.select2-basic-brand').select2();
+
+            // Keep track of modified product discount types
+            const modifiedProductTypes = new Set();
+
+            // Handle brand change
+            $('.select2-basic-brand').on('change', function() {
+                var brandId = $(this).val();
+                if (brandId) {
+                    $.ajax({
+                        url: `/get-products-by-brand/${brandId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            if (response.success) {
+                                updateProductTable(response.products);
+                            }
+                        },
+                        error: function(xhr) {
+                            console.error('Error fetching products:', xhr);
+                        }
+                    });
+                }
+            });
+
+            // Handle global discount type change
+            $('.custom-dropdown-item-all').on('click', function(e) {
+                e.preventDefault();
+                const type = $(this).data('type');
+                const dropdownButton = $('#dropdownTypeAll');
+                const formatSymbol = $('#formatSymbolAll');
+                const discountInput = $('#discountInputAll');
+
+                // Update global discount type
+                $('#globalDiscountType').val(type);
+
+                // Update UI for global discount
+                dropdownButton.html(type === 'nominal' ?
+                    '<i class="bi bi-cash me-1"></i>Nominal' :
+                    '<i class="bi bi-percent me-1"></i>Persentase');
+                formatSymbol.text(type === 'nominal' ? 'Rp' : '%');
+                discountInput.val('');
+
+                // Update all unmodified product discount types
+                updateUnmodifiedProductTypes(type);
+            });
+
+            // Function to update unmodified product discount types
+            function updateUnmodifiedProductTypes(globalType) {
+                $('[id^="discountType-"]').each(function() {
+                    const productId = this.id.split('-')[1];
+                    if (!modifiedProductTypes.has(productId)) {
+                        // Update hidden input
+                        $(this).val(globalType);
+
+                        // Update UI
+                        const dropdownButton = $(`#dropdownTypeProduct-${productId}`);
+                        const formatSymbol = $(`#formatSymbolProduct-${productId}`);
+
+                        dropdownButton.html(globalType === 'nominal' ?
+                            '<i class="bi bi-cash me-1"></i>Nominal' :
+                            '<i class="bi bi-percent me-1"></i>Persentase');
+                        formatSymbol.text(globalType === 'nominal' ? 'Rp' : '%');
+
+                        // Clear input value when type changes
+                        $(`#discountInputProduct-${productId}`).val('');
+                    }
+                });
+            }
+
+            // Function to update product table
+            function updateProductTable(products) {
+                var tbody = $('#table1 tbody');
+                tbody.empty();
+
+                products.forEach(function(product) {
+                    var hasActivePromo = product.has_active_promo;
+                    var rowClass = hasActivePromo ? 'class="bg-light"' : '';
+                    var disabled = hasActivePromo ? 'disabled' : '';
+
+                    var row = `
+                <tr ${rowClass}>
+                    <td>
+                        <div class="form-check">
+                            <input type="checkbox" name="product_ids[]" 
+                                value="${product.id}" class="form-check-input select-item" ${disabled}>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <img src="${product.main_image}" 
+                                loading="lazy" class="lazyload me-2" alt="Product Image"
+                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                            <div>
+                                ${product.product_name.length > 30 ? 
+                                    product.product_name.substring(0, 30) + '...' : 
+                                    product.product_name}
+                                ${hasActivePromo ? '<div class="mt-1"><span class="badge bg-danger">Active Promo</span></div>' : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>${product.stock_quantity}</td>               
+                    <td>Rp. ${number_format(product.regular_price)}</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm limit-stock"
+                            placeholder="Limit Stock"
+                            name="limit_stock[${product.id}]"
+                            data-product-id="${product.id}"
+                            min="1" max="${product.stock_quantity}"
+                            ${disabled}>
+                    </td>
+                    <td>
+                        ${hasActivePromo ? 
+                            '<span class="text-danger">Not Available</span>' : 
+                            '<span class="text-success">Available</span>'}
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <button class="btn dropdown-toggle" type="button"
+                                id="dropdownTypeProduct-${product.id}"
+                                data-bs-toggle="dropdown" aria-expanded="false" ${disabled}>
+                                <i class="bi bi-tag-fill me-1"></i>
+                                Tipe Diskon <i class="bi bi-chevron-down"></i>
+                            </button>
+                            <ul class="dropdown-menu custom-dropdown-menu">
+                                <li>
+                                    <a class="custom-dropdown-item-product"
+                                        href="#" data-type="nominal"
+                                        data-product-id="${product.id}">
+                                        <i class="bi bi-cash"></i>
+                                        Nominal
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="custom-dropdown-item-product"
+                                        href="#" data-type="percentage"
+                                        data-product-id="${product.id}">
+                                        <i class="bi bi-percent"></i>
+                                        Persentase
+                                    </a>
+                                </li>
+                            </ul>
+                            <input type="text"
+                                class="form-control form-control-sm border-start-0"
+                                id="discountInputProduct-${product.id}"
+                                name="product_discount[${product.id}]"
+                                placeholder="Masukkan diskon"
+                                ${disabled}>
+                            <span class="input-group-text bg-light"
+                                id="formatSymbolProduct-${product.id}">Rp</span>
+                            <input type="hidden" 
+                                name="discount_type[${product.id}]" 
+                                value="${$('#globalDiscountType').val()}" 
+                                id="discountType-${product.id}">
+                        </div>
+                    </td>
+                </tr>
+            `;
+                    tbody.append(row);
+                });
+
+                // Reinitialize components
+                reinitializeComponents();
+            }
+
+            // Helper function for number formatting
+            function number_format(number) {
+                return new Intl.NumberFormat('id-ID').format(number);
+            }
+
+            // Function to reinitialize components after table update
+            function reinitializeComponents() {
+                // Reinitialize select all functionality
+                $('#select-all').off('change').on('change', function() {
+                    $('.select-item:not([disabled])').prop('checked', $(this).prop('checked'));
+                });
+
+                // Handle product-specific discount type changes
+                $('.custom-dropdown-item-product').off('click').on('click', function(e) {
+                    e.preventDefault();
+                    const type = $(this).data('type');
+                    const productId = $(this).data('product-id');
+
+                    // Mark this product as modified
+                    modifiedProductTypes.add(productId);
+
+                    // Update UI and hidden input
+                    const dropdownButton = $(`#dropdownTypeProduct-${productId}`);
+                    const formatSymbol = $(`#formatSymbolProduct-${productId}`);
+                    const discountInput = $(`#discountInputProduct-${productId}`);
+                    const discountTypeInput = $(`#discountType-${productId}`);
+
+                    dropdownButton.html(type === 'nominal' ?
+                        '<i class="bi bi-cash me-1"></i>Nominal' :
+                        '<i class="bi bi-percent me-1"></i>Persentase');
+                    formatSymbol.text(type === 'nominal' ? 'Rp' : '%');
+                    discountInput.val('');
+                    discountTypeInput.val(type);
+                });
+
+                // Handle discount input formatting
+                $('input[id^="discountInputProduct-"]').off('input').on('input', function() {
+                    const productId = this.id.split('-')[1];
+                    const type = $(`#discountType-${productId}`).val();
+                    let value = this.value.replace(/\D/g, '');
+
+                    if (type === 'nominal') {
+                        this.value = value ? formatRupiah(value) : '';
+                    } else {
+                        // Untuk persentase, batasi maksimal 100
+                        value = Math.min(parseInt(value) || 0, 100);
+                        this.value = value ? value.toString() : '';
+                    }
+                });
+
+                // Handle global discount input formatting
+                $('#discountInputAll').off('input').on('input', function() {
+                    const type = $('#globalDiscountType').val();
+                    let value = this.value.replace(/\D/g, '');
+
+                    if (type === 'nominal') {
+                        this.value = value ? formatRupiah(value) : '';
+                    } else {
+                        value = Math.min(parseInt(value) || 0, 100);
+                        this.value = value ? value.toString() : '';
+                    }
+                });
+            }
+
+            // Initialize components on page load
+            reinitializeComponents();
+        });
+    </script>
 
     {{-- handle input group discount --}}
     <script>

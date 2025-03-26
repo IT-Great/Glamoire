@@ -48,7 +48,7 @@ class AffiliateController extends Controller
             ]);
 
             return redirect()->route('index-affiliate-admin')
-                ->with('toast_success', 'Response has been sent successfully!');
+                ->with('success', 'Response has been sent successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to send email: ' . $e->getMessage());
             Log::error($e->getTraceAsString());

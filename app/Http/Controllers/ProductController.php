@@ -203,7 +203,7 @@ class ProductController extends Controller
                 if ($userId) {
                     $wishlists = Wishlist::where('user_id', $userId)->get();
                     $cartId = Cart::where('user_id', $userId)->value('id');
-                    
+
 
                     $query = Product::where('product_code', $code)
                         ->with('ratingAndReviews.user')
@@ -233,9 +233,9 @@ class ProductController extends Controller
                     $firstVariant = $product->productVariations->first();
 
                     $cartItems = Cart_item::where('cart_id', $cartId)
-                    ->where('product_variant_id', $firstVariant->id)
-                    ->get();
-    
+                        ->where('product_variant_id', $firstVariant->id)
+                        ->get();
+
                     return view('user.component.detail-varian', [
                         'averageRating' => $averageRating,
                         'product'       => $product,
@@ -517,30 +517,17 @@ class ProductController extends Controller
     public function storeProductAdmin(Request $request)
     {
         try {
-
-            // dd($request->regular_price);
             $request->validate([
                 'product_name' => 'required',
                 'stock_quantity' => 'required',
                 'regular_price' => 'required',
-
                 'stock_quantity' => 'required|integer',
-                'regular_price' => 'required|numeric',
                 'weight_product' => 'required|numeric',
-
                 'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'images' => 'required|array|min:1|max:6', // Ubah ini
                 'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
                 'description' => 'required',
-
-                // 'variant_type' => 'required|array',
-                // 'variant_type.*' => 'required|string',
-                // 'variant_values' => 'required|array',
-                // 'variant_values.*' => 'array',
-                // 'use_variant_image' => 'array',
-                // 'variant_images' => 'array',
-                // 'variant_images.*.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
             // Hapus format rupiah dari regular_price
@@ -645,6 +632,8 @@ class ProductController extends Controller
                                 $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
                             }
 
+                            $variantPrice = str_replace(['Rp. ', '.'], '', $request->variant_price[$typeIndex][$valueIndex]);
+
                             ProductVariations::create([
                                 'product_id' => $product->id,
                                 'variant_type' => $variantType,
@@ -652,8 +641,9 @@ class ProductController extends Controller
                                 'use_variant_image' => $useVariantImage,
                                 'variant_image' => $variantImage,
                                 'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex], // Sesuaikan
-                                'variant_price' => $request->variant_price[$typeIndex][$valueIndex], // Sesuaikan
+                                'variant_price' => $variantPrice, // Simpan setelah format dihapus
                                 'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex], // Sesuaikan
+                                'variant_expired' => $request->variant_expired[$typeIndex][$valueIndex], // New field
                             ]);
                         }
                     }
@@ -728,11 +718,13 @@ class ProductController extends Controller
                 'id' => $variant->id,
                 'type' => $variant->variant_type,
                 'value' => $variant->variant_value,
-                'image' => $variant->variant_image ? asset('storage/' . $variant->variant_image) : null,  // Add asset() helper
+                // 'image' => $variant->variant_image ? asset('storage/' . $variant->variant_image) : null,  // Add asset() helper
+                'image' => $variant->variant_image ? Storage::url($variant->variant_image) : null,
                 'price' => $variant->variant_price,
                 'stock' => $variant->variant_stock,
                 'weight' => $variant->weight_variant,
-                'use_variant_image' => $variant->use_variant_image
+                'use_variant_image' => $variant->use_variant_image,
+                'variant_expired' => $variant->variant_expired // Ganti ke variant_expired
             ];
         })->values()->all();
 
@@ -850,6 +842,7 @@ class ProductController extends Controller
             $product->information_product = $validatedData['information_product'];
             $product->stock_quantity = $validatedData['stock_quantity'];
             $product->weight_product = $validatedData['weight_product'];
+            $product->date_expired = $request->date_expired;
             $product->regular_price = $regularPrice; // Simpan harga dalam format angka
 
             // Simpan data dimensi sebagai array JSON jika diperlukan
@@ -862,75 +855,187 @@ class ProductController extends Controller
                 $product->dimensions = json_encode($dimensions);
             }
 
-            // Handle variant updates
-            if ($request->has('variant_ids')) {
-                foreach ($request->variant_ids as $index => $variantId) {
-                    $variant = ProductVariations::find($variantId);
+            // // Handle variant updates
+            // if ($request->has('variant_ids')) {
+            //     $variantIndex = 0;
+            //     foreach ($request->variant_ids as $index => $variantId) {
+            //         $variant = ProductVariations::find($variantId);
 
-                    if ($variant) {
-                        $useVariantImage = isset($request->use_variant_image[$index]) && $request->use_variant_image[$index] == '1';
-                        $variantImage = $variant->variant_image; // Keep existing image by default
+            //         if ($variant) {
+            //             $useVariantImage = isset($request->use_variant_image[$index]) && $request->use_variant_image[$index] == '1';
+            //             $variantImage = $variant->variant_image; // Keep existing image by default
 
-                        // Handle new image upload if provided
-                        if ($useVariantImage && isset($request->file('variant_images')[$index])) {
-                            // Delete old image if exists
-                            if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
-                                Storage::delete('public/' . $variant->variant_image);
-                            }
+            //             // Cek apakah ada gambar variant baru
+            //             if (
+            //                 $useVariantImage &&
+            //                 isset($request->file('variant_images')[$index]) &&
+            //                 $request->file('variant_images')[$index]
+            //             ) {
 
-                            $variantImageFile = $request->file('variant_images')[$index];
-                            $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
-                            $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
-                        } elseif (!$useVariantImage) {
-                            // If variant image is not used anymore, delete it
-                            if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
-                                Storage::delete('public/' . $variant->variant_image);
-                            }
-                            $variantImage = null;
+            //                 // Delete old image if exists
+            //                 if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+            //                     Storage::delete('public/' . $variant->variant_image);
+            //                 }
+
+            //                 $variantImageFile = $request->file('variant_images')[$index];
+            //                 $variantImageName = time() . '_' . $variantId . '_' . $variantImageFile->getClientOriginalName();
+            //                 $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
+            //             } elseif (!$useVariantImage) {
+            //                 // Hapus gambar jika tidak digunakan
+            //                 if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+            //                     Storage::delete('public/' . $variant->variant_image);
+            //                 }
+            //                 $variantImage = null;
+            //             }
+
+            //             // Update variant with new or existing data
+            //             $variant->update([
+            //                 'use_variant_image' => $useVariantImage,
+            //                 'variant_image' => $variantImage,
+            //                 'variant_stock' => $request->variant_stock[$index] ?? $variant->variant_stock,
+            //                 'variant_price' => $request->variant_price[$index] ?? $variant->variant_price,
+            //                 'weight_variant' => $request->variant_weight[$index] ?? $variant->weight_variant,
+            //                 'variant_expired' => $request->variant_expired[$index] ?? null, // Changed from 'expired' to 'variant_expired'
+            //             ]);
+            //         }
+            //     }
+            // }
+
+            // // Handle new variants if any
+            // if ($request->has('variant_type') && $request->has('variant_values')) {
+            //     foreach ($request->variant_type as $typeIndex => $variantType) {
+            //         if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
+            //             $existingVariantValues = $product->productVariations()
+            //                 ->where('variant_type', $variantType)
+            //                 ->pluck('variant_value')
+            //                 ->toArray();
+
+            //             foreach ($request->variant_values[$typeIndex] as $valueIndex => $value) {
+            //                 // Only create new variant if it doesn't exist
+            //                 if (!in_array($value, $existingVariantValues)) {
+            //                     $useVariantImage = isset($request->new_use_variant_image[$typeIndex][$valueIndex])
+            //                         && $request->new_use_variant_image[$typeIndex][$valueIndex] == '1';
+
+            //                     $variantImage = null;
+
+            //                     // Handle new variant image
+            //                     if (
+            //                         $useVariantImage &&
+            //                         isset($request->file('new_variant_images')[$typeIndex][$valueIndex])
+            //                     ) {
+            //                         $variantImageFile = $request->file('new_variant_images')[$typeIndex][$valueIndex];
+            //                         $variantImageName = time() . '_new_' . $variantImageFile->getClientOriginalName();
+            //                         $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
+            //                     }
+
+            //                     // Get the expired date for the new variant
+            //                     $variantExpiredDate = isset($request->new_variant_expired[$typeIndex][$valueIndex])
+            //                         ? $request->new_variant_expired[$typeIndex][$valueIndex]
+            //                         : null;
+
+
+            //                     ProductVariations::create([
+            //                         'product_id' => $product->id,
+            //                         'variant_type' => $variantType,
+            //                         'variant_value' => $value,
+            //                         'use_variant_image' => $useVariantImage,
+            //                         'variant_image' => $variantImage,
+            //                         'variant_stock' => 0,
+            //                         'variant_price' => $product->regular_price,
+            //                         'weight_variant' => $product->weight_product,
+            //                         'variant_expired' => $variantExpiredDate, // Changed from 'expired' to 'variant_expired'
+            //                     ]);
+            //                 }
+            //             }
+
+            //             // Remove variants that are no longer in the values array
+            //             $product->productVariations()
+            //                 ->where('variant_type', $variantType)
+            //                 ->whereNotIn('variant_value', $request->variant_values[$typeIndex])
+            //                 ->delete();
+            //         }
+            //     }
+            // }
+
+
+            // Handle variant updates dengan pendekatan baru
+            if ($request->has('variant_type') && $request->has('variant_values')) {
+                // Hapus semua variant lama jika tipe variant berubah
+                $currentVariantType = $product->productVariations()->first()?->variant_type;
+                $newVariantType = $request->variant_type[0]; // Ambil tipe variant baru
+
+                if ($currentVariantType !== $newVariantType) {
+                    // Hapus semua variant lama karena tipe berubah
+                    $product->productVariations()->delete();
+
+                    // Buat variant baru dengan data yang sesuai
+                    foreach ($request->variant_values[0] as $index => $value) {
+                        $useVariantImage = isset($request->new_use_variant_image[0][$index])
+                            && $request->new_use_variant_image[0][$index] == '1';
+
+                        $variantImage = null;
+                        if ($useVariantImage && isset($request->file('new_variant_images')[0][$index])) {
+                            $variantImageFile = $request->file('new_variant_images')[0][$index];
+                            $variantImageName = time() . '_new_' . $variantImageFile->getClientOriginalName();
+                            $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
                         }
 
-                        // Update variant with new or existing data
-                        $variant->update([
+                        ProductVariations::create([
+                            'product_id' => $product->id,
+                            'variant_type' => $newVariantType,
+                            'variant_value' => $value,
                             'use_variant_image' => $useVariantImage,
                             'variant_image' => $variantImage,
-                            'variant_stock' => $request->variant_stock[$index] ?? $variant->variant_stock,
-                            'variant_price' => $request->variant_price[$index] ?? $variant->variant_price,
-                            'weight_variant' => $request->variant_weight[$index] ?? $variant->weight_variant,
+                            'variant_stock' => $request->variant_stock[0][$index] ?? 0,
+                            'variant_price' => $request->variant_price[0][$index] ?? $product->regular_price,
+                            'weight_variant' => $request->variant_weight[0][$index] ?? $product->weight_product,
+                            'variant_expired' => $request->new_variant_expired[0][$index] ?? null,
                         ]);
                     }
-                }
-            }
+                } else {
+                    if ($request->has('variant_ids')) {
+                        $variantIndex = 0;
+                        foreach ($request->variant_ids as $index => $variantId) {
+                            $variant = ProductVariations::find($variantId);
 
-            // Handle new variants if any
-            if ($request->has('variant_type') && $request->has('variant_values')) {
-                foreach ($request->variant_type as $typeIndex => $variantType) {
-                    if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
-                        $existingVariantValues = $product->productVariations()
-                            ->where('variant_type', $variantType)
-                            ->pluck('variant_value')
-                            ->toArray();
+                            // Update variant with new or existing data
+                            if ($variant) {
+                                $useVariantImage = isset($request->use_variant_image[$index]) && $request->use_variant_image[$index] == '1';
+                                $variantImage = $variant->variant_image; // Keep existing image by default
 
-                        foreach ($request->variant_values[$typeIndex] as $value) {
-                            // Only create new variant if it doesn't exist
-                            if (!in_array($value, $existingVariantValues)) {
-                                ProductVariations::create([
-                                    'product_id' => $product->id,
-                                    'variant_type' => $variantType,
-                                    'variant_value' => $value,
-                                    'use_variant_image' => false,
-                                    'variant_image' => null,
-                                    'variant_stock' => 0,
-                                    'variant_price' => $product->regular_price,
-                                    'weight_variant' => $product->weight_product,
+                                // Cek apakah ada gambar variant baru
+                                if ($useVariantImage) {
+                                    if (isset($request->file('variant_images')[$index])) {
+                                        // Ada file gambar baru yang diupload
+                                        $variantImageFile = $request->file('variant_images')[$index];
+
+                                        // Delete old image if exists
+                                        if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+                                            Storage::delete('public/' . $variant->variant_image);
+                                        }
+
+                                        $variantImageName = time() . '_' . $variantId . '_' . $variantImageFile->getClientOriginalName();
+                                        $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
+                                    }
+                                    // Jika tidak ada file baru, gunakan gambar yang sudah ada (tidak perlu diubah)
+                                } else {
+                                    // User unchecked use_variant_image, remove the image
+                                    if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
+                                        Storage::delete('public/' . $variant->variant_image);
+                                    }
+                                    $variantImage = null;
+                                }
+
+                                $variant->update([
+                                    'use_variant_image' => $useVariantImage,
+                                    'variant_image' => $useVariantImage ? ($variantImage ?? $variant->variant_image) : null,
+                                    'variant_stock' => $request->variant_stock[$index] ?? $variant->variant_stock,
+                                    'variant_price' => $request->variant_price[$index] ?? $variant->variant_price,
+                                    'weight_variant' => $request->variant_weight[$index] ?? $variant->weight_variant,
+                                    'variant_expired' => $request->variant_expired[$index] ?? null,
                                 ]);
                             }
                         }
-
-                        // Remove variants that are no longer in the values array
-                        $product->productVariations()
-                            ->where('variant_type', $variantType)
-                            ->whereNotIn('variant_value', $request->variant_values[$typeIndex])
-                            ->delete();
                     }
                 }
             }
@@ -956,9 +1061,6 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $totalStock = $product->total_stock;
 
-            // Debug line
-            Log::info("Product {$product->id}: Total Stock = {$totalStock}");
-
             if ($totalStock === 0) {
                 $outOfStockCount++;
                 Log::info("Added to out of stock");
@@ -973,23 +1075,15 @@ class ProductController extends Controller
                 $variantTotalStock = $variant->stocks->sum('quantity');
                 $totalVariantStock = $variantStock + $variantTotalStock;
 
-                // Debug line
-                Log::info("Variant {$variant->id}: Total Stock = {$totalVariantStock}");
-
                 if ($totalVariantStock === 0) {
                     $outOfStockCount++;
-                    Log::info("Variant added to out of stock");
                 } elseif ($totalVariantStock <= 15) {
                     $lowStockCount++;
-                    Log::info("Variant added to low stock");
                 }
             }
         }
 
         $totalAlerts = $lowStockCount + $outOfStockCount;
-
-        // Debug final counts
-        Log::info("Final counts: Low Stock = {$lowStockCount}, Out of Stock = {$outOfStockCount}");
 
         return response()->json([
             'totalAlerts' => $totalAlerts,
@@ -997,9 +1091,6 @@ class ProductController extends Controller
             'outOfStockCount' => $outOfStockCount
         ]);
     }
-
-
-
 
 
     // modif by claude
@@ -1057,7 +1148,7 @@ class ProductController extends Controller
         ]);
     }
 
-
+    // update code yang benar dan sesuai
     // public function updateStock(Request $request, $id)
     // {
     //     $request->validate([
@@ -1076,8 +1167,10 @@ class ProductController extends Controller
     //                 'quantity' => $request->stock_quantity,
     //                 'date_expired' => $request->date_expired,
     //             ]);
+
+    //             // Tambahkan logika update stok yang benar
     //             $variant->update([
-    //                 'variant_stock' => $variant->stocks()->sum('quantity')
+    //                 'variant_stock' => $variant->variant_stock + $request->stock_quantity
     //             ]);
     //         } else {
     //             $product = Product::findOrFail($id);
@@ -1085,8 +1178,10 @@ class ProductController extends Controller
     //                 'quantity' => $request->stock_quantity,
     //                 'date_expired' => $request->date_expired,
     //             ]);
+
+    //             // Update stok dengan menambahkan jumlah baru
     //             $product->update([
-    //                 'stock_quantity' => $product->stocks()->sum('quantity')
+    //                 'stock_quantity' => $product->stock_quantity + $request->stock_quantity
     //             ]);
     //         }
 
@@ -1094,44 +1189,100 @@ class ProductController extends Controller
     //         return response()->json(['message' => 'Stock updated successfully']);
     //     } catch (\Exception $e) {
     //         DB::rollback();
-    //         return response()->json(['message' => 'Error updating stock'], 500);
+    //         return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
     //     }
     // }
 
-    // update code yang benar dan sesuai
+    // public function updateStock(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'stock_quantity' => 'required|integer|min:1',
+    //         'date_expired' => 'required|date',
+    //         'variant_id' => 'nullable|exists:product_variations,id',
+    //     ]);
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         if ($request->variant_id) {
+    //             // Update stok untuk varian produk
+    //             $variant = ProductVariations::findOrFail($request->variant_id);
+
+    //             // Tambahkan stok ke tabel `stocks`
+    //             $variant->stocks()->create([
+    //                 'variant_id' => $request->variant_id,
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             // Perbarui jumlah stok di tabel `product_variations`
+    //             $variant->update([
+    //                 'variant_stock' => $variant->variant_stock + $request->stock_quantity,
+    //             ]);
+    //         } else {
+    //             // Update stok untuk produk utama
+    //             $product = Product::findOrFail($id);
+
+    //             // Tambahkan stok ke tabel `stocks`
+    //             $product->stocks()->create([
+    //                 'product_id' => $id,
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             // Perbarui jumlah stok di tabel `products`
+    //             $product->update([
+    //                 'stock_quantity' => $product->stock_quantity + $request->stock_quantity,
+    //             ]);
+    //         }
+
+    //         DB::commit();
+    //         return response()->json(['message' => 'Stock updated successfully']);
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
     public function updateStock(Request $request, $id)
     {
         $request->validate([
             'stock_quantity' => 'required|integer|min:1',
             'date_expired' => 'required|date',
-            'variant_id' => 'nullable|exists:product_variations,id'
+            'variant_id' => 'nullable|exists:product_variations,id',
         ]);
 
         DB::beginTransaction();
 
         try {
             if ($request->variant_id) {
+                // Update stok untuk varian produk
                 $variant = ProductVariations::findOrFail($request->variant_id);
+
+                // Tambahkan stok ke tabel `stocks`
                 $variant->stocks()->create([
+                    'variant_id' => $request->variant_id,
+                    'quantity' => $request->stock_quantity,
+                    'date_expired' => $request->date_expired,
+                ]);
+
+                // Perbarui jumlah stok dan tanggal kadaluarsa di tabel `product_variations`
+                $variant->update([
+                    'variant_stock' => $variant->variant_stock + $request->stock_quantity,
+                    'variant_expired' => $request->date_expired, // Tambahkan baris ini
+                ]);
+            } else {
+                // Update stok untuk produk utama (tetap sama)
+                $product = Product::findOrFail($id);
+
+                $product->stocks()->create([
                     'product_id' => $id,
                     'quantity' => $request->stock_quantity,
                     'date_expired' => $request->date_expired,
                 ]);
 
-                // Tambahkan logika update stok yang benar
-                $variant->update([
-                    'variant_stock' => $variant->variant_stock + $request->stock_quantity
-                ]);
-            } else {
-                $product = Product::findOrFail($id);
-                $product->stocks()->create([
-                    'quantity' => $request->stock_quantity,
-                    'date_expired' => $request->date_expired,
-                ]);
-
-                // Update stok dengan menambahkan jumlah baru
                 $product->update([
-                    'stock_quantity' => $product->stock_quantity + $request->stock_quantity
+                    'stock_quantity' => $product->stock_quantity + $request->stock_quantity,
                 ]);
             }
 
@@ -1142,57 +1293,6 @@ class ProductController extends Controller
             return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
         }
     }
-
-
-    // kodingan yang mengupdate stock product utama dan stock product variant
-    // public function updateStock(Request $request, $id)
-    // {
-    //     $request->validate([
-    //         'stock_quantity' => 'required|integer|min:1',
-    //         'date_expired' => 'required|date',
-    //         'variant_id' => 'nullable|exists:product_variations,id'
-    //     ]);
-
-    //     DB::beginTransaction();
-
-    //     try {
-    //         if ($request->variant_id) {
-    //             $variant = ProductVariations::findOrFail($request->variant_id);
-
-    //             // Tambahkan stok baru ke tabel stok
-    //             $variant->stocks()->create([
-    //                 'variation_id' => $request->variant_id,
-    //                 'product_id' => $id,
-    //                 'quantity' => $request->stock_quantity,
-    //                 'date_expired' => $request->date_expired,
-    //             ]);
-
-    //             // Update stok cached pada tabel ProductVariations
-    //             $variant->update([
-    //                 'variant_stock' => $variant->stocks->sum('quantity') // Update cache dengan jumlah terbaru
-    //             ]);
-    //         } else {
-    //             $product = Product::findOrFail($id);
-
-    //             // Tambahkan stok baru ke tabel stok
-    //             $product->stocks()->create([
-    //                 'quantity' => $request->stock_quantity,
-    //                 'date_expired' => $request->date_expired,
-    //             ]);
-
-    //             // Update total stok cached pada tabel Product
-    //             $product->update([
-    //                 'total_stock' => $product->stocks->sum('quantity') // Update cache dengan jumlah terbaru
-    //             ]);
-    //         }
-
-    //         DB::commit();
-    //         return response()->json(['message' => 'Stock updated successfully']);
-    //     } catch (\Exception $e) {
-    //         DB::rollback();
-    //         return response()->json(['message' => 'Error updating stock'], 500);
-    //     }
-    // }
 
 
     public function getStockDetails($id)
@@ -1212,6 +1312,8 @@ class ProductController extends Controller
 
     public function getVariantStockDetails($variantId)
     {
+        $variant = ProductVariations::findOrFail($variantId);
+
         $variantStocks = ProductStocks::where('variation_id', $variantId)
             ->where('quantity', '>', 0)
             ->orderBy('date_expired', 'desc')
@@ -1219,7 +1321,8 @@ class ProductController extends Controller
             ->get();
 
         return response()->json([
-            'variantStocks' => $variantStocks
+            'variantStocks' => $variantStocks,
+            'variant_expired' => $variant->variant_expired // Tambahkan baris ini
         ]);
     }
 

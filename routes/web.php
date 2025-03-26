@@ -25,8 +25,12 @@ use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DokuPaymentController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\StockExportImportController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\NotifyMe;
@@ -88,7 +92,7 @@ Route::post('/notify-me', function (Request $request) {
 
         if ($checkIsAlreadyExists) {
             return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
-        }else{
+        } else {
             NotifyMe::create([
                 'user_id' => $userId,
                 'product_id' => $request->product_id,
@@ -194,9 +198,12 @@ Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'update
 Route::post('/buy-again', [UserController::class, 'addToCartBuyNow'])->name('buy.again');
 
 
-Route::get('/help', function () {
-    return view('user.component.help');
-});
+// Route::get('/help', function () {
+//     return view('user.component.help');
+// });
+
+Route::get('/help', [FaqController::class, 'index']);
+
 
 Route::get('/promotion', [PromoController::class, 'index'])->name('promo.user');
 Route::get('/{name}-detail-promo', [PromoController::class, 'detailPromoUser'])->name('detail.promo.user');
@@ -297,6 +304,26 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // product variant update stock
     Route::get('/get-variant-stock-details/{variantId}', [ProductController::class, 'getVariantStockDetails']);
 
+    // import export stock
+    Route::get('/download-product-stock-template', [StockExportImportController::class, 'downloadProductStockTemplate'])
+        ->name('download.product.stock.template');
+    Route::get('/download-product-variant-stock-template', [StockExportImportController::class, 'downloadProductStockVariantTemplate'])
+        ->name('download.product.variant.stock.template');
+
+    // Stock Export Routes
+    Route::get('/export/product-stocks', [StockExportImportController::class, 'exportProductStocks'])
+        ->name('export.product.stocks');
+    Route::get('/export/product-variants', [StockExportImportController::class, 'exportProductVariants'])
+        ->name('export.product.variants');
+
+    // Stock Import Routes
+    Route::post('/import/product-stocks', [StockExportImportController::class, 'importProductStocks'])
+        ->name('import.product.stocks');
+    Route::post('/import/product-variants', [StockExportImportController::class, 'importProductStockVariants'])
+        ->name('import.product.variants');
+    // Route::post('/import/product-variants', [StockExportImportController::class
+
+
 
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
     Route::get('/detail-product-admin/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
@@ -318,7 +345,13 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/order-admin', [OrderController::class, 'indexOrder'])->name('index-admin-order');
     Route::get('/order-sent-admin', [OrderController::class, 'sentAdmin'])->name('index-admin-order-sent');
     Route::get('/order-need-sent-admin', [OrderController::class, 'needSentAdmin'])->name('index-admin-order-need-sent');
+    Route::get('/order-complete-sent-admin', [OrderController::class, 'completeOrder'])->name('index-admin-order-complete-sent');
     Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
+
+    Route::post('/admin/order/{id}/change-status', [OrderController::class, 'changeOrderStatus'])->name('change-order-status');
+    Route::post('/orders/{orderId}/complete', [OrderController::class, 'changeDeliveryStatusOrder'])->name('orders.complete');
+    Route::post('/orders/{orderId}/confirm-shipping', [OrderController::class, 'confirmShipping'])->name('orders.confirm-shipping');
+
 
     // brand
     Route::get('/brand-admin', [BrandController::class, 'indexbrand'])->name('index-brand-admin');
@@ -366,6 +399,9 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // routes/web.php
     Route::get('/get-products-by-brand/{brand}', [PromoController::class, 'getProductsByBrand'])->name('get.products.by.brand');
+    Route::get('/admin/promo/get-brand-products/{brandId}', [PromoController::class, 'getBrandProducts']);
+
+
 
     // promo voucher produk tertentu
     Route::get('/create-promo-product-voucher', [PromoController::class, 'createPromoProductVoucher'])->name('create-promo-product-voucher');
@@ -396,6 +432,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/promo-diskon', [PromoController::class, 'indexPromoDiskon'])->name('index-promo-diskon');
     Route::get('/create-promo-diskon', [PromoController::class, 'createPromoDiskon'])->name('create-promo-diskon');
     Route::post('/create-promo-diskon', [PromoController::class, 'storePromoDiskon'])->name('store-promo-diskon');
+    Route::get('/detail-diskon/{id}', [PromoController::class, 'detailDiskon'])->name('detail-diskon');
 
     // new user
     Route::get('/promo-new-user', [PromoController::class, 'indexPromoNewUser'])->name('index-promo-new-user');
@@ -426,7 +463,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // user detail
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
-    Route::get('/user-admin-detail', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
+    Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
 
     // shipping fee
     Route::get('/shipping-fee', function () {
@@ -438,8 +475,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     });
 
 
+    // contact us
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
     Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
+    Route::delete('/delete-contact/{id}', [ContactusController::class, 'deleteResponse'])->name('delete-contact');
 
     // SEND EMAIL RESPONSE
     Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
@@ -469,5 +508,13 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     Route::get('/edit-invoice', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
     Route::post('/edit-invoice', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
     Route::delete('/invoice/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
+
     // TRANSACTION
+    Route::get('/transaction', [TransactionController::class, 'indexTransaction'])->name('index-transaction');
+
+    // FINANCIAL
+    Route::get('/financial', [FinancialController::class, 'indexFinancial'])->name('index-financial');
+
+    // JOURNAL
+    Route::get('/journal', [JournalController::class, 'indexJournal'])->name('index-journal');
 });

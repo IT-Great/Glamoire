@@ -210,9 +210,11 @@
                                                             name="max_quantity_buyer" id="max_quantity_buyer"
                                                             style="margin-bottom: 4px;"
                                                             value="{{ old('max_quantity_buyer') }}">
-                                                        <small class="form-text text-muted">Specify the maximum
-                                                            number of items a single buyer can purchase (e.g.,
-                                                            1, 5, 10).</small>
+                                                        <small class="form-text text-muted">
+                                                            Tentukan jumlah item maksimum yang dapat dibeli oleh
+                                                            satu
+                                                            pembeli (misalnya, 1, 5, 10).
+                                                        </small>
                                                         @if ($errors->has('max_quantity_buyer'))
                                                             <p style="color: red">
                                                                 {{ $errors->first('max_quantity_buyer') }}</p>
@@ -340,7 +342,7 @@
                                 </div>
                             </div>
 
-                            <div class="card">
+                            {{-- <div class="card">
                                 <div class="card-header ">
                                     <h4>Product List</h4>
                                 </div>
@@ -355,32 +357,160 @@
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <input type="checkbox" id="select-all"> Select
+                                                    <input type="checkbox" id="select-all"> Select All
                                                 </th>
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
-                                                <th>Discount Per Product</th>
                                                 <th>Limit Stock Product</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($products as $product)
-                                                <tr>
+                                                <tr @if ($product->has_active_promo) class="bg-light" @endif>
                                                     <td>
                                                         <input type="checkbox" name="product_ids[]"
-                                                            value="{{ $product->id }}" class="select-item">
+                                                            value="{{ $product->id }}" class="select-item"
+                                                            @if ($product->has_active_promo) disabled @endif>
                                                     </td>
                                                     <td>
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ Str::limit($product->product_name, 30, '...') }}
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <div>
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                                @if ($product->has_active_promo)
+                                                                    <div class="mt-1">
+                                                                        <span class="badge bg-danger">Active
+                                                                            Promo</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
-                                                    
 
                                                     <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="number" class="form-control limit-stock"
+                                                            placeholder="Limit Stock"
+                                                            name="limit_stock[{{ $product->id }}]"
+                                                            data-product-id="{{ $product->id }}" min="1"
+                                                            max="{{ $product->stock_quantity }}"
+                                                            value="{{ old('limit_stock.' . $product->id, '') }}"
+                                                            disabled @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($errors->has('limit_stock.' . $product->id))
+                                                            <small
+                                                                class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        @if ($product->has_active_promo)
+                                                            <span class="text-danger">Not Available</span>
+                                                        @else
+                                                            <span class="text-success">Available</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    <div class="col-12 d-flex justify-content-end">
+                                        <a href="{{ route('index-promo-voucher') }}"
+                                            class="btn btn-secondary btn-sm me-3"
+                                            style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                        </a>
+                                        <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
+                                            Promo</button>
+                                        <button type="submit" class="btn btn-sm btn-primary me-1">Submit
+                                            Promo</button>
+                                    </div>
+                                </div>
+                            </div> --}}
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Product List</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="product_ids">Pilih Produk <span
+                                                style="color: red">*</span></label><br>
+                                        <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
+                                            dapat memilih beberapa produk.</small>
+                                    </div>
+                                    <table class="table" id="table1">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    <input type="checkbox" id="select-all"> Select All
+                                                </th>
+                                                <th>Product</th>
+                                                <th>Stock</th>
+                                                <th>Price</th>
+                                                <th>Limit Stock Product</th>
+                                                <th>Status</th>
+                                                <th>Discount Per Product</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($products as $product)
+                                                <tr @if ($product->has_active_promo) class="bg-light" @endif>
+                                                    <td>
+                                                        <input type="checkbox" name="product_ids[]"
+                                                            value="{{ $product->id }}" class="select-item"
+                                                            @if ($product->has_active_promo) disabled @endif>
+                                                    </td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <div>
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                                @if ($product->has_active_promo)
+                                                                    <div class="mt-1">
+                                                                        <span class="badge bg-danger">Active
+                                                                            Promo</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $product->stock_quantity }}</td>
+                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" class="form-control limit-stock"
+                                                            placeholder="Limit Stock"
+                                                            name="limit_stock[{{ $product->id }}]"
+                                                            data-product-id="{{ $product->id }}" min="1"
+                                                            max="{{ $product->stock_quantity }}"
+                                                            value="{{ old('limit_stock.' . $product->id, '') }}"
+                                                            @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($errors->has('limit_stock.' . $product->id))
+                                                            <small class="text-danger">
+                                                                {{ $errors->first('limit_stock.' . $product->id) }}
+                                                            </small>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        @if ($product->has_active_promo)
+                                                            <span class="text-danger">Not Available</span>
+                                                        @else
+                                                            <span class="text-success">Available</span>
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         <div class="input-group input-group-sm">
@@ -412,30 +542,22 @@
                                                                 class="form-control form-control-sm border-start-0"
                                                                 id="discountInputProduct-{{ $product->id }}"
                                                                 name="product_discount[{{ $product->id }}]"
-                                                                placeholder="Masukkan diskon">
+                                                                placeholder="Masukkan diskon"
+                                                                @if ($product->has_active_promo) disabled @endif>
+
+                                                            <!-- Tambahkan input tersembunyi untuk menyimpan tipe diskon -->
+                                                            <input type="hidden"
+                                                                name="product_discount_type[{{ $product->id }}]"
+                                                                id="productDiscountType-{{ $product->id }}"
+                                                                value="nominal">
+
                                                             <span class="input-group-text bg-light"
                                                                 id="formatSymbolProduct-{{ $product->id }}">Rp</span>
                                                         </div>
                                                     </td>
-
-                                                    <td>
-                                                        <input type="number" class="form-control limit-stock"
-                                                            placeholder="Limit Stock"
-                                                            name="limit_stock[{{ $product->id }}]"
-                                                            data-product-id="{{ $product->id }}" min="1"
-                                                            max="{{ $product->stock_quantity }}"
-                                                            value="{{ old('limit_stock.' . $product->id, '') }}"
-                                                            disabled @if ($product->has_active_promo) disabled @endif>
-                                                        @if ($errors->has('limit_stock.' . $product->id))
-                                                            <small
-                                                                class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
-                                                        @endif
-                                                    </td>
-
                                                 </tr>
                                             @endforeach
                                         </tbody>
-
                                     </table>
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
@@ -444,7 +566,6 @@
                                             Voucher</button>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>
@@ -472,7 +593,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle checkbox selection
+            // Handle checkbox and limit stock interactions
             const checkboxes = document.querySelectorAll('.select-item');
 
             checkboxes.forEach(checkbox => {
@@ -480,21 +601,24 @@
                     const productId = this.value;
                     const limitStockInput = document.querySelector(
                         `input[name="limit_stock[${productId}]"]`);
+                    const discountInput = document.querySelector(
+                        `input[name="product_discount[${productId}]"]`);
 
                     if (limitStockInput) {
                         if (this.checked) {
                             limitStockInput.removeAttribute('disabled');
-                            limitStockInput.required = true;
+                            discountInput.removeAttribute('disabled');
                         } else {
                             limitStockInput.setAttribute('disabled', 'disabled');
-                            limitStockInput.required = false;
+                            discountInput.setAttribute('disabled', 'disabled');
                             limitStockInput.value = ''; // Clear the value when unchecked
+                            discountInput.value = ''; // Clear the discount input
                         }
                     }
                 });
             });
 
-            // Handle "Select All" checkbox if you have one
+            // Handle "Select All" checkbox
             const selectAllCheckbox = document.getElementById('select-all');
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', function() {
@@ -514,11 +638,19 @@
             limitStockInputs.forEach(input => {
                 input.addEventListener('input', function() {
                     const maxStock = parseInt(this.getAttribute('max'));
-                    const value = parseInt(this.value);
+                    const value = this.value.trim();
 
-                    if (isNaN(value) || value <= 0) {
+                    if (value === '') {
+                        this.setCustomValidity('');
+                        this.reportValidity();
+                        return;
+                    }
+
+                    const parsedValue = parseInt(value);
+
+                    if (isNaN(parsedValue) || parsedValue <= 0) {
                         this.setCustomValidity('Please enter a valid number greater than 0');
-                    } else if (value > maxStock) {
+                    } else if (parsedValue > maxStock) {
                         this.setCustomValidity(`Limit stock cannot exceed ${maxStock}`);
                     } else {
                         this.setCustomValidity('');
@@ -591,12 +723,20 @@
                         const discountInput = document.getElementById(
                             `discountInputProduct-${productId}`);
 
+                        // Tambahkan ini
+                        const productDiscountTypeInput = document.getElementById(
+                            `productDiscountType-${productId}`);
+
+
                         productTypes[productId] = type;
                         dropdownButton.innerHTML = type === 'nominal' ?
                             '<i class="bi bi-cash me-1"></i>Nominal' :
                             '<i class="bi bi-percent me-1"></i>Persentase';
                         formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
                         discountInput.value = ''; // Reset input when changing type
+
+                        // Tambahkan ini
+                        productDiscountTypeInput.value = type;
                     });
                 });
 
@@ -622,7 +762,7 @@
         });
     </script>
 
-    <script>
+    {{-- <script>
         // Handle Select All
         document.getElementById('select-all').addEventListener('change', function() {
             const checkboxes = document.querySelectorAll('.select-item');
@@ -641,7 +781,7 @@
                 }
             });
         });
-    </script>
+    </script> --}}
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {

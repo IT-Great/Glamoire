@@ -81,19 +81,13 @@
                                 </ol>
                             </nav>
                         </div>
-                        <div class="col-12 col-md-6 text-md-end">
-                            <a href="#" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#categoryModal">
-                                <i class="fa fa-plus-circle"></i> Add New Category
-                            </a>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Quick Stats Section -->
                 <div class="row quick-stats">
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-primary">
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -107,8 +101,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-success">
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -124,8 +118,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-info">
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -143,10 +137,23 @@
                     </div>
                 </div>
 
+
                 <!-- Categories Table Section -->
                 <div class="card category-card">
                     <div class="card-header bg-white">
-                        <h4 class="mb-0">Category List</h4>
+
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h4 class="mb-0">Category List</h4>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                                <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#categoryModal">
+                                    <i class="fa fa-plus"></i> Add New Category
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                     <div class="card-body">
                         <table class="table table-hover" id="table1">

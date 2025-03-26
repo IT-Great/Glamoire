@@ -1,4 +1,3 @@
-index.blade.php
 <!DOCTYPE html>
 <html lang="en">
 
@@ -207,8 +206,8 @@ index.blade.php
                 <div class="card discount-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">All Discount Campaigns</h5>
-                        <a href="{{ route('create-promo-diskon') }}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>Create New Discount
+                        <a href="{{ route('create-promo-diskon') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
+                            <i class="bi bi-plus"></i>Buat Diskon
                         </a>
                     </div>
                     <div class="card-body">
@@ -228,7 +227,10 @@ index.blade.php
                                         <tr id="promo-item-{{ $item->id }}">
                                             <td>
                                                 <div class="d-flex flex-column">
-                                                    <h6 class="mb-1">{{ $item->promo_name }}</h6>
+                                                    {{-- <h6 class="mb-1">{{ $item->promo_name }}</h6> --}}
+                                                    <h6 class="mb-1">
+                                                        {{ Str::limit($item->promo_name, 20, '...') }}
+                                                    </h6>
                                                     <small class="text-muted">ID: #{{ $item->id }}</small>
                                                 </div>
                                             </td>
@@ -260,7 +262,7 @@ index.blade.php
                                             </td>
                                             <td>
                                                 <div class="d-flex flex-column gap-2">
-                                                    <a href="{{ url('detail-promo/' . $item->id) }}"
+                                                    <a href="{{ url('detail-diskon/' . $item->id) }}"
                                                         class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> View Details
                                                     </a>

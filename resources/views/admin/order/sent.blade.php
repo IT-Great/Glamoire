@@ -16,56 +16,95 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
     <style>
-        .nav-tabs .nav-link {
-            border: none;
-            padding: 0.5rem 1rem;
-            color: #6c757d;
-            position: relative;
+        .order-table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
 
-        .nav-tabs .nav-link.active {
-            background: none;
-            /* color: #dc3545; */
+        .order-table img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .nav-tabs .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            /* background-color: #dc3545; */
+        .order-table img:hover {
+            transform: scale(1.1);
         }
 
-        .gap-2 {
-            gap: 0.5rem !important;
+        .order-table th {
+            background-color: #f8f9fa;
+            padding: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+            border-bottom: 2px solid #dee2e6;
         }
 
-        .gap-3 {
-            gap: 1rem !important;
+        .order-table td {
+            vertical-align: middle;
+            padding: 20px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-header {
+            padding: 10px 15px;
+            background-color: #f8fafc;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-details {
+            min-width: 250px;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .product-name {
+            font-weight: 500;
+            color: #2d3748;
+            margin-bottom: 4px;
+        }
+
+        .product-meta {
+            color: #718096;
+            font-size: 0.85rem;
+        }
+
+        .shipping-details {
+            min-width: 150px;
+            line-height: 1.5;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            font-weight: 500;
+            border-radius: 6px;
         }
 
         @media (max-width: 991.98px) {
-            .card-header {
-                display: none;
+            .order-table td {
+                padding: 15px 10px;
             }
 
-            .card-body [class*="col-"] {
-                margin-bottom: 0.5rem;
+            .product-details {
+                min-width: 200px;
             }
 
-            .card-body .col-12 {
-                border-bottom: 1px solid #dee2e6;
-                padding-bottom: 0.5rem;
-            }
-
-            .card-body .col-12:last-child {
-                border-bottom: none;
+            .shipping-details {
+                min-width: 120px;
             }
         }
     </style>
+
 </head>
 
 <body>
@@ -111,12 +150,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'unpaid']) }}"
-                                class="nav-link {{ request()->get('status') === 'unpaid' ? 'active text-primary' : 'text-secondary' }}">
-                                Belum Bayar
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('index-admin-order-need-sent', ['status' => 'pending']) }}"
                                 class="nav-link {{ request()->get('status') === 'pending' ? 'active text-primary' : 'text-secondary' }}">
                                 Perlu Dikirim
@@ -129,13 +162,13 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'completed']) }}"
+                            <a href="{{ route('index-admin-order-complete-sent', ['status' => 'completed']) }}"
                                 class="nav-link {{ request()->get('status') === 'completed' ? 'active text-primary' : 'text-secondary' }}">
                                 Selesai
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'returned']) }}"
+                            <a href="{{ route('index-admin-order-complete-sent', ['status' => 'returned']) }}"
                                 class="nav-link {{ request()->get('status') === 'returned' ? 'active text-danger' : 'text-secondary' }}">
                                 Pengembalian/Pembatalan
                             </a>
@@ -146,183 +179,178 @@
                 <!-- Info Alert -->
                 <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
                     <i class="fa fa-info-circle me-2"></i>
-                    Ini adalah halaman pesanan yang sedang dalam proses pengiriman. Anda dapat memantau status pengiriman dan memastikan 
+                    Ini adalah halaman pesanan yang sedang dalam proses pengiriman. Anda dapat memantau status
+                    pengiriman dan memastikan
                     pesanan sampai kepada pelanggan sesuai jadwal.
-                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-                
-
-                <!-- Status Filters -->
-                <div class="card">
-                    <div class="card-body">
-                        <div class="mb-4">
-                            <div class="text-secondary mb-2">Status Pesanan</div>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="btn btn-outline-primary btn-sm rounded-pill">
-                                    Perlu diproses (28)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Telah diproses (18)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Tertunda (17)
-                                </button>
-                            </div>
-                        </div>
-
-
-                        <form action="{{ route('index-admin-order') }}" method="GET" class="mb-4">
-                            <div class="row g-3">
-                                <div class="col-12 col-lg-6">
-                                    <div class="input-group">
-                                        <select name="search_type" class="form-select" style="max-width: 150px;">
-                                            <option value="order_number">No. Pesanan</option>
-                                            <option value="product">Produk</option>
-                                            <option value="customer">Pelanggan</option>
-                                        </select>
-                                        <input type="text" name="search" value="{{ request()->get('search') }}"
-                                            class="form-control" placeholder="Masukkan no. pesanan">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <select name="shipping_method" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Jasa Kirim</option>
-                                        </select>
-                                        <select name="action" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Tindakan</option>
-                                            <option value="process">Proses</option>
-                                            <option value="cancel">Batalkan</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-primary">
-                                            Terapkan
-                                        </button>
-                                        <a href="{{ route('index-admin-order') }}"
-                                            class="btn btn-outline-secondary">Reset</a>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </form>
-
-                    </div>
-                </div>
-
-                <!-- Order Count and Actions -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="h5 mb-0">28 Pesanan</div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-down-up me-1"></i> Urutkan
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            <i class="bi bi-send me-1"></i> Pengiriman Massal
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
                 </div>
 
                 <!-- Orders Table -->
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-12 col-lg-4">Produk</div>
-                            <div class="col-12 col-lg-2">Harga Total</div>
-                            <div class="col-12 col-lg-2">Status</div>
-                            <div class="col-12 col-lg-2">Hitungan Mundur</div>
-                            <div class="col-6 col-lg-1">Jasa Kirim</div>
-                            <div class="col-6 col-lg-1">Aksi</div>
-                        </div>
+                <div class="card order-table">
+                    <div class="card-header bg-white">
+                        <h4 class="mb-0">Daftar Pesanan</h4>
                     </div>
-
-                    <div class="card-body p-0">
-                        @foreach ($orders as $order)
-                            <div class="border-bottom p-3">
-                                <!-- Order Header -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-person-fill"></i><span
-                                            class="fw-medium">{{ $order->user->fullname }}</span>
-                                    </div>
-                                    <div class="text-secondary">No. Pesanan {{ $order->order_number }}</div>
-                                </div>
-
-                                <!-- Order Details -->
-                                <div class="row g-3">
-                                    <div class="col-12 col-lg-4">
-                                        @foreach ($order->orderItems as $item)
-                                            <div class="d-flex gap-3 mb-3">
-                                                <img src="{{ Storage::url($item->product->main_image) }}"
-                                                    alt="{{ $item->product->product_name }}" class="rounded"
-                                                    style="width: 80px; height: 80px; object-fit: cover;"
-                                                    onclick="openImageInNewTab('{{ Storage::url($item->product->main_image) }}')">
-                                                <div>
-                                                    <div class="fw-medium">{{ $item->product->product_name }}
+                    <div class="card-body">
+                        <table class="table" id="table1">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 300px">Produk</th>
+                                    <th style="min-width: 120px">Dibayar</th>
+                                    <th>Status</th>
+                                    <th style="min-width: 130px">Jasa Kirim</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($orders as $order)
+                                    <tr>
+                                        <td>
+                                            <div class="order-header mb-3">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="bi bi-person-fill text-secondary"></i>
+                                                        <span class="fw-medium">{{ $order->user->fullname }}</span>
                                                     </div>
-                                                    <div class="text-secondary small">x{{ $item->quantity }}</div>
-                                                    <div class="text-secondary small">Code:
-                                                        {{ $item->product->product_code }}</div>
-                                                    <div class="text-secondary small">Category:
-                                                        {{ $item->product->categoryProduct->name }}</div>
+                                                    <div class="text-secondary small">
+                                                        <i class="bi bi-receipt me-1"></i>
+                                                        Invoice : {{ $order->invoice->no_invoice }}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        @endforeach
-                                    </div>
-
-                                    <div class="col-12 col-lg-2">
-                                        <div>Rp. {{ number_format($order->total_amount, 0, ',', '.') }}</div>
-                                        <div class="text-secondary small">
-                                            {{ $order->payment->method ?? 'Online Payment' }}</div>
-                                    </div>
-
-                                    <div class="col-12 col-lg-2">
-                                        @if ($order->status == 1)
-                                            <span class="badge bg-success">Success</span>
-                                        @elseif($order->status == 2)
-                                            <span class="badge bg-primary">Delivered</span>
-                                        @elseif($order->status == 3)
-                                            <span class="badge bg-danger">Canceled</span>
-                                        @else
-                                            {{-- <span class="badge bg-warning">Pending</span> --}}
-                                            <span class="badge bg-primary">Delivered</span>
-                                        @endif
-                                    </div>
-
-                                    <div class="col-12 col-lg-2">
-                                        @if ($order->pickup_date)
-                                            <div class="small">Paket dipick up pada
-                                                {{ \Carbon\Carbon::parse($order->pickup_date)->format('d/m/Y') }}
+                                            <div class="product-details">
+                                                @foreach ($order->orderItems as $item)
+                                                    <div class="d-flex gap-3 mb-3">
+                                                        <img src="{{ Storage::url($item->product->main_image) }}"
+                                                            alt="{{ $item->product->product_name }}"
+                                                            onclick="openImageInNewTab('{{ Storage::url($item->product->main_image) }}')"
+                                                            loading="lazy">
+                                                        <div class="product-info">
+                                                            <div class="product-name">
+                                                                {{ $item->product->product_name }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-box me-1"></i>
+                                                                Qty: {{ $item->quantity }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-upc me-1"></i>
+                                                                {{ $item->product->product_code }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-tag me-1"></i>
+                                                                {{ $item->product->categoryProduct->name }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
                                             </div>
-                                        @endif
-                                    </div>
-
-                                    <div class="col-6 col-lg-1">
-                                        @if ($order->shipping)
-                                            <div>{{ $order->shipping->method }}</div>
-                                            <div class="text-secondary small">{{ $order->shipping->service }}
+                                        </td>
+                                        <td>
+                                            <div class="fw-medium">
+                                                Rp{{ number_format($order->total_amount, 0, ',', '.') }}
                                             </div>
-                                            <div class="text-secondary small">{{ $order->shipping->type }}</div>
+                                            <div class="text-secondary small mt-1">
+                                                <i class="bi bi-credit-card me-1"></i>
+                                                {{ $order->payment->method ?? 'Online Payment' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">
+                                                <i class="bi bi-truck d-inline-flex align-items-center"></i>
+                                                {{ $order->status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div>{{ $order->shipping->method ?? 'J&T Express' }}</div>
                                             <div class="text-secondary small">
-                                                {{ $order->shipping->tracking_number }}</div>
-                                        @endif
-                                    </div>
-
-                                    <div class="col-6 col-lg-1">
-                                        <a href="/order-detail/{{ $order->id }}"
-                                            class="btn btn-link btn-sm p-0 text-decoration-none">
-                                            Atur Ulang Pickup
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                                {{ $order->shippingAddress->province ?? '' }},
+                                                {{ $order->shippingAddress->regency ?? '' }},
+                                                {{ $order->shippingAddress->district ?? '' }},
+                                                {{ $order->shippingAddress->address ?? '' }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button"
+                                                class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 me-2"
+                                                onclick="confirmCompleteOrder({{ $order->id }})">
+                                                <i class="bi bi-bag-check"></i> Selesaikan Pesanan
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+    <script>
+        function confirmCompleteOrder(orderId) {
+            // Tampilkan modal konfirmasi SweetAlert
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Apakah Anda yakin ingin mengubah status dari delivery ke completed?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Selesaikan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Kirim AJAX request untuk update status
+                    fetch(`/orders/${orderId}/complete`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: data.message,
+                                    icon: 'success',
+                                    timer: 3000, // Auto-close alert after 2 seconds
+                                    timerProgressBar: true, // Show progress bar
+                                    showConfirmButton: true // Show OK button
+                                }).then(() => {
+                                    location.reload(); // Refresh halaman atau perbarui UI
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: data.message,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                title: 'Terjadi Kesalahan!',
+                                text: 'Gagal mengubah status pesanan.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        });
+                }
+            });
+        }
+    </script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');

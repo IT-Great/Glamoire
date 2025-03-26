@@ -45,18 +45,18 @@
                         enctype="multipart/form-data">
                         @csrf
                         <div class="container">
-                            <h3 class="mb-2">Create Discount</h3>
+                            <h3 class="mb-2">Buat Diskon</h3>
                             <p class="mb-3">
-                                Create a Discount Product now to attract Buyers.
-                                <a href="#" class="text-blue">Learn More</a>
+                                Buat Diskon Produk Untuk Menarik Minat Pembeli.
+                                <a href="#" class="text-blue"></a>
                             </p>
                             <div class="card">
                                 <div class="card-header">
-                                    <h4 class="">Create a Promotional Discount</h4>
-                                    <p class="text-muted mb-0">Fill out the form below to create a new
-                                        promotional discount. Please ensure all required information is
-                                        provided, including the discount name, date range, and the products
-                                        to be discounted.</p>
+                                    <h4 class="">Buat Diskon Promosi</h4>
+                                    <p class="text-muted mb-0">Isi formulir di bawah ini untuk membuat diskon promosi
+                                        baru. Pastikan semua informasi yang diperlukan disertakan, termasuk nama diskon,
+                                        rentang tanggal, dan produk yang akan diberi diskon.
+                                    </p>
                                 </div>
                                 <div class="card-body">
                                     {{-- type --}}
@@ -66,7 +66,7 @@
                                         <div class="row">
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group has-icon-left" style="margin-bottom: 40px;">
-                                                    <label for="promo_name">Discount Name <span
+                                                    <label for="promo_name">Nama Diskon <span
                                                             style="color: red">*</span></label>
                                                     <div class="position-relative">
                                                         <input type="text"
@@ -81,13 +81,13 @@
                                                         <p class="text-danger">
                                                             {{ $errors->first('promo_name') }}</p>
                                                     @endif
-                                                    <small class="form-text text-muted" style="font-size: 14px;">Enter
-                                                        the name of the discount
-                                                        that will be displayed to customers.</small>
+                                                    <small class="form-text text-muted"
+                                                        style="font-size: 14px;">Masukkan nama diskon yang akan
+                                                        ditampilkan kepada pelanggan.</small>
                                                 </div>
 
                                                 <div class="form-group has-icon-left">
-                                                    <label for="daterange">Date Range <span
+                                                    <label for="daterange">Periode <span
                                                             style="color: red">*</span></label>
                                                     <div class="position-relative">
                                                         <input type="text"
@@ -102,16 +102,16 @@
                                                         <p class="text-danger">
                                                             {{ $errors->first('date_range') }}</p>
                                                     @endif
-                                                    <small class="form-text text-muted" style="font-size: 14px;">Select
-                                                        the date range during which
-                                                        the discount will be valid.</small>
+                                                    <small class="form-text text-muted" style="font-size: 14px;">Pilih
+                                                        rentang tanggal di mana diskon akan berlaku.
+                                                    </small>
                                                 </div>
 
                                             </div>
 
                                             <div class="col-md-12 mb-4">
                                                 <div class="form-group has-icon-left">
-                                                    <label for="promo_name">Purchase Limit <span
+                                                    <label for="promo_name">Batas Pembelian <span
                                                             style="color: red">*</span></label>
                                                     <div class="position-relative">
                                                         <input type="number"
@@ -127,9 +127,10 @@
                                                         <p class="text-danger">
                                                             {{ $errors->first('max_quantity_buyer') }}</p>
                                                     @endif
-                                                    <small class="form-text text-muted" style="font-size: 14px;">Enter
-                                                        the name of the discount
-                                                        that will be displayed to customers.</small>
+                                                    <small class="form-text text-muted"
+                                                        style="font-size: 14px;">Masukkan nama diskon yang akan
+                                                        ditampilkan kepada pelanggan.
+                                                    </small>
                                                 </div>
                                             </div>
 
@@ -374,51 +375,92 @@
                                     <h4>Product List</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div class="mb-2">
-                                        <label for="product_ids">Select Products <span
+                                    <div class="mb-4">
+                                        <label for="product_ids">Pilih Produk <span
                                                 style="color: red">*</span></label><br>
-                                        <small class="text-muted">Select the products to which you
-                                            want to apply the discount. You can choose multiple
-                                            products.</small>
+                                        <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
+                                            dapat memilih beberapa produk.</small>
                                     </div>
                                     <table class="table" id="table1">
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    <input type="checkbox" id="select-all"> Select
-                                                    All
+                                                    <input type="checkbox" id="select-all"> Select All
                                                 </th>
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Limit Stock Product</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($products as $product)
-                                                <tr>
+                                                <tr @if ($product->has_active_promo) class="bg-light" @endif>
                                                     <td>
                                                         <input type="checkbox" name="product_ids[]"
-                                                            value="{{ $product->id }}" class="select-item">
+                                                            value="{{ $product->id }}" class="select-item"
+                                                            @if ($product->has_active_promo) disabled @endif>
                                                     </td>
                                                     <td>
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                        {{ $product->product_name }}
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <div>
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                                @if ($product->has_active_promo)
+                                                                    <div class="mt-1">
+                                                                        <span class="badge bg-danger">Active
+                                                                            Promo</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
-                                                    <td>Rp.
-                                                        {{ number_format($product->regular_price, 0, ',', '.') }}
+
+                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+
+                                                    <td>
+                                                        <input type="number" class="form-control limit-stock"
+                                                            placeholder="Limit Stock"
+                                                            name="limit_stock[{{ $product->id }}]"
+                                                            data-product-id="{{ $product->id }}" min="1"
+                                                            max="{{ $product->stock_quantity }}"
+                                                            value="{{ old('limit_stock.' . $product->id, '') }}"
+                                                            disabled @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($errors->has('limit_stock.' . $product->id))
+                                                            <small
+                                                                class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
+                                                        @endif
+                                                    </td>
+
+                                                    <td>
+                                                        @if ($product->has_active_promo)
+                                                            <span class="text-danger">Not Available</span>
+                                                        @else
+                                                            <span class="text-success">Available</span>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
                                     </table>
+
                                     <div class="col-12 d-flex justify-content-end">
+                                        <a href="{{ route('index-promo-diskon') }}"
+                                            class="btn btn-secondary btn-sm me-3"
+                                            style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                        </a>
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                            Discount</button>
+                                            Promo</button>
                                         <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                            Discount</button>
+                                            Promo</button>
                                     </div>
                                 </div>
                             </div>
@@ -443,6 +485,77 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle checkbox selection
+            const checkboxes = document.querySelectorAll('.select-item');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const productId = this.value;
+                    const limitStockInput = document.querySelector(
+                        `input[name="limit_stock[${productId}]"]`);
+
+                    if (limitStockInput) {
+                        if (this.checked) {
+                            limitStockInput.removeAttribute('disabled');
+                            // Hapus atribut required
+                            // limitStockInput.required = true; // Ini dihapus
+                        } else {
+                            limitStockInput.setAttribute('disabled', 'disabled');
+                            // Hapus atribut required
+                            // limitStockInput.required = false; // Ini dihapus
+                            limitStockInput.value = ''; // Clear the value when unchecked
+                        }
+                    }
+                });
+            });
+
+            // Handle "Select All" checkbox if you have one
+            const selectAllCheckbox = document.getElementById('select-all');
+            if (selectAllCheckbox) {
+                selectAllCheckbox.addEventListener('change', function() {
+                    checkboxes.forEach(checkbox => {
+                        if (!checkbox.disabled) {
+                            checkbox.checked = this.checked;
+                            const event = new Event('change');
+                            checkbox.dispatchEvent(event);
+                        }
+                    });
+                });
+            }
+
+            // Validate limit stock inputs
+            const limitStockInputs = document.querySelectorAll('.limit-stock');
+
+            limitStockInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const maxStock = parseInt(this.getAttribute('max'));
+                    const value = this.value.trim(); // Gunakan trim() untuk menghapus spasi
+
+                    // Jika input kosong, batalkan validasi
+                    if (value === '') {
+                        this.setCustomValidity('');
+                        this.reportValidity();
+                        return;
+                    }
+
+                    const parsedValue = parseInt(value);
+
+                    if (isNaN(parsedValue) || parsedValue <= 0) {
+                        this.setCustomValidity('Please enter a valid number greater than 0');
+                    } else if (parsedValue > maxStock) {
+                        this.setCustomValidity(`Limit stock cannot exceed ${maxStock}`);
+                    } else {
+                        this.setCustomValidity('');
+                    }
+
+                    this.reportValidity();
+                });
+            });
+        });
     </script>
 
     <script>

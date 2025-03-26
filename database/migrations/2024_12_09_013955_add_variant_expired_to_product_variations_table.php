@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            $table->enum('status', ['unread', 'read'])->default('unread');
+        Schema::table('product_variations', function (Blueprint $table) {
+            $table->string('variant_expired')->nullable()->after('variant_stock');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('questions', function (Blueprint $table) {
-            //
+        Schema::table('product_variations', function (Blueprint $table) {
+            $table->dropColumn('variant_expired');
         });
     }
 };

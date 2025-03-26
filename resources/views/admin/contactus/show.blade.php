@@ -302,10 +302,10 @@
             transition: all 0.3s ease;
         }
 
-        .btn-submit:hover {
+        /* .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(103, 119, 239, 0.4);
-        }
+        } */
 
         /* Modal Styles */
         .image-modal {
@@ -523,8 +523,8 @@
                                             <i class="bi bi-image"></i> Attached Image
                                         </h6>
                                         <div class="media-content">
-                                            @if ($contact->image)
-                                                <img src="{{ asset('storage/' . $contact->image) }}"
+                                            @if ($contact->response_image)
+                                                <img src="{{ asset('storage/' . $contact->response_image) }}"
                                                     alt="Uploaded Image" class="uploaded-image"
                                                     onclick="openImageModal(this.src)">
                                             @else
@@ -541,9 +541,9 @@
                                             <i class="bi bi-camera-video"></i> Attached Video
                                         </h6>
                                         <div class="video-container">
-                                            @if ($contact->video)
+                                            @if ($contact->response_video)
                                                 <video controls class="video-player">
-                                                    <source src="{{ asset('storage/' . $contact->video) }}"
+                                                    <source src="{{ asset('storage/' . $contact->response_video) }}"
                                                         type="video/mp4">
                                                     Your browser does not support video playback.
                                                 </video>
@@ -551,7 +551,6 @@
                                                 <p class="text-muted">No video attached</p>
                                             @endif
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -574,7 +573,13 @@
                             </div>
 
                             <div class="text-end">
-                                <button type="submit" class="btn btn-submit">
+                                <a href="{{ route('index-contactus-admin') }}" class="btn btn-secondary btn-sm me-2"
+                                    style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-box-arrow-in-left me-1"></i>
+                                    Kembali
+                                </a>
+
+                                <button type="submit" class="btn btn-sm btn-primary">
                                     <i class="bi bi-send"></i> Send Response
                                 </button>
                             </div>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COA || Accounting Glamoire</title>
+    <title>COA - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+
 </head>
 
 <body>
@@ -28,7 +30,6 @@
                 <div class="page-title" style="margin-bottom: 20px;">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>All COA</h3>
                             <nav aria-label="breadcrumb" class="breadcrumb-header me-3">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="index.html">COA</a></li>
@@ -36,27 +37,29 @@
                                 </ol>
                             </nav>
                         </div>
-                        <div
-                            class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
-                            <a href="/category-coa" type="button" class="btn btn-sm btn-dark d-flex align-items-center"
-                                style="border-radius: 8px; margin-right: 10px;">
-                                <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>Category
-                            </a>
-
-                            <a href="/create-coa" type="button"
-                                class="btn btn-sm btn-primary d-flex align-items-center" style="border-radius: 8px;">
-                                <i class="bi bi-plus-circle" style="margin-right: 3px;"></i>Add COA
-                            </a>
-                        </div>
-
-
                     </div>
                 </div>
 
                 <section class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h4>List COA</h4>
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <h4>List COA</h4>
+                                </div>
+                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                                    <a href="/category-article" type="button"
+                                        class="btn btn-sm btn-dark d-flex align-items-center"
+                                        style="margin-right: 10px;">
+                                        <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>Category
+                                    </a>
+
+                                    <a href="/create-article-admin" type="button"
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="fa fa-plus" style="margin-right: 3px;"></i>Add COA
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <table class="table" id="table1">
@@ -93,40 +96,22 @@
                     </div>
                 </section>
             </div>
-
-
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
         </div>
     </div>
-    {{-- {% endblock %}
-    {% block styles %} --}}
+
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-    {{-- {% endblock %}
-    {% block js %} --}}
+
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
-    {{-- {% endblock %} --}}
 
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 

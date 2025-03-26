@@ -165,12 +165,14 @@
                                             </td>
                                             <td>
                                                 @if ($contact->status === 'read')
-                                                    <span class="stock-badge rounded-pill bg-success d-inline-flex align-items-center gap-1 text-white">
+                                                    <span
+                                                        class="stock-badge rounded-pill bg-success d-inline-flex align-items-center gap-1 text-white">
                                                         <i class="bi bi-check-circle-fill"></i> Read
                                                     </span>
                                                 @else
-                                                <span class="stock-badge rounded-pill bg-warning d-inline-flex align-items-center gap-1 text-dark">
-                                                    <i class="bi bi-exclamation-circle-fill"></i> Unread
+                                                    <span
+                                                        class="stock-badge rounded-pill bg-warning d-inline-flex align-items-center gap-1 text-dark">
+                                                        <i class="bi bi-exclamation-circle-fill"></i> Unread
                                                     </span>
                                                 @endif
                                             </td>
@@ -213,6 +215,61 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+    <script>
+        document.querySelectorAll('.delete-contact').forEach(item => {
+            item.addEventListener('click', function() {
+                const contactId = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'You won\'t be able to revert this!',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to delete the contact
+                        fetch(`/delete-contact/${contactId}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Remove the contact from the page
+                                    document.querySelector(`#contact-item-${contactId}`)
+                                    .remove();
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: data.message,
+                                        icon: 'success',
+                                        timer: 1800,
+                                        timerProgressBar: true,
+                                        showConfirmButton: true
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: data.message,
+                                        icon: 'error',
+                                        timer: 1800,
+                                        timerProgressBar: true,
+                                        showConfirmButton: true
+                                    });
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                });
+            });
+        });
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -232,19 +289,27 @@
         });
     </script>
 
-    @if (session('toast_success'))
+    @if (session('success'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
-                toast: true,
-                position: 'top-end',
+                title: 'Success!',
+                text: '{{ session('success') }}',
                 icon: 'success',
-                title: '{{ session('toast_success') }}',
-                showConfirmButton: false,
-                timer: 3000, // Toast will disappear after 3 seconds
-                timerProgressBar: true
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4A69E2', // Mengatur warna tombol OK
+                customClass: {
+                    icon: 'swal-icon-success'
+                },
+                timer: 1800, // Mengatur waktu tampilan SweetAlert dalam milidetik
+                timerProgressBar: true, // Menampilkan progress bar timer
+                didClose: () => {
+                    // Optional: Tambahkan aksi di sini jika diperlukan saat alert ditutup
+                }
             });
         </script>
     @endif
+
 </body>
 
 </html>

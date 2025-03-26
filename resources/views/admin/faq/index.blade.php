@@ -15,6 +15,10 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         .stats-card {
             transition: transform 0.3s ease;
@@ -73,66 +77,14 @@
                 <div class="page-title mb-4">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
-                            <h2>FAQ Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/category-product">Dashboard</a></li>
-                                    <li class="breadcrumb-item active">FAQ</li>
+                                    <li class="breadcrumb-item"><a href="#">FAQ</a></li>
+                                    <li class="breadcrumb-item active">All FAQ</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
-                </div>
-
-                <div class="container">
-                    <!-- Add FAQ Modal -->
-                    <div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header bg-white">
-                                    <h5 class="modal-title">
-                                        <i class="bi bi-plus-square"></i> Add New FAQ
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-
-                                <form id="faqForm">
-                                    @csrf
-                                    <div class="modal-body">
-                                        <!-- Form FAQ -->
-                                        <div class="mb-3">
-                                            <label for="category" class="form-label fw-medium">Category</label>
-                                            <input type="text" class="form-control" id="category" name="category"
-                                                required>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="question" class="form-label fw-medium">Question</label>
-                                            <input type="text" class="form-control" id="question" name="question"
-                                                required>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label for="answer" class="form-label fw-medium">Answer</label>
-                                            <textarea class="form-control" id="answer" name="answer" rows="3" required></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                            <i class="bi bi-x-lg"></i> Close
-                                        </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-save"></i> Save FAQ
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
                 <!-- Categories Table Section -->
@@ -143,9 +95,11 @@
                                 <h4>FAQ List</h4>
                             </div>
                             <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                <button class="btn btn-sm btn-primary mb-3" data-bs-toggle="modal"
-                                    data-bs-target="#faqModal"><i class="fa fa-plus"></i> Add
-                                    FAQ</button>
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#faqModal">
+                                    <i class="fa fa-plus"></i>  Buat FAQ 
+                                </button>
+
                             </div>
                         </div>
                     </div>
@@ -182,12 +136,8 @@
                                                     <li>
                                                         <strong>{{ $faq->question }}</strong>
                                                         <p>{{ $faq->answer }}</p>
-                                                        {{-- <button class="btn btn-sm btn-danger"
-                                                            onclick="deleteFaq({{ $faq->id }})">Delete</button> --}}
-
-                                                        <button class="btn btn-sm btn-danger"
+                                                        <button class="btn btn-sm btn-danger mb-2"
                                                             onclick="deleteFaq({{ $faq->id }})">Delete</button>
-
                                                     </li>
                                                 @endforeach
                                             </ul>
@@ -196,6 +146,79 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- Add FAQ Modal -->
+                <div class="modal fade" id="faqModal" tabindex="-1" aria-labelledby="faqModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-white">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-plus-square"></i> Add New FAQ
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+
+                            <form id="faqForm">
+                                @csrf
+                                <div class="modal-body">
+                                    <!-- Form FAQ -->
+                                    <div class="mb-3">
+                                        <label for="category" class="form-label fw-medium">Category <span
+                                                style="color: red">*</span></label>
+
+                                        <select class="form-select select2 me-2" name="category">
+                                            <option value="Account">Account</option>
+                                            <option value="My Order">My Order</option>
+                                            <option value="Payment">Payment</option>
+                                            <option value="Shipping">Shipping</option>
+                                            <option value="Refund & Return Policy">Refund & Return Policy</option>
+                                            <option value="Scam Alert">Scam Alert</option>
+                                        </select>
+
+                                        <small class="text-muted" style="font-size: 14px;">
+                                            Silakan masukkan nama kategori yang unik dan deskriptif.
+                                        </small>
+                                    </div>
+
+
+                                    <div class="mb-3">
+                                        <label for="question" class="form-label fw-medium">Question <span
+                                                style="color: red">*</span></label>
+                                        <input type="text" class="form-control" id="question" name="question"
+                                            required>
+
+                                        <small class="text-muted" style="font-size: 14px;">
+                                            Silakan masukkan nama kategori yang unik dan deskriptif.
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="answer" class="form-label fw-medium">Answer <span
+                                                style="color: red">*</span></label>
+                                        <textarea class="form-control" id="answer" name="answer" rows="3" required></textarea>
+
+                                        <small class="text-muted" style="font-size: 14px;">
+                                            Silakan masukkan nama kategori yang unik dan deskriptif.
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-lg"></i> Close
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-save"></i> Save FAQ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
@@ -213,10 +236,20 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="assets/vendors/fontawesome/all.min.js"></script>
 
     <script>
         $(document).ready(function() {
+            $('#faqModal').on('shown.bs.modal', function() {
+                $('.select2').select2({
+                    dropdownParent: $('#faqModal') // Penting untuk modal
+                });
+            });
+
+
             // Handle FAQ form submission
             $('#faqForm').on('submit', function(e) {
                 e.preventDefault();

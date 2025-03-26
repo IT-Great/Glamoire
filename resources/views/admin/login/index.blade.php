@@ -20,7 +20,7 @@
                 <h4>Glamoire</h4>
             </div>
             <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Enter your username and password to access the dashboard page.</p>
+            <p class="auth-subtitle mb-5">Masukkan Username dan Password untuk masuk ke halaman Dashboard</p>
 
             <form action="{{ route('login-admin') }}" method="POST">
                 @csrf

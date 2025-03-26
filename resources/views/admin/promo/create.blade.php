@@ -127,7 +127,6 @@
                             <h3 class="mb-2">Buat Promo</h3>
                             <p class="mb-3">
                                 Buat Promo sekarang untuk menarik Pembeli.
-                                <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
                             </p>
                             <div class="card mb-4">
                                 <div class="card-body">
@@ -408,10 +407,8 @@
                                                         </div>
                                                     </td>
                                                     <td>{{ $product->stock_quantity }}</td>
-
                                                     <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
                                                     </td>
-
                                                     <td>
                                                         <input type="number" class="form-control limit-stock"
                                                             placeholder="Limit Stock"
@@ -425,8 +422,6 @@
                                                                 class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
                                                         @endif
                                                     </td>
-
-
                                                     <td>
                                                         @if ($product->has_active_promo)
                                                             <span class="text-danger">Not Available</span>
@@ -440,6 +435,11 @@
                                     </table>
 
                                     <div class="col-12 d-flex justify-content-end">
+                                        <a href="{{ route('index-promo') }}" class="btn btn-secondary btn-sm me-3"
+                                            style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                        </a>
+
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
                                             Promo</button>
                                         <button type="submit" class="btn btn-sm btn-primary me-1">Submit

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('promo_products', function (Blueprint $table) {
-            $table->integer('limit_stock')->nullable()->after('discounted_price'); // Ganti 'column_name' dengan kolom sebelum 'limit_stock'
+            $table->bigInteger('discount_product_voucher_item')->change(); // Gunakan decimal jika perlu menyimpan nilai seperti 20.50
         });
     }
 
@@ -22,7 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('promo_products', function (Blueprint $table) {
-            $table->dropColumn('limit_stock');
+            $table->bigInteger('discount_product_voucher_item')->change(); // Kembalikan ke string jika rollback
+
         });
     }
 };

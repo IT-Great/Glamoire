@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_stocks', function (Blueprint $table) {
-            $table->unsignedBigInteger('variation_id')->nullable()->after('product_id');
-            $table->foreign('variation_id')->references('id')->on('product_variations')->onDelete('cascade');
+        Schema::table('promos', function (Blueprint $table) {
+            $table->bigInteger('discount')->change(); // Gunakan decimal jika perlu menyimpan nilai seperti 20.50
+
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product_stocks', function (Blueprint $table) {
-            
+        Schema::table('promos', function (Blueprint $table) {
+            $table->bigInteger('discount')->change(); // Kembalikan ke string jika rollback
         });
     }
 };

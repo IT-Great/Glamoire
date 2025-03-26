@@ -17,12 +17,6 @@ class ContactUsResponseMail extends Mailable
     public $contact;
     public $response;
 
-    // public function __construct($contact, $response)
-    // {
-    //     $this->contact = $contact;
-    //     $this->response = $response;
-    // }
-
     public function __construct($contact)  // Ubah constructor untuk hanya menerima $contact
     {
         $this->contact = $contact;
@@ -39,6 +33,15 @@ class ContactUsResponseMail extends Mailable
 
     public function build()
     {
+        return $this->from('no-reply@yourdomain.com', config('app.name'))
+            ->replyTo('no-reply@yourdomain.com', 'Do Not Reply')
+            ->subject('Response to Your Question')
+            ->view('admin.contactus.contact-response')
+            ->with([
+                'whatsappLink' => 'https://wa.me/62xxxxxxxx', // Ganti dengan nomor WhatsApp admin
+                'contactUsLink' => url('/contact')
+            ]);
+
         $mail = $this->subject('Response to Your Question')
             ->view('admin.contactus.contact-response');
 

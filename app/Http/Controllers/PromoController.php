@@ -31,33 +31,33 @@ class PromoController extends Controller
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            $brandVouchers   = Promo::where('type', '=' , 'brand voucher')
+            $brandVouchers   = Promo::where('type', '=', 'brand voucher')
                 ->with(['products'])
                 ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            $limitedVouchers = Promo::where('type', '=' , 'limited voucher')
-                ->whereColumn('total_used', '<', 'usage_quota')
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
-                ->get();
-            
-            $ongkirVouchers  = Promo::where('type', '=' , 'ongkir voucher')
+            $limitedVouchers = Promo::where('type', '=', 'limited voucher')
                 ->whereColumn('total_used', '<', 'usage_quota')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            $productVouchers  = Promo::where('type', '=' , 'product voucher')
+            $ongkirVouchers  = Promo::where('type', '=', 'ongkir voucher')
+                ->whereColumn('total_used', '<', 'usage_quota')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                ->get();
+
+            $productVouchers  = Promo::where('type', '=', 'product voucher')
                 ->whereColumn('total_used', '<', 'usage_quota')
                 ->with(['products'])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                 ->get();
 
-            $promoBundlings  = Promo::where('type', '=' , 'discount')
+            $promoBundlings  = Promo::where('type', '=', 'discount')
                 ->with(['products'])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
@@ -71,7 +71,7 @@ class PromoController extends Controller
 
                 $cartId = Cart::where('user_id', $userId)->value('id');
                 $cartItems = Cart_item::where('cart_id', $cartId)->get();
-                
+
                 return view('user.component.promo', [
                     'promos' => $promos,
                     'brandVouchers' => $brandVouchers,
@@ -82,8 +82,7 @@ class PromoController extends Controller
                     'wishlist'  => $wishlist,
                     'cartItems' => $cartItems,
                 ]);
-            }
-            else{
+            } else {
                 return view('user.component.promo', [
                     'promos' => $promos,
                     'brandVouchers' => $brandVouchers,
@@ -93,8 +92,6 @@ class PromoController extends Controller
                     'promoBundlings' => $promoBundlings,
                 ]);
             }
-
-
         } catch (Exception $err) {
             dd($err);
         }
@@ -108,8 +105,8 @@ class PromoController extends Controller
         if ($userId) {
             $promo = Promo::where('promo_name', $name)
                 ->with(['products'  => function ($query) {
-                $query->select('products.*', 'promo_products.discounted_price')
-                    ->wherePivot('discounted_price', '>', 0);
+                    $query->select('products.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0);
                 }])
                 ->get();
 
@@ -126,12 +123,12 @@ class PromoController extends Controller
 
             $promo = Promo::where('promo_name', $name)
                 ->with(['products'  => function ($query) {
-                $query->select('products.*', 'promo_products.discounted_price')
-                    ->wherePivot('discounted_price', '>', 0);
+                    $query->select('products.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0);
                 }])
                 ->get();
 
-                return view('user.component.detail-promo', [
+            return view('user.component.detail-promo', [
                 'promo' => $promo,
             ]);
         }
@@ -152,6 +149,22 @@ class PromoController extends Controller
                 return $item;
             });
 
+        // Hitung total promo yang aktif
+        $activePromos = $promo->filter(function ($item) {
+            return $item->isActive;
+        })->count();
+
+        // Hitung total voucher aktif
+        $activeVouchers = Promo::whereIn('type', [
+            'product voucher',
+            'brand voucher',
+            'limited voucher',
+            'new user voucher'
+        ])->where('status', 'Active')->count();
+
+        // hitung total promo discount
+        $activeDiscounts = Promo::where('type', 'discount')->count();
+
         $products = Product::with(['promos' => function ($query) {
             $query->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%d/%m/%Y') <= CURDATE()")
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%d/%m/%Y') >= CURDATE()");
@@ -162,6 +175,9 @@ class PromoController extends Controller
             'promo' => $promo,
             'products' => $products,
             'brands' => $brands,
+            'activePromos' => $activePromos,
+            'activeVouchers' => $activeVouchers,
+            'activeDiscounts' => $activeDiscounts,
         ]);
     }
 
@@ -527,16 +543,97 @@ class PromoController extends Controller
         }
     }
 
+    // awal code
+    // public function editPromo($id)
+    // {
+
+    //     $promo = Promo::with(['products'])->findOrFail($id);
+    //     $products = Product::withCount(['promos'])->get();
+
+    //     // Transform products to include current selection status
+    //     $products = $products->map(function ($product) use ($promo) {
+    //         $product->is_selected = $promo->products->contains('id', $product->id);
+    //         $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+    //         return $product;
+    //     });
+
+    //     return view('admin.promo.edit', [
+    //         'promo' => $promo,
+    //         'products' => $products,
+    //     ]);
+    // }
+
+    // modif code 
+    // public function editPromo($id)
+    // {
+    //     $promo = Promo::with(['products'])->findOrFail($id);
+    //     $products = Product::withCount(['promos'])->get();
+
+    //     // Parse existing discount
+    //     $discountValue = $promo->discount;
+    //     $discountType = 'nominal'; // Default
+
+    //     // Detect discount type
+    //     if (strpos($discountValue, '%') !== false) {
+    //         $discountType = 'percentage';
+    //         $discountValue = str_replace('%', '', $discountValue);
+    //     }
+
+    //     // Transform products to include current selection status
+    //     $products = $products->map(function ($product) use ($promo) {
+    //         $product->is_selected = $promo->products->contains('id', $product->id);
+    //         $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+    //         return $product;
+    //     });
+
+    //     return view('admin.promo.edit', [
+    //         'promo' => $promo,
+    //         'products' => $products,
+    //         'discountValue' => $discountValue,
+    //         'discountType' => $discountType
+    //     ]);
+    // }
+
+    // modficode
+    // public function editPromo($id)
+    // {
+    //     $promo = Promo::with(['products'])->findOrFail($id);
+
+    //     $products = Product::withCount(['promos'])->get();
+
+    //     // Transform products to include current selection status
+    //     $products = $products->map(function ($product) use ($promo) {
+    //         $product->is_selected = $promo->products->contains('id', $product->id);
+    //         $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+    //         return $product;
+    //     });
+
+    //     return view('admin.promo.edit', [
+    //         'promo' => $promo,
+    //         'products' => $products,
+    //     ]);
+    // }
+
     public function editPromo($id)
     {
+        // Muat promo beserta produk dengan semua kolom pivot
+        $promo = Promo::with(['products' => function ($query) {
+            $query->withPivot('discount_product_voucher_item', 'limit_stock', 'discounted_price');
+        }])->findOrFail($id);
 
-        $promo = Promo::with(['products'])->findOrFail($id);
         $products = Product::withCount(['promos'])->get();
 
-        // Transform products to include current selection status
+        // Transform produk untuk menambahkan informasi pivot
         $products = $products->map(function ($product) use ($promo) {
             $product->is_selected = $promo->products->contains('id', $product->id);
             $product->has_other_active_promo = $product->getHasActivePromoAttribute() && !$product->is_selected;
+
+            // Ambil data limit_stock dari pivot jika produk dipilih
+            if ($product->is_selected) {
+                $pivotData = $promo->products->where('id', $product->id)->first();
+                $product->pivot_limit_stock = $pivotData ? $pivotData->pivot->limit_stock : null;
+            }
+
             return $product;
         });
 
@@ -545,6 +642,9 @@ class PromoController extends Controller
             'products' => $products,
         ]);
     }
+
+
+
 
 
     public function updatePromo(Request $request, $id)
@@ -557,7 +657,7 @@ class PromoController extends Controller
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
                 'promo_code' => 'required',
-                'discount' => 'required|numeric',
+                'discount' => 'required',
                 'global_discount_type' => 'required|in:nominal,percentage',
                 'product_ids' => 'required|array',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
@@ -585,6 +685,17 @@ class PromoController extends Controller
             // Update discount details
             $discount = $request->input('discount');
             $discountType = $request->input('global_discount_type');
+
+            // Hapus format Rp. dan titik
+            if ($discountType == 'nominal') {
+                $discount = str_replace(['Rp.', 'Rp', '.', ' '], '', $discount);
+            } elseif ($discountType == 'percentage') {
+                $discount = str_replace('%', '', $discount);
+            }
+
+            // Pastikan discount adalah angka
+            $discount = intval($discount);
+
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
 
             // Handle image update
@@ -620,6 +731,18 @@ class PromoController extends Controller
                 $product = Product::find($productId);
 
                 if ($product) {
+                    $limitStock = $request->limit_stock[$productId] ?? null; // Ambil limit stock jika ada, atau null
+
+                    if ($limitStock !== null) {
+                        if (!is_numeric($limitStock) || $limitStock <= 0) {
+                            throw new \Exception("Please enter a valid limit stock for product: {$product->product_name}");
+                        }
+
+                        if ($limitStock > $product->stock_quantity) {
+                            throw new \Exception("Limit stock cannot exceed available stock ({$product->stock_quantity}) for product: {$product->product_name}");
+                        }
+                    }
+
                     $discountedPrice = $this->calculateDiscountedPrice(
                         $product->regular_price,
                         $discount,
@@ -630,7 +753,8 @@ class PromoController extends Controller
                     $promo->products()->attach($productId, [
                         'discount_product_voucher_item' => $discount,
                         'discount_type' => $discountType,
-                        'discounted_price' => $discountedPrice
+                        'discounted_price' => $discountedPrice,
+                        'limit_stock' => $limitStock // Simpan limit stock jika ada, null jika tidak ada
                     ]);
                 }
             }
@@ -644,6 +768,7 @@ class PromoController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Promo: ' . $e->getMessage()])->withInput();
         }
     }
+
 
 
 
@@ -695,7 +820,8 @@ class PromoController extends Controller
             ]);
 
             // Simpan data diskon
-            $discount = $request->input('discount');
+            // $discount = $request->input('discount');
+            $discount = str_replace('.', '', $request->input('discount'));
             $discountType = $request->input('global_discount_type');
 
             // Hapus format rupiah dari regular_price
@@ -762,7 +888,8 @@ class PromoController extends Controller
             ]);
 
             // Simpan data diskon
-            $discount = $request->input('discount');
+            // $discount = $request->input('discount');
+            $discount = str_replace('.', '', $request->input('discount'));
             $discountType = $request->input('global_discount_type');
 
             // Hapus format rupiah dari regular_price
@@ -825,7 +952,6 @@ class PromoController extends Controller
         }
     }
 
-
     public function getProductsByBrand($brandId)
     {
         $products = Product::where('brand_id', $brandId)
@@ -837,8 +963,8 @@ class PromoController extends Controller
                     'product_name' => $product->product_name,
                     'stock_quantity' => $product->stock_quantity,
                     'regular_price' => $product->regular_price,
-                    'main_image' => Storage::url($product->main_image), // Convert ke URL lengkap
-                    // tambahkan field lain yang diperlukan
+                    'main_image' => Storage::url($product->main_image),
+                    'has_active_promo' => $product->getHasActivePromoAttribute(), // Atribut promo aktif
                 ];
             });
 
@@ -858,6 +984,7 @@ class PromoController extends Controller
         return view('admin.promo.voucher.create-voucher-product', compact('products'));
     }
 
+    // modif code
     public function storePromoProductVoucher(Request $request)
     {
         try {
@@ -872,13 +999,17 @@ class PromoController extends Controller
                 'global_discount_type' => 'required|in:nominal,percentage',
                 'product_ids' => 'required|array',
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'limit_stock' => 'array',
             ]);
 
             // Simpan data diskon
             $discount = $request->input('discount');
             $discountType = $request->input('global_discount_type');
 
-            // Hapus format rupiah dari regular_price
+            // Hapus format angka dengan titik dan koma jika ada, lalu konversi ke angka
+            $discount = str_replace(['.', ','], '', $discount); // Menghapus titik dan koma
+
+            // Hapus format rupiah dari min_transaction
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
 
             // Generate kode promo otomatis
@@ -907,13 +1038,32 @@ class PromoController extends Controller
                 'type' => $request->type,
             ]);
 
-            // Loop melalui produk terpilih untuk simpan diskon per produk
+            // Loop melalui produk terpilih untuk simpan diskon dan limit stock per produk
+            $productAttachData = [];
             foreach ($request->product_ids as $productId) {
-                $discountProduct = $request->product_discount[$productId] ?? null; // Ambil diskon per produk
-                $promo->products()->attach($productId, [
-                    'discount_product_voucher_item' => $discountProduct ?: $promo->discount, // Gunakan diskon all jika tidak ada input
-                ]);
+                // Ambil diskon per produk
+                $discountProduct = $request->product_discount[$productId] ?? null;
+
+                // Hapus format titik dan koma dari input diskon
+                $discountProduct = str_replace(['.', ','], '', $discountProduct);
+
+                // Ambil tipe diskon (nominal atau percentage)
+                $discountType = $request->input('product_discount_type')[$productId] ?? $promo->discount_type;
+
+                // Ambil limit stock per produk
+                $limitStock = $request->limit_stock[$productId] ?? null;
+
+                // Tambah data untuk attach
+                $productAttachData[$productId] = [
+                    'discount_product_voucher_item' => $discountProduct ?: $promo->discount,
+                    'limit_stock' => $limitStock,
+                    'discount_type' => $discountType,
+                    'discounted_price' => $request->discounted_price[$productId] ?? null,
+                ];
             }
+
+            // Attach produk dengan data tambahan
+            $promo->products()->attach($productAttachData);
 
             // Redirect dengan pesan sukses
             return redirect()->route('index-promo-voucher')->with('success', 'Promo Product Voucher created successfully!');
@@ -924,6 +1074,7 @@ class PromoController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
+
 
 
     // detail promo voucher
@@ -950,6 +1101,11 @@ class PromoController extends Controller
         $brands = Brand::all();
         $products = Product::all();
 
+        // Menyaring produk berdasarkan brand yang dipilih (jika ada)
+        if ($promo->brand_id) {
+            $products = $products->where('brand_id', $promo->brand_id);
+        }
+
         // Transform products to include current selection status
         $products = $products->map(function ($product) use ($promo) {
             $product->is_selected = $promo->products->contains('id', $product->id);
@@ -957,18 +1113,13 @@ class PromoController extends Controller
             return $product;
         });
 
-        // Parse date range yang tersimpan menjadi format yang sesuai
-        $start_date = Carbon::parse($promo->start_date)->format('m/d/Y');
-        $end_date = Carbon::parse($promo->end_date)->format('m/d/Y');
-        $promo->date_range = $start_date . ' - ' . $end_date;
-
         // Tambahkan diskon dan tipe diskon
         $promo->discount_type = $promo->discount_type ?? 'nominal';
         $promo->discount_value = $promo->discount;
 
         switch ($promo->type) {
             case 'brand voucher':
-                return view('admin.promo..voucher.edit-voucher-brand', compact('promo', 'brands'));
+                return view('admin.promo..voucher.edit-voucher-brand', compact('promo', 'brands', 'products'));
             case 'product voucher':
                 return view('admin.promo.voucher.edit-voucher-product', compact('promo', 'products'));
             case 'limited voucher':
@@ -1092,6 +1243,7 @@ class PromoController extends Controller
     }
 
     // Brand Voucher Edit
+    // digunakan
     public function updatePromoBrandVoucher(Request $request, $id)
     {
         try {
@@ -1101,21 +1253,25 @@ class PromoController extends Controller
                 'min_transaction' => 'required',
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
-                'discount' => 'required|numeric|min:0|max:100',
-                'max_discount' => 'required|numeric|min:0',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'brand_id' => 'required|exists:brands,id',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
             ]);
 
+            // Find the existing promo
             $promo = Promo::findOrFail($id);
 
-            // Hapus format rupiah dari min_transaction
+            // Parse discount values
+            $discount = str_replace(['.', ','], '', $request->input('discount'));
+            $discountType = $request->input('global_discount_type');
+
+            // Remove currency format from min_transaction
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
 
             // Handle image update
             $imagePath = $promo->image;
             if ($request->hasFile('image')) {
-                // Delete old image if exists
                 if ($promo->image && Storage::disk('public')->exists($promo->image)) {
                     Storage::disk('public')->delete($promo->image);
                 }
@@ -1132,27 +1288,32 @@ class PromoController extends Controller
                 'min_transaction' => $minTransaction,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount,
-                'max_discount' => $request->max_discount,
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath,
                 'brand_id' => $request->brand_id,
             ]);
 
-            // Update discounted prices for brand products
+            // Get brand and update products' discounts
             $brand = Brand::findOrFail($request->brand_id);
-            foreach ($brand->products as $product) {
-                $discountedPrice = $product->regular_price * (1 - $request->discount / 100);
-                $maxDiscountAmount = $product->regular_price * ($request->max_discount / 100);
+            $productAttachData = [];
 
-                if ($product->regular_price - $discountedPrice > $maxDiscountAmount) {
-                    $discountedPrice = $product->regular_price - $maxDiscountAmount;
+            foreach ($brand->products as $product) {
+                $discountedPrice = $product->regular_price * (1 - $discount / 100);
+
+                if ($discountType === 'nominal') {
+                    $discountedPrice = max($product->regular_price - $discount, 0);
                 }
 
-                $product->update(['discounted_price' => $discountedPrice]);
+                $productAttachData[$product->id] = [
+                    'discount_product_voucher_item' => $discount,
+                    'discount_type' => $discountType,
+                    'discounted_price' => $discountedPrice,
+                ];
             }
 
-            // Sync products for the brand
-            $promo->products()->sync($brand->products->pluck('id'));
+            // Sync products with additional data
+            $promo->products()->sync($productAttachData);
 
             return redirect()->route('index-promo-voucher')->with('success', 'Promo Brand Voucher updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -1162,6 +1323,8 @@ class PromoController extends Controller
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Voucher: ' . $e->getMessage()])->withInput();
         }
     }
+
+
 
     // Product Voucher Edit
     public function updatePromoProductVoucher(Request $request, $id)
@@ -1173,12 +1336,22 @@ class PromoController extends Controller
                 'min_transaction' => 'required',
                 'usage_quota' => 'required',
                 'max_quantity_buyer' => 'required',
-                'discount' => 'required',
+                'discount' => 'required|numeric',
+                'global_discount_type' => 'required|in:nominal,percentage',
                 'product_ids' => 'required|array',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'limit_stock' => 'array',
             ]);
 
+            // Find the existing promo
             $promo = Promo::findOrFail($id);
+
+            // Simpan data diskon
+            $discount = $request->input('discount');
+            $discountType = $request->input('global_discount_type');
+
+            // Hapus format angka dengan titik dan koma jika ada, lalu konversi ke angka
+            $discount = str_replace(['.', ','], '', $discount);
 
             // Hapus format rupiah dari min_transaction
             $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
@@ -1203,12 +1376,38 @@ class PromoController extends Controller
                 'min_transaction' => $minTransaction,
                 'usage_quota' => $request->usage_quota,
                 'max_quantity_buyer' => $request->max_quantity_buyer,
-                'discount' => $request->discount,
+                'discount' => $discount,
+                'discount_type' => $discountType,
                 'image' => $imagePath,
+                'type' => $request->type,
             ]);
 
-            // Sync selected products
-            $promo->products()->sync($request->product_ids);
+            // Detach existing products and prepare new product attachments
+            $productAttachData = [];
+            foreach ($request->product_ids as $productId) {
+                // Ambil diskon per produk
+                $discountProduct = $request->product_discount[$productId] ?? null;
+
+                // Hapus format titik dan koma dari input diskon
+                $discountProduct = str_replace(['.', ','], '', $discountProduct);
+
+                // Ambil tipe diskon (nominal atau percentage)
+                $discountType = $request->input('product_discount_type')[$productId] ?? $promo->discount_type;
+
+                // Ambil limit stock per produk
+                $limitStock = $request->limit_stock[$productId] ?? null;
+
+                // Tambah data untuk attach
+                $productAttachData[$productId] = [
+                    'discount_product_voucher_item' => $discountProduct ?: $promo->discount,
+                    'limit_stock' => $limitStock,
+                    'discount_type' => $discountType,
+                    'discounted_price' => $request->discounted_price[$productId] ?? null,
+                ];
+            }
+
+            // Sync products with their additional data
+            $promo->products()->sync($productAttachData);
 
             return redirect()->route('index-promo-voucher')->with('success', 'Promo Product Voucher updated successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -1365,9 +1564,101 @@ class PromoController extends Controller
     }
 
 
+    // public function storePromoDiskon(Request $request)
+    // {
+    //     try {
+    //         // Validasi input dari request
+    //         $request->validate([
+    //             'promo_name' => 'required|string|max:255',
+    //             'date_range' => 'required|string|max:255',
+    //             'discount_type' => 'required|in:percentage,nominal,package',
+    //             'product_ids' => 'required|array',
+    //             'product_ids.*' => 'exists:products,id',
+    //         ]);
+
+    //         // Validasi limit stock untuk setiap produk yang dipilih jika limit stock diisi
+    //         foreach ($request->product_ids as $productId) {
+    //             // Cek apakah limit stock ada untuk produk ini
+    //             if (isset($request->limit_stock[$productId])) {
+    //                 $product = Product::findOrFail($productId);
+    //                 $limitStock = $request->limit_stock[$productId];
+
+    //                 // Validasi limit stock jika ada
+    //                 if (!is_numeric($limitStock) || $limitStock <= 0) {
+    //                     throw new \Exception("Please enter a valid limit stock for product: {$product->product_name}");
+    //                 }
+
+    //                 if ($limitStock > $product->stock_quantity) {
+    //                     throw new \Exception("Limit stock cannot exceed available stock ({$product->stock_quantity}) for product: {$product->product_name}");
+    //                 }
+    //             }
+    //         }
+
+    //         // Simpan data promo tanpa discount_type karena akan disimpan di promo_tiers
+    //         $promo = Promo::create([
+    //             'promo_name' => $request->promo_name,
+    //             'date_range' => $request->date_range,
+    //             'type' => 'discount', // Ini untuk membedakan jenis promo
+    //             'discount' => $request->discount ?? 0, // Add this line with a default of 0
+    //         ]);
+
+    //         // Simpan tier diskon sesuai tipe
+    //         switch ($request->discount_type) {
+    //             case 'percentage':
+    //                 $this->savePercentageTiers($request, $promo);
+    //                 break;
+    //             case 'nominal':
+    //                 $this->saveNominalTiers($request, $promo);
+    //                 break;
+    //             case 'package':
+    //                 $this->savePackageTiers($request, $promo);
+    //                 break;
+    //         }
+
+    //         // Attach products dengan limit stock (jika ada)
+    //         foreach ($request->product_ids as $productId) {
+    //             $product = Product::find($productId);
+    //             if ($product) {
+    //                 $discountedPrice = $this->calculateDiscountedPrice(
+    //                     $product->regular_price,
+    //                     $request->discount,
+    //                     $request->global_discount_type
+    //                 );
+
+    //                 // Cek apakah limit stock ada, jika tidak maka beri nilai default 0
+    //                 $limitStock = isset($request->limit_stock[$productId]) ? (int)$request->limit_stock[$productId] : 0;
+
+    //                 // Attach produk ke promo
+    //                 $promo->products()->attach($productId, [
+    //                     'discount_product_voucher_item' => $request->discount,
+    //                     'discount_type' => $request->global_discount_type,
+    //                     'discounted_price' => $discountedPrice,
+    //                     'limit_stock' => $limitStock, // Menyimpan limit stock
+    //                 ]);
+    //             }
+    //         }
+
+    //         // Attach products
+    //         $promo->products()->attach($request->product_ids);
+
+    //         return redirect()->route('index-promo-diskon')
+    //             ->with('success', 'Promo Diskon created successfully!');
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         return redirect()->back()
+    //             ->withErrors($e->errors())
+    //             ->withInput();
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating product', ['exception' => $e->getMessage()]);
+    //         return redirect()->back()
+    //             ->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])
+    //             ->withInput();
+    //     }
+    // }
+
     public function storePromoDiskon(Request $request)
     {
         try {
+            // Validasi input dari request
             $request->validate([
                 'promo_name' => 'required|string|max:255',
                 'date_range' => 'required|string|max:255',
@@ -1376,12 +1667,12 @@ class PromoController extends Controller
                 'product_ids.*' => 'exists:products,id',
             ]);
 
-            // Simpan data promo tanpa discount_type karena akan disimpan di promo_tiers
+            // Simpan data promo
             $promo = Promo::create([
                 'promo_name' => $request->promo_name,
                 'date_range' => $request->date_range,
-                'type' => 'discount', // ini untuk membedakan jenis promo
-                // tidak perlu menyimpan discount_type di sini karena sudah ada di promo_tiers
+                'type' => 'discount',
+                'discount' => 0,
             ]);
 
             // Simpan tier diskon sesuai tipe
@@ -1397,15 +1688,59 @@ class PromoController extends Controller
                     break;
             }
 
-            // Attach products
-            $promo->products()->attach($request->product_ids);
+            // Ambil tier pertama untuk default discount
+            $firstTier = $promo->tiers()->first();
+
+            // Pastikan firstTier tidak null
+            if (!$firstTier) {
+                throw new \Exception('No discount tiers found. Please add at least one tier.');
+            }
+
+            // Attach products dengan limit stock (jika ada)
+            foreach ($request->product_ids as $productId) {
+                $product = Product::find($productId);
+                if ($product) {
+                    // Tentukan nilai diskon berdasarkan tipe
+                    $discountValue = 0;
+                    switch ($firstTier->discount_type) {
+                        case 'percentage':
+                            $discountValue = $firstTier->discount_value;
+                            break;
+                        case 'nominal':
+                            $discountValue = $firstTier->discount_value;
+                            break;
+                        case 'package':
+                            $discountValue = $firstTier->package_price;
+                            break;
+                    }
+
+                    $discountedPrice = $this->calculateDiscountedPrice(
+                        $product->regular_price,
+                        $discountValue,
+                        $request->discount_type // Gunakan tipe diskon dari request
+                    );
+
+                    // Cek apakah limit stock ada, jika tidak maka beri nilai default 0
+                    $limitStock = isset($request->limit_stock[$productId]) ?
+                        (int)$request->limit_stock[$productId] : 0;
+
+                    // Tambahkan validasi untuk memastikan discount_product_voucher_item tidak null
+                    if ($discountValue === null) {
+                        throw new \Exception("Discount value cannot be null for product ID: $productId");
+                    }
+
+                    // Attach produk ke promo
+                    $promo->products()->attach($productId, [
+                        'discount_product_voucher_item' => $discountValue,
+                        'discount_type' => $request->discount_type,
+                        'discounted_price' => $discountedPrice,
+                        'limit_stock' => $limitStock,
+                    ]);
+                }
+            }
 
             return redirect()->route('index-promo-diskon')
                 ->with('success', 'Promo Diskon created successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()
-                ->withErrors($e->errors())
-                ->withInput();
         } catch (\Exception $e) {
             Log::error('Error creating product', ['exception' => $e->getMessage()]);
             return redirect()->back()
@@ -1463,6 +1798,23 @@ class PromoController extends Controller
     }
 
 
+    public function detailDiskon($id)
+    {
+        // $promo = Promo::with('type', 'discount', 'tiers')->findOrFail($id);
+        $promo = Promo::with(['tiers'])->findOrFail($id);
+        $products = Product::all();
+        $brands = Brand::all();
+        return view('admin.promo.diskon.review', [
+            'promo' => $promo,
+            'products' => $products,
+            'brands' => $brands,
+
+        ]);
+    }
+
+
+
+
 
 
 
@@ -1505,7 +1857,8 @@ class PromoController extends Controller
             ]);
 
             // Simpan data diskon
-            $discount = $request->input('discount');
+            // $discount = $request->input('discount');
+            $discount = str_replace('.', '', $request->input('discount'));
             $discountType = $request->input('global_discount_type');
 
             // Hapus format rupiah dari regular_price

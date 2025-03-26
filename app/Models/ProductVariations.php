@@ -19,7 +19,10 @@ class ProductVariations extends Model
         'variant_stock',
         'variant_price',
         'weight_variant',
+        'variant_expired',
     ];
+
+    protected $nullable = ['variant_image']; // Tambahkan ini
 
     public function stocks()
     {

@@ -1,4 +1,3 @@
-index.blade.php
 <!DOCTYPE html>
 <html lang="en">
 
@@ -130,7 +129,7 @@ index.blade.php
                     </div>
                 </div>
 
-                <!-- Stats Cards -->               
+                <!-- Stats Cards -->
                 <div class="row quick-stats">
                     <div class="col-12 col-md-4">
                         <div class="card stats-card">
@@ -147,7 +146,7 @@ index.blade.php
                             </div>
                         </div>
                     </div>
-                
+
                     <div class="col-12 col-md-4">
                         <div class="card stats-card">
                             <div class="card-body">
@@ -163,7 +162,7 @@ index.blade.php
                             </div>
                         </div>
                     </div>
-                
+
                     <div class="col-12 col-md-4">
                         <div class="card stats-card">
                             <div class="card-body">
@@ -180,7 +179,7 @@ index.blade.php
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
@@ -197,38 +196,38 @@ index.blade.php
                 <!-- Voucher Types Grid -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h4 class="card-title">Create New Voucher</h4>
-                        <p class="text-muted">Choose the type of voucher you want to create</p>
+                        <h4 class="card-title">Buat Voucher Baru</h4>
+                        {{-- <p class="text-muted">Choose the type of voucher you want to create</p> --}}
+                        <p class="text-muted">Pilih type Voucher ang ingin anda buat</p>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <div class="voucher-card">
                                     <div class="voucher-icon">🎫</div>
-                                    <h4>Limited Voucher</h4>
-                                    <p class="flex-grow-1">Voucher for specific Buyers that can only be shared through a
-                                        code</p>
-                                    <a href="{{ route('create-promo-voucher') }}"
-                                        class="btn btn-primary mt-3">Create</a>
+                                    <h4>Voucher Terbatas</h4>
+                                    <p class="flex-grow-1">Voucher untuk pembeli tertentu yang hanya dapat dibagikan
+                                        melalui kode</p>
+                                    <a href="{{ route('create-promo-voucher') }}" class="btn btn-primary mt-3">Buat</a>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="voucher-card">
                                     <div class="voucher-icon">🛒</div>
                                     <h4>Brand Voucher</h4>
-                                    <p class="flex-grow-1">Voucher for your brand to increase sales</p>
+                                    <p class="flex-grow-1">Voucher untuk merek Anda guna meningkatkan penjualan</p>
                                     <a href="{{ route('create-promo-brand-voucher') }}"
-                                        class="btn btn-primary mt-3">Create</a>
+                                        class="btn btn-primary mt-3">Buat</a>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <div class="voucher-card">
                                     <div class="voucher-icon">📦</div>
-                                    <h4>Product Voucher</h4>
-                                    <p class="flex-grow-1">Voucher for selected products as part of specific promotions
-                                    </p>
+                                    <h4>Voucher Produk</h4>
+                                    <p class="flex-grow-1">Voucher untuk produk tertentu sebagai bagian dari promosi
+                                        spesifik</p>
                                     <a href="{{ route('create-promo-product-voucher') }}"
-                                        class="btn btn-primary mt-3">Create</a>
+                                        class="btn btn-primary mt-3">Buat</a>
                                 </div>
                             </div>
                             {{-- <div class="col-md-4 mb-3">
@@ -245,12 +244,11 @@ index.blade.php
                             <div class="col-md-4 mb-3">
                                 <div class="voucher-card">
                                     <div class="voucher-icon">👨‍💼</div>
-                                    <h4>New User Voucher</h4>
-                                    <p>New User Voucher applicable on selected products as part of specific
-                                        promotions
-                                    </p>
+                                    <h4>Voucher Pengguna Baru</h4>
+                                    <p>Voucher Pengguna Baru yang berlaku untuk produk tertentu sebagai bagian dari
+                                        promosi spesifik</p>
                                     <a href="{{ route('create-promo-voucher-new-user') }}"
-                                        class="btn btn-primary">Create</a>
+                                        class="btn btn-primary">Buat</a>
                                 </div>
                             </div>
                         </div>

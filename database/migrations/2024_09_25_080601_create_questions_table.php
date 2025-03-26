@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('email');
             $table->text('question');
             $table->text('response')->nullable();
-            $table->string('image')->nullable(); // Untuk menyimpan path gambar
-            $table->string('video')->nullable(); // Untuk menyimpan path video
+            $table->string('response_image')->nullable(); // Untuk menyimpan path gambar
+            $table->string('response_video')->nullable(); // Untuk menyimpan path video
+            $table->enum('status', ['unread', 'read'])->default('unread');
             $table->timestamp('responded_at')->nullable();
             $table->timestamps();
         });

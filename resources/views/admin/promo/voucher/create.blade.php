@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
 
     <style>
-         .custom-dropdown-menu {
+        .custom-dropdown-menu {
             padding: 8px;
             border-radius: 8px;
             border: 1px solid rgba(0, 0, 0, .1);
@@ -383,6 +383,12 @@
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end">
+                                                        <a href="{{ route('index-promo-voucher') }}"
+                                                            class="btn btn-secondary btn-sm me-3"
+                                                            style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                                            <i class="bi bi-box-arrow-in-left me-1"></i>Kembali
+                                                        </a>
+
                                                         <button type="reset"
                                                             class="btn btn-sm btn-light-secondary me-3">Reset
                                                             Promo</button>

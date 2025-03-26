@@ -76,7 +76,7 @@ class FormController extends Controller
                 $image = $request->file('image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
-                $data['image'] = $imagePath;
+                $data['response_image'] = $imagePath; // Simpan path gambar ke field response_image
             }
 
             // Handle video upload
@@ -84,7 +84,7 @@ class FormController extends Controller
                 $video = $request->file('video');
                 $videoName = time() . '_' . $video->getClientOriginalName();
                 $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
-                $data['video'] = $videoPath;
+                $data['response_video'] = $videoPath; // Simpan path video ke field response_video
             }
 
             // Simpan ke database
@@ -102,6 +102,57 @@ class FormController extends Controller
             ], 500);
         }
     }
+
+    // public function sendQuestion(Request $request)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'fullname' => 'required|string|max:255',
+    //         'email' => 'required|email|max:255',
+    //         'question' => 'required|string',
+    //         'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Max 2MB
+    //         'video' => 'nullable|mimes:mp4,mov,avi|max:10240', // Max 10MB
+    //     ]);
+
+    //     try {
+    //         $data = [
+    //             'fullname' => $request->fullname,
+    //             'email' => $request->email,
+    //             'question' => $request->question,
+    //             'created_at' => now(),
+    //         ];
+
+    //         // Handle image upload
+    //         if ($request->hasFile('image')) {
+    //             $image = $request->file('image');
+    //             $imageName = time() . '_' . $image->getClientOriginalName();
+    //             $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
+    //             $data['response_image'] = $imagePath; // Simpan path gambar ke field response_image
+    //         }
+
+    //         // Handle video upload
+    //         if ($request->hasFile('video')) {
+    //             $video = $request->file('video');
+    //             $videoName = time() . '_' . $video->getClientOriginalName();
+    //             $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
+    //             $data['response_video'] = $videoPath; // Simpan path video ke field response_video
+    //         }
+
+    //         // Simpan ke database
+    //         Question::create($data);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Pertanyaan Anda Sudah Kami Terima. Tunggu Balasan Email Dari Kami Yaa',
+    //         ]);
+    //     } catch (\Exception $err) {
+    //         // Tangani error
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+    //         ], 500);
+    //     }
+    // }
 
 
     public function files(Request $request)
@@ -171,32 +222,32 @@ class FormController extends Controller
     public function voucherNewUser(Request $request)
     {
         $check = VoucherNewUser::where('email', $request->email)->exists();
-    
+
         // Buat voucher hanya jika email belum terdaftar
         if (!$check) {
             $increment = VoucherNewUser::count() + 1;
-    
+
             // Ambil 4 karakter pertama dari ID user
             $idFragment = substr($request->email, 0, 4);
-    
+
             // Buat kode voucher sesuai format "increment-4hurufID"
             $codeUser = "{$increment}-{$idFragment}";
-    
+
             VoucherNewUser::create([
                 'code' => $codeUser,
                 'email' => $request->email,
                 'is_use' => 0,
             ]);
-    
+
             $data = [
                 'code' => $codeUser,
                 'fullname' => "Calon pengguna",
             ];
-    
+
             $email_target = $request->email;
-    
+
             Mail::to($email_target)->send(new sendMailCodeNewUser($data));
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Silakan cek email kamu untuk melihat voucher yang kamu dapat'
@@ -208,5 +259,4 @@ class FormController extends Controller
             ]);
         }
     }
-    
 }

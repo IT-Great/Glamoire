@@ -19,6 +19,9 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/product/createproduct.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+
 
     <style>
         .flatpickr-calendar {
@@ -130,7 +133,7 @@
                                                                     class="form-control select2-basic-brand {{ $errors->has('brand_id') ? 'is-invalid' : '' }}"
                                                                     name="brand_id">
                                                                     <option value="" disabled
-                                                                        {{ old('brand_id') ? '' : 'selected' }}>Pilih 
+                                                                        {{ old('brand_id') ? '' : 'selected' }}>Pilih
                                                                         Brand</option>
                                                                     @foreach ($brands as $brand)
                                                                         <option value="{{ $brand->id }}"
@@ -144,7 +147,8 @@
                                                                         {{ $errors->first('brand_id') }}</p>
                                                                 @else
                                                                     <small class="text-muted"
-                                                                        style="font-size: 14px;">Pilih Brand yang sesuai
+                                                                        style="font-size: 14px;">Pilih Brand yang
+                                                                        sesuai
                                                                         atau tambahkan Brand yang baru</small>
                                                                 @endif
                                                             </div>
@@ -215,8 +219,10 @@
                                                                             <option value="bahan">Bahan</option>
                                                                             <option value="tekstur">Tekstur</option>
                                                                             <option value="desain">Desain</option>
-                                                                            <option value="durabilitas">Durabilitas</option>
-                                                                            <option value="fungsionalitas">Fungsionalitas</option>
+                                                                            <option value="durabilitas">Durabilitas
+                                                                            </option>
+                                                                            <option value="fungsionalitas">
+                                                                                Fungsionalitas</option>
                                                                         </select>
                                                                     </div>
                                                                     <small class="text-muted">Pilih jenis variasi atau
@@ -252,7 +258,7 @@
 
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="first-name-icon">Stock Produk <span
+                                                            <label for="first-name-icon">Stok Produk <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative mt-2">
                                                                 <input type="text"
@@ -277,7 +283,7 @@
                                                         </div>
 
                                                         <div class="mb-4">
-                                                            <label for="first-name-icon">Regular Price <span
+                                                            <label for="first-name-icon">Harga Produk <span
                                                                     style="color: red">*</span></label>
                                                             <div class="input-group mt-2">
                                                                 <span class="input-group-text">Rp.</span>
@@ -303,7 +309,8 @@
                                                             <label for="">Berat Produk</label>
                                                             <div class="input-group mt-2">
                                                                 <input type="text" class="form-control"
-                                                                    placeholder="Masukkan Berat Produk" name="weight_product"
+                                                                    placeholder="Masukkan Berat Produk"
+                                                                    name="weight_product"
                                                                     value="{{ old('weight_product') }}">
                                                                 <span class="input-group-text"
                                                                     id="basic-addon2">gram</span>
@@ -350,7 +357,7 @@
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="date_expired">Date Expired</label>
+                                                            <label for="date_expired">Tanggal Kadaluarsa</label>
                                                             <div class="position-relative mt-2">
                                                                 <input type="text"
                                                                     class="datepicker form-control {{ $errors->has('date_expired') ? 'is-invalid' : '' }}"
@@ -373,7 +380,7 @@
 
                                                         {{-- single image --}}
                                                         <div class="card">
-                                                            <label for="first-name-icon">Product Thumbnail<span
+                                                            <label for="first-name-icon">Gambar Utama<span
                                                                     style="color: red"> *</span></label>
                                                             <div class="image-upload-wrap mt-2"
                                                                 id="single-image-upload-wrap"
@@ -415,7 +422,7 @@
 
                                                         {{-- multiple image --}}
                                                         <div class="card">
-                                                            <label for="first-name-icon">Product Gallery multiple
+                                                            <label for="first-name-icon">Gambar Tambahan
                                                                 <span style="color: red">*</span></label>
                                                             <div class="image-upload-wrap mt-2" id="image-upload-wrap"
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
@@ -457,7 +464,7 @@
                                                         </div>
 
                                                         <div class="card">
-                                                            <label for="video-upload">Upload Video</label>
+                                                            <label for="video-upload">Video</label>
                                                             <div class="video-upload-wrap mt-2"
                                                                 id="video-upload-wrap">
                                                                 <input type="file" id="video" name="video"
@@ -503,6 +510,7 @@
                                                                             <th>Price</th>
                                                                             <th>Stock</th>
                                                                             <th>Weight (grams)</th>
+                                                                            <th>Expired</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="variant-table-body">
@@ -510,18 +518,30 @@
                                                                     </tbody>
                                                                 </table>
                                                             </div>
-
                                                         </div>
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end mt-4">
+                                                        <a href="{{ route('index-product-admin') }}"
+                                                            class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center me-2"
+                                                            style="font-weight: bold; border-radius: 5px; min-width: 120px;">
+                                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                                        </a>
+                                                    
                                                         <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-2 mb-1"
-                                                            style="border-radius: 5px;">Reset Product</button>
+                                                            class="btn btn-light-secondary btn-sm d-flex align-items-center justify-content-center me-2"
+                                                            style="border-radius: 5px; font-weight: bold; min-width: 120px;">
+                                                            Reset Product
+                                                        </button>
+                                                    
                                                         <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            id="submitButton">Submit Product</button>
+                                                            class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                                                            id="submitButton"
+                                                            style="border-radius: 5px; font-weight: bold; min-width: 120px;">
+                                                            Submit Product
+                                                        </button>
                                                     </div>
+                                                    
                                                 </div>
                                             </div>
                                         </form>
@@ -627,8 +647,6 @@
                                                                 style="display: none;">
                                                                 <img id="preview" src="" alt="Preview"
                                                                     style="max-width: 200px; max-height: 200px;">
-
-
                                                             </div>
                                                         </form>
                                                     </div>
@@ -664,6 +682,8 @@
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/js/product/createproduct.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
 
     <script>
         // handle brand

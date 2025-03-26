@@ -149,12 +149,6 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'unpaid']) }}"
-                                class="nav-link {{ request()->get('status') === 'unpaid' ? 'active text-primary' : 'text-secondary' }}">
-                                Belum Bayar
-                            </a>
-                        </li>
-                        <li class="nav-item">
                             <a href="{{ route('index-admin-order-need-sent', ['status' => 'pending']) }}"
                                 class="nav-link {{ request()->get('status') === 'pending' ? 'active text-primary' : 'text-secondary' }}">
                                 Perlu Dikirim
@@ -167,7 +161,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'completed']) }}"
+                            <a href="{{ route('index-admin-order-complete-sent', ['status' => 'completed']) }}"
                                 class="nav-link {{ request()->get('status') === 'completed' ? 'active text-primary' : 'text-secondary' }}">
                                 Selesai
                             </a>
@@ -205,8 +199,6 @@
                                     <th style="min-width: 300px">Order Details</th>
                                     <th style="min-width: 120px">Total Amount</th>
                                     <th>Status</th>
-                                    <th style="min-width: 130px">Pickup Date</th>
-                                    <th style="min-width: 150px">Shipping</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -222,7 +214,7 @@
                                                     </div>
                                                     <div class="text-secondary small">
                                                         <i class="bi bi-receipt me-1"></i>
-                                                        Invoice : {{ $order->doku_order_id }}
+                                                        Invoice : {{ $order->invoice->no_invoice }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -237,7 +229,7 @@
                                                                     loading="lazy">
                                                                 <div class="product-info">
                                                                     <div class="product-name">
-                                                                        {{ $item['product']->product_name }}
+                                                                        {{ Str::limit($item['product']->product_name, 40, '...') }}
                                                                     </div>
                                                                     <div class="product-meta">
                                                                         <i class="bi bi-box me-1"></i>
@@ -269,47 +261,38 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if ($order->status == 1)
+                                            @if ($order->status == 'pending')
+                                                <span class="badge bg-warning d-inline-flex align-items-center">
+                                                    <i class="bi bi-hourglass-split me-1"></i>Pending
+                                                </span>
+                                            @elseif($order->status == 'processing')
+                                                <span class="badge bg-primary d-inline-flex align-items-center">
+                                                    <i class="bi bi-box me-1"></i>Processing
+                                                </span>
+                                            @elseif($order->status == 'delivery')
+                                                <span class="badge bg-info d-inline-flex align-items-center">
+                                                    <i class="bi bi-truck me-1"></i>Delivery
+                                                </span>
+                                            @elseif($order->status == 'completed')
                                                 <span class="badge bg-success"><i
-                                                        class="bi bi-check-circle me-1"></i>Success</span>
-                                            @elseif($order->status == 2)
-                                                <span class="badge bg-primary"><i
-                                                        class="bi bi-truck me-1"></i>Delivered</span>
-                                            @elseif($order->status == 3)
+                                                        class="bi bi-check-circle me-1"></i>Completed</span>
+                                            @elseif($order->status == 'cancelled')
                                                 <span class="badge bg-danger"><i
-                                                        class="bi bi-x-circle me-1"></i>Canceled</span>
+                                                        class="bi bi-x-circle me-1"></i>Cancelled</span>
+                                            @elseif($order->status == 'failed')
+                                                <span class="badge bg-dark"><i
+                                                        class="bi bi-slash-circle me-1"></i>Failed</span>
                                             @else
-                                                <span class="badge bg-warning"><i
-                                                        class="bi bi-clock me-1"></i>Pending</span>
+                                                <span class="badge bg-secondary"><i
+                                                        class="bi bi-question-circle me-1"></i>Unknown</span>
                                             @endif
                                         </td>
+
                                         <td>
-                                            @if ($order->pickup_date)
-                                                <div class="small">
-                                                    <i class="bi bi-calendar-event me-1"></i>
-                                                    {{ \Carbon\Carbon::parse($order->pickup_date)->format('d/m/Y') }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td class="shipping-details">
-                                            @if ($order->shipping)
-                                                <div class="fw-medium">{{ $order->shipping->method }}</div>
-                                                <div class="text-secondary small mt-1">
-                                                    <i class="bi bi-truck me-1"></i>{{ $order->shipping->service }}
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    <i class="bi bi-box-seam me-1"></i>{{ $order->shipping->type }}
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    <i
-                                                        class="bi bi-qr-code me-1"></i>{{ $order->shipping->tracking_number }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="/order-detail/{{ $order->id }}" class="action-link">
-                                                <i class="bi bi-arrow-clockwise me-1"></i>
-                                                Atur Ulang Pickup
+                                            <a href="/order-detail/{{ $order->id }}"
+                                                class="badge bg-primary d-inline-flex align-items-center">
+                                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                                Info Detail
                                             </a>
                                         </td>
                                     </tr>
@@ -318,145 +301,6 @@
                         </table>
                     </div>
                 </div>
-
-                {{-- <div class="card">
-                    <div class="card-header bg-light">
-                        <div class="row align-items-center">
-                            <div class="col-12 col-lg-4">Produk</div>
-                            <div class="col-12 col-lg-2">Jumlah Harus Dibayar</div>
-                            <div class="col-12 col-lg-2">Status</div>
-                            <div class="col-6 col-lg-1">Jasa Kirim</div>
-                            <div class="col-12 col-lg-2">Aksi</div>
-                        </div>
-                    </div>
-
-                    <div class="card-body p-0">
-                        @foreach ($orders as $order)
-                            <div class="border-bottom p-3">
-                                <!-- Order Header -->
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-person-fill"></i>
-                                        <span class="fw-medium">{{ $order->user->fullname }}</span>
-                                    </div>
-                                    <div class="text-secondary">No. Pesanan {{ $order->doku_order_id }}</div>
-                                </div>
-
-                                <!-- Order Details -->
-                                <div class="row g-3">
-                                    <div class="col-12 col-lg-4">
-                                        @foreach ($order->orderItems as $item)
-                                            <div class="d-flex gap-3 mb-3">
-                                                <img src="{{ Storage::url($item->product->main_image) }}"
-                                                    alt="{{ $item->product->product_name }}" class="rounded"
-                                                    style="width: 80px; height: 80px; object-fit: cover;">
-                                                <div>
-                                                    <div class="fw-medium">{{ $item->product->product_name }}</div>
-                                                    <div class="text-secondary small">x{{ $item->quantity }}</div>
-                                                    <div class="text-secondary small">Variasi:
-                                                        {{ $item->variant ?? '-' }}</div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-
-                                    <div class="col-12 col-lg-2">
-                                        <div>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</div>
-                                        <div class="text-secondary small">{{ $order->payment_method }}</div>
-                                    </div>
-
-                                    <div class="col-12 col-lg-2">
-                                        <span class="badge bg-warning">Perlu Dikirim</span>
-                                        <div class="small text-secondary">
-                                            Mohon kirim sebelum<br>
-                                            {{ \Carbon\Carbon::parse($order->deadline)->format('d-m-Y') }}
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6 col-lg-1">
-                                        <div>{{ $order->shipping_method ?? 'J&T Express' }}</div>
-                                    </div>
-
-                                    <div class="col-6 col-lg-2">
-                                        <a href="#" type="button" class="btn btn-outline-primary btn-sm"
-                                            data-bs-toggle="modal" data-bs-target="#sentModal">
-                                            <i class="bi bi-truck"></i> Atur Pengiriman
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal fade" id="sentModal" tabindex="-1" aria-labelledby="sentModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header border-0">
-                                            <h5 class="modal-title" id="sentModalLabel">Kirim Pesanan</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-
-                                        <!-- Order Number -->
-                                        <div class="modal-body pt-0">
-                                            <div class="d-flex align-items-center mb-4">
-                                                <i class="bi bi-arrow-left me-2"></i>
-                                                <span class="text-secondary">{{ $order->invoice->no_invoice }}</span>
-                                            </div>
-
-                                            <!-- Shipping Options -->
-                                            <div class="row g-4">
-                                                <!-- Counter Option -->
-                                                <div class="col-md-6">
-                                                    <label class="card h-100 border rounded position-relative p-3"
-                                                        style="cursor: pointer;">
-                                                        <input type="radio" name="shipping_method" value="counter"
-                                                            class="position-absolute" style="top: 10px; right: 10px;">
-                                                        <div class="text-center">
-                                                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3"
-                                                                style="width: 60px; height: 60px;">
-                                                                <i class="bi bi-shop fs-4"></i>
-                                                            </div>
-                                                            <h6 class="mb-2">Saya Akan Antar Ke Counter</h6>
-                                                            <p class="text-secondary small mb-0">Anda dapat mengirimkan
-                                                                paket Anda di
-                                                                cabang J&T Express terdekat di kota Anda</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-
-                                                <!-- Pickup Option -->
-                                                <div class="col-md-6">
-                                                    <label class="card h-100 border rounded position-relative p-3"
-                                                        style="cursor: pointer;">
-                                                        <input type="radio" name="shipping_method" value="pickup"
-                                                            class="position-absolute" style="top: 10px; right: 10px;">
-                                                        <div class="text-center">
-                                                            <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center mx-auto mb-3"
-                                                                style="width: 60px; height: 60px;">
-                                                                <i class="bi bi-truck fs-4"></i>
-                                                            </div>
-                                                            <h6 class="mb-2">Saya Akan Gunakan Jasa Pick-up (Jemput)
-                                                            </h6>
-                                                            <p class="text-secondary small mb-0">J&T Express akan
-                                                                mengambil paket dari
-                                                                alamat Anda</p>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-danger px-4"
-                                                id="konfirmasi">Konfirmasi</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div> --}}
-
             </div>
             <!-- Pagination Links -->
             <div class="d-flex justify-content-center mt-4">

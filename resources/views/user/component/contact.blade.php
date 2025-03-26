@@ -154,7 +154,7 @@
                                         class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Image</label>
                                     <div class="image-upload-wrap mt-2" id="single-image-upload-wrap"
                                         style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
-                                        <input type="file" name="image" class="file-upload-input"
+                                        <input type="file" name="response_image" class="file-upload-input"
                                             onchange="readURLSingle(this);" accept="image/*"
                                             style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                         <div class="drag-text" style="text-align: center; color: #888;">
@@ -181,7 +181,7 @@
                                     <label for="description"
                                         class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Video</label>
                                     <div class="video-upload-wrap mt-2" id="video-upload-wrap">
-                                        <input type="file" id="response_video" name="video" class="file-upload-input"
+                                        <input type="file" id="response_video" name="response_video" class="file-upload-input"
                                             onchange="readURLVideo(this);" accept="video/*"
                                             style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                         <div class="drag-text" style="text-align: center; color: #888;">
@@ -409,13 +409,13 @@
             formData.append('question', $("#contact_description").val());
 
             // Add image file if exists
-            const imageInput = document.querySelector('input[name="image"]');
+            const imageInput = document.querySelector('input[name="response_image"]');
             if (imageInput.files[0]) {
                 formData.append('image', imageInput.files[0]);
             }
 
             // Add video file if exists
-            const videoInput = document.querySelector('input[name="video"]');
+            const videoInput = document.querySelector('input[name="response_video"]');
             if (videoInput.files[0]) {
                 formData.append('video', videoInput.files[0]);
             }

@@ -94,6 +94,64 @@
             font-size: 0.9rem;
             color: #666;
         }
+
+        .main-product-row {
+            background-color: #f7f9fc;
+            font-weight: bold;
+        }
+
+        .variant-row {
+            background-color: #ffffff;
+            padding-left: 20px;
+        }
+
+        .variant-row td {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .badge-variant {
+            background-color: #e3f2fd;
+            color: #1e88e5;
+            font-weight: 600;
+            padding: 0.4rem 0.6rem;
+            border-radius: 20px;
+        }
+
+        .product-row {
+            background-color: #ffffff;
+            border-left: 4px solid #435ebe;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .product-row:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Variant Indicator */
+        .variant-indicator {
+            background-color: #6c757d;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+
+        .stock-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .product-details {
+                flex-direction: column;
+            }
+        }
     </style>
 
 </head>
@@ -159,7 +217,27 @@
                                     <div>
                                         <h6 class="text-muted mb-2">Low Stock</h6>
                                         <h3 class="mb-0">
-                                            {{ $products->where('stock_quantity', '<=', 15)->where('stock_quantity', '>', 0)->count() }}
+                                            @php
+                                                // Menghitung low stock untuk produk utama
+                                                $lowStockProducts = $products
+                                                    ->where('stock_quantity', '<=', 15)
+                                                    ->where('stock_quantity', '>', 0)
+                                                    ->count();
+
+                                                // Menghitung low stock untuk varian produk
+                                                $lowStockVariants = $products
+                                                    ->flatMap(function ($product) {
+                                                        return $product->productVariations;
+                                                    })
+                                                    ->filter(function ($variant) {
+                                                        return $variant->variant_stock <= 15 &&
+                                                            $variant->variant_stock > 0;
+                                                    })
+                                                    ->count();
+                                            @endphp
+
+                                            {{-- Menampilkan total low stock --}}
+                                            {{ $lowStockProducts + $lowStockVariants }}
                                         </h3>
                                     </div>
                                     <div class="stats-icon yellow">
@@ -169,13 +247,33 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-12 col-md-3">
                         <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="text-muted mb-2">Out of Stock</h6>
-                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '=', 0)->count() }}
+                                        <h3 class="mb-0">
+                                            @php
+                                                // Menghitung produk utama yang out of stock
+                                                $outOfStockProducts = $products
+                                                    ->where('stock_quantity', '=', 0)
+                                                    ->count();
+
+                                                // Menghitung varian produk yang out of stock
+                                                $outOfStockVariants = $products
+                                                    ->flatMap(function ($product) {
+                                                        return $product->productVariations;
+                                                    })
+                                                    ->filter(function ($variant) {
+                                                        return $variant->variant_stock == 0;
+                                                    })
+                                                    ->count();
+                                            @endphp
+
+                                            {{-- Menampilkan total out of stock --}}
+                                            {{ $outOfStockProducts + $outOfStockVariants }}
                                         </h3>
                                     </div>
                                     <div class="stats-icon red">
@@ -185,6 +283,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Tab Navigation -->
@@ -205,19 +304,185 @@
                     <i class="bi bi-info-circle me-2"></i>
                     Informasi penting tentang manajemen stok:
                     <ul class="mb-0">
-                        <li><strong>Lokasi:</strong> Pastikan identifikasi lokasi produk dengan tepat.</li>
-                        <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li>
+                        {{-- <li><strong>Lokasi:</strong> Pastikan identifikasi lokasi produk dengan tepat.</li> --}}
+                        {{-- <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li> --}}
                         <li><strong>Stok Tersedia:</strong> Jaga jumlah stok yang akurat.</li>
                         <li><strong>Pengaturan Stok:</strong> Sesuaikan pengaturan berdasarkan permintaan produk.</li>
                     </ul>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
                 </div>
 
+                <!-- Modal Import Product Stocks -->
+                <div class="modal fade" id="importProductStockModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-white">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-upload"></i> Import Product Stocks
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('import.product.stocks') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="type" value="product">
+                                <div class="modal-body">
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {!! session('error') !!}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
+                                    <div class="mb-3">
+                                        <label for="productFile" class="form-label fw-medium">Upload File <span
+                                                class="text-danger">*</span></label>
+                                        <input type="file" id="productFile" name="file" class="form-control"
+                                            accept=".xlsx,.xls,.csv" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-lg"></i> Batal
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-upload"></i> Import
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Import Product Variant Stocks -->
+                <div class="modal fade" id="importVariantStockModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-white">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-upload"></i> Import Product Variant Stocks
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <form action="{{ route('import.product.variants') }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name="type" value="variant">
+                                <div class="modal-body">
+                                    @if (session('error'))
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            {!! session('error') !!}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    @endif
+
+                                    <div class="mb-3">
+                                        <label for="variantFile" class="form-label fw-medium">Upload File <span
+                                                class="text-danger">*</span></label>
+                                        <input type="file" id="variantFile" name="file" class="form-control"
+                                            accept=".xlsx,.xls,.csv" required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-lg"></i> Batal
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-upload"></i> Import
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Product Table -->
                 <div class="card stock-card mt-4">
                     <div class="card-header bg-white">
-                        <h4 class="mb-0">Stock Inventory</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h4 class="mb-0">Stock Inventory</h4>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center mt-3 mt-md-0">
+                                <div class="d-flex gap-3">
+                                    <div class="dropdown">
+                                        <button class="btn btn-soft-success d-flex align-items-center" type="button"
+                                            id="importDropdown" data-bs-toggle="dropdown">
+                                            <i class="bi bi-cloud-upload me-2"></i>
+                                            <span class="d-none d-md-inline">Import</span>
+                                            <i class="bi bi-chevron-down ms-2"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+                                            aria-labelledby="importDropdown">
+                                            <li class="dropdown-header">Product Stocks</li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#importProductStockModal">
+                                                    <i class="bi bi-upload me-2 text-success"></i> Import Product
+                                                    Stocks
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('download.product.stock.template') }}">
+                                                    <i class="bi bi-file-earmark-arrow-down me-2 text-primary"></i>
+                                                    Download Import Template
+                                                </a>
+                                            </li>
+
+                                            <li class="dropdown-divider"></li>
+                                            <li class="dropdown-header">Product Variants</li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#importVariantStockModal">
+                                                    <i class="bi bi-upload me-2 text-success"></i> Import Product
+                                                    Variant Stocks
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('download.product.variant.stock.template') }}">
+                                                    <i class="bi bi-file-earmark-arrow-down me-2 text-primary"></i>
+                                                    Download Variant Template
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button class="btn btn-soft-primary d-flex align-items-center" type="button"
+                                            id="exportDropdown" data-bs-toggle="dropdown">
+                                            <i class="bi bi-cloud-download me-2"></i>
+                                            <span class="d-none d-md-inline">Export</span>
+                                            <i class="bi bi-chevron-down ms-2"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end shadow-lg"
+                                            aria-labelledby="exportDropdown">
+                                            <li class="dropdown-header">Export Options</li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('export.product.stocks') }}?type=product">
+                                                    <i class="bi bi-file-earmark-spreadsheet me-2 text-primary"></i>
+                                                    Export Product Stocks
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('export.product.variants') }}?type=variant">
+                                                    <i class="bi bi-file-earmark-spreadsheet me-2 text-primary"></i>
+                                                    Export Product Variant Stocks
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                     <div class="card-body">
                         <table class="table table-hover" id="table1">
                             <thead>
@@ -229,26 +494,25 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 @foreach ($products as $item)
-                                    <tr>
+                                    <tr class="product-row">
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
                                                 <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
                                                     class="product-image"
                                                     onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
                                                 <div class="product-details">
-                                                    <span class="product-name">{{ $item->product_name }}</span>
+                                                    <span class="product-name">
+                                                        {{ Str::limit($item->product_name, 20, '...') }}
+                                                    </span>
                                                     <span class="product-meta">SKU: {{ $item->product_code }}</span>
                                                     <span class="product-meta">Category:
                                                         {{ $item->categoryProduct->name }}</span>
                                                 </div>
                                             </div>
                                         </td>
-                                        {{-- <td>{{ $item->stock_quantity }}</td> --}}
-                                        <td>{{ $item->total_stock }}</td> <!-- Menampilkan stok total -->
-
+                                        <td>{{ $item->total_stock }}</td>
                                         <td>
                                             @foreach ($item->stocks as $stock)
                                                 <div class="stock-batch mb-1">
@@ -267,13 +531,13 @@
                                                 <span
                                                     class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
                                                     <i class="bi bi-check-circle-fill"></i>
-                                                    <span>In Stock (Stock Awal)</span>
+                                                    <span>Stock Awal</span>
                                                 </span>
                                             @elseif ($item->total_stock > 15)
                                                 <span
                                                     class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
                                                     <i class="bi bi-check-circle-fill"></i>
-                                                    <span>In Stock (Stock Awal + Stock Update)</span>
+                                                    <span>Stock Update</span>
                                                 </span>
                                             @elseif ($item->total_stock > 0)
                                                 <span
@@ -289,9 +553,9 @@
                                                 </span>
                                             @endif
                                         </td>
-
                                         <td>
-                                            <button class="btn btn-sm btn-primary update-btn"
+                                            <button
+                                                class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
                                                 data-status="{{ $item->stock_quantity > 15 && $item->total_stock <= 15 ? 'stock_awal' : 'stock_update' }}">
                                                 <i class="bi bi-pencil"></i> Update
@@ -300,18 +564,18 @@
                                     </tr>
 
                                     <!-- Product Variants Rows -->
-                                    {{-- @foreach ($item->productVariations as $variant)
+                                    @foreach ($item->productVariations as $variant)
                                         <tr class="variant-row">
                                             <td class="ps-5">
                                                 <div class="d-flex align-items-center gap-3">
-                                                    @if ($variant->variant_image)
-                                                        <img src="{{ Storage::url($variant->variant_image) }}"
-                                                            alt="Variant Image" class="product-image"
-                                                            onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
-                                                    @endif
                                                     <div class="product-details">
                                                         <span class="product-name">
-                                                            {{ $item->product_name }} -
+                                                            {{ Str::limit($item->product_name, 20, '...') }}
+                                                            {{-- {{ Str::limit($item->product_name, 20, '...') }} --}}
+
+                                                            <span class="variant-indicator">Variant</span>
+                                                        </span>
+                                                        <span class="product-meta">
                                                             {{ $variant->variant_type }}:
                                                             {{ $variant->variant_value }}
                                                         </span>
@@ -333,29 +597,28 @@
                                                     </div>
                                                 @endforeach
                                             </td>
-
                                             <td>
                                                 @php
-                                                    $variantStockInitial = $variant->variant_stock ?? 0; // Stock Awal
-                                                    $variantTotalStock = $variant->stocks->sum('quantity'); // Total Stock (Stock Update)
+                                                    $variantStockInitial = $variant->variant_stock ?? 0;
+                                                    $variantTotalStock = $variant->stocks->sum('quantity');
                                                 @endphp
-                                                @if ($variantStockInitial > 15 && $variantTotalStock > 15)
-                                                    <span
-                                                        class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
-                                                        <i class="bi bi-check-circle-fill"></i>
-                                                        <span>In Stock (Stock Awal + Stock Update)</span>
-                                                    </span>
-                                                @elseif ($variantStockInitial > 15)
+                                                @if ($variantStockInitial > 15 && $variantTotalStock == 0)
                                                     <span
                                                         class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
                                                         <i class="bi bi-check-circle-fill"></i>
-                                                        <span>In Stock (Stock Awal)</span>
+                                                        <span>Stock Awal</span>
+                                                    </span>
+                                                @elseif ($variantStockInitial + $variantTotalStock > 15)
+                                                    <span
+                                                        class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                                        <i class="bi bi-check-circle-fill"></i>
+                                                        <span>Stock Update</span>
                                                     </span>
                                                 @elseif ($variantStockInitial > 0 || $variantTotalStock > 0)
                                                     <span
                                                         class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
                                                         <i class="bi bi-exclamation-circle-fill"></i>
-                                                        <span>Low Stock</span>
+                                                        <span>Low Stock </span>
                                                     </span>
                                                 @else
                                                     <span
@@ -365,24 +628,23 @@
                                                     </span>
                                                 @endif
                                             </td>
-
                                             <td>
-                                                <button class="btn btn-sm btn-primary update-btn"
+                                                <button
+                                                    class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
                                                     data-id="{{ $item->id }}"
+                                                    data-variant-id="{{ $variant->id }}"
                                                     data-name="{{ $item->product_name }}"
                                                     data-status="{{ $item->isInitialStock() ? 'stock_awal' : 'stock_update' }}">
                                                     <i class="bi bi-pencil"></i> Update
                                                 </button>
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
                                 @endforeach
                             </tbody>
-
                         </table>
                     </div>
                 </div>
-
             </div>
             @include('admin.layouts.footer')
         </div>
@@ -414,7 +676,7 @@
 
                             <!-- Tabel Stok Existing -->
                             <div class="mb-3">
-                                <label class="form-label fw-medium">Detail Stok Saat Ini</label>
+                                <label class="form-label fw-medium">Update Stok Saat Ini</label>
                                 <div class="table-responsive">
                                     <table class="table table-bordered">
                                         <thead>
@@ -466,10 +728,10 @@
                             </button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
@@ -533,8 +795,8 @@
                     if (stockData.length === 0) {
                         // Ini adalah stok awal
                         const message = isVariant ?
-                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah Stock Awal Produk Variant. Belum ada update stok product variant.</strong></td></tr>' :
-                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah Stock Awal Produk. Belum ada update stok product.</strong></td></tr>';
+                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah stok awal produk varian. Belum ada update stok produk varian.</strong></td></tr>' :
+                            '<tr><td colspan="2" class="text-center text-primary"><strong>Ini adalah stok awal produk. Belum ada update stok product.</strong></td></tr>';
 
                         $('#stockDetailTable').html(message);
                         return;

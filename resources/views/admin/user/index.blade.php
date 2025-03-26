@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User || Admin Glamoire</title>
+    <title>User - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -46,7 +46,6 @@
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        {{-- <th>User Name</th> --}}
                                         <th>Full Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
@@ -57,16 +56,17 @@
                                 <tbody>
                                     @foreach ($users as $user)
                                         <tr>
-                                            {{-- <td>{{ $user->name }}</td> --}}
                                             <td>{{ $user->fullname }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->handphone }}</td>
                                             <td>{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}</td>
                                             <td>
-                                                <a href="/user-detail/{{ $user->id }}">
-                                                    <span class="badge bg-warning">View</span>
+                                                <a href="{{ route('detail-user-admin', $user->id) }}"
+                                                    class="badge bg-info mb-2 d-inline-flex align-items-center">
+                                                    <i class="bi bi-eye"></i> View
                                                 </a>
                                             </td>
+
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -76,17 +76,8 @@
 
                 </section>
             </div>
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
+
         </div>
     </div>
 

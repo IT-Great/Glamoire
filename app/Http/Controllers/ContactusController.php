@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ContactUsResponseMail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 // class ContactusController extends Controller
 // {
@@ -223,7 +224,7 @@ class ContactusController extends Controller
                 $image = $request->file('response_image');
                 $imageName = time() . '_' . $image->getClientOriginalName();
                 $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
-                $data['image'] = $imagePath;
+                $data['response_image'] = $imagePath; // Simpan path gambar ke field response_image
             }
 
             // Handle video upload
@@ -231,7 +232,7 @@ class ContactusController extends Controller
                 $video = $request->file('response_video');
                 $videoName = time() . '_' . $video->getClientOriginalName();
                 $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
-                $data['video'] = $videoPath;
+                $data['response_video'] = $videoPath; // Simpan path video ke field response_video
             }
 
             // Update the record
@@ -242,13 +243,38 @@ class ContactusController extends Controller
                 ->send(new ContactUsResponseMail($contact));
 
             return redirect()->route('index-contactus-admin')
-                ->with('toast_success', 'Response has been sent successfully!');
+                ->with('success', 'Response has been sent successfully!');
         } catch (\Exception $e) {
             Log::error('Failed to send response: ' . $e->getMessage());
             return redirect()
                 ->back()
                 ->with('toast_error', 'Failed to send response: ' . $e->getMessage())
                 ->withInput();
+        }
+    }
+
+    public function deleteResponse($id)
+    {
+        $contact = Question::findOrFail($id);
+
+        try {
+            // Hapus gambar jika ada
+            if ($contact->response_image && Storage::disk('public')->exists($contact->response_image)) {
+                Storage::disk('public')->delete($contact->response_image);
+            }
+
+            // Hapus video jika ada
+            if ($contact->response_video && Storage::disk('public')->exists($contact->response_video)) {
+                Storage::disk('public')->delete($contact->response_video);
+            }
+
+            // Hapus data contact
+            $contact->delete();
+
+            return response()->json(['success' => true, 'message' => 'Contact has been deleted successfully!']);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete response: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to delete response!']);
         }
     }
 

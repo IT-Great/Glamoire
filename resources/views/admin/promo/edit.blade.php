@@ -25,25 +25,53 @@
             border: 1px solid rgba(0, 0, 0, .1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
             min-width: 180px;
+            margin-top: 8px;
+            /* Add space between dropdown toggle and menu */
         }
 
-        .custom-dropdown-item-all,
-        .custom-dropdown-item-product {
-            padding: 8px 16px;
+        .custom-dropdown-menu li {
+            margin-bottom: 4px;
+            /* Add spacing between dropdown items */
+        }
+
+        .custom-dropdown-menu li:last-child {
+            margin-bottom: 0;
+            /* Remove margin from last item */
+        }
+
+        .custom-dropdown-item {
+            padding: 10px 16px;
             border-radius: 6px;
             transition: all 0.2s ease;
             color: #444;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             text-decoration: none;
+            position: relative;
         }
 
-        .custom-dropdown-item-all:hover,
-        .custom-dropdown-item-product:hover {
+        .custom-dropdown-item:hover {
             background-color: #f8f9fa;
             color: #2563eb;
             text-decoration: none;
+        }
+
+        .custom-dropdown-item.active {
+            background-color: #e6f2ff;
+            color: #2563eb;
+        }
+
+        .custom-dropdown-item.active::after {
+            content: '✓';
+            position: absolute;
+            right: 16px;
+            color: #2563eb;
+        }
+
+        .custom-dropdown-item i {
+            font-size: 1rem;
+            margin-right: 8px;
         }
 
         .dropdown-toggle {
@@ -102,10 +130,6 @@
                 </div>
 
                 <section class="section">
-                    {{-- <form action="{{ route('update-promo') }}" class="form form-vertical" method="POST"
-                        enctype="multipart/form-data">
-                        @csrf --}}
-
                     <form action="{{ route('update-promo', $promo->id) }}" class="form form-vertical" method="POST"
                         enctype="multipart/form-data">
                         @csrf
@@ -154,18 +178,18 @@
                                                         <input type="text"
                                                             class="form-control {{ $errors->has('date_range') ? 'is-invalid' : '' }}"
                                                             id="daterange" name="date_range"
-                                                            value="{{ $promo->date_range }}">
+                                                            value="{{ old('date_range', $promo->date_range ?? '') }}"
+                                                            placeholder="Select date range">
                                                         <div class="form-control-icon">
                                                             <i class="bi bi-calendar"></i>
                                                         </div>
                                                     </div>
                                                     @if ($errors->has('date_range'))
-                                                        <p style="color: red">{{ $errors->first('date_range') }}
-                                                        </p>
+                                                        <p style="color: red">{{ $errors->first('date_range') }}</p>
                                                     @else
                                                         <small class="form-text text-muted" style="font-size: 14px;">
                                                             Pilih tanggal mulai dan berakhir untuk masa berlaku voucher.
-                                                            Gunakan format: MM/HH/YYYY.
+                                                            Gunakan format: MM/DD/YYYY - MM/DD/YYYY.
                                                         </small>
                                                     @endif
                                                 </div>
@@ -234,37 +258,52 @@
                                                         </label>
                                                         <div class="input-group">
                                                             <button class="btn dropdown-toggle" type="button"
-                                                                id="dropdownTypeAll" data-bs-toggle="dropdown"
+                                                                id="discountTypeDropdown" data-bs-toggle="dropdown"
                                                                 aria-expanded="false">
-                                                                <i class="bi bi-tag-fill me-1"></i>
-                                                                Tipe Diskon<i class="bi bi-chevron-down"></i>
+                                                                <i
+                                                                    class="bi {{ $promo->discount_type == 'percentage' ? 'bi-percent' : 'bi-cash' }} me-1"></i>
+                                                                <span id="discountTypeLabel">
+                                                                    {{ $promo->discount_type == 'percentage' ? 'Persentase' : 'Nominal' }}
+                                                                </span>
+                                                                <i class="bi bi-chevron-down"></i>
                                                             </button>
+
                                                             <ul class="dropdown-menu custom-dropdown-menu">
                                                                 <li>
-                                                                    <a class="custom-dropdown-item-all" href="#"
-                                                                        data-type="nominal">
+                                                                    <a class="custom-dropdown-item" href="#"
+                                                                        data-type="nominal"
+                                                                        {{ $promo->discount_type == 'nominal' ? 'class="active"' : '' }}>
                                                                         <i class="bi bi-cash"></i>
                                                                         Nominal
                                                                     </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a class="custom-dropdown-item-all" href="#"
-                                                                        data-type="percentage">
+                                                                    <a class="custom-dropdown-item" href="#"
+                                                                        data-type="percentage"
+                                                                        {{ $promo->discount_type == 'percentage' ? 'class="active"' : '' }}>
                                                                         <i class="bi bi-percent"></i>
                                                                         Persentase
                                                                     </a>
                                                                 </li>
                                                             </ul>
+
                                                             <input type="text" class="form-control border-start-0"
-                                                                id="discountInputAll" name="discount"
-                                                                placeholder="Masukkan nilai diskon">
-                                                            <span class="input-group-text bg-light"
-                                                                id="formatSymbolAll">Rp</span>
+                                                                id="discountInput" name="discount"
+                                                                placeholder="Masukkan nilai diskon"
+                                                                value="{{ $promo->discount_type == 'percentage' ? $promo->discount . '%' : number_format($promo->discount, 0, ',', '.') }}"
+                                                                data-current-type="{{ $promo->discount_type }}"
+                                                                data-original-value="{{ $promo->discount }}">
+
+                                                            <span class="input-group-text bg-light" id="formatSymbol">
+                                                                <i
+                                                                    class="{{ $promo->discount_type == 'percentage' ? 'bi-percent' : 'bi-cash' }}"></i>
+                                                            </span>
                                                         </div>
 
-                                                        <!-- Tambahkan hidden input di sini -->
+
                                                         <input type="hidden" id="globalDiscountType"
-                                                            name="global_discount_type" value="nominal">
+                                                            name="global_discount_type"
+                                                            value="{{ $promo->discount_type }}">
 
                                                         @if ($errors->has('discount'))
                                                             <div class="invalid-feedback d-block mt-1">
@@ -350,7 +389,6 @@
                                                         </small>
                                                     @endif
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -378,6 +416,7 @@
                                                 <th>Product</th>
                                                 <th>Stock</th>
                                                 <th>Price</th>
+                                                <th>Limit Stock Product</th>
                                                 <th>Status</th>
                                             </tr>
                                         </thead>
@@ -411,6 +450,19 @@
                                                     <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
                                                     </td>
                                                     <td>
+                                                        <input type="number" class="form-control limit-stock"
+                                                            placeholder="Limit Stock"
+                                                            name="limit_stock[{{ $product->id }}]"
+                                                            data-product-id="{{ $product->id }}" min="1"
+                                                            max="{{ $product->stock_quantity }}"
+                                                            value="{{ old('limit_stock.' . $product->id, $product->pivot_limit_stock ?? '') }}"
+                                                            @if (!$product->is_selected || $product->has_other_active_promo) disabled @endif>
+                                                        @if ($errors->has('limit_stock.' . $product->id))
+                                                            <small class="text-danger">{{ $errors->first('limit_stock.' . $product->id) }}</small>
+                                                        @endif
+                                                    </td>
+                                                    
+                                                    <td>
                                                         @if ($product->has_other_active_promo)
                                                             <span class="text-danger">Not Available</span>
                                                         @elseif($product->is_selected)
@@ -423,7 +475,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-
 
                                     <div class="col-12 d-flex justify-content-end">
                                         <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
@@ -465,96 +516,151 @@
         }
     </script>
 
+    {{-- untuk handle limit stock dan select agar input limit stock terbuka --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const discountInput = document.getElementById('discountInputAll');
-            const globalDiscountTypeInput = document.getElementById('globalDiscountType');
+            // Handle checkbox selection
             const checkboxes = document.querySelectorAll('.select-item');
 
-            function calculateDiscountedPrice(originalPrice, discount, discountType) {
-                if (!discount || isNaN(discount)) return originalPrice;
-
-                if (discountType === 'percentage') {
-                    return originalPrice - (originalPrice * (discount / 100));
-                } else {
-                    return originalPrice - discount;
-                }
-            }
-
-            function formatPrice(price) {
-                return price.toLocaleString('id-ID');
-            }
-
-            function updateDiscountedPrices() {
-                // Get discount value and remove non-numeric characters
-                const discountValue = discountInput.value.replace(/[^\d]/g, '');
-                const discount = parseFloat(discountValue);
-                const discountType = globalDiscountTypeInput.value;
-
-                checkboxes.forEach(checkbox => {
-                    const row = checkbox.closest('tr');
-                    const priceCell = row.querySelector('td:nth-child(4)');
-                    const originalPriceText = priceCell.innerText.split('After discount')[
-                        0]; // Get only the original price
-                    const originalPrice = parseFloat(originalPriceText.replace(/[^\d]/g, ''));
-
-                    // Remove any existing discounted price display
-                    const existingDiscountSpan = priceCell.querySelector('.discounted-price');
-                    if (existingDiscountSpan) {
-                        existingDiscountSpan.remove();
-                    }
-
-                    // Only show discount if checkbox is checked
-                    if (checkbox.checked && !isNaN(discount) && discount > 0) {
-                        const discountedPrice = calculateDiscountedPrice(originalPrice, discount,
-                            discountType);
-
-                        // Create and append discounted price element
-                        const discountSpan = document.createElement('div');
-                        discountSpan.className = 'discounted-price text-danger mt-1';
-                        discountSpan.innerHTML = `
-                    <small class="text-muted">After discount: </small>
-                    <span class="fw-bold">Rp ${formatPrice(discountedPrice)}</span>
-                `;
-                        priceCell.appendChild(discountSpan);
-                    }
-                });
-            }
-
-            // Event listeners
-            discountInput.addEventListener('input', updateDiscountedPrices);
-
-            document.querySelectorAll('.custom-dropdown-item-all').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const type = this.dataset.type;
-                    const dropdownButton = document.getElementById('dropdownTypeAll');
-                    const formatSymbol = document.getElementById('formatSymbolAll');
-
-                    dropdownButton.innerHTML = type === 'nominal' ?
-                        '<i class="bi bi-cash me-1"></i>Nominal' :
-                        '<i class="bi bi-percent me-1"></i>Persentase';
-                    formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                    globalDiscountTypeInput.value = type;
-                    discountInput.value = '';
-
-                    updateDiscountedPrices();
-                });
-            });
-
             checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateDiscountedPrices);
+                checkbox.addEventListener('change', function() {
+                    const productId = this.value;
+                    const limitStockInput = document.querySelector(
+                        `input[name="limit_stock[${productId}]"]`);
+
+                    if (limitStockInput) {
+                        if (this.checked) {
+                            limitStockInput.removeAttribute('disabled');
+                            limitStockInput.required = true;
+                        } else {
+                            limitStockInput.setAttribute('disabled', 'disabled');
+                            limitStockInput.required = false;
+                            limitStockInput.value = ''; // Clear the value when unchecked
+                        }
+                    }
+                });
             });
 
-            // Handle "Select All" checkbox
+            // Handle "Select All" checkbox if you have one
             const selectAllCheckbox = document.getElementById('select-all');
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', function() {
                     checkboxes.forEach(checkbox => {
-                        checkbox.checked = this.checked;
+                        if (!checkbox.disabled) {
+                            checkbox.checked = this.checked;
+                            const event = new Event('change');
+                            checkbox.dispatchEvent(event);
+                        }
                     });
-                    updateDiscountedPrices();
                 });
+            }
+
+            // Validate limit stock inputs
+            const limitStockInputs = document.querySelectorAll('.limit-stock');
+
+            limitStockInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const maxStock = parseInt(this.getAttribute('max'));
+                    const value = parseInt(this.value);
+
+                    if (isNaN(value) || value <= 0) {
+                        this.setCustomValidity('Please enter a valid number greater than 0');
+                    } else if (value > maxStock) {
+                        this.setCustomValidity(`Limit stock cannot exceed ${maxStock}`);
+                    } else {
+                        this.setCustomValidity('');
+                    }
+
+                    this.reportValidity();
+                });
+            });
+        });
+    </script>
+
+    {{-- untuk handle inputan discount nominal dan percentage --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownItems = document.querySelectorAll('.custom-dropdown-item');
+            const discountInput = document.getElementById('discountInput');
+            const formatSymbol = document.getElementById('formatSymbol');
+            const discountTypeLabel = document.getElementById('discountTypeLabel');
+            const globalDiscountType = document.getElementById('globalDiscountType');
+
+            // Fungsi untuk memformat angka ke format Rupiah tanpa 'Rp.'
+            function formatRupiah(angka) {
+                // Hapus karakter non-numeric
+                let number = angka.toString().replace(/[^\d]/g, '');
+
+                // Format dengan separator titik
+                return new Intl.NumberFormat('id-ID').format(number);
+            }
+
+            // Fungsi untuk mendapatkan nilai murni (hanya angka)
+            function getRawValue(value) {
+                return value.replace(/[^\d]/g, '');
+            }
+
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const type = this.getAttribute('data-type');
+                    const currentValue = discountInput.value;
+                    const originalValue = discountInput.getAttribute('data-original-value');
+                    const iconElement = document.querySelector('#discountTypeDropdown > i.bi');
+
+                    if (type === 'percentage') {
+                        formatSymbol.textContent = '%';
+                        discountTypeLabel.textContent = 'Persentase';
+                        globalDiscountType.value = 'percentage';
+                        // Update icon to percent
+                        iconElement.classList.remove('bi-cash');
+                        iconElement.classList.add('bi-percent');
+
+                        if (discountInput.getAttribute('data-current-type') === 'nominal') {
+                            discountInput.value = originalValue + '%';
+                        }
+                    } else {
+                        formatSymbol.textContent = ''; // Tidak perlu tulisan Rp
+                        discountTypeLabel.textContent = 'Nominal';
+                        globalDiscountType.value = 'nominal';
+                        // Update icon to cash
+                        iconElement.classList.remove('bi-percent');
+                        iconElement.classList.add('bi-cash');
+
+                        if (discountInput.getAttribute('data-current-type') === 'percentage') {
+                            discountInput.value = formatRupiah(originalValue);
+                        }
+                    }
+
+                    discountInput.setAttribute('data-current-type', type);
+                });
+            });
+
+            // Event listener untuk input
+            discountInput.addEventListener('input', function() {
+                const currentType = globalDiscountType.value;
+
+                if (currentType === 'percentage') {
+                    // Hanya angka untuk persentase
+                    discountInput.value = discountInput.value.replace(/[^\d]/g, '') + '%';
+                } else {
+                    // Format angka biasa untuk nominal
+                    const rawValue = getRawValue(discountInput.value);
+                    discountInput.value = formatRupiah(rawValue);
+                }
+            });
+
+            // Sebelum submit form, hapus format angka
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const rawValue = getRawValue(discountInput.value);
+                discountInput.value = rawValue;
+            });
+
+            // Set initial format if needed
+            const initialType = globalDiscountType.value;
+            if (initialType === 'nominal') {
+                const initialValue = discountInput.value;
+                discountInput.value = formatRupiah(initialValue);
             }
         });
     </script>
@@ -712,14 +818,12 @@
     </script>
 
     <script type="text/javascript">
-        $(function() {
-            $('#daterange').daterangepicker({
-                locale: {
-                    format: 'YYYY-MM-DD'
-                },
-                startDate: moment().startOf('day'), // Default start date
-                endDate: moment().endOf('day') // Default end date
-            });
+        $('#daterange').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            startDate: '{{ $promo->start_date ?? now()->format('YYYY-MM-DD') }}',
+            endDate: '{{ $promo->end_date ?? now()->format('YYYY-MM-DD') }}'
         });
     </script>
 

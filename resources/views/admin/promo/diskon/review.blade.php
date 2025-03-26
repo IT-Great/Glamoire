@@ -68,102 +68,141 @@
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item"><a href="/promo" style="text-decoration: none;">Promo</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Detail promo</li>
+                                <li class="breadcrumb-item active" aria-current="page">Detail promo Diskon</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
 
                 <!-- Basic Horizontal form layout section start -->
-                <section id="promo-detail">
+                <section id="promo-diskon">
+                    {{-- Detail Promo --}}
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4 class="card-title">Promo Details</h4>
-                                </div>
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form class="form form-vertical"
-                                            action="{{ route('update-promo', $promo->id) }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT')
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <!-- Promo Information -->
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="form-group">
-                                                            <label for="promo_name">Promo Name</label>
-                                                            <input type="text" class="form-control" id="promo_name"
-                                                                name="promo_name" value="{{ $promo->promo_name }}"
-                                                                readonly>
-                                                        </div>
+                                        <div class="form-body">
+                                            <div class="row">
+                                                <!-- Promo Information -->
+                                                <div class="col-md-6 col-sm-12">
+                                                    <div class="form-group">
+                                                        <label>Promo Name</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $promo->promo_name }}" readonly>
+                                                    </div>
 
-                                                        <div class="form-group">
-                                                            <label for="date_range">Promo Period</label>
-                                                            <input type="text" class="form-control" id="date_range"
-                                                                name="date_range" value="{{ $promo->date_range }}"
-                                                                readonly>
-                                                        </div>
+                                                    <div class="form-group">
+                                                        <label>Promo Period</label>
+                                                        <input type="text" class="form-control"
+                                                            value="{{ $promo->date_range }}" readonly>
+                                                    </div>
+                                                </div>
 
-                                                        <div class="form-group">
-                                                            <label for="discount">Discount (%)</label>
-                                                            <input type="number" class="form-control" id="discount"
-                                                                name="discount" value="{{ $promo->discount }}"
-                                                                readonly>
-                                                        </div>
-                                                    </div>                                                   
+                                                <!-- Discount Tiers -->
+                                                <div class="col-md-12 mt-4">
+                                                    <h5 class="text-primary">Discount Tiers</h5>
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Tier Level</th>
+                                                                <th>Minimum Quantity</th>
+                                                                <th>Discount</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach ($promo->tiers as $tier)
+                                                                <tr>
+                                                                    <td>
+                                                                        {{ $tier->tier_level }}
+                                                                    </td>
+                                                                    <td>
+                                                                        Minimal Pembelian {{ $tier->min_quantity }}
+                                                                        item
+                                                                    </td>
+                                                                    <td>
+                                                                        @switch($tier->discount_type)
+                                                                            @case('percentage')
+                                                                                {{ $tier->discount_value }}%
+                                                                            @break
 
-                                                    <!-- Products Included in the Promo -->
-                                                    <div class="col-12 mt-4">
-                                                        <h5 class="text-primary">Products in the Promo</h5>
-                                                        <div class="table-responsive">
-                                                            <table class="table table-bordered">
-                                                                <thead>
+                                                                            @case('nominal')
+                                                                                Rp
+                                                                                {{ number_format($tier->discount_value, 0, ',', '.') }}
+                                                                            @break
+
+                                                                            @case('package')
+                                                                                Rp
+                                                                                {{ number_format($tier->package_price, 0, ',', '.') }}
+                                                                                / {{ $tier->min_quantity }} items
+                                                                            @break
+
+                                                                            @default
+                                                                                -
+                                                                        @endswitch
+                                                                    </td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+
+                                                    <h5 class="text-primary">All Discount Tiers</h5>
+                                                    <div class="alert alert-light">
+                                                        {!! $promo->all_discount_tiers !!}
+                                                    </div>
+                                                </div>
+
+                                                <!-- Products Included in the Promo -->
+                                                <div class="col-12 mt-4">
+                                                    <h5 class="text-primary">Products in the Promo</h5>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Product</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Stock</th>
+                                                                    <th>Original Price</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($promo->products as $product)
                                                                     <tr>
-                                                                        <th>Product</th>
-                                                                        <th>Product Name</th>
-                                                                        <th>Stock</th>
-                                                                        <th>Original Price</th>
-                                                                        <th>Price After Discount</th>
+                                                                        <td>
+                                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                                alt="{{ $product->product_name }}"
+                                                                                style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
+                                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                                        </td>
+                                                                        <td>{{ $product->product_name }}</td>
+                                                                        <td>{{ $product->stock_quantity }}</td>
+                                                                        <td>Rp.
+                                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                                        </td>
+
                                                                     </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    @foreach ($promo->products as $product)
-                                                                        <tr>
-                                                                            <td class="d-flex align-items-center">
-                                                                                <img src="{{ Storage::url($product->main_image) }}"
-                                                                                    alt="{{ $product->promo_name }}"
-                                                                                    class="lazyload"
-                                                                                    style="width: 100px; height: 100px; border-radius: 8px; object-fit: cover;"
-                                                                                    onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                                                            </td>
-                                                                            <td>
-                                                                                <span>{{ $product->product_name }}</span>
-                                                                            </td>
-                                                                            <td>{{ $product->stock_quantity }}</td>
-                                                                            <td>Rp.
-                                                                                {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                                            </td>
-                                                                            <td>Rp.
-                                                                                {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
-                                                                            </td>
-                                                                        </tr>
-                                                                    @endforeach
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </div>
+                                        <div class="col-12 mt-4 text-start">
+                                            <a href="{{ route('index-promo-diskon') }}" class="btn btn-primary btn-sm" style="border-radius: 8px; font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
+
                 </section>
+
+
             </div>
             @include('admin.layouts.footer')
         </div>
@@ -173,9 +212,9 @@
         // Fungsi untuk membuka gambar di tab baru
         function openImageInNewTab(url) {
             window.open(url, '_blank');
-        }       
+        }
     </script>
-    
+
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>

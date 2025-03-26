@@ -660,8 +660,10 @@ class UserController extends Controller
     }
 
 
-    public function detailUserAdmin()
+    public function detailUserAdmin($id)
     {
-        return view('admin.user.detail');
+        $user = User::findOrFail($id);
+        return view('admin.user.detail', compact('user'));
+
     }
 }

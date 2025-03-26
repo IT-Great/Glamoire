@@ -112,7 +112,7 @@
                                     <li class="breadcrumb-item"><a
                                             href="{{ route('index-promo-voucher') }}">Voucher</a>
                                     </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Update Promo Product Voucher
+                                    <li class="breadcrumb-item active" aria-current="page">Update Promo Limited Voucher
                                     </li>
                                 </ol>
                             </nav>
@@ -130,7 +130,7 @@
                         <div class="container">
                             <h3 class="mb-2">Update Voucher</h3>
                             <p class="mb-3">
-                                Update a New User Voucher now to attract Buyers.
+                                Update a Limited Voucher now to attract Buyers.
                                 <a href="#" class="text-blue">Learn More</a>
                             </p>
                             <div class="card mb-4">
@@ -365,6 +365,12 @@
                                         </div>
 
                                         <div class="col-12 d-flex justify-content-end">
+                                            <a href="{{ route('index-promo-voucher') }}"
+                                                class="btn btn-secondary btn-sm me-3"
+                                                style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                            </a>
+
                                             <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
                                                 Voucher</button>
                                             <button type="submit" class="btn btn-sm btn-primary me-1">Submit

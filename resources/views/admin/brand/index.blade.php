@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="assets/css/brand/createbrand.css">
 
     <style>
-        .stats-card {
+         .stats-card {
             transition: transform 0.3s ease;
             cursor: pointer;
         }
@@ -94,91 +94,6 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        {{-- <div id="main">
-            <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Brand</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Brand</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <h4>List Brands</h4>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="{{ route('create-brand-admin') }}" type="submit"
-                                        class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Brand
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <table class="table" id="table1">
-                                <thead>
-                                    <tr>
-                                        <th>Brand logo</th>
-                                        <th>Brand Code</th>
-                                        <th>Name</th>
-                                        <th>Total Product</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($brands as $brand)
-                                        <tr id="brand-item-{{ $brand->id }}">
-                                            <td>
-                                                <img src="{{ Storage::url($brand->brand_logo) }}"
-                                                    alt="{{ $brand->name }}" class="lazyload"
-                                                    style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;"
-                                                    onclick="openImageInNewTab('{{ Storage::url($brand->brand_logo) }}')">
-                                            </td>
-                                            <td>{{ $brand->brand_code }}</td>
-                                            <td>{{ Str::limit($brand->name, 20, '...') }}</td>
-                                            <td>
-                                                <span class="badge bg-light-success">{{ $brand->products_count }}</span>
-                                                <!-- Menampilkan total produk -->
-                                            </td>
-                                            <td class="action-buttons">
-                                                <a href="{{ url('/detail-brand/' . $brand->id) }}">
-                                                    <span class="badge bg-warning">Details</span>
-                                                </a>
-                                                <a href="javascript:void(0);" class="delete-brand"
-                                                    data-id="{{ $brand->id }}">
-                                                    <span class="badge bg-danger">Delete</span>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-4 px-3" id="pagination-container">
-                        <div class="mb-3">
-                            Showing {{ $brands->firstItem() }} to {{ $brands->lastItem() }} of {{ $brands->total() }}
-                            results
-                        </div>
-                        <div class="pagination-container">
-                            {{ $brands->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
-                        </div>
-                    </div>
-                </section>
-            </div>
-            @include('admin.layouts.footer')
-        </div> --}}
-
         <div id="main">
             <div class="page-heading">
                 <div class="page-title mb-4">
@@ -192,33 +107,29 @@
                                 </ol>
                             </nav>
                         </div>
-                        <div class="col-12 col-md-6 text-md-end">
-                            <a href="{{ route('create-brand-admin') }}" class="btn btn-primary">
-                                <i class="fa fa-plus-circle"></i> Add New Brand
-                            </a>
-                        </div>
+                       
                     </div>
                 </div>
 
                 <!-- Quick Stats Section -->
                 <div class="row quick-stats">
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-primary">
+                    <div class="col-12 col-md-4">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="text-muted mb-2">Total Brands</h6>
                                         <h3 class="mb-0">{{ $brands->total() }}</h3>
                                     </div>
-                                    <div class="stats-icon purple">
-                                        <i class="bi bi-building fs-3"></i>
+                                    <div class="stats-icon blue">
+                                        <i class="bi bi-box fs-3"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-success">
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
@@ -226,22 +137,22 @@
                                         <h3 class="mb-0">{{ $brands->count() }}</h3>
                                     </div>
                                     <div class="stats-icon green">
-                                        <i class="bi bi-check-circle fs-3"></i>
+                                        <i class="bi bi-receipt"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-md-4 mb-4">
-                        <div class="card stats-card bg-light-info">
+                    <div class="col-12 col-md-4 ">
+                        <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="text-muted mb-2">Total Products</h6>
                                         <h3 class="mb-0">{{ $brands->sum('products_count') }}</h3>
                                     </div>
-                                    <div class="stats-icon blue">
-                                        <i class="bi bi-box fs-3"></i>
+                                    <div class="stats-icon red">
+                                        <i class="bi bi-percent"></i>
                                     </div>
                                 </div>
                             </div>
@@ -252,7 +163,16 @@
                 <!-- Brands Table Section -->
                 <div class="card brand-card">
                     <div class="card-header bg-white">
-                        <h4 class="mb-0">Brand Directory</h4>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h4 class="mb-0">Brand Directory</h4>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                                <a href="{{ route('create-brand-admin') }}" class="btn btn-sm btn-primary">
+                                    <i class="fa fa-plus"></i> Buat Brand
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="table table-hover" id="table1">

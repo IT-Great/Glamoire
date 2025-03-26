@@ -22,7 +22,6 @@
     <div id="app">
 
         @include('admin.layouts.sidebar')
-
         @include('admin.layouts.navbar')
 
         <div id="main">
@@ -36,7 +35,7 @@
                                     <li class="breadcrumb-item active" aria-current="page">All Affiliate</li>
                                 </ol>
                             </nav>
-                        </div>                        
+                        </div>
                     </div>
                 </div>
                 <section class="section">
@@ -63,13 +62,16 @@
                                             <td>{{ $item->email }}</td>
                                             <td>{{ $item->category_product }}</td>
                                             <td>
-                                                <a href="{{ url('detail-affiliate-admin/' . $item->id) }}"><span
-                                                        class="badge bg-info">
-                                                        View</span></a>
+                                                <a href="{{ url('detail-affiliate-admin/' . $item->id) }}"
+                                                    class="badge bg-info mb-2 d-inline-flex align-items-center">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
 
-                                                <a href="javascript:void(0);" class="delete-product"
-                                                    data-id="{{ $item->id }}"><span
-                                                        class="badge bg-danger">Delete</span></a>
+                                                <a href="javascript:void(0);"
+                                                    class="badge bg-danger delete-product mb-2 d-inline-flex align-items-center"
+                                                    data-id="{{ $item->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -82,123 +84,41 @@
                 </section>
             </div>
 
-            <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
-                aria-labelledby="myModalLabel33" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title" id="myModalLabel33">Form Add Categories</h4>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                <i data-feather="x"></i>
-                            </button>
-                        </div>
-                        <form action="#">
-                            <div class="modal-body">
-                                <label>Full Name <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Email Address <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Registered Company Name <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Description <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Company Profile / Catalog Deck <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Partnership Program <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>BPOM <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>BPOM Certificate <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Any official distributor in Indonesia ? <span style="color: red">*</span>
-                                </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Have you reached Glamoire via email before? <span style="color: red">*</span>
-                                </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-body">
-                                <label>Product Category <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-light-secondary"
-                                    data-bs-dismiss="modal">
-                                    <i class="bx bx-x d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Close</span>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-primary ml-1" data-bs-dismiss="modal">
-                                    <i class="bx bx-check d-block d-sm-none"></i>
-                                    <span class="d-none d-sm-block">Submit</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+            @include('admin.layouts.footer')
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
         </div>
     </div>
 
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
+
+    @if (session('success'))
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4A69E2', // Mengatur warna tombol OK
+                customClass: {
+                    icon: 'swal-icon-success'
+                },
+                timer: 1800, // Mengatur waktu tampilan SweetAlert dalam milidetik
+                timerProgressBar: true, // Menampilkan progress bar timer
+                didClose: () => {
+                    // Optional: Tambahkan aksi di sini jika diperlukan saat alert ditutup
+                }
+            });
+        </script>
+    @endif
 
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>

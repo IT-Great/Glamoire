@@ -169,9 +169,9 @@
                                                         </p>
                                                     @else
                                                         <small class="form-text text-muted"
-                                                            style="font-size: 14px;">Enter the name of
-                                                            the voucher. This will be displayed to
-                                                            users.</small>
+                                                            style="font-size: 14px;">Masukkan nama voucher. Nama ini
+                                                            akan ditampilkan kepada pengguna.
+                                                        </small>
                                                     @endif
                                                 </div>
 
@@ -372,12 +372,20 @@
                                                     @endif
                                                 </div>
                                             </div>
+
                                             <div class="col-12 d-flex justify-content-end">
+                                                <a href="{{ route('index-promo-voucher') }}"
+                                                    class="btn btn-secondary btn-sm me-3"
+                                                    style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                                    <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                                </a>
+
                                                 <button type="reset"
                                                     class="btn btn-sm btn-light-secondary me-3">Reset
                                                     Voucher</button>
                                                 <button type="submit" class="btn btn-sm btn-primary me-1">Submit
                                                     Voucher</button>
+
                                             </div>
                                         </div>
                                     </div>
@@ -404,94 +412,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-
-    {{-- handle input group discount --}}
-    {{-- <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Format number to Indonesian Rupiah
-            const formatRupiah = (number) => {
-                const formatted = number.toString().replace(/\D/g, '');
-                return formatted ? parseInt(formatted).toLocaleString('id-ID') : '';
-            };
-
-            // Handle All Products discount
-            const initializeAllProductsDiscount = () => {
-                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-all');
-                const dropdownButton = document.getElementById('dropdownTypeAll');
-                const formatSymbol = document.getElementById('formatSymbolAll');
-                const discountInput = document.getElementById('discountInputAll');
-                let currentType = 'nominal';
-
-                dropdownItems.forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        currentType = this.dataset.type;
-                        dropdownButton.innerHTML = currentType === 'nominal' ?
-                            '<i class="bi bi-cash me-1"></i>Nominal' :
-                            '<i class="bi bi-percent me-1"></i>Persentase';
-                        formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
-                    });
-                });
-
-                discountInput.addEventListener('input', function() {
-                    let value = this.value.replace(/\D/g, '');
-                    if (currentType === 'nominal') {
-                        this.value = value ? formatRupiah(value) : '';
-                    } else {
-                        // Untuk persentase, hanya tambahkan % di belakang angka
-                        this.value = value ? value : '';
-                    }
-                });
-            };
-
-            // Handle individual product discounts
-            const initializeProductDiscounts = () => {
-                const dropdownItems = document.querySelectorAll('.custom-dropdown-item-product');
-                const productTypes = {};
-
-                dropdownItems.forEach(item => {
-                    item.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const type = this.dataset.type;
-                        const productId = this.dataset.productId;
-                        const dropdownButton = document.getElementById(
-                            `dropdownTypeProduct-${productId}`);
-                        const formatSymbol = document.getElementById(
-                            `formatSymbolProduct-${productId}`);
-                        const discountInput = document.getElementById(
-                            `discountInputProduct-${productId}`);
-
-                        productTypes[productId] = type;
-                        dropdownButton.innerHTML = type === 'nominal' ?
-                            '<i class="bi bi-cash me-1"></i>Nominal' :
-                            '<i class="bi bi-percent me-1"></i>Persentase';
-                        formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
-                        discountInput.value = ''; // Reset input when changing type
-                    });
-                });
-
-                document.querySelectorAll('input[id^="discountInputProduct-"]').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const productId = this.id.split('-')[1];
-                        const type = productTypes[productId] || 'nominal';
-                        let value = this.value.replace(/\D/g, '');
-
-                        if (type === 'nominal') {
-                            this.value = value ? formatRupiah(value) : '';
-                        } else {
-                            // Untuk persentase, hanya tambahkan % di belakang angka
-                            this.value = value ? value : '';
-                        }
-                    });
-                });
-            };
-
-            // Initialize both handlers
-            initializeAllProductsDiscount();
-            initializeProductDiscounts();
-        });
-    </script>  --}}
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

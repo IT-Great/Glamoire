@@ -101,109 +101,6 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        {{-- <div id="main">
-            <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6 mb-3">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Products</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Products</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
-                <section class="section">
-                    <div class="card">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <h4>List Products</h4>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="{{ route('create-product-admin') }}" type="submit"
-                                        class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="fa fa-plus" style="margin-right: 3px;"></i> Add Product
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <table class="table" id="table1">
-                                <thead>
-                                    <tr>
-                                        <th>Product</th>
-                                        <th>Product Sales</th>
-                                        <th>Stock Quantity</th>
-                                        <th>Price</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($products as $item)
-                                        <tr id="product-item-{{ $item->id }}">
-                                            <td>
-                                                <div class="product-item-container">
-                                                    <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
-                                                        class="lazyload"
-                                                        style="width: 60px; height: 60px; border-radius: 8px; object-fit: cover;"
-                                                        onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
-                                                    <!-- Product Details -->
-                                                    <div>
-                                                        <strong style="font-size: 5mm;">
-                                                            {{ $item->brand ? $item->brand->name : 'No Brand' }} -
-                                                            {{ Str::limit($item->product_name, 20, '...') }}
-                                                        </strong><br>
-                                                        <span style="font-size: 3.6mm;">Code Product :
-                                                            {{ $item->product_code ? $item->product_code : 'No Code' }}</span><br>
-                                                        <span style="font-size: 3.6mm;">Category :
-                                                            {{ $item->categoryProduct ? $item->categoryProduct->name : 'No Category' }}
-                                                        </span><br>
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                            <td>{{ $item->stock_quantity }}</td>
-                                            <td>{{ $item->stock_quantity }}</td>
-                                            <td>Rp. {{ number_format($item->regular_price, 0, ',', '.') }}</td>
-
-                                            <td class="action-buttons">
-                                                <a href="{{ url('detail-product-admin/' . $item->id) }}"><span
-                                                        class="badge bg-info">
-                                                        View</span></a>
-                                                <a href="{{ url('edit-product-admin/' . $item->id) }}"><span
-                                                        class="badge bg-warning">Update</span></a>
-                                                <a href="javascript:void(0);" class="delete-product"
-                                                    data-id="{{ $item->id }}"><span
-                                                        class="badge bg-danger">Delete</span></a>
-                                                <a href="javascript:void(0);" class="notify-product"
-                                                    data-id="{{ $item->id }}"><span
-                                                        class="badge bg-primary">Notify</span></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-between mt-4 px-3" id="pagination-container">
-                        <div class="mb-3">
-                            Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
-                            {{ $products->total() }} results
-                        </div>
-                        <div class="pagination-container">
-                            {{ $products->appends(['search' => request('search')])->links('pagination::bootstrap-4') }}
-                        </div>
-                    </div>
-                </section>
-            </div>
-            @include('admin.layouts.footer')
-        </div> --}}
-
         <div id="main">
             <div class="page-heading">
                 <div class="page-title mb-4">
@@ -267,7 +164,9 @@
                                     <div>
                                         <h6 class="text-muted mb-2">Low Stock</h6>
                                         <h3 class="mb-0">
-                                            {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }}
+                                            {{-- {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }} --}}
+                                            {{ $products->where('stock_quantity', '<=', 15)->where('stock_quantity', '>', 0)->count() }}
+
                                         </h3>
                                     </div>
                                     <div class="stats-icon yellow">
@@ -382,21 +281,21 @@
                                         <td>
                                             <div class="action-buttons">
                                                 <a href="{{ url('detail-product-admin/' . $item->id) }}"
-                                                    class="badge bg-info mb-2">
+                                                    class="badge bg-info mb-2 d-inline-flex align-items-center">
                                                     <i class="bi bi-eye"></i> View
                                                 </a>
                                                 <a href="{{ url('edit-product-admin/' . $item->id) }}"
-                                                    class="badge bg-warning mb-2">
+                                                    class="badge bg-warning mb-2 d-inline-flex align-items-center">
                                                     <i class="bi bi-pencil"></i> Edit
                                                 </a>
                                                 <a href="javascript:void(0);"
-                                                    class="badge bg-danger delete-product mb-2"
+                                                    class="badge bg-danger delete-product mb-2 d-inline-flex align-items-center"
                                                     data-id="{{ $item->id }}">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
                                                 @if ($item->stock_quantity < 10)
                                                     <a href="javascript:void(0);"
-                                                        class="badge bg-primary notify-product"
+                                                        class="badge bg-primary notify-product d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">
                                                         <i class="bi bi-bell"></i> Notify
                                                     </a>

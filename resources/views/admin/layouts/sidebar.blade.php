@@ -1,16 +1,29 @@
+<style>
+    .sidebar-header .logo img {
+        /* Sesuaikan ukuran lebar */
+        height: auto;
+        /* Agar tidak terdistorsi */
+        max-width: 200px;
+        /* Sesuaikan tinggi maksimum */
+        object-fit: contain;
+        /* Menjaga proporsi gambar */
+    }
+</style>
+
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header">
             <div class="d-flex justify-content-between">
                 <div class="logo">
-                    {{-- <a href="index.html"> <img src="{{ asset('images/glamoire.jpg') }}" alt="Logo">
-                    </a> --}}
+                    <a href="index.html"> <img src="{{ asset('images/glamoire.png') }}" alt="Logo">
+                    </a>
                 </div>
                 <div class="toggler">
                     <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
                 </div>
             </div>
         </div>
+        
 
         <div class="sidebar-menu">
             <ul class="menu">
@@ -22,7 +35,7 @@
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
-                    </li>                
+                    </li>
 
                     <li class="sidebar-item has-sub {{ Request::is('product-admin*') ? 'active' : '' }} ">
                         <a href="/product-admin" class='sidebar-link'>
@@ -31,14 +44,14 @@
                         </a>
 
                         <ul class="submenu">
-                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">                                
+                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">
                                 <a href="/product-admin">
                                     Product
                                 </a>
                             </li>
                             <li class="submenu-item {{ Request::is('stock-product-admin') ? 'active' : '' }}">
                                 <a href="/stock-product-admin">Stock Product</a>
-                            </li>                          
+                            </li>
                         </ul>
 
                     </li>
@@ -78,7 +91,7 @@
                             </li>
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                                 <a href="/promo-diskon">Discount</a>
-                            </li>                          
+                            </li>
                         </ul>
 
                     </li>
@@ -103,7 +116,7 @@
                             <span>Affiliate</span>
                         </a>
                     </li>
-                   
+
                     <li class="sidebar-item {{ Request::is('faq-admin') ? 'active' : '' }}">
                         <a href="/faq-admin" class='sidebar-link'>
                             <i class="bi bi-patch-question-fill"></i>
@@ -116,14 +129,14 @@
                             <i class="bi bi-people-fill"></i>
                             <span>User</span>
                         </a>
-                    </li>                 
+                    </li>
 
-                    <li class="sidebar-item {{ Request::is('chat-admin') ? 'active' : '' }}">
+                    {{-- <li class="sidebar-item {{ Request::is('chat-admin') ? 'active' : '' }}">
                         <a href="/chat-admin" class='sidebar-link'>
                             <i class="bi bi-chat-dots-fill"></i>
                             <span>Chat</span>
                         </a>
-                    </li>
+                    </li> --}}
 
 
                     <li class="sidebar-item {{ Request::is('subscribe-admin') ? 'active' : '' }}">
@@ -136,12 +149,6 @@
 
                 <!-- Jika User adalah Accounting -->
                 @if (Auth::user()->role === 'accounting' || Auth::user()->role === 'superadmin')
-                    <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
-                        <a href="/dashboard" class='sidebar-link'>
-                            <i class="bi bi-grid-fill"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
                     {{-- ACCOUNTING SIDE --}}
                     <li class="sidebar-title">Accounting</li>
 
@@ -152,8 +159,8 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('invoice') ? 'active' : '' }}">
-                        <a href="/affiliate-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('financial') ? 'active' : '' }}">
+                        <a href="/financial" class='sidebar-link'>
                             <i class="bi bi-cash-stack"></i>
                             <span>Financial</span>
                         </a>
@@ -166,15 +173,15 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('') ? 'active' : '' }}">
-                        <a href="/affiliate-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('transaction') ? 'active' : '' }}">
+                        <a href="/transaction" class='sidebar-link'>
                             <i class="bi bi-cash"></i>
                             <span>Transaction</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('') ? 'active' : '' }}">
-                        <a href="/affiliate-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('journal') ? 'active' : '' }}">
+                        <a href="/journal" class='sidebar-link'>
                             <i class="bi bi-journal-check"></i>
                             <span>Journal</span>
                         </a>

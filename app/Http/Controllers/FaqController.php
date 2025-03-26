@@ -8,6 +8,15 @@ use Illuminate\Http\Request;
 
 class FaqController extends Controller
 {
+    // halaman user
+    public function index()
+    {
+        $faqsByCategory = Faq::all()->groupBy('category');
+        return view('user.component.help', compact('faqsByCategory'));
+    }
+
+
+    // halaman admin
     public function indexFaqAdmin()
     {
         // Group FAQs by category

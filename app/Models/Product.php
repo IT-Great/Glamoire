@@ -67,7 +67,6 @@ class Product extends Model
             ->exists();
     }
 
-
     public function getActivePromoByType($promoType)
     {
         $currentDate = now()->format('Y-m-d');
@@ -129,14 +128,6 @@ class Product extends Model
     {
         return $this->stocks()->count() === 0;
     }
-
-    // public function getTotalStockAttribute()
-    // {
-    //     $updatedStockTotal = $this->stocks()->sum('quantity');
-
-    //     // Kembalikan jumlah stok awal ditambah dengan stok update
-    //     return $this->stock_quantity + $updatedStockTotal;
-    // }
 
     public function getTotalStockAttribute()
     {
