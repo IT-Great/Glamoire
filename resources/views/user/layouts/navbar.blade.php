@@ -1,4 +1,4 @@
-<div class="py-2 md:px-20 lg:px-24 xl:px-24 2xl:px-96 position-sticky" style="top:-0.1rem;background-color: #183018;z-index: 9;">
+<div class="py-2 md:px-20 lg:px-24 xl:px-48 2xl:px-96 position-sticky" style="top:-0.1rem;background-color: #183018;z-index: 9;">
   <div class="container-fluid">
     <div class="d-flex w-full align-items-center">
       <!-- IMAGE -->
@@ -177,19 +177,19 @@
   </div>
 </div>
 
-@if (!Request::is('cart') && !Request::is('checkout') && !Request::is('buy-now'))  
+@if (!Request::is('cart') && !Request::is('checkout') && !Request::is('buy-now') && !Request::is('detail.product') && !Request::is('detail.product.varian'))  
   <!-- Bottom Navbar for Mobile (Shop, Brand, Newsletter, Promotion) -->
   <div class="d-lg-none fixed-bottom mt-8">
-      <div id="categories" class="container d-none w-full h-[83vh] bg-white px-0">
-        <div class="col-12 px-0 py-2 border-bottom border-dark">
+      <div id="categories" class="container d-none w-full h-[83vh] bg-white px-0" style="z-index: 9999 !important;">
+        <div class="col-12 px-0 py-2 border-bottom border-secondary">
           <p class="text-[12px] mx-3 text-[#183018] font-semibold">Belanja Berdasarkan Kategori</p>
         </div>
         <div class="flex">
-          <div class="col-4 px-0 min-h-[77vh] overflow-y-auto custom-scroll max-h-[75vh]">
+          <div class="col-4 px-0 min-h-[77vh] overflow-y-auto custom-scroll max-h-[75vh] border-right border-secondary">
             <nav class="tabbable border-none">
-              <div class="nav grid nav-tabs border-none mb-2 mb-md-4 w-full" id="nav-tab" role="tablist">
+              <div class="nav grid nav-tabs mb-2 mb-md-4 w-full" id="nav-tab" role="tablist">
                 @foreach ($categories as $index => $category)
-                  <a class="text-decoration-none nav-item flex py-3 gap-1 align-items-center {{ $index == 0 ? 'active' : '' }} categories text-xs px-3 text-[#183018] active:font-bold"
+                  <a class="text-decoration-none border border-secondary nav-item flex py-3 gap-1 align-items-center {{ $index == 0 ? 'active' : '' }} categories text-xs px-3 text-[#183018] active:font-bold"
                     id="tab-mobile-{{ $category->id }}" role="tab" data-bs-toggle="tab" href="#kategori-{{ $category->id }}-mobile" aria-controls="kategori-{{ $category->id }}-mobile" aria-selected="{{ $index == 0 ? 'true' : 'false' }}">
                     {{ strtoupper($category->name) }}
                   </a>
@@ -198,7 +198,7 @@
             </nav>
           </div>
           
-          <div class="col-8 px-0 w-full">
+          <div class="col-8 px-0 w-full overflow-y-auto custom-scroll ">
             <div class="tab-content p-0">
               @foreach ($categories as $index => $category)
                 <!-- Each tab content should have role="tabpanel", aria-labelledby, and a unique id -->
@@ -231,7 +231,7 @@
         </div>
       </div>
     
-      <div id="brands" class="container d-none w-full h-[83vh] bg-white px-0">
+      <div id="brands" class="container d-none w-full h-[83vh] bg-white px-0" style="z-index: 9999 !important;">
         <div class="col-12 px-0 py-2">
           <p class="text-[12px] mx-3 text-[#183018] font-semibold">Cari Brand Favoritmu</p>
         </div>
@@ -287,18 +287,18 @@
                   </svg>
                   <p class="p-0 text-white text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Akun</p>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end bg-[#183018]" aria-labelledby="account-link">
+              <ul class="dropdown-menu dropdown-menu-end bg-[#183018]" aria-labelledby="account-link" style="width: auto; min-width: unset;">
                   <div class="shadow-sm rounded">
                       @if (session('id_user'))
                       <li class="text-end w-full hover:cursor-pointer">
-                        <a class="text-white dropdown-item text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] hover:bg-neutral-700" href="{{ route('account', ['user' => session('id_user')]) }}">
-                          Profil Saya
-                        </a>
+                          <a class="text-white dropdown-item text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] hover:bg-neutral-700" href="{{ route('account', ['user' => session('id_user')]) }}">
+                              Profil Saya
+                          </a>
                       </li>
                       <li class="text-end w-full hover:cursor-pointer">
-                        <a id="logout-link-exc" class="hover:cursor-pointer text-white dropdown-item text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] hover:bg-neutral-700">
-                          Keluar
-                        </a>  
+                          <a id="logout-link-exc" class="hover:cursor-pointer text-white dropdown-item text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] hover:bg-neutral-700">
+                              Keluar
+                          </a>  
                       </li>
                       @else
                       <li><a class="text-white dropdown-item hover:cursor-pointer text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</a></li>
@@ -307,6 +307,7 @@
                   </div>
               </ul>
           </div>
+        
     
         </div>
       </div>
@@ -315,36 +316,49 @@
 
 <!-- KATEGORI MOBILE -->
 <script>
-  document.getElementById('shop-link').addEventListener('click', function(event) {
-    event.preventDefault();
-    const categoriesDiv = document.getElementById('categories');
-    const brandsDiv = document.getElementById('brands');
-    
-    // Close the brands section if it's open
-    if (!brandsDiv.classList.contains('d-none')) {
-      brandsDiv.classList.add('d-none');
-    }
-
-    // Toggle the categories section
-    categoriesDiv.classList.toggle('d-none');
-  });
+  if (window.innerWidth <= 425){
+    document.getElementById('shop-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      const categoriesDiv = document.getElementById('categories');
+      const brandsDiv = document.getElementById('brands');
+      
+      // Close the brands section if it's open
+      if (!brandsDiv.classList.contains('d-none')) {
+        brandsDiv.classList.add('d-none');
+      }
+  
+      const categories = document.getElementById('categories');
+      
+      // Toggle kelas 'open' untuk mengontrol animasi
+      if (categories.classList.contains('open')) {
+          categories.classList.remove('open'); // Tutup animasi
+      } else {
+          categories.classList.add('open'); // Buka animasi
+      }
+  
+      // Toggle the categories section
+      categoriesDiv.classList.toggle('d-none');
+    });
+  }
 </script>
 
 <!-- BRAND MOBILE -->
 <script>
-  document.getElementById('brand-link').addEventListener('click', function(event) {
-    event.preventDefault();
-    const brandsDiv = document.getElementById('brands');
-    const categoriesDiv = document.getElementById('categories');
-
-    // Close the categories section if it's open
-    if (!categoriesDiv.classList.contains('d-none')) {
-      categoriesDiv.classList.add('d-none');
-    }
-
-    // Toggle the brands section
-    brandsDiv.classList.toggle('d-none');
-  });
+  if (window.innerWidth <= 425){
+    document.getElementById('brand-link').addEventListener('click', function(event) {
+      event.preventDefault();
+      const brandsDiv = document.getElementById('brands');
+      const categoriesDiv = document.getElementById('categories');
+  
+      // Close the categories section if it's open
+      if (!categoriesDiv.classList.contains('d-none')) {
+        categoriesDiv.classList.add('d-none');
+      }
+  
+      // Toggle the brands section
+      brandsDiv.classList.toggle('d-none');
+    });
+  }
 </script>
 
 <!-- Logout -->

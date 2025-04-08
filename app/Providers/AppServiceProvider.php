@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\CategoryProduct;
 use App\Models\Brand;
+use Illuminate\Support\Facades\URL;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -39,5 +40,8 @@ class AppServiceProvider extends ServiceProvider
             // dd($subCategories);
             $view->with('categories', $categories)->with('brands', $brands)->with('subCategories', $subCategories);
         });
+        if (config('app.env') !== 'http://localhost') {
+            URL::forceScheme('http');
+        }
     }
 }

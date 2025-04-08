@@ -110,18 +110,16 @@
 </style>
 
 @section('content')
-    <div class="md:px-20 lg:px-24 xl:px-24 py-2 py-md-3 mb-4">
-        <div class="container-fluid">
-            <div class="shadow-sm border border-black rounded-md py-2 py-md-3 my-1 my-md-3">
-                <div class="d-flex gap-2 pl-2">
-                    <a href="/" class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-                    <p class="text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-                    <a href="#"
-                        class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kontak
-                        Kami</a>
-                </div>
-            </div>
-        </div>
+<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2 mb-4">
+  <div class="container-fluid px-0 px-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-1 my-md-3">
+      <div class="d-flex gap-1 pl-3">
+        <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+        <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="#" class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kontak Kami</a>
+      </div>
+    </div>
+  </div>
 
         <div class="container-fluid">
             <div class="row">
@@ -237,319 +235,178 @@
         </div>
     </div>
 
-    {{-- <script>
-        $(document).on("submit", "#question-form", function(e) {
-            e.preventDefault();
+<script>
+  // $(document).on("submit", "#question-form", function (e) {
+  //   e.preventDefault();
 
-            let formData = new FormData(this); // Ambil semua data dari form, termasuk file
+  //   let fullname = $("#contact_fullname").val();
+  //   let email    = $("#contact_email").val();
+  //   let question = $("#contact_description").val();
 
-            let fullname = $("#contact_fullname").val();
-            let email = $("#contact_email").val();
-            let question = $("#contact_description").val();
+  //   $.ajax({
+  //       url: "{{ route('send.question') }}",
+  //       type: "POST",
+  //       data: {
+  //           _token: "{{ csrf_token() }}",
+  //           fullname: fullname,
+  //           email: email,
+  //           question: question,
+  //       },
+  //       success: function (response) {
+  //           if (response.success) {
+  //               Toast.fire({
+  //                 icon: "success",
+  //                 text: response.message,
+  //                 title: "Berhasil",
+  //                 willOpen: () => {
+  //                   const title = document.querySelector('.swal2-title');
+  //                   const content = document.querySelector('.swal2-html-container');
+  //                   if (title) title.style.color = '#ffffff'; // Ubah warna judul
+  //                   if (content) content.style.color = '#ffffff'; // Ubah warna konten
+  //                 }
+  //               }).then(function () {
+  //                 location.reload(); // Redirect ke halaman utama atau halaman lain
+  //               });
+  //           } else {
+  //             let errors = response.errors;
+  //             let errorMessages = response.message;
+  //             for (const key in errors) {
+  //                 if (errors.hasOwnProperty(key)) {
+  //                     errorMessages += errors[key][0] + "<br>";
+  //                 }
+  //             }
+  //             Toast.fire({
+  //               icon: "error",
+  //               text: errorMessahes,
+  //               title: "Oops..",
+  //               willOpen: () => {
+  //                 const title = document.querySelector('.swal2-title');
+  //                 const content = document.querySelector('.swal2-html-container');
+  //                 if (title) title.style.color = '#ffffff'; // Ubah warna judul
+  //                 if (content) content.style.color = '#ffffff'; // Ubah warna konten
+  //               }
+  //             });
+  //           }
+  //       },
+  //       error: function (response) {
+  //         Toast.fire({
+  //           icon: "error",
+  //           text: "Maaf Coba Lagi",
+  //           title: "Oops..",
+  //           willOpen: () => {
+  //             const title = document.querySelector('.swal2-title');
+  //             const content = document.querySelector('.swal2-html-container');
+  //             if (title) title.style.color = '#ffffff'; // Ubah warna judul
+  //             if (content) content.style.color = '#ffffff'; // Ubah warna konten
+  //           }
+  //         });
+  //       },
+  //   });
+  // });
 
-            console.log({
-                fullname,
-                email,
-                question,
-            });
+  function displaySelectedMedia(event, previewContainerId) {
+      const previewContainer = document.getElementById(previewContainerId);
+      const fileInput = event.target;
+      const files = fileInput.files;
 
-            $.ajax({
-                url: "{{ route('send.question') }}",
-                type: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    fullname: fullname,
-                    email: email,
-                    question: question,
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Toast.fire({
-                            icon: "success",
-                            text: response.message,
-                            title: "Berhasil",
-                            willOpen: () => {
-                                const title = document.querySelector('.swal2-title');
-                                const content = document.querySelector(
-                                    '.swal2-html-container');
-                                if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
-                                if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
-                            }
-                        }).then(function() {
-                            window.refresh(); // Redirect ke halaman utama atau halaman lain
-                        });
-                    } else {
-                        let errors = response.errors;
-                        let errorMessages = response.message;
-                        for (const key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                errorMessages += errors[key][0] + "<br>";
-                            }
-                        }
-                        Toast.fire({
-                            icon: "error",
-                            text: errorMessahes,
-                            title: "Oops..",
-                            willOpen: () => {
-                                const title = document.querySelector('.swal2-title');
-                                const content = document.querySelector(
-                                    '.swal2-html-container');
-                                if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
-                                if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
-                            }
-                        });
-                    }
-                },
-                error: function(response) {
-                    Toast.fire({
-                        icon: "error",
-                        text: "Maaf Coba Lagi",
-                        title: "Oops..",
-                        willOpen: () => {
-                            const title = document.querySelector('.swal2-title');
-                            const content = document.querySelector('.swal2-html-container');
-                            if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                            if (content) content.style.color =
-                                '#ffffff'; // Ubah warna konten
-                        }
-                    });
-                },
-            });
-        });
-    </script>
+      const maxImages = 2;
+      const maxVideos = 1;
+      let imageCount = 0;
+      let videoCount = 0;
 
-    <script>
-        // Handle Single Image Upload
-        function readURLSingle(input) {
-            if (input.files && input.files[0]) {
-                var file = input.files[0];
-                var reader = new FileReader();
+      // Clear previous previews
+      previewContainer.innerHTML = '';
 
-                reader.onload = function(e) {
-                    var imgContent = `
-                  <div class="upload__img-box-single">
-                      <div class="img-bg" style="background-image: url('${e.target.result}')">
-                          <div class="upload__img-close" onclick="removeSingleImage(this)"></div>
-                      </div>
-                  </div>
-              `;
-                    document.getElementById('single-file-upload-content').innerHTML = imgContent;
-                    document.getElementById('single-file-upload-content').style.display = 'flex';
-                }
+      // Iterate through selected files
+      for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          const fileType = file.type;
 
-                reader.readAsDataURL(file);
-            }
-        }
+          // Check if the file is an image
+          if (fileType.startsWith('image/')) {
+              if (imageCount >= maxImages) {
+                  // alert('You can only upload up to 2 images.');
+                  Toast.fire({
+                      icon: "error",
+                      text: "Anda hanya bisa mengupload 2 gambar ",
+                      title: "Oops..",
+                      willOpen: () => {
+                          const title = document.querySelector('.swal2-title');
+                          const content = document.querySelector('.swal2-html-container');
+                          if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                          if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                      }
+                  });
+                  break;
+              }
 
-        function removeSingleImage(element) {
-            var imgContent = document.getElementById('single-file-upload-content');
-            imgContent.innerHTML = '';
-            imgContent.style.display = 'none';
-            document.querySelector('input[name="response_image"]').value = '';
-        }
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  const img = document.createElement('img');
+                  img.src = e.target.result;
+                  img.classList.add('img-preview');
+                  img.style.maxWidth = '150px'; // Set image size
+                  previewContainer.appendChild(img);
+              };
+              reader.readAsDataURL(file);
+              imageCount++;
+          }
+          // Check if the file is a video
+          else if (fileType.startsWith('video/')) {
+              if (videoCount >= maxVideos) {
+                  alert('You can only upload 1 video.');
+                  Toast.fire({
+                      icon: "error",
+                      text: "Kamu hanya bisa mengupload 1 video",
+                      title: "Oops..",
+                      willOpen: () => {
+                          const title = document.querySelector('.swal2-title');
+                          const content = document.querySelector('.swal2-html-container');
+                          if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                          if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                      }
+                  });
+                  break;
+              }
 
-        // Handle Video Upload
-        function readURLVideo(input) {
-            if (input.files && input.files[0]) {
-                var videoFile = input.files[0];
+              const reader = new FileReader();
+              reader.onload = function(e) {
+                  const video = document.createElement('video');
+                  video.src = e.target.result;
+                  video.controls = true;
+                  video.style.maxWidth = '150px'; // Set video size
+                  previewContainer.appendChild(video);
+              };
+              reader.readAsDataURL(file);
+              videoCount++;
+          } else {
+              Toast.fire({
+                  icon: "error",
+                  text: "Kamu hanya bisa mengupload gambar dan video saja.",
+                  title: "Oops..",
+                  willOpen: () => {
+                      const title = document.querySelector('.swal2-title');
+                      const content = document.querySelector('.swal2-html-container');
+                      if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                      if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                  }
+              });
+          }
+      }
 
-                // Validate file size (10MB limit)
-                if (videoFile.size > 10 * 1024 * 1024) {
-                    document.getElementById('video-error').textContent = 'Video size must be less than 10MB';
-                    document.getElementById('video-error').style.display = 'block';
-                    input.value = '';
-                    return;
-                }
-
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var videoContent = `
-                <div class="upload__video-box">
-                    <video controls>
-                        <source src="${e.target.result}" type="${videoFile.type}">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="upload__video-close" onclick="removeVideo(this)"></div>
-                </div>
-            `;
-                    var videoContainer = document.getElementById('video-file-upload-content');
-                    videoContainer.innerHTML = videoContent;
-                    videoContainer.style.display = 'flex';
-
-                    // Hide error message if it was previously shown
-                    document.getElementById('video-error').style.display = 'none';
-                }
-                reader.readAsDataURL(videoFile);
-            }
-        }
-
-        function removeVideo(element) {
-            var videoContent = document.getElementById('video-file-upload-content');
-            videoContent.innerHTML = '';
-            videoContent.style.display = 'none';
-            document.getElementById('response_video').value = '';
-        }
-    </script> --}}
-
-    <script>
-        $(document).on("submit", "#question-form", function(e) {
-            e.preventDefault();
-
-            // Create FormData object
-            let formData = new FormData();
-
-            // Add text fields
-            formData.append('_token', "{{ csrf_token() }}");
-            formData.append('fullname', $("#contact_fullname").val());
-            formData.append('email', $("#contact_email").val());
-            formData.append('question', $("#contact_description").val());
-
-            // Add image file if exists
-            const imageInput = document.querySelector('input[name="response_image"]');
-            if (imageInput.files[0]) {
-                formData.append('image', imageInput.files[0]);
-            }
-
-            // Add video file if exists
-            const videoInput = document.querySelector('input[name="response_video"]');
-            if (videoInput.files[0]) {
-                formData.append('video', videoInput.files[0]);
-            }
-
-            $.ajax({
-                url: "{{ route('send.question') }}",
-                type: "POST",
-                data: formData,
-                processData: false, // Important for FormData
-                contentType: false, // Important for FormData
-                success: function(response) {
-                    if (response.success) {
-                        Toast.fire({
-                            icon: "success",
-                            text: response.message,
-                            title: "Berhasil",
-                            willOpen: () => {
-                                const title = document.querySelector('.swal2-title');
-                                const content = document.querySelector(
-                                    '.swal2-html-container');
-                                if (title) title.style.color = '#ffffff';
-                                if (content) content.style.color = '#ffffff';
-                            }
-                        }).then(function() {
-                            location
-                                .reload(); // Use location.reload() instead of window.refresh()
-                        });
-                    } else {
-                        let errors = response.errors;
-                        let errorMessages = response.message;
-                        for (const key in errors) {
-                            if (errors.hasOwnProperty(key)) {
-                                errorMessages += errors[key][0] + "<br>";
-                            }
-                        }
-                        Toast.fire({
-                            icon: "error",
-                            text: errorMessages, // Fixed typo in variable name
-                            title: "Oops..",
-                            willOpen: () => {
-                                const title = document.querySelector('.swal2-title');
-                                const content = document.querySelector(
-                                    '.swal2-html-container');
-                                if (title) title.style.color = '#ffffff';
-                                if (content) content.style.color = '#ffffff';
-                            }
-                        });
-                    }
-                },
-                error: function(response) {
-                    Toast.fire({
-                        icon: "error",
-                        text: "Maaf Coba Lagi",
-                        title: "Oops..",
-                        willOpen: () => {
-                            const title = document.querySelector('.swal2-title');
-                            const content = document.querySelector('.swal2-html-container');
-                            if (title) title.style.color = '#ffffff';
-                            if (content) content.style.color = '#ffffff';
-                        }
-                    });
-                },
-            });
-        });
-
-        // Handle Single Image Upload
-        function readURLSingle(input) {
-            if (input.files && input.files[0]) {
-                var file = input.files[0];
-                var reader = new FileReader();
-
-                reader.onload = function(e) {
-                    var imgContent = `
-                  <div class="upload__img-box-single">
-                      <div class="img-bg" style="background-image: url('${e.target.result}')">
-                          <div class="upload__img-close" onclick="removeSingleImage(this)"></div>
-                      </div>
-                  </div>
-              `;
-                    document.getElementById('single-file-upload-content').innerHTML = imgContent;
-                    document.getElementById('single-file-upload-content').style.display = 'flex';
-                }
-
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function removeSingleImage(element) {
-            var imgContent = document.getElementById('single-file-upload-content');
-            imgContent.innerHTML = '';
-            imgContent.style.display = 'none';
-            document.querySelector('input[name="response_image"]').value = '';
-        }
-
-        // Handle Video Upload
-        function readURLVideo(input) {
-            if (input.files && input.files[0]) {
-                var videoFile = input.files[0];
-
-                // Validate file size (10MB limit)
-                if (videoFile.size > 10 * 1024 * 1024) {
-                    document.getElementById('video-error').textContent = 'Video size must be less than 10MB';
-                    document.getElementById('video-error').style.display = 'block';
-                    input.value = '';
-                    return;
-                }
-
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    var videoContent = `
-                <div class="upload__video-box">
-                    <video controls>
-                        <source src="${e.target.result}" type="${videoFile.type}">
-                        Your browser does not support the video tag.
-                    </video>
-                    <div class="upload__video-close" onclick="removeVideo(this)"></div>
-                </div>
-            `;
-                    var videoContainer = document.getElementById('video-file-upload-content');
-                    videoContainer.innerHTML = videoContent;
-                    videoContainer.style.display = 'flex';
-
-                    // Hide error message if it was previously shown
-                    document.getElementById('video-error').style.display = 'none';
-                }
-                reader.readAsDataURL(videoFile);
-            }
-        }
-
-        function removeVideo(element) {
-            var videoContent = document.getElementById('video-file-upload-content');
-            videoContent.innerHTML = '';
-            videoContent.style.display = 'none';
-            document.getElementById('response_video').value = '';
-        }
-    </script>
+      if (imageCount === 0 && videoCount === 0) {
+          Toast.fire({
+              icon: "error",
+              text: "Masukkan minimal 1 review berupa foto atau video produk",
+              title: "Oops..",
+              willOpen: () => {
+                  const title = document.querySelector('.swal2-title');
+                  const content = document.querySelector('.swal2-html-container');
+                  if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                  if (content) content.style.color = '#ffffff'; // Ubah warna konten
+              }
+          });
+      }
+  }
+</script>
 @endsection

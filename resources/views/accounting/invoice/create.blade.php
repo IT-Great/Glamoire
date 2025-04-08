@@ -4,29 +4,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Mazer Admin Dashboard</title>
-
-    <!-- Include Choices CSS -->
-    <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
+    <title>Invoice - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
-    <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-
-    <!-- FilePond CSS -->
-    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-        rel="stylesheet">
-
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+
+    <style>
+        :root {
+            --primary: #435ebe;
+            --primary-light: #546fd0;
+            --success: #4fbe87;
+            --danger: #eb5757;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --secondary: #6c757d;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        .promo-nav {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .promo-nav-item {
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .promo-nav-item i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .promo-nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.2);
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 25px 30px;
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header h4 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px rgba(67, 94, 190, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(67, 94, 190, 0.25);
+            background-color: #fff;
+        }
+
+        .form-control-icon {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 12px;
+            color: var(--secondary);
+        }
+
+        .form-control-icon+.form-control {
+            padding-left: 40px;
+        }
+
+        .has-icon-left .form-control {
+            padding-left: 40px;
+        }
+
+        .form-select {
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(67, 94, 190, 0.25);
+        }
+
+        .image-upload-wrap {
+            border: 2px dashed #e0e0e0;
+            border-radius: 15px;
+            position: relative;
+            text-align: center;
+            transition: all 0.3s ease;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .image-upload-wrap:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 94, 190, 0.03);
+        }
+
+        .file-upload-input {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .bg-light-primary {
+            background-color: rgba(67, 94, 190, 0.1) !important;
+        }
+
+        .text-subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -36,14 +228,14 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>Add New Invoice</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                <div class="page-title" style="margin-bottom: 25px;">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h2 class="mb-3">Invoice Management</h2>
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="/dashboard"><i
+                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="/invoice">Invoice</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Add New Invoice</li>
                                 </ol>
@@ -52,11 +244,28 @@
                     </div>
                 </div>
 
-                <!-- Basic Horizontal form layout section start -->
-                <section id="multiple-column-form">
+                <!-- Navigation Tabs -->
+                <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="{{ route('index-invoice') }}"
+                        class="promo-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
+                        <i class="bi bi-receipt"></i>Invoice Management
+                    </a>
+                    <a href="{{ route('index-supplier') }}"
+                        class="promo-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
+                        <i class="bi bi-truck"></i>Supplier Management
+                    </a>
+                </div>
+
+                <!-- Basic form layout section start -->
+                <section id="multiple-column-form" class="section">
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h4><i class="bi bi-file-earmark-plus"></i> Create New Invoice</h4>
+                                    <p class="text-subtitle text-muted">Fill in the form below to create a new invoice
+                                    </p>
+                                </div>
                                 <div class="card-content">
                                     <div class="card-body">
                                         <form action="{{ route('store-invoice') }}" class="form form-vertical"
@@ -65,219 +274,270 @@
                                             <div class="form-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">No. Invoice <span
-                                                                    style="color: red">*</span></label>
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="invoice-number" class="form-label">No. Invoice
+                                                                <span class="text-danger">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
-                                                                    class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Product Name"
-                                                                    id="first-name-icon" name="product_name">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('product_name'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('product_name') }}</p>
-                                                            @endif
-                                                        </div>
-
-
-
-                                                        <label for="first-name-icon">Debit Account <span
-                                                                style="color: red">*</span></label>
-                                                        <div class="form-group">
-                                                            <select class="choices form-select" name="brand_id">
-                                                                {{-- @foreach ($brands as $brand)
-                                                                    <option value="{{ $brand->id }}">
-                                                                        {{ $brand->name }}</option>
-                                                                @endforeach --}}
-                                                            </select>
-                                                        </div>
-
-
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Amount <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Stock Quantity"
-                                                                    id="first-name-icon" name="stock_quantity">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('stock_quantity'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('stock_quantity') }}</p>
-                                                            @endif
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">PPH Percentage <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Stock Quantity"
-                                                                    id="first-name-icon" name="stock_quantity">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('stock_quantity'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('stock_quantity') }}</p>
-                                                            @endif
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">End Date <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="diskon">
+                                                                    class="form-control {{ $errors->has('no_invoice') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter Invoice Number"
+                                                                    id="invoice-number" name="no_invoice">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-receipt"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('diskon'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('diskon') }}</p>
+                                                            @if ($errors->has('no_invoice'))
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('no_invoice') }}</p>
                                                             @endif
+                                                            <small class="text-muted">Enter a unique invoice number
+                                                                (e.g. INV-2025-001)</small>
                                                         </div>
 
-
-                                                        <label for="first-name-icon">Description <span
-                                                                style="color: red">*</span></label>
-                                                        <div class="form-floating">
-                                                            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-                                                            <label for="floatingTextarea">Comments</label>
+                                                        <div class="form-group mb-4">
+                                                            <label for="debit-account" class="form-label">Debit Account
+                                                                <span class="text-danger">*</span></label>
+                                                            <select
+                                                                class="form-control select2-basic-category {{ $errors->has('debit_coa_id') ? 'is-invalid' : '' }}"
+                                                                name="debit_coa_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled
+                                                                    {{ old('debit_coa_id') ? '' : 'selected' }}>
+                                                                    Pilih Debit Account</option>
+                                                                @foreach ($coas as $coa)
+                                                                    <option value="{{ $coa->id }}">
+                                                                        {{ $coa->coa_no }} - {{ $coa->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <small class="text-muted">Select the account to be
+                                                                debited</small>
                                                         </div>
-                                                        @if ($errors->has('product_name'))
-                                                            <p style="color: red">
-                                                                {{ $errors->first('product_name') }}</p>
-                                                        @endif
+
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="amount" class="form-label">Amount <span
+                                                                    class="text-danger">*</span></label>
+                                                            <div class="position-relative">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter Amount" id="amount"
+                                                                    name="amount">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-cash"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('amount'))
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('amount') }}</p>
+                                                            @endif
+                                                            <small class="text-muted">Enter the invoice amount in
+                                                                IDR</small>
+                                                        </div>
+
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="pph-percentage" class="form-label">PPH
+                                                                Percentage </label>
+                                                            <div class="position-relative">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter PPH Percentage"
+                                                                    id="pph-percentage" name="stock_quantity">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-percent"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('stock_quantity'))
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('stock_quantity') }}</p>
+                                                            @endif
+                                                            <small class="text-muted">Enter the PPH percentage (e.g. 10
+                                                                for 10%)</small>
+                                                        </div>
+
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="end-date" class="form-label">Due Date</label>
+                                                            <div class="position-relative">
+                                                                <input type="date"
+                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
+                                                                    id="end-date" name="diskon">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-calendar"></i>
+                                                                </div>
+                                                            </div>
+                                                            @if ($errors->has('diskon'))
+                                                                <p class="text-danger">{{ $errors->first('diskon') }}
+                                                                </p>
+                                                            @endif
+                                                            <small class="text-muted">Select the invoice due
+                                                                date</small>
+                                                        </div>
+
+                                                        <div class="form-group mb-4">
+                                                            <label for="description" class="form-label">Description
+                                                            </label>
+                                                            <div class="form-floating">
+                                                                <textarea class="form-control" placeholder="Enter description" id="description" rows="4"
+                                                                    style="height: 100px"></textarea>
+                                                                <label for="description">Description</label>
+                                                            </div>
+                                                            <small class="text-muted">Enter details about this
+                                                                invoice</small>
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <label for="first-name-icon">Supplier Name <span
-                                                                style="color: red">*</span></label>
-                                                        <div class="form-group">
-                                                            <select class="choices form-select"
-                                                                name="category_product_id">
-                                                                {{-- @foreach ($categories as $category)
-                                                                <option value="{{ $category->id }}">
-                                                                    {{ $category->name }}</option>
-                                                            @endforeach --}}
+                                                        <div class="form-group mb-4">
+                                                            <label for="supplier-name" class="form-label">Supplier
+                                                                Name <span class="text-danger">*</span></label>
+                                                            <select
+                                                                class="form-control select2-basic-category {{ $errors->has('supplier_id') ? 'is-invalid' : '' }}"
+                                                                name="supplier_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled
+                                                                    {{ old('supplier_id') ? '' : 'selected' }}>
+                                                                    Pilih Supplier Name</option>
+                                                                @foreach ($suppliers as $supplier)
+                                                                    <option value="{{ $supplier->id }}">
+                                                                        {{ $supplier->name }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
+                                                            <small class="text-muted">Select the supplier for this
+                                                                invoice</small>
                                                         </div>
 
-
-                                                        <label for="first-name-icon">Kredit Account <span
-                                                                style="color: red">*</span></label>
-                                                        <div class="form-group">
-                                                            <select class="choices form-select" name="brand_id">
-                                                                {{-- @foreach ($brands as $brand)
-                                                                <option value="{{ $brand->id }}">
-                                                                    {{ $brand->name }}</option>
-                                                            @endforeach --}}
+                                                        <div class="form-group mb-4">
+                                                            <label for="kredit-account" class="form-label">Kredit
+                                                                Account <span class="text-danger">*</span></label>
+                                                            <select
+                                                                class="form-control select2-basic-category {{ $errors->has('coa_category_id') ? 'is-invalid' : '' }}"
+                                                                name="coa_category_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled
+                                                                    {{ old('coa_category_id') ? '' : 'selected' }}>
+                                                                    Pilih Kredit Account</option>
+                                                                @foreach ($coas as $coa)
+                                                                    <option value="{{ $coa->id }}">
+                                                                        {{ $coa->coa_no }} - {{ $coa->name }}
+                                                                    </option>
+                                                                @endforeach
                                                             </select>
+                                                            <small class="text-muted">Select the account to be
+                                                                credited</small>
                                                         </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">PPH <span
-                                                                    style="color: red">*</span></label>
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="pph" class="form-label">PPH </label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Stock Quantity"
-                                                                    id="first-name-icon" name="stock_quantity">
+                                                                    placeholder="PPH Amount (calculated)"
+                                                                    id="pph" name="stock_quantity" readonly>
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
+                                                                    <i class="bi bi-calculator"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('stock_quantity'))
-                                                                <p style="color: red">
+                                                                <p class="text-danger">
                                                                     {{ $errors->first('stock_quantity') }}</p>
                                                             @endif
+                                                            <small class="text-muted">Calculated PPH amount based on
+                                                                percentage</small>
                                                         </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">End Date <span
-                                                                    style="color: red">*</span></label>
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="invoice-date" class="form-label">Invoice Date
+                                                            </label>
                                                             <div class="position-relative">
                                                                 <input type="date"
                                                                     class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="diskon">
+                                                                    id="invoice-date" name="diskon">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-calendar-check"></i>
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('diskon'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('diskon') }}</p>
+                                                                <p class="text-danger">{{ $errors->first('diskon') }}
+                                                                </p>
                                                             @endif
+                                                            <small class="text-muted">Enter the invoice issue
+                                                                date</small>
                                                         </div>
 
-
-
-                                                        <div class="card">
-                                                            <label for="first-name-icon">Product Galery <span
-                                                                    style="color: red">*</span></label>
-                                                            {{-- <div class="card-content">
-                                                                <div class="card-body">
-                                                                    <!-- File uploader with multiple files upload -->
-                                                                    <input type="file" class="form-control" name="image" required>
+                                                        <div class="card mb-4">
+                                                            <div class="card-header">
+                                                                <h5 class="card-title mb-0">Upload Invoice Document
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="image-upload-wrap" id="image-upload-wrap">
+                                                                    <input type="file" name="image_invoice"
+                                                                        class="file-upload-input"
+                                                                        onchange="readURL(this, '');"
+                                                                        accept="image/*">
+                                                                    <div
+                                                                        class="drag-text d-flex flex-column align-items-center justify-content-center py-5">
+                                                                        <i class="bi bi-cloud-arrow-up"
+                                                                            style="font-size: 3rem; color: #ccc;"></i>
+                                                                        <p class="mt-3 mb-0">Drag and drop a file or
+                                                                            click to upload</p>
+                                                                        <small class="text-muted">Accepted formats:
+                                                                            JPG, PNG, PDF (Max 5MB)</small>
+                                                                    </div>
                                                                 </div>
-                                                            </div> --}}
-
-                                                            <div class="image-upload-wrap" id="image-upload-wrap">
-                                                                <input type="file" name="image"
-                                                                    class="file-upload-input"
-                                                                    onchange="readURL(this, '');" accept="image/*">
-
-                                                                <div class="drag-text">
-                                                                    <p>Drag and drop a file or select add
-                                                                        Image</p>
+                                                                <div class="file-upload-content mt-3"
+                                                                    id="file-upload-content" style="display:none;">
+                                                                    <div class="d-flex align-items-center">
+                                                                        <img class="file-upload-image me-3"
+                                                                            id="file-upload-image" src="#"
+                                                                            alt="your image"
+                                                                            style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 5px;">
+                                                                        <div class="flex-grow-1">
+                                                                            <div class="image-file-name fw-bold"
+                                                                                id="image-file-name"></div>
+                                                                            <div class="text-muted small">Uploaded
+                                                                                document</div>
+                                                                        </div>
+                                                                        <button type="button"
+                                                                            onclick="removeUpload(this, '')"
+                                                                            class="btn btn-sm btn-danger">
+                                                                            <i class="bi bi-trash"></i>
+                                                                        </button>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="file-upload-content" id="file-upload-content"
-                                                                style="display:none;">
-                                                                <div class="image-file-name" id="image-file-name"
-                                                                    style="text-align: center; margin-top: 10px;">
-                                                                </div>
-                                                                <img class="file-upload-image" id="file-upload-image"
-                                                                    src="#" alt="your image"
-                                                                    style="max-width: 100%; max-height: 100%;" />
-                                                                <div class="image-title-wrap"
-                                                                    style="display: flex; justify-content: space-between; align-items: center;">
-                                                                    <button type="button"
-                                                                        onclick="removeUpload(this, '')"
-                                                                        class="btn btn-danger btn-sm"
-                                                                        style="border: none; background: none;">
-                                                                        <i class="fa-solid fa-trash"
-                                                                            style="font-size: 1.5rem; color: black;"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-
                                                         </div>
                                                     </div>
 
-                                                    <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Submit</button>
-                                                        <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px;">Reset</button>
+                                                    <div class="col-12">
+                                                        <div class="card bg-light-primary bg-opacity-25 mb-4">
+                                                            <div class="card-body py-3">
+                                                                <div class="d-flex align-items-center">
+                                                                    <i class="bi bi-info-circle-fill text-primary me-2"
+                                                                        style="font-size: 1.5rem;"></i>
+                                                                    <div>
+                                                                        <h6 class="mb-0">Invoice Summary</h6>
+                                                                        <p class="mb-0 text-muted small">Please review
+                                                                            all information before submitting</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12 d-flex justify-content-end mt-3">
+                                                        <button type="button" class="btn btn-light-secondary me-2"
+                                                            style="border-radius: 8px;">
+                                                            <i class="bi bi-x-circle me-1"></i>
+                                                            Cancel
+                                                        </button>
+                                                        <button type="reset" class="btn btn-light-secondary me-2"
+                                                            style="border-radius: 8px;">
+                                                            <i class="bi bi-arrow-repeat me-1"></i>
+                                                            Reset
+                                                        </button>
+                                                        <button type="submit" class="btn btn-primary"
+                                                            style="border-radius: 8px;">
+                                                            <i class="bi bi-check-circle me-1"></i>
+                                                            Submit Invoice
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -290,96 +550,70 @@
                 </section>
             </div>
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
+
         </div>
     </div>
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
 
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-
-    <script src="assets/vendors/choices.js/choices.min.js"></script>
-
-    <!-- filepond validation -->
-    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-
-    <!-- image editor -->
-    <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js">
-    </script>
-    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-filter/dist/filepond-plugin-image-filter.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
-
-    <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>
-
-    <!-- filepond -->
-    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+    <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script>
-        // register plugins for image preview and multiple uploads
-        FilePond.registerPlugin(
-            FilePondPluginImagePreview,
-            FilePondPluginFileValidateType
-        );
-
-        // Filepond: Multiple Files with Image Preview
-        FilePond.create(document.querySelector('.multiple-files-filepond'), {
-            allowImagePreview: true,
-            allowMultiple: true,
-            acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+        $(document).ready(function() {
+            $('.select2-basic-category').select2({
+                width: '100%',
+                dropdownAutoWidth: true
+            });
         });
     </script>
-
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
 
     <script>
         function readURL(input, id) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
-                    document.getElementById('file-upload-content' + id).style.display = 'block';
-                    document.getElementById('image-upload-wrap' + id).style.display = 'none';
-                    document.getElementById('file-upload-image' + id).src = e.target.result;
-                    document.getElementById('image-file-name' + id).innerHTML = input.files[0].name;
+                    document.getElementById('image-upload-wrap').style.display = 'none';
+                    document.getElementById('file-upload-content').style.display = 'block';
+                    document.getElementById('file-upload-image').src = e.target.result;
+                    document.getElementById('image-file-name').innerText = input.files[0].name;
                 };
                 reader.readAsDataURL(input.files[0]);
-            } else {
-                removeUpload(input, id);
             }
         }
 
-        function removeUpload(input, id) {
-            document.getElementById('file-upload-content' + id).style.display = 'none';
-            document.getElementById('image-upload-wrap' + id).style.display = 'block';
-            input.value = '';
+        function removeUpload(el, id) {
+            const fileInput = document.querySelector('.file-upload-input');
+            fileInput.value = '';
+            document.getElementById('image-upload-wrap').style.display = 'flex';
+            document.getElementById('file-upload-content').style.display = 'none';
         }
 
+        // Calculate PPH based on amount and percentage
+        document.addEventListener('DOMContentLoaded', function() {
+            const amountInput = document.getElementById('amount');
+            const pphPercentageInput = document.getElementById('pph-percentage');
+            const pphInput = document.getElementById('pph');
 
-        // Menonaktifkan aksi default dari tombol "Upload Proof Image"
-        document.getElementById('uploadProofButton').addEventListener('click', function(e) {
-            e.preventDefault();
-        });
+            function calculatePPH() {
+                const amount = parseFloat(amountInput.value) || 0;
+                const percentage = parseFloat(pphPercentageInput.value) || 0;
+                const pphAmount = (amount * percentage / 100).toFixed(2);
+                pphInput.value = pphAmount;
+            }
 
-        // Menangani klik tombol "Submit" di luar divisi upload gambar
-        document.getElementById('submitButton').addEventListener('click', function() {
-            submitForm();
+            amountInput.addEventListener('input', calculatePPH);
+            pphPercentageInput.addEventListener('input', calculatePPH);
         });
     </script>
 
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/js/main.js"></script>
-
 </body>
 
 </html>

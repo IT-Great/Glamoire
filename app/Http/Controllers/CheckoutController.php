@@ -66,35 +66,46 @@ class CheckoutController extends Controller
                     ->toArray();
 
 
-                // dd($checkVoucherUsage);
-                // Check if there are any used vouchers
+                    // dd($checkVoucherUsage);
+                    // Check if there are any used vouchers
+                    
+                    $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+                        ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+                        ->when('product voucher' === 'product voucher', function($query) {
+                            return $query->with('products');
+                        })
+                        ->when('type' === 'brand voucher', function($query) {
+                            return $query->with('products');
+                        })
+                        ->whereNotIn('promo_code', $checkVoucherUsage)
+                        ->whereColumn('total_used', '<', 'usage_quota')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->select(
+                            'brands.name as brand_name',  // Nama brand
+                            'promos.*'                   // Data promo
+                        )
+                        ->distinct()  // Menghindari duplikasi
+                        ->get();
 
-                $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
-                    ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
-                    ->when('product voucher' === 'product voucher', function ($query) {
-                        return $query->with('products');
-                    })
-                    ->whereNotIn('promo_code', $checkVoucherUsage)
-                    ->whereColumn('total_used', '<', 'usage_quota')
-                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                    ->select(
-                        'brands.name as brand_name',  // Nama brand
-                        'promos.*'                   // Data promo
-                    )
-                    ->distinct()  // Menghindari duplikasi
-                    ->get();
+                    // dd($vouchers);
+                    $productVouchers = $vouchers->filter(function ($voucher) {
+                        return $voucher->type === 'product voucher';
+                    });
+                    
+                    $brandVouchers = $vouchers->filter(function ($voucher) {
+                        return $voucher->type === 'brand voucher';
+                    });
+                    
+                    $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+                        return $voucher->promoProducts->pluck('product_id');
+                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
 
-                // dd($vouchers);
-                $productVouchers = $vouchers->filter(function ($voucher) {
-                    return $voucher->type === 'product voucher';
-                });
-
-                $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
-                    return $voucher->promoProducts->pluck('product_id');
-                })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
-
-                // dd($productVoucherIds);
+                    $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+                        return $voucher->promoProducts->pluck('product_id');
+                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                    
+                    // dd($productVoucherIds);
                 // END HANDLE VOUCHER USER
 
 
@@ -129,7 +140,10 @@ class CheckoutController extends Controller
                     })
                     ->with(['product' => function ($query) {
                         $query->with(['promos' => function ($query) {
-                            $query->with(['tiers']);
+                            $query->select('promos.*')
+                                ->with(['tiers'])
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                         }]);
                     }, 'productVariant'])
                     ->select(
@@ -138,54 +152,67 @@ class CheckoutController extends Controller
                         'brands.id as brand_id' // id dari tabel brands
                     )
                     ->get();
-
-                foreach ($cartItems as $item) {
-                    if ($item->product && $item->product->promos) {
-                        foreach ($item->product->promos as $promo) {
-                            if ($promo->tiers) {
-                                foreach ($promo->tiers as $tier) {
-                                    switch ($tier->discount_type) {
-                                        case 'percentage':
-                                            // Contoh logika untuk diskon persentase
-                                            if ($item->quantity == $tier->min_quantity) {
-                                                $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
-                                                $item->bundle_price = $discountedPrice;
-                                                $item->total = $discountedPrice;
+            
+                    foreach ($cartItems as $item) {
+                        if ($item->product && $item->product->promos) {
+                            foreach ($item->product->promos as $promo) {
+                                if ($promo->tiers) {
+                                    foreach ($promo->tiers as $tier) {
+                                        switch ($tier->discount_type) {
+                                            case 'percentage':
+                                                // Contoh logika untuk diskon persentase
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'nominal':
+                                                // Contoh logika untuk diskon nominal
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total - $tier->discount_value;
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'package':
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                                    $item->total = $tier->package_price;
+                                                }
+                                                break;
+                    
+                                            default:
+                                                // Logika default jika tidak ada kasus yang cocok
+                                                $item->discounted_price = $item->product->price;
+                                                break;
                                             }
-                                            break;
-
-                                        case 'nominal':
-                                            // Contoh logika untuk diskon nominal
-                                            if ($item->quantity == $tier->min_quantity) {
-                                                $discountedPrice = $item->total - $tier->discount_value;
-                                                $item->bundle_price = $discountedPrice;
-                                                $item->total = $discountedPrice;
-                                            }
-                                            break;
-
-                                        case 'package':
-                                            if ($item->quantity == $tier->min_quantity) {
-                                                $item->bundle_price = $tier->package_price; // Tetapkan harga paket
-                                                $item->total = $tier->package_price;
-                                            }
-                                            break;
-
-                                        default:
-                                            // Logika default jika tidak ada kasus yang cocok
-                                            $item->discounted_price = $item->product->price;
-                                            break;
+                                        }
                                     }
-                                }
                             }
                         }
                     }
-                }
-
+                    
+                $voucherDisabled = false; // Default awal
+                // dd($cartItems);
                 foreach ($cartItems as $prod) {
-                    if ($prod->promos || $prod->promoTiers) {
-                        $voucherDisabled = TRUE;
-                    } else {
-                        $voucherDisabled = FALSE;
+                    $activePromo = $prod->product->promos->first(); // Mengambil promo pertama yang aktif
+                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                    $promoTiers = $activePromo == "" ? null : $activePromo->all_discount_tiers ;
+                    
+                    $di = [
+                        "discountedPrice" => $discountedPrice,
+                        "promoTier"       => $promoTiers,
+                    ];
+
+                    // dd($di);
+
+                    if ($discountedPrice !== null && $promoTiers !== null && $promoTiers !== "") {
+                        $voucherDisabled = true;
+                        // dd($promoTiers);
+                        break; // Hentikan iterasi jika kondisi terpenuhi
                     }
                 }
 
@@ -209,7 +236,7 @@ class CheckoutController extends Controller
 
 
 
-                // dd($province);
+                // dd($cartItems);
                 // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
                 $provinceId = null;
                 $provinces = Province::get();
@@ -355,8 +382,8 @@ class CheckoutController extends Controller
                     'ongkir'        => $ongkir,
                     'weight'        => $totalWeight,
                     'productVoucherIds' => $productVoucherIds,
+                    'brandVoucherIds' => $brandVoucherIds,
                     'voucherDisabled' => $voucherDisabled,
-
                 ];
 
                 $productIds = $data['cartItems']->pluck('product_id');
@@ -375,8 +402,6 @@ class CheckoutController extends Controller
                         !$brandIds->contains($voucher->brand_id) ||
                         $productIds->intersect($data['productVoucherIds'])->isEmpty();
                 });
-
-                // dd($unusableVouchers);
 
                 return view('user.component.checkout', [
                     'groupedVouchers' => $groupedVouchers,
@@ -403,61 +428,71 @@ class CheckoutController extends Controller
                 if (!$user->hasVerifiedEmail()) {
                     return redirect('/' . $userId . '_account');
                 }
-
-                // HANDLE VOUCHER USER
-                $checkVoucherUsage = Order::where('user_id', $userId)
-                    ->where(function ($query) {
-                        $query->whereNotNull('voucher_promo')
-                            ->orWhereNotNull('voucher_ongkir');
-                    })
-                    ->select('voucher_promo', 'voucher_ongkir')
-                    ->get()
-                    ->flatMap(function ($order) {
-                        return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
-                    })
-                    ->unique()
-                    ->values()
-                    ->toArray();
-
-                // Check if there are any used vouchers
-                if (!empty($checkVoucherUsage)) {
-                    $vouchers = Promo::whereIn('type', ['voucher', 'product voucher'])
-                        ->whereNotIn('promo_code', $checkVoucherUsage)
-                        ->whereColumn('usage_quota', '>', 'total_used')
-                        ->where('usage_quota', '!=', 'total_used')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
-                        ->get();
-                } else {
-                    $vouchers = Promo::whereIn('type', ['voucher', 'product voucher'])
-                        ->whereColumn('usage_quota', '>', 'total_used')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
-                        ->get();
-                }
-                // END HANDLE VOUCHER USER
-
-                $product = Buynow::where('user_id', $userId)
-                    ->with(['product.brand'])
+                
+                $data = Cart::where('user_id', $userId)
+                    ->with('cartItems')
                     ->get();
 
-                // dd($product);
-                $productId = $product->max(function ($cartItem) {
-                    return $cartItem->product['id'];
-                });
+                // HANDLE VOUCHER USER
+                    $checkVoucherUsage = Order::where('user_id', $userId)
+                        ->where(function ($query) {
+                            $query->whereNotNull('voucher_promo')
+                                ->orWhereNotNull('voucher_ongkir');
+                        })
+                        ->select('voucher_promo', 'voucher_ongkir')
+                        ->get()
+                        ->flatMap(function ($order) {
+                            return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
+                        })
+                        ->unique()
+                        ->values()
+                        ->toArray();
+    
 
-                $productPrice = Buynow::where('user_id', $userId)->value('price');
+                    // dd($checkVoucherUsage);
+                    // Check if there are any used vouchers
+                    
+                    $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+                        ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+                        ->when('product voucher' === 'product voucher', function($query) {
+                            return $query->with('products');
+                        })
+                        ->when('type' === 'brand voucher', function($query) {
+                            return $query->with('products');
+                        })
+                        ->whereNotIn('promo_code', $checkVoucherUsage)
+                        ->whereColumn('total_used', '<', 'usage_quota')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->select(
+                            'brands.name as brand_name',  // Nama brand
+                            'promos.*'                   // Data promo
+                        )
+                        ->distinct()  // Menghindari duplikasi
+                        ->get();
 
-                $maxQuantity = $product->max(function ($cartItem) {
-                    return $cartItem->product['stock_quantity'];
-                });
+                    // dd($vouchers);
+                    $productVouchers = $vouchers->filter(function ($voucher) {
+                        return $voucher->type === 'product voucher';
+                    });
+                    
+                    $brandVouchers = $vouchers->filter(function ($voucher) {
+                        return $voucher->type === 'brand voucher';
+                    });
+                    
+                    $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+                        return $voucher->promoProducts->pluck('product_id');
+                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
 
-                $totalWeight = $product->sum(function ($cartItem) {
-                    return $cartItem->product['weight_product'] * $cartItem->quantity;
-                });
+                    $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+                        return $voucher->promoProducts->pluck('product_id');
+                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                    
+                    // dd($productVoucherIds);
+                // END HANDLE VOUCHER USER
 
 
-
+                // AMBIL SELURUH DATA ALAMAT PENGIRIMAN USER
                 $address = Shipping_address::where('user_id', session('id_user'))
                     ->orderBy('is_main', 'DESC')
                     ->get();
@@ -475,11 +510,112 @@ class CheckoutController extends Controller
                 // END GET DATA USE SHIPPING
 
 
-                foreach ($product as $key => $prod) {
-                    $totalProduct = $prod->quantity;
-                    $totalPrice = $prod->total;
+                // MENGAMBIL PRODUK YANG DIBELI MELALUI KERANJANG
+                
+                $cartItems = buyNow::where('user_id', $userId)
+                    ->leftJoin('products', 'products.id', '=', 'buy_nows.product_id')
+                    ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
+                    ->where('is_buy', false)
+                    ->whereHas('product', function ($query) {
+                        $query->where('stock_quantity', '!=', 0);
+                    })
+                    ->with(['product' => function ($query) {
+                        $query->with(['promos' => function ($query) {
+                            $query->select('promos.*')
+                                ->with(['tiers'])
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                        }]);
+                    }, 'productVariant'])
+                    ->select(
+                        'buy_nows.*',        // Semua kolom dari tabel cart_items
+                        'products.brand_id',   // brand_id dari tabel products
+                        'brands.id as brand_id' // id dari tabel brands
+                    )
+                    ->get();
+                    
+                    // dd($cartItems);
+            
+                    foreach ($cartItems as $item) {
+                        if ($item->product && $item->product->promos) {
+                            foreach ($item->product->promos as $promo) {
+                                if ($promo->tiers) {
+                                    foreach ($promo->tiers as $tier) {
+                                        switch ($tier->discount_type) {
+                                            case 'percentage':
+                                                // Contoh logika untuk diskon persentase
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'nominal':
+                                                // Contoh logika untuk diskon nominal
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total - $tier->discount_value;
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'package':
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                                    $item->total = $tier->package_price;
+                                                }
+                                                break;
+                    
+                                            default:
+                                                // Logika default jika tidak ada kasus yang cocok
+                                                $item->discounted_price = $item->product->price;
+                                                break;
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    
+                $voucherDisabled = false; // Default awal
+
+                // dd($cartItems);
+                foreach ($cartItems as $prod) {
+                    $activePromo = $prod->product->promos->first(); // Mengambil promo pertama yang aktif
+                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                    $promoTiers = $activePromo == "" ? null : $activePromo->all_discount_tiers ;
+                
+                    if ($discountedPrice !== null || $promoTiers !== "") {
+                        $voucherDisabled = true;
+                        // dd($promoTiers);
+                        break; // Hentikan iterasi jika kondisi terpenuhi
+                    }
+
                 }
 
+                // dd($promoTiers);
+            
+
+                $totalItem = $cartItems->count();
+                $totalWeight = $cartItems->sum(function ($cartItem) {
+                    return ($cartItem->product->weight_product ?? 0) * $cartItem->quantity; // Multiply weight by quantity
+                });
+                if (count($cartItems) == 0) {
+                    return redirect('/');
+                }
+                foreach ($cartItems as $item) {
+                    if ($item->product->stock_quantity == 0) {
+                        return redirect('/cart')->with('stock_empty', 'Stok produk ' . $item->product->product_name . ' kosong');
+                    }
+                }                
+                $totalProduct = $cartItems->sum('quantity');
+                $totalPrice = $cartItems->sum('total');
+                // END PRODUK ITEM
+
+
+
+                // dd($cartItems);
                 // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
                 $provinceId = null;
                 $provinces = Province::get();
@@ -609,31 +745,53 @@ class CheckoutController extends Controller
                 }
                 // END ONGKIR
 
-                // dd($productPrice);
+                // dd($vouchers);
+                $groupedVouchers = $vouchers->groupBy('type');
                 $data = [
-                    'product'       => $product,
-                    'address'       => $address,
-                    'totalProduct'  => $totalProduct,
-                    'totalPrice'    => $totalPrice,
-                    'vouchers'      => $vouchers,
                     'address'       => $address,
                     'shippingAddressId' => $shippingAddressId,
                     'shippingFee'   => $sfee,
-                    'province'      => $province,
+                    'province'     => $province,
                     'regency'       => $regency,
-                    'cartItems'     => $product,
+                    'cartItems'     => $cartItems,
                     'totalProduct'  => $totalProduct,
                     'totalPrice'    => $totalPrice,
                     'vouchers'      => $vouchers,
-                    'totalItem'     => count($product),
+                    'totalItem'     => $totalItem,
                     'ongkir'        => $ongkir,
                     'weight'        => $totalWeight,
-                    'maxQuantity'   => $maxQuantity,
-                    'productId'     => $productId,
-                    'productPrice'  => $productPrice
+                    'productVoucherIds' => $productVoucherIds,
+                    'brandVoucherIds' => $brandVoucherIds,
+                    'voucherDisabled' => $voucherDisabled,
                 ];
-                return view('user.component.buynow')->with('data', $data);
-            } else {
+
+                $productIds = $data['cartItems']->pluck('product_id');
+                
+                // dd($productIds->intersect($data['productVoucherIds'])->isNotEmpty());
+                // dd($data['cartItems']->pluck('product_id'));
+                $brandIds = $cartItems->pluck('brand_id'); // Ambil semua brand_id dari cartItems
+                $productIds = $cartItems->pluck('product_id');
+
+
+                $unusableVouchers = $vouchers->filter(function ($voucher) use ($data, $brandIds, $productIds) {
+                    // Voucher unusable jika salah satu kondisi tidak terpenuhi
+                    return 
+                        $data['totalPrice'] < $voucher->min_transaction || 
+                        $data['totalItem'] > $voucher->max_quantity_buyer || 
+                        !$brandIds->contains($voucher->brand_id) ||
+                        $productIds->intersect($data['productVoucherIds'])->isEmpty();
+                });
+
+                // dd($data['cartItems']);
+
+                // dd($unusableVouchers);
+                
+                return view('user.component.buynow', [
+                    'groupedVouchers' => $groupedVouchers,
+                ])->with('data', $data);
+            }
+            else {
+                session()->flash('register_or_login_first');
                 return redirect()->back();
             }
         } catch (Exception $err) {
@@ -750,8 +908,8 @@ class CheckoutController extends Controller
                     } else {
                         // Logika diskon nominal
                         $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
-                            $product->discPrice =  $product->price - $percent;
-                            $product->afterPrecentage = $product->quantity * $percent;
+                            $product->discPrice =  $product->price - min($percent, $product->price);
+                            $product->afterPrecentage = $product->quantity * min($percent, $product->price);
                             return $product->quantity * $product->discPrice;
                         });
 
@@ -1054,6 +1212,48 @@ class CheckoutController extends Controller
                         ->with(['product.brand'])
                         ->get();
 
+                    foreach ($cartItems as $item) {
+                        if ($item->product && $item->product->promos) {
+                            foreach ($item->product->promos as $promo) {
+                                if ($promo->tiers) {
+                                    foreach ($promo->tiers as $tier) {
+                                        switch ($tier->discount_type) {
+                                            case 'percentage':
+                                                // Contoh logika untuk diskon persentase
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'nominal':
+                                                // Contoh logika untuk diskon nominal
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $discountedPrice = $item->total - $tier->discount_value;
+                                                    $item->bundle_price = $discountedPrice;
+                                                    $item->total = $discountedPrice;
+                                                }
+                                                break;
+                    
+                                            case 'package':
+                                                if ($item->quantity == $tier->min_quantity) {
+                                                    $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                                    $item->total = $tier->package_price;
+                                                }
+                                                break;
+                    
+                                            default:
+                                                // Logika default jika tidak ada kasus yang cocok
+                                                $item->discounted_price = $item->product->price;
+                                                break;
+                                            }
+                                        }
+                                    }
+                            }
+                        }
+                    }
+
                     $totalProduct = $cartItems->sum('quantity');
                     $totalPrice = $cartItems->sum('total');
 
@@ -1100,49 +1300,141 @@ class CheckoutController extends Controller
     }
 
     // BUYNOW
+    public function addProductBuyNow(Request $request)
+    {
+        try {
+            $userId = session('id_user');
+            
+            if ($userId) {
+                $checkBuyNow = Buynow::where('user_id', $userId)->exists();
+                $product = Product::with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->where('id', $request->product_id)->first();
+
+                $activePromo = $product->promos->first();
+                $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
+                
+                // $total = $price;
+                // $price = Product::where('id', $request->product_id)->value('regular_price');
+
+                // Periksa apakah user sudah memiliki data di tabel Buynow
+                if ($checkBuyNow) {
+                    $buynow = Buynow::where('user_id', $userId)->first();
+                    $buynow->update([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                        'quantity'   => $request->quantity,
+                        'price'      => $price, // Kamu bisa mengganti harga ini secara dinamis
+                        'total'      => $request->quantity * $price,
+                        'is_buy'     => 0,    
+                    ]);
+                } else {
+                    Buynow::create([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                        'quantity'   => $request->quantity,
+                        'price'      => $price, // Harga default, bisa diganti dinamis
+                        'total'      => $request->quantity * $price,
+                        'is_buy'     => 0,
+                    ]);
+                }
+
+                // Return response success jika proses berhasil
+                return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke Buy Now']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
+            }
+        } catch (Exception $err) {
+            // Return error dengan pesan yang lebih spesifik
+            return response()->json(['success' => false, 'message' => $err->getMessage()]);
+        }
+    }
+
     // public function addProductBuyNow(Request $request)
     // {
     //     try {
     //         $userId = session('id_user');
+            
+    //         if (session('id_user')) {
+    //             $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
+    //             $cartId = Cart::where('user_id', session('id_user'))->value('id');
 
-    //         if ($userId) {
-    //             $checkBuyNow = Buynow::where('user_id', $userId)->exists();
-    //             $price = Product::where('id', $request->product_id)->value('regular_price');
+    //             // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
+    //             if($checkCartUser){
+    //                 $checkCartItem = Cart_item::where('cart_id', $cartId)
+    //                 ->where('product_id', $request->product_id)->exists();
 
-    //             // Periksa apakah user sudah memiliki data di tabel Buynow
-    //             if ($checkBuyNow) {
-    //                 $buynow = Buynow::where('user_id', $userId)->first();
-    //                 $buynow->update([
-    //                     'user_id'    => $userId,
-    //                     'product_id' => $request->product_id,
-    //                     'quantity'   => $request->quantity,
-    //                     'price'      => $price, // Kamu bisa mengganti harga ini secara dinamis
-    //                     'total'      => $request->quantity * $price,
-    //                     'is_buy'     => 0,    
+    //                 // JIKA PRODUK SUDAH ADA DI CART USER
+    //                 if ($checkCartItem) {
+    //                     $cartItem  = Cart_item::where('cart_id', $cartId)
+    //                     ->where('product_id', $request->product_id)->first();
+
+    //                     $itemPrice = $cartItem->price; 
+    //                     $itemQuantity = $cartItem->quantity;
+
+    //                     // Tingkatkan kuantitas item dengan 1
+    //                     $newQuantity = $itemQuantity + $request->quantity;
+    
+    //                     // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
+    //                     $newPrice = $itemPrice * $newQuantity;
+
+    //                     // Update kuantitas dan harga di database
+    //                     $cartItem->update([
+    //                         'quantity' => $newQuantity,
+    //                         'total'    => $newPrice, 
+    //                     ]);
+    //                 }
+    //                 // JIKA PRODUK BELUM ADA DI CART USER
+    //                 else{
+    //                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
+    //                     $product = Product::where('id', $request->product_id)->first();
+    //                     $total = $product->regular_price;
+
+    //                     Cart_item::create([
+    //                         'cart_id'    => $cartId,
+    //                         'product_id' => $request->product_id,
+    //                         'quantity'   => $request->quantity ? $request->quantity : 1,
+    //                         'is_choose'  => TRUE,
+    //                         'price'      => $product->regular_price,
+    //                         'total'      => $total,
+    //                     ]);
+    //                 }
+
+    //             // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+    //             }else{
+    //                 $cart = Cart::create([
+    //                     'user_id' => $userId,
     //                 ]);
-    //             } else {
-    //                 Buynow::create([
-    //                     'user_id'    => $userId,
+
+    //                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
+    //                 $product = Product::where('id', $request->product_id)->first();
+    //                 $total = $product->regular_price;
+
+    //                 Cart_item::create([
+    //                     'cart_id'    => $cart->id,
     //                     'product_id' => $request->product_id,
-    //                     'quantity'   => $request->quantity,
-    //                     'price'      => $price, // Harga default, bisa diganti dinamis
-    //                     'total'      => $request->quantity * $price,
-    //                     'is_buy'     => 0,
+    //                     'quantity'   => $request->quantity ? $request->quantity : 1,
+    //                     'is_choose'  => TRUE,
+    //                     'price'      => $product->regular_price,
+    //                     'total'      => $total,
     //                 ]);
+                    
     //             }
 
-    //             // Return response success jika proses berhasil
-    //             return response()->json(['success' => true, 'message' => 'Produk berhasil ditambahkan ke Buy Now']);
-    //         } else {
-    //             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
+    //             return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
     //         }
+    //         return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+
     //     } catch (Exception $err) {
-    //         // Return error dengan pesan yang lebih spesifik
-    //         return response()->json(['success' => false, 'message' => $err->getMessage()]);
+    //         return response()->json(['success' => false, 'message' => $err]);
     //     }
     // }
 
-    public function addProductBuyNow(Request $request)
+    public function addProductVariantBuyNow(Request $request)
     {
         try {
             $userId = session('id_user');
@@ -1154,7 +1446,9 @@ class CheckoutController extends Controller
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
                 if ($checkCartUser) {
                     $checkCartItem = Cart_item::where('cart_id', $cartId)
-                        ->where('product_id', $request->product_id)->exists();
+                    ->where('product_id', $request->product_id)
+                    ->where('product_variant_id', $request->product_variant_id)
+                    ->exists();
 
                     // JIKA PRODUK SUDAH ADA DI CART USER
                     if ($checkCartItem) {
@@ -1179,15 +1473,19 @@ class CheckoutController extends Controller
                     // JIKA PRODUK BELUM ADA DI CART USER
                     else {
                         $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                        $product = Product::where('id', $request->product_id)->first();
-                        $total = $product->regular_price;
+                        $product = ProductVariations::where('id', $request->product_variant_id)
+                        ->where('product_id', $request->product_id)
+                        ->first();
+
+                        $total = $product->variant_price;
 
                         Cart_item::create([
                             'cart_id'    => $cartId,
                             'product_id' => $request->product_id,
+                            'product_variant_id' => $request->product_variant_id,
                             'quantity'   => $request->quantity ? $request->quantity : 1,
                             'is_choose'  => TRUE,
-                            'price'      => $product->regular_price,
+                            'price'      => $product->variant_price,
                             'total'      => $total,
                         ]);
                     }
@@ -1413,16 +1711,75 @@ class CheckoutController extends Controller
         ]);
 
         // Buat order item
-        foreach ($request->product as $id => $productId) {
+        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+        $cartItems = Cart_item::where('cart_id', $cartId)
+            ->where('is_choose', true)
+            ->with(['product.brand'])
+            ->get();
+
+        foreach ($cartItems as $item) {
+            if ($item->product && $item->product->promos) {
+                foreach ($item->product->promos as $promo) {
+                    if ($promo->tiers) {
+                        foreach ($promo->tiers as $tier) {
+                            switch ($tier->discount_type) {
+                                case 'percentage':
+                                    // Contoh logika untuk diskon persentase
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'nominal':
+                                    // Contoh logika untuk diskon nominal
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $discountedPrice = $item->total - $tier->discount_value;
+                                        $item->bundle_price = $discountedPrice;
+                                        $item->total = $discountedPrice;
+                                    }
+                                    break;
+        
+                                case 'package':
+                                    if ($item->quantity == $tier->min_quantity) {
+                                        $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+                                        $item->total = $tier->package_price;
+                                    }
+                                    break;
+        
+                                default:
+                                    // Logika default jika tidak ada kasus yang cocok
+                                    $item->discounted_price = $item->product->price;
+                                    break;
+                                }
+                            }
+                        }
+                }
+            }
+
             OrderItem::create([
                 'order_id'      => $order->id,
-                'product_id'    => $productId,
-                'quantity'      => $request->product_quantity[$productId],
-                'price'         => $request->product_price[$productId],
-                'subtotal'      => $request->product_quantity[$productId] * $request->product_price[$productId],
+                'product_id' => $item->product_id,
+                'product_variant_id' => $item->product_variant_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'is_tier' => $item->bundle_price,
+                'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
             ]);
         }
 
+        // foreach($request->products as $product){
+        //     OrderItem::create([
+        //         'order_id'      => $order->id,
+        //         'product_id' => $product['product_id'],
+        //         'product_variant_id' => $product['product_variant_id'],
+        //         'quantity' => $product['quantity'],
+        //         'price' => $product['price'],
+        //         'subtotal' => $product['quantity'] * $product['price'],
+        //     ]);
+        // }
+    
         // Buat pembayaran
         $payment = Payment::create([
             'user_id'        => $userId,
@@ -1466,76 +1823,41 @@ class CheckoutController extends Controller
                 $ongkirUsed->total_used += 1;
                 $ongkirUsed->save();
             }
-
-            foreach ($request->product as $id => $productId) {
-                $product = Product::find($productId);
-
-                // Cek apakah produk adalah produk dengan variasi
-                $productVariation = ProductVariations::where('product_id', $productId)->first();
-
-                if ($productVariation) {
-                    // Untuk produk dengan variasi
-                    $availableStocks = ProductStocks::where('variation_id', $productVariation->id)
-                        ->where('quantity', '>', 0)
-                        ->orderBy('date_expired', 'asc')
-                        ->get();
-
-                    $quantityToReduce = $request->product_quantity[$productId];
-
-                    foreach ($availableStocks as $stock) {
-                        if ($quantityToReduce > 0) {
-                            $reduceQuantity = min($stock->quantity, $quantityToReduce);
-
-                            $stock->quantity -= $reduceQuantity;
-                            $stock->save();
-
-                            $quantityToReduce -= $reduceQuantity;
-                        }
-
-                        if ($quantityToReduce <= 0) {
-                            break;
-                        }
+            
+            foreach($request->products as $product){
+                // Temukan produk berdasarkan ID\
+                if($product['product_variant_id'] !== null){
+                    $productVariant = ProductVariations::find($product['product_variant_id']);
+                    
+                    // Jika produk ditemukan, lakukan update stok
+                    if ($productVariant) {
+                        $productVariant->variant_stock -= $product['quantity'];
+                        $productVariant->sale += $product['quantity'];
+                        $productVariant->save();
                     }
-
-                    // Update stok variasi produk
-                    $productVariation->variant_stock -= $request->product_quantity[$productId];
-                    $productVariation->save();
-                } else {
-                    // Untuk produk tanpa variasi
-                    $availableStocks = ProductStocks::where('product_id', $productId)
-                        ->where('quantity', '>', 0)
-                        ->orderBy('date_expired', 'asc')
-                        ->get();
-
-                    $quantityToReduce = $request->product_quantity[$productId];
-
-                    foreach ($availableStocks as $stock) {
-                        if ($quantityToReduce > 0) {
-                            $reduceQuantity = min($stock->quantity, $quantityToReduce);
-
-                            $stock->quantity -= $reduceQuantity;
-                            $stock->save();
-
-                            $quantityToReduce -= $reduceQuantity;
-                        }
-
-                        if ($quantityToReduce <= 0) {
-                            break;
-                        }
+        
+                    // Hapus item dari cart berdasarkan cart_id dan product_id
+                    Cart_item::where('cart_id', $cartId)
+                        ->where('product_variant_id', $product['product_variant_id'])
+                        ->delete();
+                }
+                else{
+                    $products = Product::find($product['product_id']);
+                    
+                    // Jika produk ditemukan, lakukan update stok
+                    if ($products) {
+                        $products->stock_quantity -= $product['quantity'];
+                        $products->sale += $product['quantity'];
+                        $products->save();
                     }
+        
+                    // Hapus item dari cart berdasarkan cart_id dan product_id
+                    Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $product['product_id'])
+                        ->delete();
                 }
+                 
 
-                // Update stok produk dan penjualan
-                if ($product) {
-                    $product->stock_quantity -= $request->product_quantity[$productId];
-                    $product->sale += $request->product_quantity[$productId];
-                    $product->save();
-                }
-
-                // Hapus item dari cart
-                Cart_item::where('cart_id', $cartId)
-                    ->where('product_id', $productId)
-                    ->delete();
             }
 
             return response()->json([

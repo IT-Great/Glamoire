@@ -23,7 +23,6 @@
                 </div>
             </div>
         </div>
-        
 
         <div class="sidebar-menu">
             <ul class="menu">
@@ -159,21 +158,21 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('financial') ? 'active' : '' }}">
-                        <a href="/financial" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('financial-*') ? 'active' : '' }}">
+                        <a href="/financial-income" class='sidebar-link'>
                             <i class="bi bi-cash-stack"></i>
                             <span>Financial</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('invoice') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ Request::is('invoice*') ? 'active' : '' }}">
                         <a href="/invoice" class='sidebar-link'>
                             <i class="bi bi-calendar-month"></i>
                             <span>Invoice</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('transaction') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ Request::is('transaction*') ? 'active' : '' }}">
                         <a href="/transaction" class='sidebar-link'>
                             <i class="bi bi-cash"></i>
                             <span>Transaction</span>

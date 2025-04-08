@@ -4,19 +4,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice || Accounting Glamoire</title>
+    <title>Invoice - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+
+    <style>
+        :root {
+            --primary: #435ebe;
+            --primary-light: #546fd0;
+            --success: #4fbe87;
+            --danger: #eb5757;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --secondary: #6c757d;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+
+        .promo-nav {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .promo-nav-item {
+            padding: 12px 24px;
+            border-radius: 10px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .promo-nav-item i {
+            font-size: 1.2rem;
+            margin-right: 10px;
+        }
+
+        .promo-nav-item.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.2);
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .card {
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 25px 30px;
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header h4 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px rgba(67, 94, 190, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.3);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            border-color: var(--info);
+            color: white;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.8em;
+            border-radius: 6px;
+        }
+
+        .bg-light-success {
+            background-color: rgba(79, 190, 135, 0.15);
+            color: var(--success);
+        }
+
+        .bg-light-danger {
+            background-color: rgba(235, 87, 87, 0.15);
+            color: var(--danger);
+        }
+
+        .bg-light-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .bg-light-info {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        table th {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 15px !important;
+        }
+
+        table td {
+            padding: 18px 15px !important;
+            vertical-align: middle;
+            color: #495057;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        table tr:hover td {
+            background-color: rgba(67, 94, 190, 0.03);
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+        }
+
+        .stat-content h3 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .stat-content p {
+            margin: 5px 0 0;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .icon-primary {
+            background-color: rgba(67, 94, 190, 0.15);
+            color: var(--primary);
+        }
+
+        .icon-success {
+            background-color: rgba(79, 190, 135, 0.15);
+            color: var(--success);
+        }
+
+        .icon-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .icon-danger {
+            background-color: rgba(235, 87, 87, 0.15);
+            color: var(--danger);
+        }
+
+        .deadline-near {
+            color: var(--danger);
+            font-weight: 500;
+        }
+
+        .deadline-upcoming {
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        .deadline-safe {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item select,
+        .filter-item input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
+        }
+
+        .filter-item select:focus,
+        .filter-item input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 94, 190, 0.1);
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .text-success {
+            color: var(--success) !important;
+        }
+
+        .text-danger {
+            color: var(--danger) !important;
+        }
+
+        .text-warning {
+            color: var(--warning) !important;
+        }
+    </style>
 
 </head>
 
@@ -27,13 +348,16 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title" style="margin-bottom: 20px;">
-                    <div class="row">
+                <div class="page-title" style="margin-bottom: 25px;">
+                    <div class="row align-items-center">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header me-3">
+                            <h2 class="mb-3">Invoice Management</h2>
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="index.html"><i
+                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="index.html">Invoice</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Invoice</li>
+                                    <li class="breadcrumb-item active" aria-current="page">All Invoices</li>
                                 </ol>
                             </nav>
                         </div>
@@ -41,17 +365,100 @@
                 </div>
 
                 <section class="section">
+                    <!-- Stats Row -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon icon-primary">
+                                <i class="bi bi-receipt"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>145</h3>
+                                <p>Total Invoices</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-success">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>98</h3>
+                                <p>Paid Invoices</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-warning">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>47</h3>
+                                <p>Pending Invoices</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-danger">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>12</h3>
+                                <p>Overdue Invoices</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Tabs -->
+                    <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                        <a href="{{ route('index-invoice') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
+                            <i class="bi bi-receipt"></i>Invoice Management
+                        </a>
+                        <a href="{{ route('index-supplier') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
+                            <i class="bi bi-truck"></i>Supplier Management
+                        </a>
+                        <a href="{{ route('create-invoice') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'invoice-reports' ? 'active' : '' }}">
+                            <i class="bi bi-graph-up"></i>Reports & Analytics
+                        </a>
+                    </div>
+
+                    <!-- Filters Row -->
+                    <div class="filters-row">
+                        <div class="filter-item">
+                            <select id="status-filter" class="form-select">
+                                <option value="">All Payment Status</option>
+                                <option value="Paid">Paid</option>
+                                <option value="Not Yet">Not Yet</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <select id="supplier-filter" class="form-select">
+                                <option value="">All Suppliers</option>
+                                <option value="1">Supplier A</option>
+                                <option value="2">Supplier B</option>
+                                <option value="3">Supplier C</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <input type="date" id="date-filter" class="form-control" placeholder="Date Range">
+                        </div>
+
+                    </div>
+
                     <div class="card">
                         <div class="card-header">
-                            <div class="row">
+                            <div class="row align-items-center">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Invoice</h4>
+                                    <h4><i class="bi bi-receipt-cutoff"></i> Invoice List</h4>
                                 </div>
                                 <div
                                     class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
-                                    <a href="/create-invoice" type="button"
+                                    <a href="{{ route('create-invoice') }}" type="button"
+                                        class="btn btn-sm btn-info d-flex align-items-center me-2">
+                                        <i class="bi bi-file-earmark-excel me-2"></i>Export
+                                    </a>
+                                    <a href="{{ route('create-invoice') }}" type="button"
                                         class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="fa fa-plus" style="margin-right: 3px;"></i>Add Invoice
+                                        <i class="bi bi-plus-circle me-2"></i>Add Invoice
                                     </a>
                                 </div>
                             </div>
@@ -60,55 +467,46 @@
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>No. Invoice</th>
-                                        <th>Supplier Name</th>
-                                        <th>Amount</th>
-                                        <th>Date</th>
-                                        <th>Deadline Invoice</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>NO. INVOICE</th>
+                                        <th>SUPPLIER</th>
+                                        <th>AMOUNT</th>
+                                        <th>DATE</th>
+                                        <th>DEADLINE</th>
+                                        <th>STATUS</th>
+                                        <th>PAYMENT</th>
+                                        <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Graiden</td>
-                                        <td>Graiden</td>
-                                        <td>Graiden</td>
-                                        <td>Graiden</td>
-                                        <td>Graiden</td>
-
-                                        <td>
-                                            <span class="badge bg-light-success">Success</span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('edit-chartofaccount') }}" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil" style="margin-right: 3px"></i>Edit </a>
-                                            <a href="{{ route('edit-chartofaccount') }}" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil" style="margin-right: 3px"></i>Edit </a>
-                                            <button class="btn btn-sm btn-danger delete-category" data-id=""> <i
-                                                    class="bi bi-trash" style="margin-right: 3px"></i>Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>beni</td>
-                                        <td>beni</td>
-                                        <td>beni</td>
-                                        <td>beni</td>
-                                        <td>beni</td>
-
-                                        <td>
-                                            <span class="badge bg-light-success">Success</span>
-                                        </td>
-                                        <td>
-                                            <a href="{{ route('edit-chartofaccount') }}" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil" style="margin-right: 3px"></i>Edit </a>
-                                            <a href="{{ route('edit-chartofaccount') }}" class="btn btn-sm btn-warning">
-                                                <i class="bi bi-pencil" style="margin-right: 3px"></i>Edit </a>
-                                            <button class="btn btn-sm btn-danger delete-category" data-id=""> <i
-                                                    class="bi bi-trash" style="margin-right: 3px"></i>Delete</button>
-                                        </td>
-                                    </tr>
-
+                                    @foreach ($invoices as $invoice)
+                                        <tr>
+                                            <td><strong>{{$invoice->no_invoice}}</strong></td>
+                                            <td>{{ $invoice->supplier->name ?? '-' }}</td>
+                                            <td class="amount-cell">Rp 5,750,000</td>
+                                            <td>Mar 15, 2023</td>
+                                            <td class="deadline-safe">Apr 15, 2023</td>
+                                            <td>
+                                                <span class="badge bg-light-success">Paid</span>
+                                            </td>
+                                            <td>Bank Transfer</td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <a href="{{ route('create-invoice', ['id' => 1]) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('edit-invoice', ['id' => 1]) }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-danger delete-invoice"
+                                                        data-id="1">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -119,22 +517,16 @@
         </div>
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
-
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
-
     <script src="assets/js/main.js"></script>
 </body>
 

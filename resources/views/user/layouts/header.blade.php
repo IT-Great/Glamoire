@@ -10,7 +10,7 @@
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 
 <!-- Favicon -->
-<link href="{{ asset('logo.png') }}" rel="icon" type="image/x-icon"/>
+<link href="logo.png" rel="icon" type="image/x-icon"/>
 
 <!-- Google Web Fonts -->
 <link rel="preconnect" href="https://fonts.gstatic.com" />
@@ -24,7 +24,7 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
   rel="stylesheet"
 />
-<link rel="stylesheet" href="{{asset('template')}}/plugins/fontawesome-free/css/all.min.css">
+<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <!-- Customized Bootstrap Stylesheet -->

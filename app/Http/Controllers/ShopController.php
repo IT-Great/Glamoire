@@ -70,6 +70,23 @@ class ShopController extends Controller
     
             // Execute query and get filtered products
             $products = $query->orderBy('sale', 'desc')->paginate(15);
+
+            foreach ($products as $product) {
+                $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                    . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                }
+                elseif($variationPrices->count() == 0){
+                    $product->priceVariation = null;
+                } 
+                else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
     
             $totalProduct = $products->count();
             $categories = CategoryProduct::whereNull('parent_id')->get();
@@ -123,15 +140,12 @@ class ShopController extends Controller
     public function category(Request $request, $category)
     {
         try {
-            // dd($request);
             $brand = Brand::where('name', $request->brand)->value('id');
             $minPrice = $request->min_price;
             $maxPrice = $request->max_price;
             $rating = $request->rating;
             $brandName = $request->brand;
             $sort = $request->sort;
-
-            // dd($rating);
     
             $userId = session('id_user');
             $categoryId = CategoryProduct::where('name', $category)->value('id');
@@ -181,6 +195,23 @@ class ShopController extends Controller
     
             // Execute query and get filtered products
             $products = $query->paginate(15);
+
+            foreach ($products as $product) {
+                $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                }
+                elseif($variationPrices->count() == 0){
+                    $product->priceVariation = null;
+                } 
+                else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
     
             $totalProduct = $products->count();
             $subCategories = CategoryProduct::where('parent_id', $categoryId)->get();
@@ -280,6 +311,23 @@ class ShopController extends Controller
                 }
                 $products = $products->paginate(15);
 
+                foreach ($products as $product) {
+                    $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+    
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    }
+                    elseif($variationPrices->count() == 0){
+                        $product->priceVariation = null;
+                    } 
+                    else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+
 
                 $brands = Brand::get();
 
@@ -340,6 +388,24 @@ class ShopController extends Controller
                         break;
                 }
                 $products = $products->paginate(15);
+
+                foreach ($products as $product) {
+                    $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
+    
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    }
+                    elseif($variationPrices->count() == 0){
+                        $product->priceVariation = null;
+                    } 
+                    else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+
                 
                 $totalProduct = $totalProducts = Product::where('category_product_id', $subCategoryId)->count();
 

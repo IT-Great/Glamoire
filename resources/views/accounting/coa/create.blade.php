@@ -3,30 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
-
-    <!-- Include Choices CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>COA - Glamoire</title>
     <link rel="stylesheet" href="assets/vendors/choices.js/choices.min.css" />
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
+    <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
     <link rel="stylesheet" href="assets/vendors/toastify/toastify.css">
-
-    <!-- FilePond CSS -->
-    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-        rel="stylesheet">
-
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
+
+    <style>
+        @media (max-width: 768px) {
+            .select2-container {
+                width: 100% !important;
+                max-width: 100%;
+            }
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .select2-container .select2-selection--single {
+            height: 38px;
+            width: 100%;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__rendered {
+            line-height: 38px;
+        }
+
+        .select2-container .select2-selection--single .select2-selection__arrow {
+            height: 38px;
+        }
+    </style>
 </head>
 
 <body>
@@ -39,13 +55,10 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Add New COA</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/coa">COA</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add New COA</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add COA</li>
                                 </ol>
                             </nav>
                         </div>
@@ -59,116 +72,167 @@
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('store-product-admin') }}" class="form form-vertical"
-                                            method="POST" enctype="multipart/form-data">
+                                        <form action="{{ route('store-chartofaccount') }}" method="POST"
+                                            enctype="multipart/form-data" class="form form-vertical">
                                             @csrf
                                             <div class="form-body">
+                                                <h3 class="mb-2">Buat COA Baru</h3>
+                                                <p class="text-muted">Silahkan isi dibawah ini untuk membuat COA baru.
+                                                </p>
                                                 <div class="row">
+                                                    <!-- Brand Name Section -->
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Product Name <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Product Name"
-                                                                    id="first-name-icon" name="product_name">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('product_name'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('product_name') }}</p>
-                                                            @endif
-                                                        </div>
-
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Code <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('product_code') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Code Product"
-                                                                    id="first-name-icon" name="product_code">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('product_code'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('product_code') }}</p>
-                                                            @endif
-                                                        </div>
-
-
-
-                                                        <label for="first-name-icon">Category <span
-                                                                style="color: red">*</span></label>
                                                         <div class="form-group">
-                                                            <select class="choices form-select"
-                                                                name="category_product_id">
-                                                                {{-- @foreach ($categories as $category)
-                                                                    <option value="{{ $category->id }}">
-                                                                        {{ $category->name }}</option>
-                                                                @endforeach --}}
-                                                            </select>
+                                                            <label for="brand-name-icon">Account Number<span
+                                                                    style="color: red">*</span></label>
+                                                            <div class="position-relative mt-2 mb-2">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('coa_no') ? 'is-invalid' : '' }}"
+                                                                    placeholder="xxx.xxx" id="brand-name-icon"
+                                                                    name="coa_no">
+                                                            </div>
+                                                            @if ($errors->has('name'))
+                                                                <p style="color: red">{{ $errors->first('coa_no') }}</p>
+                                                            @else
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Berikan Account COA Anda yang akan
+                                                                    mudah dikenali oleh pengguna.
+                                                                </small>
+                                                            @endif
                                                         </div>
+
+                                                        <div class="form-group mt-2">
+                                                            <label for="brand-name-icon">Category<span
+                                                                    style="color: red">*</span></label>
+                                                            <select
+                                                                class="form-control select2-basic-category {{ $errors->has('coa_category_id') ? 'is-invalid' : '' }}"
+                                                                name="coa_category_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled
+                                                                    {{ old('coa_category_id') ? '' : 'selected' }}>
+                                                                    Pilih Sub Kategori</option>
+                                                                @foreach ($categories as $category)
+                                                                    <option value="{{ $category->id }}">
+                                                                        {{ $category->category_name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+
+                                                            <!-- Link untuk menambahkan kategori baru -->
+                                                            <a href="#" data-bs-toggle="modal"
+                                                                data-bs-target="#categoryModal"
+                                                                style="display: inline-block; margin-top: 5px; margin-bottom: 5px;">
+                                                                <i class="fa fa-plus"></i> Add New Category
+                                                            </a>
+
+                                                            <!-- Pesan error atau informasi tambahan -->
+                                                            @if ($errors->has('coa_category_id'))
+                                                                <p style="color: red; margin-top: 5px;">
+                                                                    {{ $errors->first('coa_category_id') }}</p>
+                                                            @else
+                                                                <small class="text-muted"
+                                                                    style="font-size: 14px; display: block;">
+                                                                    Pilih Kategori yang sesuai atau tambahkan Kategori
+                                                                    yang baru
+                                                                </small>
+                                                            @endif
+                                                        </div>
+
                                                     </div>
 
                                                     <div class="col-md-6">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Regular Price <span
+                                                        <div class="form-group">
+                                                            <label for="brand-name-icon">Name<span
                                                                     style="color: red">*</span></label>
-                                                            <div class="position-relative">
+                                                            <div class="position-relative mt-2 mb-2">
                                                                 <input type="text"
-                                                                    class="form-control {{ $errors->has('regular_price') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Regular Price"
-                                                                    id="first-name-icon" name="regular_price">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-credit-card-2-front"></i>
-                                                                </div>
+                                                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Nama" id="brand-name-icon"
+                                                                    name="name">
                                                             </div>
-                                                            @if ($errors->has('regular_price'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('regular_price') }}</p>
+                                                            @if ($errors->has('name'))
+                                                                <p style="color: red">{{ $errors->first('name') }}</p>
+                                                            @else
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Berikan nama yang unik untuk Anda yang akan
+                                                                    mudah dikenali oleh pengguna.
+                                                                </small>
                                                             @endif
                                                         </div>
 
-
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="first-name-icon">Sale Price <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('sale_price') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Sale Price"
-                                                                    id="first-name-icon" name="sale_price">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-credit-card-2-front"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('sale_price'))
+                                                        <!-- Description Section -->
+                                                        <div class="form-group">
+                                                            <label for="brand-description">Deskripsi</label>
+                                                            <textarea class="form-control mt-2 mb-2 {{ $errors->has('description') ? 'is-invalid' : '' }}" id="brand-description"
+                                                                rows="10" placeholder="Deskripsi" name="description"></textarea>
+                                                            @if ($errors->has('description'))
                                                                 <p style="color: red">
-                                                                    {{ $errors->first('sale_price') }}</p>
+                                                                    {{ $errors->first('description') }}</p>
+                                                            @else
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Jelaskan apa yang membuat Brand Anda menonjol dan
+                                                                    misinya.
+                                                                </small>
                                                             @endif
                                                         </div>
 
-
-                                                    </div>
-
-                                                    <div class="col-12 d-flex justify-content-end">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Submit</button>
-                                                        <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-1 mb-1"
-                                                            style="border-radius: 8px;">Reset</button>
                                                     </div>
                                                 </div>
+
+                                                <!-- Submit Button -->
+                                                <div class="col-12 d-flex justify-content-end mt-3">
+                                                    <a href="{{ route('index-chartofaccount') }}" class="btn btn-sm me-1 mb-1 btn-secondary">
+                                                        <i class="fa fa-arrow-left"></i> Kembali
+                                                    </a>
+                                                
+                                                    <button type="submit" class="btn btn-sm btn-primary me-1 mb-1">
+                                                        <i class="fa fa-check"></i> Submit Brand
+                                                    </button>
+                                                </div>
+                                                
                                             </div>
                                         </form>
+
+                                        {{-- modal add category --}}
+                                        <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="categoryModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4 class="modal-title" id="categoryModalLabel">Add New
+                                                            Category</h4>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form action="{{ route('store-categorycoa') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="parent_id" id="parentId">
+                                                        <input type="hidden" name="type" id="categoryType"
+                                                            value="category">
+                                                        <div class="modal-body">
+                                                            <div class="form-group">
+                                                                <label for="category_name">Category Name <span
+                                                                        class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control mb-2 mt-2"
+                                                                    id="category_name" name="category_name"
+                                                                    placeholder="Masukan Nama Kategory" required>
+                                                                <small class="text-muted" style="font-size: 14px;">
+                                                                    Silakan masukkan nama kategori yang unik dan
+                                                                    deskriptif.
+                                                                </small>
+
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-light"
+                                                                data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="submit" class="btn btn-primary">Save
+                                                                Category</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -177,95 +241,47 @@
                 </section>
             </div>
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
+
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/n pm/sweetalert2@11"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/fontawesome/all.min.js"></script>
+
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
-    <script src="assets/vendors/apexcharts/apexcharts.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-
     <script src="assets/vendors/choices.js/choices.min.js"></script>
-
-    <!-- filepond validation -->
-    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
-
-    <!-- image editor -->
-    <script src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.js">
-    </script>
-    <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-filter/dist/filepond-plugin-image-filter.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-resize/dist/filepond-plugin-image-resize.js"></script>
-
-    <!-- toastify -->
-    <script src="assets/vendors/toastify/toastify.js"></script>
-
-    <!-- filepond -->
-    <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
-    <script>
-        // register plugins for image preview and multiple uploads
-        FilePond.registerPlugin(
-            FilePondPluginImagePreview,
-            FilePondPluginFileValidateType
-        );
-
-        // Filepond: Multiple Files with Image Preview
-        FilePond.create(document.querySelector('.multiple-files-filepond'), {
-            allowImagePreview: true,
-            allowMultiple: true,
-            acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
-        });
-    </script>
-
-
-    <script>
-        function readURL(input, id) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('file-upload-content' + id).style.display = 'block';
-                    document.getElementById('image-upload-wrap' + id).style.display = 'none';
-                    document.getElementById('file-upload-image' + id).src = e.target.result;
-                    document.getElementById('image-file-name' + id).innerHTML = input.files[0].name;
-                };
-                reader.readAsDataURL(input.files[0]);
-            } else {
-                removeUpload(input, id);
-            }
-        }
-
-        function removeUpload(input, id) {
-            document.getElementById('file-upload-content' + id).style.display = 'none';
-            document.getElementById('image-upload-wrap' + id).style.display = 'block';
-            input.value = '';
-        }
-
-
-        // Menonaktifkan aksi default dari tombol "Upload Proof Image"
-        document.getElementById('uploadProofButton').addEventListener('click', function(e) {
-            e.preventDefault();
-        });
-
-        // Menangani klik tombol "Submit" di luar divisi upload gambar
-        document.getElementById('submitButton').addEventListener('click', function() {
-            submitForm();
-        });
-    </script>
-
     <script src="assets/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.select2-basic-category').select2({
+                placeholder: 'Pilih Kategori',
+                width: '100%',
+                dropdownAutoWidth: true
+            });
+        });
+    </script>
+
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4A69E2',
+                timer: 2000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
 
 </body>
 
