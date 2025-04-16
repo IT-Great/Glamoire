@@ -217,6 +217,32 @@
             padding: 2rem 0;
             margin-top: 2rem;
         }
+
+
+        /* Styling container Select2 */
+        .select2-container--default .select2-selection--single {
+            height: 38px !important;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        /* Styling rendered text */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-left: 12px;
+            padding-right: 30px;
+        }
+
+        /* Styling arrow position */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            right: 6px;
+        }
+
+        /* Tambahkan styling untuk dropdown options */
+        .select-lg-dropdown .select2-results__option {
+            padding: 6px 12px;
+        }
     </style>
 
 </head>
@@ -246,13 +272,11 @@
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="{{ route('index-invoice') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                        <i class="bi bi-receipt"></i>Invoice Management
+                    <a href="{{ route('store-invoice') }}" class="promo-nav-item active">
+                        <i class="bi bi-receipt"></i>Create Invoice
                     </a>
-                    <a href="{{ route('index-supplier') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                        <i class="bi bi-truck"></i>Supplier Management
+                    <a href="{{ route('create-supplier') }}" class="promo-nav-item">
+                        <i class="bi bi-truck"></i>Create Supplier
                     </a>
                 </div>
 
@@ -261,17 +285,16 @@
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4><i class="bi bi-file-earmark-plus"></i> Create New Invoice</h4>
-                                    <p class="text-subtitle text-muted">Fill in the form below to create a new invoice
-                                    </p>
-                                </div>
                                 <div class="card-content">
                                     <div class="card-body">
                                         <form action="{{ route('store-invoice') }}" class="form form-vertical"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
+                                                <h3><i class="bi bi-file-earmark-plus"></i> Create New Invoice</h3>
+                                                <p class="text-subtitle text-muted">Fill in the form below to create a
+                                                    new invoice
+                                                </p>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
@@ -301,16 +324,22 @@
                                                                 class="form-control select2-basic-category {{ $errors->has('debit_coa_id') ? 'is-invalid' : '' }}"
                                                                 name="debit_coa_id" style="margin-bottom: 10px;">
                                                                 <option value="" disabled
-                                                                    {{ old('debit_coa_id') ? '' : 'selected' }}>
-                                                                    Pilih Debit Account</option>
+                                                                    {{ old('debit_coa_id') ? '' : 'selected' }}>Pilih
+                                                                    Debit Account</option>
                                                                 @foreach ($coas as $coa)
-                                                                    <option value="{{ $coa->id }}">
+                                                                    <option value="{{ $coa->id }}"
+                                                                        {{ old('debit_coa_id') == $coa->id ? 'selected' : '' }}>
                                                                         {{ $coa->coa_no }} - {{ $coa->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
-                                                            <small class="text-muted">Select the account to be
-                                                                debited</small>
+                                                            @if ($errors->has('debit_coa_id'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('debit_coa_id') }}</p>
+                                                            @else
+                                                                <small class="text-muted">Select the account to be
+                                                                    debited</small>
+                                                            @endif
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
@@ -326,11 +355,12 @@
                                                                 </div>
                                                             </div>
                                                             @if ($errors->has('amount'))
-                                                                <p class="text-danger">
+                                                                <p style="color: red">
                                                                     {{ $errors->first('amount') }}</p>
+                                                            @else
+                                                                <small class="text-muted">Enter the invoice amount in
+                                                                    IDR</small>
                                                             @endif
-                                                            <small class="text-muted">Enter the invoice amount in
-                                                                IDR</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
@@ -400,6 +430,10 @@
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+                                                            @if ($errors->has('supplier_id'))
+                                                                <p class="text-danger">
+                                                                    {{ $errors->first('supplier_id') }}</p>
+                                                            @endif
                                                             <small class="text-muted">Select the supplier for this
                                                                 invoice</small>
                                                         </div>
@@ -408,19 +442,25 @@
                                                             <label for="kredit-account" class="form-label">Kredit
                                                                 Account <span class="text-danger">*</span></label>
                                                             <select
-                                                                class="form-control select2-basic-category {{ $errors->has('coa_category_id') ? 'is-invalid' : '' }}"
-                                                                name="coa_category_id" style="margin-bottom: 10px;">
+                                                                class="form-control select2-basic-category {{ $errors->has('kredit_coa_id') ? 'is-invalid' : '' }}"
+                                                                name="kredit_coa_id" style="margin-bottom: 10px;">
                                                                 <option value="" disabled
-                                                                    {{ old('coa_category_id') ? '' : 'selected' }}>
-                                                                    Pilih Kredit Account</option>
+                                                                    {{ old('kredit_coa_id') ? '' : 'selected' }}>Pilih
+                                                                    Kredit Account</option>
                                                                 @foreach ($coas as $coa)
-                                                                    <option value="{{ $coa->id }}">
+                                                                    <option value="{{ $coa->id }}"
+                                                                        {{ old('kredit_coa_id') == $coa->id ? 'selected' : '' }}>
                                                                         {{ $coa->coa_no }} - {{ $coa->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
-                                                            <small class="text-muted">Select the account to be
-                                                                credited</small>
+                                                            @if ($errors->has('kredit_coa_id'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('kredit_coa_id') }}</p>
+                                                            @else
+                                                                <small class="text-muted">Select the account to be
+                                                                    credited</small>
+                                                            @endif
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
@@ -467,7 +507,8 @@
                                                                 </h5>
                                                             </div>
                                                             <div class="card-body">
-                                                                <div class="image-upload-wrap" id="image-upload-wrap">
+                                                                <div class="image-upload-wrap {{ $errors->has('image_invoice') ? 'border border-danger' : '' }}"
+                                                                    id="image-upload-wrap">
                                                                     <input type="file" name="image_invoice"
                                                                         class="file-upload-input"
                                                                         onchange="readURL(this, '');"
@@ -475,7 +516,7 @@
                                                                     <div
                                                                         class="drag-text d-flex flex-column align-items-center justify-content-center py-5">
                                                                         <i class="bi bi-cloud-arrow-up"
-                                                                            style="font-size: 3rem; color: #ccc;"></i>
+                                                                            style="font-size: 3rem; color: {{ $errors->has('image_invoice') ? '#dc3545' : '#ccc' }};"></i>
                                                                         <p class="mt-3 mb-0">Drag and drop a file or
                                                                             click to upload</p>
                                                                         <small class="text-muted">Accepted formats:
@@ -502,39 +543,22 @@
                                                                         </button>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
 
-                                                    <div class="col-12">
-                                                        <div class="card bg-light-primary bg-opacity-25 mb-4">
-                                                            <div class="card-body py-3">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="bi bi-info-circle-fill text-primary me-2"
-                                                                        style="font-size: 1.5rem;"></i>
-                                                                    <div>
-                                                                        <h6 class="mb-0">Invoice Summary</h6>
-                                                                        <p class="mb-0 text-muted small">Please review
-                                                                            all information before submitting</p>
-                                                                    </div>
-                                                                </div>
+                                                                @if ($errors->has('image_invoice'))
+                                                                    <p class="text-danger mt-2">
+                                                                        {{ $errors->first('image_invoice') }}</p>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end mt-3">
-                                                        <button type="button" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-x-circle me-1"></i>
-                                                            Cancel
-                                                        </button>
-                                                        <button type="reset" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-arrow-repeat me-1"></i>
-                                                            Reset
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary"
-                                                            style="border-radius: 8px;">
+                                                        <a href="{{ route('index-invoice') }}" type="button"
+                                                            class="btn btn-sm btn-light-secondary me-2">
+                                                            <i class="bi bi-arrow-left-circle me-1"></i>
+                                                            Kembali
+                                                        </a>
+                                                        <button type="submit" class="btn btn-sm btn-primary">
                                                             <i class="bi bi-check-circle me-1"></i>
                                                             Submit Invoice
                                                         </button>
@@ -557,18 +581,59 @@
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('.select2-basic-category').select2({
                 width: '100%',
-                dropdownAutoWidth: true
+                // Gunakan templateResult untuk mengontrol tampilan dropdown items
+                templateResult: formatState,
+                // Gunakan templateSelection untuk mengontrol selected item
+                templateSelection: formatState,
+                dropdownCssClass: 'select-lg-dropdown'
             });
+
+            // Fungsi untuk format tampilan item
+            function formatState(state) {
+                if (!state.id) {
+                    return state.text;
+                }
+
+                // Buat container dengan style yang mencegah overflow
+                var $state = $(
+                    '<span style="white-space: normal; word-break: break-word; display: block;">' + state.text +
+                    '</span>'
+                );
+
+                return $state;
+            }
         });
     </script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            @if ($errors->any())
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: 'Error: {{ $errors->first() }}',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            @endif
+        });
     </script>
 
     <script>

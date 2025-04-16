@@ -76,7 +76,7 @@ class Role
         $user = Auth::user();
 
         // Jika ini adalah rute dashboard dan user bukan admin/superadmin
-        if ($request->is('dashboard') && !in_array($user->role, ['admin', 'superadmin'])) {
+        if ($request->is('dashboard') && !in_array($user->role, ['admin', 'superadmin', 'accounting'])) {
             return redirect('/');
         }
 

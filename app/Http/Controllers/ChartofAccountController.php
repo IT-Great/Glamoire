@@ -13,10 +13,11 @@ class ChartofAccountController extends Controller
     public function indexChartofAccount()
     {
         $categories = CategoryCoa::all(); // Ambil semua kategori
-        $coas = Coa::with('category')->get(); // Ambil semua COA beserta kategori terkait
+        $coas = Coa::with('category')->latest()->get(); // Ambil COA terbaru
 
         return view('accounting.coa.index', compact('categories', 'coas'));
     }
+
 
     public function createChartofAccount()
     {

@@ -48,36 +48,6 @@ class BrandController extends Controller
         return view('admin.brand.create');
     }
 
-    // public function storeBrand(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required',
-    //         'description' => 'required',
-    //         'brand_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    //     ]);
-
-    //     // Generate unique brand code based on the brand name
-    //     $brandCode = $this->generateBrandCode($request->name);
-
-    //     if ($request->hasFile('brand_logo')) {
-    //         $image = $request->file('brand_logo');
-    //         $imageName = time() . '.' . $image->getClientOriginalExtension();
-    //         $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
-    //     }
-
-
-    //     Brand::create([
-    //         'name' => $request->name,
-    //         'description' => $request->description,
-    //         'brand_logo' => $imagePath,
-    //         'brand_code' => $brandCode, // Menyimpan kode merek
-
-    //     ]);
-
-    //     // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
-    //     return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
-    // }   
-
     public function storeBrand(Request $request)
     {
         $request->validate([

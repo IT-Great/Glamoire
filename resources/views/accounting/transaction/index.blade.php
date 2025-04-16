@@ -316,9 +316,9 @@
                             <h2 class="mb-3">Transaction Management</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="index.html"><i
+                                    <li class="breadcrumb-item"><a href="#"><i
                                                 class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="index.html">Transaction</a></li>
+                                    <li class="breadcrumb-item"><a href="/transaction">Transaction</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Transactions</li>
                                 </ol>
                             </nav>
@@ -368,44 +368,109 @@
                         </div>
                     </div>
 
-                    <!-- Navigation Tabs -->
-                    <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                        <a href="{{ route('index-transaction') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'index-transaction' ? 'active' : '' }}">
-                            <i class="bi bi-credit-card"></i>All Transactions
-                        </a>
-                        {{-- <a href="{{ route('transfer-transaction') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'transfer-transaction' ? 'active' : '' }}">
-                            <i class="bi bi-arrow-left-right"></i>Transfer History
-                        </a> --}}
-                        {{-- <a href="{{ route('transaction-reports') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'transaction-reports' ? 'active' : '' }}">
-                            <i class="bi bi-graph-up"></i>Reports & Analytics
-                        </a> --}}
-                    </div>
+                    <!-- filter -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4>Filter Transactions</h4>
+                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#filterCollapse">
+                                <i class="bi bi-funnel me-1"></i> Show/Hide Filters
+                            </button>
+                        </div>
+                        <div class="card-body collapse show" id="filterCollapse">
+                            <form action="{{ route('index-transaction') }}" method="GET">
+                                <div class="row">
+                                    <!-- Date filters -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="date" name="start_date" class="form-control"
+                                            value="{{ request('start_date') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">End Date</label>
+                                        <input type="date" name="end_date" class="form-control"
+                                            value="{{ request('end_date') }}">
+                                    </div>
 
-                    <!-- Filters Row -->
-                    <div class="filters-row">
-                        <div class="filter-item">
-                            <select id="account-filter" class="form-select">
-                                <option value="">All Transfer Accounts</option>
-                                @foreach ($transfer_accounts ?? [] as $account)
-                                    <option value="{{ $account->id }}">{{ $account->name }}</option>
-                                @endforeach
-                            </select>
+                                    <!-- Transaction type -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Transaction Type</label>
+                                        <select name="type" class="form-select">
+                                            <option value="">All Types</option>
+                                            <option value="transfer"
+                                                {{ request('type') == 'transfer' ? 'selected' : '' }}>
+                                                Transfer</option>
+                                            <option value="receive"
+                                                {{ request('type') == 'receive' ? 'selected' : '' }}>
+                                                Receive</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Transaction number -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Transaction Number</label>
+                                        <input type="text" name="no_transaction" class="form-control"
+                                            value="{{ request('no_transaction') }}" placeholder="Search by number...">
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <!-- COA filters -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Transfer From (Credit)</label>
+                                        <select name="kredit_coa_id" class="form-select">
+                                            <option value="">All Accounts</option>
+                                            @foreach ($coas as $coa)
+                                                <option value="{{ $coa->id }}"
+                                                    {{ request('kredit_coa_id') == $coa->id ? 'selected' : '' }}>
+                                                    {{ $coa->coa_no }} - {{ $coa->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Deposit To (Debit)</label>
+                                        <select name="debit_coa_id" class="form-select">
+                                            <option value="">All Accounts</option>
+                                            @foreach ($coas as $coa)
+                                                <option value="{{ $coa->id }}"
+                                                    {{ request('debit_coa_id') == $coa->id ? 'selected' : '' }}>
+                                                    {{ $coa->coa_no }} - {{ $coa->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- Recipient -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Recipient</label>
+                                        <input type="text" name="recipient_name" class="form-control"
+                                            value="{{ request('recipient_name') }}"
+                                            placeholder="Search recipient...">
+                                    </div>
+
+                                    <!-- Amount range -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">Amount Range</label>
+                                        <div class="input-group">
+                                            <input type="number" name="min_amount" class="form-control"
+                                                placeholder="Min" value="{{ request('min_amount') }}">
+                                            <span class="input-group-text">to</span>
+                                            <input type="number" name="max_amount" class="form-control"
+                                                placeholder="Max" value="{{ request('max_amount') }}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-12 text-end">
+                                        <a href="{{ route('index-transaction') }}"
+                                            class="btn btn-secondary me-2">Reset</a>
+                                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="filter-item">
-                            <select id="deposit-filter" class="form-select">
-                                <option value="">All Deposit Accounts</option>
-                                @foreach ($deposit_accounts ?? [] as $account)
-                                    <option value="{{ $account->id }}">{{ $account->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="filter-item">
-                            <input type="date" id="date-filter" class="form-control" placeholder="Transaction Date">
-                        </div>
-                     
                     </div>
 
                     <div class="card">
@@ -416,17 +481,33 @@
                                 </div>
                                 <div
                                     class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
-                                    {{-- <a href="{{ route('export-transactions') }}" type="button"
-                                        class="btn btn-sm btn-info d-flex align-items-center me-2">
-                                        <i class="bi bi-file-earmark-excel me-2"></i>Export
-                                    </a> --}}
-                                    <a href="{{ route('create-transaction') }}" type="button"
-                                        class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="bi bi-plus-circle me-2"></i>Add Transaction
-                                    </a>
+
+                                    <div class="btn-group">
+                                        <button type="button"
+                                            class="btn btn-sm btn-primary dropdown-toggle d-flex align-items-center"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-plus-circle me-2"></i>Add Transaction
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            <li>
+                                                <a class="dropdown-item d-flex align-items-center"
+                                                    href="{{ route('create-transaction', ['type' => 'transfer']) }}">
+                                                    <i class="bi bi-arrow-left-right me-2"></i>Transfer
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item d-flex align-items-center"
+                                                    href="{{ route('create-transaction', ['type' => 'receive']) }}">
+                                                    <i class="bi bi-download me-2"></i>Receive
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
                         <div class="card-body">
                             <table class="table" id="table1">
                                 <thead>
@@ -437,141 +518,43 @@
                                         <th>RECIPIENT</th>
                                         <th>AMOUNT</th>
                                         <th>DATE</th>
-                                        <th>DESCRIPTION</th>
+                                        <th>TYPE</th>
                                         <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($transactions ?? [] as $transaction)
+                                    @foreach ($transactions as $transaction)
                                         <tr>
                                             <td><strong>{{ $transaction->no_transaction }}</strong></td>
-                                            <td>{{ $transaction->transferAccount->name ?? 'Cash Account' }}</td>
-                                            <td>{{ $transaction->depositAccount->name ?? 'Main Account' }}</td>
-                                            <td>{{ $transaction->recipient_name ?? 'N/A' }}</td>
-                                            <td class="amount-cell">Rp {{ number_format($transaction->amount) }}</td>
-                                            <td>{{ $transaction->date->format('M d, Y') }}</td>
-                                            <td>{{ Str::limit($transaction->description, 30) ?? '-' }}</td>
+                                            <td>{{ $transaction->kreditCoa->coa_no ?? '-' }} -
+                                                {{ $transaction->kreditCoa->name ?? '-' }}</td>
+                                            <td>{{ $transaction->debitCoa->coa_no ?? '-' }} -
+                                                {{ $transaction->debitCoa->name ?? '-' }}</td>
+                                            <td>{{ $transaction->recipient_name ?? '-' }}</td>
+                                            <td class="amount-cell">Rp
+                                                {{ number_format($transaction->amount, 0, ',', '.') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($transaction->date)->format('M d, Y') }}</td>
+                                            <td>{{ $transaction->type }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('view-transaction', ['id' => $transaction->id]) }}"
+                                                    <a href="{{ route('create-invoice', ['id' => $transaction->id]) }}"
                                                         class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    {{-- <a href="{{ route('edit-transaction', ['id' => $transaction->id]) }}"
+                                                    <a href="{{ route('edit-invoice', ['id' => $transaction->id]) }}"
                                                         class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil"></i>
-                                                    </a> --}}
-                                                    <button class="btn btn-sm btn-danger delete-transaction"
+                                                    </a>
+                                                    <button class="btn btn-sm btn-danger delete-invoice"
                                                         data-id="{{ $transaction->id }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <!-- Sample data for display purposes only -->
-                                        <tr>
-                                            <td><strong>TRX-2025-001</strong></td>
-                                            <td>Cash Account</td>
-                                            <td>Main Operational</td>
-                                            <td>PT Supplier Indonesia</td>
-                                            <td class="amount-cell">Rp 5,750,000</td>
-                                            <td>Apr 5, 2025</td>
-                                            <td>Monthly office supplies payment</td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    {{-- <a href="{{ route('view-transaction', ['id' => 1]) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a> --}}
-                                                    {{-- <a href="{{ route('edit-transaction', ['id' => 1]) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a> --}}
-                                                    <button class="btn btn-sm btn-danger delete-transaction"
-                                                        data-id="1">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>TRX-2025-002</strong></td>
-                                            <td>Bank Account</td>
-                                            <td>Tax Reserves</td>
-                                            <td>Tax Office</td>
-                                            <td class="amount-cell">Rp 3,250,000</td>
-                                            <td>Apr 1, 2025</td>
-                                            <td>Quarterly tax payment</td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    {{-- <a href="{{ route('view-transaction', ['id' => 2]) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a> --}}
-                                                    {{-- <a href="{{ route('edit-transaction', ['id' => 2]) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a> --}}
-                                                    <button class="btn btn-sm btn-danger delete-transaction"
-                                                        data-id="2">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>TRX-2025-003</strong></td>
-                                            <td>Investment Account</td>
-                                            <td>Emergency Fund</td>
-                                            <td>Internal Transfer</td>
-                                            <td class="amount-cell">Rp 10,000,000</td>
-                                            <td>Mar 28, 2025</td>
-                                            <td>Monthly emergency fund allocation</td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    {{-- <a href="{{ route('view-transaction', ['id' => 3]) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('edit-transaction', ['id' => 3]) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a> --}}
-                                                    <button class="btn btn-sm btn-danger delete-transaction"
-                                                        data-id="3">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>TRX-2025-004</strong></td>
-                                            <td>Payroll Account</td>
-                                            <td>Employee Benefits</td>
-                                            <td>HR Department</td>
-                                            <td class="amount-cell">Rp 8,500,000</td>
-                                            <td>Mar 25, 2025</td>
-                                            <td>Employee health benefits payment</td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    {{-- <a href="{{ route('view-transaction', ['id' => 4]) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('edit-transaction', ['id' => 4]) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a> --}}
-                                                    <button class="btn btn-sm btn-danger delete-transaction"
-                                                        data-id="4">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -581,11 +564,28 @@
         </div>
     </div>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#4A69E2',
+                timer: 2000,
+                timerProgressBar: true
+            });
+        </script>
+    @endif
+
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

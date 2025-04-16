@@ -86,21 +86,21 @@ Route::post('/notify-me', function (Request $request) {
     $email = User::where('id', $userId)->value('email');
 
     if ($userId) {
-        if($request->product_variant_id !== null) {
+        if ($request->product_variant_id !== null) {
             $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
                 ->where('product_variant_id', $request->product_variant_id)
                 ->where('email', $email)
                 ->exists();
-        }else{
+        } else {
             $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
                 ->where('email', $email)
-                ->exists();    
+                ->exists();
         }
 
         if ($checkIsAlreadyExists) {
             return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
-        }else{
-            if($request->product_variant_id !== null){
+        } else {
+            if ($request->product_variant_id !== null) {
                 NotifyMe::create([
                     'user_id' => $userId,
                     'product_id' => $request->product_id,
@@ -108,8 +108,7 @@ Route::post('/notify-me', function (Request $request) {
                     'email' => $email,
                 ]);
                 return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
-            }
-            else{
+            } else {
                 NotifyMe::create([
                     'user_id' => $userId,
                     'product_id' => $request->product_id,
@@ -514,7 +513,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     // COA
     Route::get('/coa', [ChartofAccountController::class, 'indexChartofAccount'])->name('index-chartofaccount');
-    Route::get('/create-coa', [ChartofAccountController::class, 'createChartofAccount'])->name('create-chartofaccount');
+    Route::get('/coa-create', [ChartofAccountController::class, 'createChartofAccount'])->name('create-chartofaccount');
     Route::post('/create-coa', [ChartofAccountController::class, 'storeChartofAccount'])->name('store-chartofaccount');
     Route::post('/create-categorycoa', [ChartofAccountController::class, 'storeCategoryCoa'])->name('store-categorycoa');
     Route::get('/edit-coa', [ChartofAccountController::class, 'editChartofAccount'])->name('edit-chartofaccount');
@@ -526,6 +525,21 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     Route::get('/invoice', [InvoiceController::class, 'indexInvoice'])->name('index-invoice');
     Route::get('/invoice-create', [InvoiceController::class, 'createInvoice'])->name('create-invoice');
     Route::post('/invoice-create', [InvoiceController::class, 'storeInvoice'])->name('store-invoice');
+    // Invoice payment routes
+    Route::get('/invoice/{id}/process-payment', [InvoiceController::class, 'viewProcessPayment'])->name('view-process-payment');
+    Route::post('/invoices/process-payment', [InvoiceController::class, 'processPayment'])->name('process-invoice-payment');
+   
+    Route::get('/invoices/{id}/payment-history', [InvoiceController::class, 'paymentHistory'])->name('invoice-payment-history');
+    Route::get('/invoices/{id}/details', [InvoiceController::class, 'getInvoiceDetails'])->name('get-invoice-details');
+
+
+
+
+
+
+
+
+
     Route::get('/invoice-edit', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
     Route::post('/invoice-edit', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
     Route::delete('/invoice/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
@@ -538,6 +552,8 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     // TRANSACTION
     Route::get('/transaction', [TransactionController::class, 'indexTransaction'])->name('index-transaction');
     Route::get('/transaction-create', [TransactionController::class, 'createTransaction'])->name('create-transaction');
+    Route::post('/transaction-trasnfer-create', [TransactionController::class, 'storeTransactionTransfer'])->name('store-transaction-transfer');
+    Route::post('/transaction-receive-create', [TransactionController::class, 'storeTransactionReceive'])->name('store-transaction-receive');
 
     // FINANCIAL
     Route::get('/financial-income', [FinancialController::class, 'indexFinancialIncome'])->name('index-financial-income');

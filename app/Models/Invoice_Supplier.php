@@ -15,25 +15,30 @@ class Invoice_Supplier extends Model
         return $this->belongsTo(Supplier_Data::class, 'supplier_id');
     }
 
-    public function transferAccount()
+    public function payments()
     {
-        return $this->belongsTo(Coa::class, 'transfer_account_id');
+        return $this->hasMany(PaymentHistories::class, 'invoice_id');
     }
 
-    public function depositAccount()
+    public function kreditCoa()
     {
-        return $this->belongsTo(Coa::class, 'deposit_account_id');
+        return $this->belongsTo(Coa::class, 'kredit_coa_id');
+    }
+
+    public function debitCoa()
+    {
+        return $this->belongsTo(Coa::class, 'debit_coa_id');
     }
 
     // Relasi untuk old_transfer_account_id
     public function oldAccount()
     {
-        return $this->belongsTo(Coa::class, 'old_transfer_account_id');
+        return $this->belongsTo(Coa::class, 'old_kredit_coa_id');
     }
 
     // Relasi untuk new_transfer_account_id
     public function newAccount()
     {
-        return $this->belongsTo(Coa::class, 'new_transfer_account_id');
+        return $this->belongsTo(Coa::class, 'new_kredit_coa_id');
     }
 }

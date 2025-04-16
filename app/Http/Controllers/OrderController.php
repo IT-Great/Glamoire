@@ -9,63 +9,6 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    // public function indexOrder()
-    // {
-    //     $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
-    //         ->latest() // Menampilkan data terbaru terlebih dahulu
-    //         ->paginate(10);
-
-    //     // Group order items by product for each order
-    //     foreach ($orders as $order) {
-    //         $groupedItems = collect($order->orderItems)
-    //             ->groupBy(function ($item) {
-    //                 return $item->product->id;
-    //             })
-    //             ->map(function ($group) {
-    //                 $firstItem = $group->first();
-    //                 return [
-    //                     'product' => $firstItem->product,
-    //                     'total_quantity' => $group->sum('quantity')
-    //                 ];
-    //             })
-    //             ->values();
-
-    //         $order->groupedOrderItems = $groupedItems;
-    //     }
-
-    //     return view('admin.order.index', compact('orders'));
-    // }
-
-    // public function indexOrder()
-    // {
-    //     $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
-    //         ->latest() // Menampilkan data terbaru terlebih dahulu
-    //         ->paginate(10);
-
-    //     // Group order items by product for each order
-    //     foreach ($orders as $order) {
-    //         $groupedItems = collect($order->orderItems)
-    //             ->filter(function ($item) {
-    //                 return $item->product !== null; // Pastikan produk tidak null
-    //             })
-    //             ->groupBy(function ($item) {
-    //                 return $item->product->id; // Sekarang aman mengakses id
-    //             })
-    //             ->map(function ($group) {
-    //                 $firstItem = $group->first();
-    //                 return [
-    //                     'product' => $firstItem->product,
-    //                     'total_quantity' => $group->sum('quantity')
-    //                 ];
-    //             })
-    //             ->values();
-
-    //         $order->groupedOrderItems = $groupedItems;
-    //     }
-
-    //     return view('admin.order.index', compact('orders'));
-    // }
-
     public function indexOrder()
     {
         $orders = Order::with([
@@ -269,8 +212,17 @@ class OrderController extends Controller
 
     public function detailOrder($id)
     {
-        $order = Order::with('orderItems.product', 'user')->findOrFail($id);
+        // $order = Order::with('orderItems.product', 'user')->findOrFail($id);
+        $order = Order::with(['orderItems.product', 'user', 'payment', 'invoice'])->findOrFail($id);
 
+        // Map payment status to more user-friendly terms
+        if ($order->payment) {
+            $order->payment_method = $order->payment->payment_method;
+            $order->payment_status = $order->payment->status == 'completed' ? 'Paid' : ($order->payment->status == 'pending' ? 'Pending' : 'Failed');
+        } else {
+            $order->payment_method = 'Not available';
+            $order->payment_status = 'Unknown';
+        }
         return view('admin.order.detail', compact('order'));
     }
 

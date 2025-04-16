@@ -18,54 +18,19 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
 
     <style>
-        /* Modern Color Scheme - Reusing from COA page */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
-            --success: #10b981;
-            --info: #4895ef;
-            --warning: #f72585;
-            --danger: #e63946;
+            --primary-light: #546fd0;
+            --success: #4fbe87;
+            --danger: #eb5757;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --secondary: #6c757d;
             --light: #f8f9fa;
             --dark: #212529;
-            --gray-100: #f8f9fa;
-            --gray-200: #e9ecef;
-            --gray-300: #dee2e6;
-            --gray-800: #343a40;
         }
 
-        /* Card Styling */
-        .card {
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            border: none;
-            margin-bottom: 24px;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid var(--gray-200);
-            padding: 1.25rem 1.5rem;
-            border-top-left-radius: 15px !important;
-            border-top-right-radius: 15px !important;
-        }
-
-        .card-header h4 {
-            margin-bottom: 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        /* Navigation Tabs */
         .finance-nav {
             background: white;
             border-radius: 12px;
@@ -94,7 +59,156 @@
             background: var(--gray-100);
         }
 
-        /* Stats Cards - From COA */
+        .card {
+            border: none;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 25px 30px;
+        }
+
+        .card-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-header h4 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .card-body {
+            padding: 25px 30px;
+        }
+
+        .btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 3px 10px rgba(67, 94, 190, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-light);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.3);
+        }
+
+        .btn-warning {
+            background-color: var(--warning);
+            border-color: var(--warning);
+            color: white;
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            border-color: var(--danger);
+        }
+
+        .btn-info {
+            background-color: var(--info);
+            border-color: var(--info);
+            color: white;
+        }
+
+        .badge {
+            font-weight: 500;
+            padding: 0.5em 0.8em;
+            border-radius: 6px;
+        }
+
+        .bg-light-success {
+            background-color: rgba(79, 190, 135, 0.15);
+            color: var(--success);
+        }
+
+        .bg-light-danger {
+            background-color: rgba(235, 87, 87, 0.15);
+            color: var(--danger);
+        }
+
+        .bg-light-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .bg-light-info {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+        }
+
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        table th {
+            background-color: #f8f9fa;
+            color: var(--dark);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.5px;
+            padding: 15px !important;
+        }
+
+        table td {
+            padding: 18px 15px !important;
+            vertical-align: middle;
+            color: #495057;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        table tr:hover td {
+            background-color: rgba(67, 94, 190, 0.03);
+        }
+
+        .amount-cell {
+            font-weight: 600;
+            font-family: monospace;
+            font-size: 1.05rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-buttons .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+
         .stats-card {
             border-radius: 12px;
             overflow: hidden;
@@ -164,185 +278,84 @@
             color: #ef4444;
         }
 
-        /* Table Styling */
-        .finance-table {
+        .icon-primary {
+            background-color: rgba(67, 94, 190, 0.15);
+            color: var(--primary);
+        }
+
+        .icon-success {
+            background-color: rgba(79, 190, 135, 0.15);
+            color: var(--success);
+        }
+
+        .icon-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .icon-danger {
+            background-color: rgba(235, 87, 87, 0.15);
+            color: var(--danger);
+        }
+
+        .deadline-near {
+            color: var(--danger);
+            font-weight: 500;
+        }
+
+        .deadline-upcoming {
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        .deadline-safe {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .filters-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-item select,
+        .filter-item input {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+            background-color: #f8f9fa;
+            transition: all 0.3s;
         }
 
-        .finance-table thead th {
-            background-color: var(--gray-100);
-            padding: 1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            border-bottom: 2px solid var(--gray-200);
-            white-space: nowrap;
-        }
-
-        .finance-table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .finance-table tbody tr:hover {
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-
-        .finance-table td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--gray-300);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
+        .filter-item select:focus,
+        .filter-item input:focus {
+            outline: none;
             border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 94, 190, 0.1);
         }
 
-        /* Buttons */
-        .btn {
-            padding: 0.6rem 1.2rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+        .text-primary {
+            color: var(--primary) !important;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border: none;
-            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.25);
+        .text-success {
+            color: var(--success) !important;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
+        .text-danger {
+            color: var(--danger) !important;
         }
 
-        .btn-secondary {
-            background: var(--gray-200);
-            color: var(--gray-800);
-            border: none;
-        }
-
-        /* Small Action Buttons */
-        .btn-action {
-            padding: 0.35rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.3rem;
-            margin-right: 0.5rem;
-        }
-
-        .btn-action.edit {
-            background-color: var(--info);
-            color: white;
-        }
-
-        .btn-action.delete {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .btn-action.view {
-            background-color: var(--success);
-            color: white;
-        }
-
-        /* Status Badges */
-        .status-badge {
-            padding: 0.35rem 0.75rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .status-badge.success {
-            background-color: rgba(16, 185, 129, 0.15);
-            color: #10b981;
-        }
-
-        .status-badge.pending {
-            background-color: rgba(251, 146, 60, 0.15);
-            color: #fb923c;
-        }
-
-        .status-badge.failed {
-            background-color: rgba(239, 68, 68, 0.15);
-            color: #ef4444;
-        }
-
-        /* Invoice Number Style */
-        .invoice-number {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-            color: var(--dark);
-            padding: 0.3rem 0.6rem;
-            background-color: var(--gray-100);
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        /* Currency formatting */
-        .currency {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-        }
-
-        /* Chart container */
-        .chart-container {
-            height: 300px;
-            margin-bottom: 1rem;
-        }
-
-        /* Date label */
-        .date-label {
-            font-size: 0.85rem;
-            color: #6c757d;
-        }
-
-        /* Summary block */
-        .summary-block {
-            background-color: var(--gray-100);
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .summary-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .summary-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        /* Export button */
-        .btn-export {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25);
-        }
-
-        .btn-export:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
+        .text-warning {
+            color: var(--warning) !important;
         }
     </style>
 </head>
@@ -468,101 +481,155 @@
                     </div>
                 </div>
 
-                <!-- Chart Section -->
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4>Income Overview</h4>
-                        <div class="btn-group">
-                            <button class="btn btn-sm btn-outline-primary active">Monthly</button>
-                            <button class="btn btn-sm btn-outline-primary">Quarterly</button>
-                            <button class="btn btn-sm btn-outline-primary">Yearly</button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <!-- Chart placeholder - in real application, you'd integrate a charting library -->
-                            <div
-                                style="height: 100%; background-color: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                                <p class="text-muted">Income trend chart would appear here</p>
-                            </div>
-                        </div>
-                        <div class="row mt-4">
-                            <div class="col-md-3 mb-3">
-                                <div class="summary-block">
-                                    <p class="summary-title">Top Income Source</p>
-                                    <p class="summary-value">Sales Invoice</p>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="summary-block">
-                                    <p class="summary-title">Average Invoice</p>
-                                    <p class="summary-value">Rp 5.2M</p>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="summary-block">
-                                    <p class="summary-title">Largest Invoice</p>
-                                    <p class="summary-value">Rp 12.5M</p>
-                                </div>
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <div class="summary-block">
-                                    <p class="summary-title">Average Processing Time</p>
-                                    <p class="summary-value">3.2 days</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Filter Card -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4>Filter Income</h4>
+                        <h4>Filter Invoices</h4>
                         <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse"
                             data-bs-target="#filterCollapse">
                             <i class="bi bi-funnel me-1"></i> Show/Hide Filters
                         </button>
                     </div>
                     <div class="card-body collapse show" id="filterCollapse">
-                        <form action="{{ route('index-financial-income') }}" method="GET">
+                        <form action="{{ route('index-invoice') }}" method="GET">
                             <div class="row">
+                                <!-- Date filters -->
                                 <div class="col-md-3">
-                                    <label class="form-label">Start Date</label>
+                                    <label class="form-label">Invoice Date (From)</label>
                                     <input type="date" name="start_date" class="form-control"
                                         value="{{ request('start_date') }}">
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label">End Date</label>
+                                    <label class="form-label">Invoice Date (To)</label>
                                     <input type="date" name="end_date" class="form-control"
                                         value="{{ request('end_date') }}">
                                 </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>
-                                    <select name="status" class="form-select">
-                                        <option value="">All Status</option>
-                                        <option value="success" {{ request('status') == 'success' ? 'selected' : '' }}>
-                                            Success</option>
-                                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>
-                                            Pending</option>
-                                        <option value="failed" {{ request('status') == 'failed' ? 'selected' : '' }}>
-                                            Failed</option>
-                                    </select>
-                                </div>
+
+                                <!-- Supplier filter -->
                                 <div class="col-md-3">
                                     <label class="form-label">Supplier</label>
-                                    <select name="supplier" class="form-select">
+                                    <select name="supplier_id" class="form-select">
                                         <option value="">All Suppliers</option>
-                                        <option value="1">Supplier A</option>
-                                        <option value="2">Supplier B</option>
-                                        <option value="3">Supplier C</option>
+                                        @foreach ($suppliers as $supplier)
+                                            <option value="{{ $supplier->id }}"
+                                                {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                                {{ $supplier->name }}
+                                            </option>
+                                        @endforeach
                                     </select>
                                 </div>
+
+                                <!-- Invoice number filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Invoice Number</label>
+                                    <input type="text" name="no_invoice" class="form-control"
+                                        value="{{ request('no_invoice') }}" placeholder="Search by number...">
+                                </div>
                             </div>
+
+                            <div class="row mt-3">
+                                <!-- Payment status filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Payment Status</label>
+                                    <select name="payment_status" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="Paid"
+                                            {{ request('payment_status') == 'Paid' ? 'selected' : '' }}>
+                                            Paid</option>
+                                        <option value="Not Yet"
+                                            {{ request('payment_status') == 'Not Yet' ? 'selected' : '' }}>
+                                            Not Yet Paid</option>
+                                    </select>
+                                </div>
+
+                                <!-- Payment method filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select name="payment_method" class="form-select">
+                                        <option value="">All Methods</option>
+                                        <option value="Cash"
+                                            {{ request('payment_method') == 'Cash' ? 'selected' : '' }}>
+                                            Cash</option>
+                                        <option value="Bank"
+                                            {{ request('payment_method') == 'Bank' ? 'selected' : '' }}>
+                                            Bank</option>
+                                    </select>
+                                </div>
+
+                                <!-- Amount range filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Amount Range</label>
+                                    <div class="input-group">
+                                        <input type="number" name="min_amount" class="form-control"
+                                            placeholder="Min" value="{{ request('min_amount') }}">
+                                        <span class="input-group-text">to</span>
+                                        <input type="number" name="max_amount" class="form-control"
+                                            placeholder="Max" value="{{ request('max_amount') }}">
+                                    </div>
+                                </div>
+
+                                <!-- Has image filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Documents</label>
+                                    <div class="row ms-1">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="hasInvoiceImage"
+                                                name="has_invoice_image" value="1"
+                                                {{ request('has_invoice_image') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="hasInvoiceImage">Has Invoice
+                                                Image</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" id="hasProofImage"
+                                                name="has_proof_image" value="1"
+                                                {{ request('has_proof_image') ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="hasProofImage">Has Payment
+                                                Proof</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <!-- Deadline filter -->
+                                <div class="col-md-3">
+                                    <label class="form-label">Deadline (From)</label>
+                                    <input type="date" name="start_deadline" class="form-control"
+                                        value="{{ request('start_deadline') }}">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Deadline (To)</label>
+                                    <input type="date" name="end_deadline" class="form-control"
+                                        value="{{ request('end_deadline') }}">
+                                </div>
+
+                                <!-- COA filter if needed -->
+                                <div class="col-md-3">
+                                    <label class="form-label">COA Account</label>
+                                    <select name="coa_id" class="form-select">
+                                        <option value="">All COAs</option>
+                                        @foreach ($coas as $coa)
+                                            <option value="{{ $coa->id }}"
+                                                {{ request('coa_id') == $coa->id ? 'selected' : '' }}>
+                                                {{ $coa->coa_no }} - {{ $coa->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <!-- Has PPH filter -->
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="hasPph"
+                                            name="has_pph" value="1" {{ request('has_pph') ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="hasPph">Has PPH</label>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row mt-3">
                                 <div class="col-md-12 text-end">
-                                    <a href="{{ route('index-financial-income') }}"
-                                        class="btn btn-secondary me-2">Reset</a>
+                                    <a href="{{ route('index-invoice') }}" class="btn btn-secondary me-2">Reset</a>
                                     <button type="submit" class="btn btn-primary">Apply Filter</button>
                                 </div>
                             </div>
@@ -570,7 +637,7 @@
                     </div>
                 </div>
 
-                <!-- Income Table -->
+                <!-- expense Table -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4>Income Transactions</h4>
@@ -579,65 +646,44 @@
                         </a>
                     </div>
                     <div class="card-body">
-                        <table class="table finance-table" id="table1">
+                        <table class="table" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Invoice No</th>
-                                    <th>Supplier</th>
-                                    <th>Description</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>NO. INVOICE</th>
+                                    <th>SUPPLIER</th>
+                                    <th>AMOUNT</th>
+                                    <th>DATE</th>
+                                    <th>DEADLINE</th>
+                                    <th>STATUS</th>
+                                    <th>PAYMENT</th>
+                                    <th>ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($finances as $finance)
+                                @foreach ($invoices as $invoice)
                                     <tr>
+                                        <td><strong>{{ $invoice->no_invoice }}</strong></td>
+                                        <td>{{ $invoice->supplier->name ?? '-' }}</td>
+                                        <td class="amount-cell">Rp 5,750,000</td>
+                                        <td>Mar 15, 2023</td>
+                                        <td class="deadline-safe">Apr 15, 2023</td>
                                         <td>
-                                            <span class="invoice-number">{{ $finance->invoice_number }}</span>
+                                            <span class="badge bg-light-success">Paid</span>
                                         </td>
-                                        <td>{{ $finance->supplier_name }}</td>
-                                        <td>{{ Str::limit($finance->description ?? 'Payment for goods/services', 30, '...') }}
-                                        </td>
+                                        <td>Bank Transfer</td>
                                         <td>
-                                            <span class="currency">Rp
-                                                {{ number_format($finance->amount, 0, ',', '.') }}</span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="date-label">{{ \Carbon\Carbon::parse($finance->date)->format('d M Y') }}</span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="date-label">{{ \Carbon\Carbon::parse($finance->deadline)->format('d M Y') }}</span>
-                                        </td>
-                                        <td>
-                                            @php
-                                                $statusClass = strtolower($finance->status);
-                                                if (in_array($statusClass, ['success', 'pending', 'failed'])) {
-                                                    $class = $statusClass;
-                                                } else {
-                                                    $class = 'pending';
-                                                }
-                                            @endphp
-                                            <span class="status-badge {{ $class }}">
-                                                {{ ucfirst($finance->status) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="d-flex gap-2">
-                                                <a href="#" class="btn-action view" title="View">
+                                            <div class="action-buttons">
+                                                <a href="{{ route('create-invoice', ['id' => 1]) }}"
+                                                    class="btn btn-sm btn-info">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
-                                                <a href="#" class="btn-action edit" title="Edit">
+                                                <a href="{{ route('edit-invoice', ['id' => 1]) }}"
+                                                    class="btn btn-sm btn-warning">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <a href="javascript:void(0);" class="btn-action delete delete-finance"
-                                                    data-id="{{ $finance->id }}" title="Delete">
+                                                <button class="btn btn-sm btn-danger delete-invoice" data-id="1">
                                                     <i class="bi bi-trash"></i>
-                                                </a>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

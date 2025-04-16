@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Supplier_Data extends Model
 {
     protected $guarded = ['id'];
+    protected $table = 'supplier_data';
 
     public function invoices()
     {

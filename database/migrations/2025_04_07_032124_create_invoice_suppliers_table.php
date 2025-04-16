@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('nota')->nullable();
             $table->dateTime('deadline_invoice')->default(now());
             $table->enum('payment_status', ['Paid', 'Not Yet'])->default('Not Yet');
-            $table->enum('payment_method', ['Cash', 'Bank'])->nullable();
+            $table->string('payment_method')->nullable();
 
             $table->unsignedBigInteger('kredit_coa_id')->nullable();
             $table->foreign('kredit_coa_id')->references('id')->on('coas')->cascadeOnDelete()->cascadeOnUpdate();

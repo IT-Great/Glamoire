@@ -11,18 +11,73 @@ use App\Models\Invoice_Supplier;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Payment;
+use App\Models\PaymentHistories;
 use App\Models\Supplier_Data;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
 {
-    public function indexInvoice()
+    public function indexInvoice(Request $request)
     {
-        $invoices = Invoice_Supplier::all();
+        $query = Invoice_Supplier::with('supplier');
 
-        return view('accounting.invoice.index', [
-            'invoices' => $invoices
-        ]);
+        // Filter by date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('date', '<=', $request->end_date);
+        }
+
+        // Filter by supplier
+        if ($request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->supplier_id);
+        }
+
+        // Filter by payment status
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        // Filter by payment method
+        if ($request->filled('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+        // Filter by invoice number
+        if ($request->filled('no_invoice')) {
+            $query->where('no_invoice', 'like', '%' . $request->no_invoice . '%');
+        }
+
+        // Filter by amount range
+        if ($request->filled('min_amount')) {
+            $query->where('amount', '>=', $request->min_amount);
+        }
+
+        if ($request->filled('max_amount')) {
+            $query->where('amount', '<=', $request->max_amount);
+        }
+
+        // Filter by deadline range
+        if ($request->filled('start_deadline')) {
+            $query->whereDate('deadline_invoice', '>=', $request->start_deadline);
+        }
+
+        if ($request->filled('end_deadline')) {
+            $query->whereDate('deadline_invoice', '<=', $request->end_deadline);
+        }
+
+        // Get all suppliers for the dropdown
+        $suppliers = \App\Models\Supplier_Data::orderBy('name')->get();
+
+        // Get COAs for the dropdown if needed
+        $coas = \App\Models\Coa::orderBy('name')->get();
+
+        $invoices = $query->latest()->get();
+
+        return view('accounting.invoice.index', compact('invoices', 'suppliers', 'coas'));
     }
 
     public function createInvoice()
@@ -38,15 +93,30 @@ class InvoiceController extends Controller
 
     public function storeInvoice(Request $request)
     {
+        $request->validate([
+            'no_invoice' => 'required',
+            'supplier_id' => 'required',
+            'amount' => 'required|numeric',
+            'kredit_coa_id' => 'required',
+            'debit_coa_id' => 'required',
+            'image_invoice' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
         try {
-            $request->validate([
-                'no_invoice' => 'required',
-                'supplier_id' => 'required',
-                'amount' => 'required|numeric',
-                // 'kredit_coa_id' => 'required',
-                // 'debit_coa_id' => 'required',
-                'image_invoice' => 'required',
-            ]);
+
+            // Create directory if it doesn't exist
+            $path = public_path('storage/invoice_images');
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            // Handle file upload
+            $imageName = null;
+            if ($request->hasFile('image_invoice')) {
+                $image = $request->file('image_invoice');
+                $imageName = time() . '_' . $image->getClientOriginalName();
+                $image->move($path, $imageName);
+            }
 
             Invoice_Supplier::create([
                 'no_invoice' => $request->no_invoice,
@@ -54,7 +124,7 @@ class InvoiceController extends Controller
                 'amount' => $request->amount,
                 'kredit_coa_id' => $request->kredit_coa_id,
                 'debit_coa_id' => $request->debit_coa_id,
-                'image_invoice' => $request->image_invoice,
+                'image_invoice' => 'invoice_images/' . $imageName, // Hapus 'storage/' dari sini
             ]);
 
             return redirect()->route('index-invoice')->with('success', 'Add Invoice successfully!');
@@ -67,6 +137,86 @@ class InvoiceController extends Controller
             return redirect()->back()->with('error', 'Failed to add invoice. Please check the log.');
         }
     }
+
+    public function viewProcessPayment($id)
+    {
+        $invoice = Invoice_Supplier::with('supplier')->findOrFail($id);
+        $coas = Coa::all(); // Assuming you have a Coa model
+
+        return view('accounting.invoice.payment', compact('invoice', 'coas'));
+    }
+
+    public function processPayment(Request $request)
+    {
+        $request->validate([
+            'invoice_id' => 'required|exists:invoice_suppliers,id',
+            'payment_date' => 'required|date',
+            'payment_method' => 'required',
+            'kredit_coa_id' => 'required|exists:coas,id',
+            'debit_coa_id' => 'required|exists:coas,id',
+            'amount' => 'required|numeric|min:1',
+            'image_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120', // max:5120 = 5MB
+        ]);
+
+        try {
+            $invoice = Invoice_Supplier::findOrFail($request->invoice_id);
+
+            // Check if the invoice is already paid
+            if ($invoice->payment_status == 'Paid') {
+                return redirect()->back()->with('error', 'Invoice is already paid.');
+            }
+
+            // Handle payment proof upload if provided
+            $proofPath = null;
+            if ($request->hasFile('image_proof')) {
+                $proofPath = $request->file('image_proof')->store('payment_proofs', 'public');
+            }
+
+            // Update invoice details
+            $invoice->payment_status = 'Paid';
+            $invoice->payment_method = $request->payment_method;
+            $invoice->kredit_coa_id = $request->kredit_coa_id;
+            $invoice->debit_coa_id = $request->debit_coa_id;
+            $invoice->image_proof = $proofPath;
+            $invoice->save();
+
+            // Create a payment record in payment_histories table
+            $payment = new PaymentHistories([
+                'invoice_id' => $invoice->id,
+                'amount' => $request->amount,
+                'payment_date' => $request->payment_date,
+                'payment_method' => $request->payment_method,
+                'reference_number' => $request->reference_number,
+                'notes' => $request->payment_notes,
+                'processed_by' => auth()->id(),
+            ]);
+            $payment->save();
+
+
+            return redirect()->route('index-invoice')->with('success', 'Payment processed successfully!');
+        } catch (\Exception $e) {
+            Log::error('Payment error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Failed to process payment.');
+        }
+    }
+
+    public function paymentHistory($invoiceId)
+    {
+        $invoice = Invoice_Supplier::with(['supplier', 'payments', 'debitCoa', 'kreditCoa'])->findOrFail($invoiceId);
+
+        return view('accounting.invoice.payment-history', compact('invoice'));
+    }
+
+    public function getInvoiceDetails($id)
+    {
+        $invoice = Invoice_Supplier::with(['supplier', 'payments', 'debitCoa', 'kreditCoa'])->findOrFail($id);
+
+        $paymentHistories = $invoice->payments;
+
+        return view('accounting.invoice.detail', compact('invoice', 'paymentHistories'));
+    }
+
+
 
     public function editInvoice() {}
 

@@ -159,7 +159,7 @@ class DokuPaymentController extends Controller
             $orderId = 'ORDER-' . time() . '-' . Str::random(5);
 
             // Calculate total amount
-            $totalAmount = intval( $request->total_amount);
+            $totalAmount = intval($request->total_amount);
 
             // Prepare request timestamp
             $requestTimestamp = Carbon::now()->utc()->format('Y-m-d\TH:i:s\Z');
@@ -226,7 +226,7 @@ class DokuPaymentController extends Controller
             $totalItemPrice = $request->total_item_price;
             $voucherPromo = $request->voucher_promo;
             $voucherOngkir = $request->voucher_ongkir;
-            
+
 
             $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountAmount, $discountOngkir, $totalItem, $totalItemPrice, $voucherOngkir, $voucherPromo, $selectedPaymentMethods);
             session(['order_data' => $orderData]);
@@ -262,30 +262,27 @@ class DokuPaymentController extends Controller
                 if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
                     return $payment_status; // Redirect ke route checkout
                 }
-                
+
                 // Jika payment status tidak ditemukan
                 if (is_null($payment_status)) {
                     return redirect()->route('checkout')->with('error', 'Payment status not found.');
                 }
-                
+
                 if (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'SUCCESS') {
                     $this->createNewOrder(session('order_data'));
                     session()->flash('payment_success');
                     return redirect()->route('account', ['user' => session('id_user')]);
                 } elseif (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'PENDING') {
                     return redirect()->route('checkout');
-                }elseif (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'FAILED') {
+                } elseif (isset($payment_status['transaction']['status']) && $payment_status['transaction']['status'] === 'FAILED') {
                     session()->flash('payment_failed');
                     return redirect()->route('checkout');
-                }
-                else {
+                } else {
                     return redirect()->route('checkout');
                 }
-                
             }
 
             return redirect()->route('checkout');
-
         } catch (\Exception $e) {
             Log::error('DOKU Callback Error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 400);
@@ -323,7 +320,7 @@ class DokuPaymentController extends Controller
         $order = Order::create([
             'doku_order_id' => $orderData['orderId'],
             'invoice_id' => $invoiceCreate->id,
-            'user_id' => auth()->id(), 
+            'user_id' => auth()->id(),
             'shipping_address_id' => $orderData['shippingAddressId'],
             'shipping_cost' => $orderData['shippingCost'],
             'discount_amount' => $orderData['discountAmount'] ?? 0,
@@ -355,7 +352,7 @@ class DokuPaymentController extends Controller
                                         $item->total = $discountedPrice;
                                     }
                                     break;
-        
+
                                 case 'nominal':
                                     // Contoh logika untuk diskon nominal
                                     if ($item->quantity == $tier->min_quantity) {
@@ -364,21 +361,21 @@ class DokuPaymentController extends Controller
                                         $item->total = $discountedPrice;
                                     }
                                     break;
-        
+
                                 case 'package':
                                     if ($item->quantity == $tier->min_quantity) {
                                         $item->bundle_price = $tier->package_price; // Tetapkan harga paket
                                         $item->total = $tier->package_price;
                                     }
                                     break;
-        
+
                                 default:
                                     // Logika default jika tidak ada kasus yang cocok
                                     $item->discounted_price = $item->product->price;
                                     break;
-                                }
                             }
                         }
+                    }
                 }
 
                 OrderItem::create([
@@ -396,30 +393,36 @@ class DokuPaymentController extends Controller
         $userId = session('id_user');
 
         $payment_status = $this->getPaymentStatus($orderData['orderId']);
+
+        $statusMap = [
+            'SUCCESS' => 'completed',
+            'PENDING' => 'pending',
+            'FAILED' => 'failed'
+        ];
+
         $payment = Payment::create([
             'user_id'        => $userId,
             'order_id'       => $order->id,
             'payment_method' => $payment_status['acquirer']['name'],
             'transaction_id' => $payment_status['transaction']['original_request_id'],
-            'status'         => $payment_status['transaction']['status'],
+            'status'         => $statusMap[$payment_status['transaction']['status']] ?? 'pending', // Map the status
             'amount'         => $payment_status['order']['amount'],
             'payment_date'   => now(),
         ]);
-
+        
         // Update status voucher jika digunakan
         $useVoucherNewUser = VoucherNewUser::where('user_id', $userId)
             ->where('code', $orderData['voucherPromo'])
             ->first();
-        
+
         if ($useVoucherNewUser) {
             $useVoucherNewUser->is_use = 1;
             $useVoucherNewUser->save();
         }
 
-        if($useVoucherNewUser == NULL){
+        if ($useVoucherNewUser == NULL) {
             $voucherUsed = Promo::where('promo_code', $orderData['voucherPromo'])->first();
-        }
-        else {
+        } else {
             $voucherUsed = NULL;
         }
 
@@ -428,11 +431,11 @@ class DokuPaymentController extends Controller
         }
 
         // Jika pembayaran selesai
-       
+
         if ($payment->status == "SUCCESS") {
             // Ambil cart berdasarkan user_id sekali di luar loop
             $cartId = Cart::where('user_id', $userId)->value('id');
-            
+
             if ($voucherUsed !== NULL) {
                 $voucherUsed->total_used += 1;
                 $voucherUsed->save();
@@ -444,48 +447,48 @@ class DokuPaymentController extends Controller
                     $ongkirUsed->save();
                 }
             }
-            
-            foreach($cartItems as $product){
+
+            foreach ($cartItems as $product) {
                 // Temukan produk berdasarkan ID\
-                if($product['product_variant_id'] !== null){
+                if ($product['product_variant_id'] !== null) {
                     $productVariant = ProductVariations::find($product['product_variant_id']);
-                    
+
                     // Jika produk ditemukan, lakukan update stok
                     if ($productVariant) {
                         $productVariant->variant_stock -= $product['quantity'];
                         $productVariant->sale += $product['quantity'];
                         $productVariant->save();
                     }
-        
+
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
                         ->where('product_variant_id', $product['product_variant_id'])
                         ->delete();
-                }
-                else{
+                } else {
                     $products = Product::find($product['product_id']);
-                    
+
                     // Jika produk ditemukan, lakukan update stok
                     if ($products) {
                         $products->stock_quantity -= $product['quantity'];
                         $products->sale += $product['quantity'];
                         $products->save();
                     }
-        
+
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
                         ->where('product_id', $product['product_id'])
                         ->delete();
                 }
-                 
+
                 session(['activeTab' => '#my-order']);
             }
         }
-       
+
         return $order;
     }
 
-    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $selectedPaymentMethods){
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $selectedPaymentMethods)
+    {
         $data = [
             'orderId' => $orderId,
             'totalAmount' => $totalAmount,
@@ -556,5 +559,4 @@ class DokuPaymentController extends Controller
             throw new \Exception('Unable to fetch payment status');
         }
     }
-
 }

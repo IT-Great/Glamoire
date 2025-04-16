@@ -151,7 +151,7 @@
                     {{-- ACCOUNTING SIDE --}}
                     <li class="sidebar-title">Accounting</li>
 
-                    <li class="sidebar-item {{ Request::is('coa') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ Request::is('coa*') ? 'active' : '' }}">
                         <a href="/coa" class='sidebar-link'>
                             <i class="bi bi-calculator"></i>
                             <span>COA</span>

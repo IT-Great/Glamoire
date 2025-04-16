@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Glamoire</title>
+    <title>Supplier - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -422,26 +422,62 @@
                     </div>
 
                     <!-- Filters Row -->
-                    <div class="filters-row">
-                        <div class="filter-item">
-                            <select id="status-filter" class="form-select">
-                                <option value="">All Payment Status</option>
-                                <option value="Paid">Paid</option>
-                                <option value="Not Yet">Not Yet</option>
-                            </select>
+                    <!-- Filters Row -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4>Filter Income</h4>
+                            <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#filterCollapse">
+                                <i class="bi bi-funnel me-1"></i> Show/Hide Filters
+                            </button>
                         </div>
-                        <div class="filter-item">
-                            <select id="supplier-filter" class="form-select">
-                                <option value="">All Suppliers</option>
-                                <option value="1">Supplier A</option>
-                                <option value="2">Supplier B</option>
-                                <option value="3">Supplier C</option>
-                            </select>
+                        <div class="card-body collapse show" id="filterCollapse">
+                            <form action="{{ route('index-financial-income') }}" method="GET">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Start Date</label>
+                                        <input type="date" name="start_date" class="form-control"
+                                            value="{{ request('start_date') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">End Date</label>
+                                        <input type="date" name="end_date" class="form-control"
+                                            value="{{ request('end_date') }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Status</label>
+                                        <select name="status" class="form-select">
+                                            <option value="">All Status</option>
+                                            <option value="success"
+                                                {{ request('status') == 'success' ? 'selected' : '' }}>
+                                                Success</option>
+                                            <option value="pending"
+                                                {{ request('status') == 'pending' ? 'selected' : '' }}>
+                                                Pending</option>
+                                            <option value="failed"
+                                                {{ request('status') == 'failed' ? 'selected' : '' }}>
+                                                Failed</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Supplier</label>
+                                        <select name="supplier" class="form-select">
+                                            <option value="">All Suppliers</option>
+                                            <option value="1">Supplier A</option>
+                                            <option value="2">Supplier B</option>
+                                            <option value="3">Supplier C</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-12 text-end">
+                                        <a href="{{ route('index-financial-income') }}"
+                                            class="btn btn-secondary me-2">Reset</a>
+                                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <div class="filter-item">
-                            <input type="date" id="date-filter" class="form-control" placeholder="Date Range">
-                        </div>
-
                     </div>
 
                     <div class="card">

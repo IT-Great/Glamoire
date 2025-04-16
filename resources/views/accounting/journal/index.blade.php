@@ -9,9 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -20,203 +18,254 @@
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
     <style>
-        :root {
-            --primary: #435ebe;
-            --primary-light: #546fd0;
-            --success: #4fbe87;
-            --danger: #eb5757;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --secondary: #6c757d;
-            --light: #f8f9fa;
-            --dark: #212529;
+        /* Statistics Row Styling */
+        .stats-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        .promo-nav {
-            background: white;
-            border-radius: 15px;
+        .stat-card {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #fff;
             padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .promo-nav-item {
-            padding: 12px 24px;
-            border-radius: 10px;
-            color: var(--secondary);
-            text-decoration: none;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            min-width: 220px;
             transition: all 0.3s ease;
         }
 
-        .promo-nav-item i {
-            font-size: 1.2rem;
-            margin-right: 10px;
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
         }
 
-        .promo-nav-item.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.2);
-        }
-
-        .promo-nav-item:hover:not(.active) {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .card {
-            border: none;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            padding: 25px 30px;
-        }
-
-        .card-header h4 {
-            margin: 0;
-            font-weight: 600;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .card-header h4 i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-
-        .card-body {
-            padding: 25px 30px;
-        }
-
-        .btn {
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 3px 10px rgba(67, 94, 190, 0.2);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.3);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-control {
-            border-radius: 10px;
-            padding: 0.7rem 1rem;
-            border: 1px solid #e0e0e0;
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(67, 94, 190, 0.25);
-            background-color: #fff;
-        }
-
-        .form-control-icon {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 12px;
-            color: var(--secondary);
-        }
-
-        .form-control-icon+.form-control {
-            padding-left: 40px;
-        }
-
-        .has-icon-left .form-control {
-            padding-left: 40px;
-        }
-
-        .form-select {
-            border-radius: 10px;
-            padding: 0.7rem 1rem;
-            border: 1px solid #e0e0e0;
-            background-color: #f8f9fa;
-        }
-
-        .form-select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 0.25rem rgba(67, 94, 190, 0.25);
-        }
-
-        .image-upload-wrap {
-            border: 2px dashed #e0e0e0;
-            border-radius: 15px;
-            position: relative;
-            text-align: center;
-            transition: all 0.3s ease;
-            min-height: 150px;
+        .stat-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            margin-right: 15px;
+            font-size: 1.5rem;
         }
 
-        .image-upload-wrap:hover {
-            border-color: var(--primary);
-            background-color: rgba(67, 94, 190, 0.03);
+        .icon-primary {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
         }
 
-        .file-upload-input {
-            position: absolute;
-            top: 0;
-            right: 0;
+        .icon-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .icon-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .icon-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .icon-info {
+            background-color: rgba(14, 165, 233, 0.15);
+            color: #0ea5e9;
+        }
+
+        .stat-content h3 {
+            font-size: 1.5rem;
             margin: 0;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .stat-content p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+
+        /* Filters Row Styling */
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        /* Quick Stats */
+        .stats-item {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .stats-label {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 2px;
+        }
+
+        .stats-value {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .stats-desc {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .divider-vertical {
+            width: 1px;
+            align-self: stretch;
+            background-color: #e2e8f0;
+        }
+
+        /* Navigation Tabs */
+        .promo-nav {
+            margin-bottom: 20px;
+        }
+
+        .promo-nav-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #64748b;
+            background-color: #f8fafc;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .promo-nav-item i {
+            margin-right: 8px;
+        }
+
+        .promo-nav-item:hover {
+            background-color: #f1f5f9;
+            color: #334155;
+        }
+
+        .promo-nav-item.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        /* Journal entry details */
+        .journal-details {
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+
+        /* Activity Timeline */
+        .activity-timeline {
+            list-style: none;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
+            position: relative;
+        }
+
+        .activity-timeline:before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            bottom: 0;
+            left: 7px;
+            width: 2px;
+            background: #e2e8f0;
+            z-index: 0;
+        }
+
+        .activity-item {
+            position: relative;
+            padding-left: 30px;
+            padding-bottom: 20px;
+        }
+
+        .activity-item:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #3b82f6;
+            z-index: 1;
+        }
+
+        .activity-time {
+            display: block;
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+        .activity-title {
+            margin: 0 0 5px;
+            font-size: 1rem;
+        }
+
+        .activity-text {
+            margin: 0;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Badge styles */
+        .badge.bg-light-success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .badge.bg-light-warning {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .badge.bg-light-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .badge.bg-light-secondary {
+            background-color: rgba(100, 116, 139, 0.15);
+            color: #64748b;
+        }
+
+        /* Table enhancements */
+        .table>thead>tr>th {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom-width: 2px;
+            background-color: #f8fafc;
+        }
+
+        .table .parent-row {
             cursor: pointer;
-        }
-
-        .bg-light-primary {
-            background-color: rgba(67, 94, 190, 0.1) !important;
-        }
-
-        .text-subtitle {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        footer {
-            padding: 2rem 0;
-            margin-top: 2rem;
         }
     </style>
 
@@ -232,305 +281,382 @@
                 <div class="page-title" style="margin-bottom: 25px;">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h2 class="mb-3">Invoice Management</h2>
+                            <h2 class="mb-3">Journal Management</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i
+                                    <li class="breadcrumb-item"><a href="index.html"><i
                                                 class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="/invoice">Invoice</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add New Invoice</li>
+                                    <li class="breadcrumb-item"><a href="index.html">Journal</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Journal Entries</li>
                                 </ol>
                             </nav>
                         </div>
+                     
                     </div>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="{{ route('index-invoice') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                        <i class="bi bi-receipt"></i>Invoice Management
-                    </a>
-                    <a href="{{ route('index-supplier') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                        <i class="bi bi-truck"></i>Supplier Management
-                    </a>
-                </div>
+                <section class="section">
+                    <!-- Financial Summary -->
+                    <div class="stats-row">
+                        <div class="stat-card">
+                            <div class="stat-icon icon-primary">
+                                <i class="bi bi-journal-text"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>145</h3>
+                                <p>Total Journal Entries</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-success">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Rp 1.25B</h3>
+                                <p>Total Debits</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-info">
+                                <i class="bi bi-cash"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Rp 1.25B</h3>
+                                <p>Total Credits</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon icon-warning">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>3</h3>
+                                <p>Unbalanced Entries</p>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Basic form layout section start -->
-                <section id="multiple-column-form" class="section">
-                    <div class="row match-height">
+                    <!-- Journal Quick Stats -->
+                    <div class="row mb-4">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4><i class="bi bi-file-earmark-plus"></i> Create New Invoice</h4>
-                                    <p class="text-subtitle text-muted">Fill in the form below to create a new invoice
-                                    </p>
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                        <div class="stats-item text-center">
+                                            <span class="stats-label">Today</span>
+                                            <h4 class="stats-value">12</h4>
+                                            <span class="stats-desc">Entries</span>
+                                        </div>
+                                        <div class="divider-vertical d-none d-md-block"></div>
+                                        <div class="stats-item text-center">
+                                            <span class="stats-label">This Week</span>
+                                            <h4 class="stats-value">48</h4>
+                                            <span class="stats-desc">Entries</span>
+                                        </div>
+                                        <div class="divider-vertical d-none d-md-block"></div>
+                                        <div class="stats-item text-center">
+                                            <span class="stats-label">This Month</span>
+                                            <h4 class="stats-value">145</h4>
+                                            <span class="stats-desc">Entries</span>
+                                        </div>
+                                        <div class="divider-vertical d-none d-md-block"></div>
+                                        <div class="stats-item text-center">
+                                            <span class="stats-label">Manual Entries</span>
+                                            <h4 class="stats-value">65%</h4>
+                                            <span class="stats-desc">Of Total</span>
+                                        </div>
+                                        <div class="divider-vertical d-none d-md-block"></div>
+                                        <div class="stats-item text-center">
+                                            <span class="stats-label">Automated Entries</span>
+                                            <h4 class="stats-value">35%</h4>
+                                            <span class="stats-desc">Of Total</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <form action="{{ route('store-invoice') }}" class="form form-vertical"
-                                            method="POST" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">No. Invoice
-                                                                <span class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Invoice Number"
-                                                                    id="invoice-number" name="product_name">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('product_name'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('product_name') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter a unique invoice number
-                                                                (e.g. INV-2025-001)</small>
-                                                        </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                                        <div class="form-group mb-4">
-                                                            <label for="debit-account" class="form-label">Debit Account
-                                                                <span class="text-danger">*</span></label>
-                                                            <select class="choices form-select" id="debit-account"
-                                                                name="brand_id">
-                                                                <option value="">Select Debit Account</option>
-                                                                <option value="1">1001 - Cash</option>
-                                                                <option value="2">1002 - Bank Account</option>
-                                                                <option value="3">1003 - Accounts Receivable
-                                                                </option>
-                                                            </select>
-                                                            <small class="text-muted">Select the account to be
-                                                                debited</small>
-                                                        </div>
+                    <!-- Navigation Tabs -->
+                    <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                        <a href="{{ route('index-journal') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'index-journal' ? 'active' : '' }}">
+                            <i class="bi bi-journal-bookmark"></i>Journal Entries
+                        </a>
+                        {{-- <a href="{{ route('index-chart-accounts') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'index-chart-accounts' ? 'active' : '' }}">
+                            <i class="bi bi-diagram-3"></i>Chart of Accounts
+                        </a>
+                        <a href="{{ route('general-ledger') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'general-ledger' ? 'active' : '' }}">
+                            <i class="bi bi-book"></i>General Ledger
+                        </a>
+                        <a href="{{ route('accounting-reports') }}"
+                            class="promo-nav-item {{ Route::currentRouteName() == 'accounting-reports' ? 'active' : '' }}">
+                            <i class="bi bi-graph-up"></i>Financial Reports
+                        </a> --}}
+                    </div>
 
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="amount" class="form-label">Amount <span
-                                                                    class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Amount" id="amount"
-                                                                    name="stock_quantity">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cash"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('stock_quantity'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('stock_quantity') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter the invoice amount in
-                                                                IDR</small>
-                                                        </div>
+                    <!-- Filters Row -->
+                    <div class="filters-row">
+                        <div class="filter-item">
+                            <select id="entry-type-filter" class="form-select">
+                                <option value="">All Entry Types</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Adjusting">Adjusting</option>
+                                <option value="Recurring">Recurring</option>
+                                <option value="Closing">Closing</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <select id="status-filter" class="form-select">
+                                <option value="">All Statuses</option>
+                                <option value="Posted">Posted</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Pending Review">Pending Review</option>
+                            </select>
+                        </div>
+                        <div class="filter-item">
+                            <input type="date" id="date-filter" class="form-control" placeholder="Date Range">
+                        </div>
+                        <div class="filter-item flex-grow-1">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control"
+                                    placeholder="Search by description, account, or reference...">
+                            </div>
+                        </div>
+                    </div>
 
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="pph-percentage" class="form-label">PPH
-                                                                Percentage <span class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter PPH Percentage"
-                                                                    id="pph-percentage" name="stock_quantity">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-percent"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('stock_quantity'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('stock_quantity') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter the PPH percentage (e.g. 10
-                                                                for 10%)</small>
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="end-date" class="form-label">Due Date <span
-                                                                    class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    id="end-date" name="diskon">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-calendar"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('diskon'))
-                                                                <p class="text-danger">{{ $errors->first('diskon') }}
-                                                                </p>
-                                                            @endif
-                                                            <small class="text-muted">Select the invoice due
-                                                                date</small>
-                                                        </div>
-
-                                                        <div class="form-group mb-4">
-                                                            <label for="description" class="form-label">Description
-                                                                <span class="text-danger">*</span></label>
-                                                            <div class="form-floating">
-                                                                <textarea class="form-control" placeholder="Enter description" id="description" rows="4"
-                                                                    style="height: 100px"></textarea>
-                                                                <label for="description">Description</label>
-                                                            </div>
-                                                            <small class="text-muted">Enter details about this
-                                                                invoice</small>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-md-6">
-                                                        <div class="form-group mb-4">
-                                                            <label for="supplier-name" class="form-label">Supplier
-                                                                Name <span class="text-danger">*</span></label>
-                                                            <select class="choices form-select" id="supplier-name"
-                                                                name="category_product_id">
-                                                                <option value="">Select Supplier</option>
-                                                                <option value="1">PT Maju Bersama</option>
-                                                                <option value="2">CV Sejahtera</option>
-                                                                <option value="3">PT Karya Mandiri</option>
-                                                            </select>
-                                                            <small class="text-muted">Select the supplier for this
-                                                                invoice</small>
-                                                        </div>
-
-                                                        <div class="form-group mb-4">
-                                                            <label for="kredit-account" class="form-label">Kredit
-                                                                Account <span class="text-danger">*</span></label>
-                                                            <select class="choices form-select" id="kredit-account"
-                                                                name="brand_id">
-                                                                <option value="">Select Kredit Account</option>
-                                                                <option value="1">2001 - Accounts Payable</option>
-                                                                <option value="2">2002 - Accrued Expenses</option>
-                                                                <option value="3">2003 - Taxes Payable</option>
-                                                            </select>
-                                                            <small class="text-muted">Select the account to be
-                                                                credited</small>
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="pph" class="form-label">PPH <span
-                                                                    class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="PPH Amount (calculated)"
-                                                                    id="pph" name="stock_quantity" readonly>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-calculator"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('stock_quantity'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('stock_quantity') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Calculated PPH amount based on
-                                                                percentage</small>
-                                                        </div>
-
-                                                        <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-date" class="form-label">Invoice Date
-                                                                <span class="text-danger">*</span></label>
-                                                            <div class="position-relative">
-                                                                <input type="date"
-                                                                    class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
-                                                                    id="invoice-date" name="diskon">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-calendar-check"></i>
-                                                                </div>
-                                                            </div>
-                                                            @if ($errors->has('diskon'))
-                                                                <p class="text-danger">{{ $errors->first('diskon') }}
-                                                                </p>
-                                                            @endif
-                                                            <small class="text-muted">Enter the invoice issue
-                                                                date</small>
-                                                        </div>
-
-                                                        <div class="card mb-4">
-                                                            <div class="card-header">
-                                                                <h5 class="card-title mb-0">Upload Invoice Document
-                                                                </h5>
-                                                            </div>
-                                                            <div class="card-body">
-                                                                <div class="image-upload-wrap" id="image-upload-wrap">
-                                                                    <input type="file" name="image"
-                                                                        class="file-upload-input"
-                                                                        onchange="readURL(this, '');"
-                                                                        accept="image/*">
-                                                                    <div
-                                                                        class="drag-text d-flex flex-column align-items-center justify-content-center py-5">
-                                                                        <i class="bi bi-cloud-arrow-up"
-                                                                            style="font-size: 3rem; color: #ccc;"></i>
-                                                                        <p class="mt-3 mb-0">Drag and drop a file or
-                                                                            click to upload</p>
-                                                                        <small class="text-muted">Accepted formats:
-                                                                            JPG, PNG, PDF (Max 5MB)</small>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="file-upload-content mt-3"
-                                                                    id="file-upload-content" style="display:none;">
-                                                                    <div class="d-flex align-items-center">
-                                                                        <img class="file-upload-image me-3"
-                                                                            id="file-upload-image" src="#"
-                                                                            alt="your image"
-                                                                            style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 5px;">
-                                                                        <div class="flex-grow-1">
-                                                                            <div class="image-file-name fw-bold"
-                                                                                id="image-file-name"></div>
-                                                                            <div class="text-muted small">Uploaded
-                                                                                document</div>
-                                                                        </div>
-                                                                        <button type="button"
-                                                                            onclick="removeUpload(this, '')"
-                                                                            class="btn btn-sm btn-danger">
-                                                                            <i class="bi bi-trash"></i>
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-12">
-                                                        <div class="card bg-light-primary bg-opacity-25 mb-4">
-                                                            <div class="card-body py-3">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="bi bi-info-circle-fill text-primary me-2"
-                                                                        style="font-size: 1.5rem;"></i>
-                                                                    <div>
-                                                                        <h6 class="mb-0">Invoice Summary</h6>
-                                                                        <p class="mb-0 text-muted small">Please review
-                                                                            all information before submitting</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-12 d-flex justify-content-end mt-3">
-                                                        <button type="button" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-x-circle me-1"></i>
-                                                            Cancel
-                                                        </button>
-                                                        <button type="reset" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-arrow-repeat me-1"></i>
-                                                            Reset
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-check-circle me-1"></i>
-                                                            Submit Invoice
-                                                        </button>
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row align-items-center">
+                                <div class="col-12 col-md-6">
+                                    <h4><i class="bi bi-journal-plus"></i> Journal Entries</h4>
+                                </div>
+                                <div
+                                    class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
+                                    <div class="dropdown me-2">
+                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            type="button" id="exportDropdown" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            <i class="bi bi-download me-1"></i> Export
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="exportDropdown">
+                                            <li><a class="dropdown-item" href="#"><i
+                                                        class="bi bi-file-earmark-excel me-2"></i>Excel</a></li>
+                                            <li><a class="dropdown-item" href="#"><i
+                                                        class="bi bi-file-earmark-pdf me-2"></i>PDF</a></li>
+                                            <li><a class="dropdown-item" href="#"><i
+                                                        class="bi bi-file-earmark-text me-2"></i>CSV</a></li>
+                                        </ul>
+                                    </div>
+                                    {{-- <a href="{{ route('create-journal') }}" type="button"
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="bi bi-plus-circle me-2"></i>New Journal Entry
+                                    </a> --}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>JOURNAL #</th>
+                                        <th>DATE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>REFERENCE</th>
+                                        <th>STATUS</th>
+                                        <th>TOTAL DEBIT</th>
+                                        <th>TOTAL CREDIT</th>
+                                        <th>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{-- @foreach ($journals as $journal)
+                                        <tr class="parent-row" data-id="{{ $journal->id }}">
+                                            <td><strong>JRN-{{ $journal->id }}</strong></td>
+                                            <td>{{ $journal->date ? date('M d, Y', strtotime($journal->date)) : '-' }}
+                                            </td>
+                                            <td>{{ $journal->description ?? 'Monthly Expense Allocation' }}</td>
+                                            <td>{{ $journal->reference ?? 'REF-2023/03-124' }}</td>
+                                            <td>
+                                                <span class="badge bg-light-success">Posted</span>
+                                            </td>
+                                            <td class="text-end">Rp 5,750,000</td>
+                                            <td class="text-end">Rp 5,750,000</td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn btn-sm btn-outline-secondary toggle-details">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </button>
+                                                    <a href="{{ route('view-journal', ['id' => $journal->id]) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                    <a href="{{ route('edit-journal', ['id' => $journal->id]) }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-danger delete-journal"
+                                                        data-id="{{ $journal->id }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="detail-row" style="display: none;">
+                                            <td colspan="8">
+                                                <div class="journal-details">
+                                                    <h6 class="mb-3">Entry Details</h6>
+                                                    <table class="table table-sm table-borderless mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ACCOUNT CODE</th>
+                                                                <th>ACCOUNT NAME</th>
+                                                                <th>DESCRIPTION</th>
+                                                                <th class="text-end">DEBIT</th>
+                                                                <th class="text-end">CREDIT</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>5100</td>
+                                                                <td>Office Rent Expense</td>
+                                                                <td>March 2023 Office Rent</td>
+                                                                <td class="text-end">Rp 3,500,000</td>
+                                                                <td class="text-end">-</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>5200</td>
+                                                                <td>Utilities Expense</td>
+                                                                <td>March 2023 Utilities</td>
+                                                                <td class="text-end">Rp 1,250,000</td>
+                                                                <td class="text-end">-</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>5300</td>
+                                                                <td>Internet & Phone Expense</td>
+                                                                <td>March 2023 Internet & Phone</td>
+                                                                <td class="text-end">Rp 1,000,000</td>
+                                                                <td class="text-end">-</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>1000</td>
+                                                                <td>Cash</td>
+                                                                <td>Payment for Monthly Expenses</td>
+                                                                <td class="text-end">-</td>
+                                                                <td class="text-end">Rp 5,750,000</td>
+                                                            </tr>
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr class="table-light">
+                                                                <td colspan="3"><strong>TOTAL</strong></td>
+                                                                <td class="text-end"><strong>Rp 5,750,000</strong></td>
+                                                                <td class="text-end"><strong>Rp 5,750,000</strong></td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                    <div class="entry-meta mt-3">
+                                                        <span class="badge bg-light-secondary me-2"><i
+                                                                class="bi bi-person me-1"></i>Created by: Admin</span>
+                                                        <span class="badge bg-light-secondary me-2"><i
+                                                                class="bi bi-calendar me-1"></i>Created: Mar 15,
+                                                            2023</span>
+                                                        <span class="badge bg-light-secondary"><i
+                                                                class="bi bi-check-circle me-1"></i>Approved by:
+                                                            Finance Manager</span>
                                                     </div>
                                                 </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach --}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity & Quick Stats -->
+                    <div class="row mt-4">
+                        <!-- Recent Activity -->
+                        <div class="col-12 col-lg-8 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-activity me-2"></i>Recent Journal Activity
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="activity-timeline">
+                                        <li class="activity-item">
+                                            <div class="activity-content">
+                                                <span class="activity-time">Today, 10:30 AM</span>
+                                                <h6 class="activity-title">New Journal Entry Created</h6>
+                                                <p class="activity-text">Journal #JRN-146 was created by
+                                                    <strong>Finance Admin</strong>
+                                                </p>
                                             </div>
-                                        </form>
+                                        </li>
+                                        <li class="activity-item">
+                                            <div class="activity-content">
+                                                <span class="activity-time">Yesterday, 2:15 PM</span>
+                                                <h6 class="activity-title">Journal Entry Approved</h6>
+                                                <p class="activity-text">Journal #JRN-145 was approved by
+                                                    <strong>Finance Manager</strong>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="activity-item">
+                                            <div class="activity-content">
+                                                <span class="activity-time">Yesterday, 11:45 AM</span>
+                                                <h6 class="activity-title">Journal Entry Modified</h6>
+                                                <p class="activity-text">Journal #JRN-144 was modified by
+                                                    <strong>Accounting Staff</strong>
+                                                </p>
+                                            </div>
+                                        </li>
+                                        <li class="activity-item">
+                                            <div class="activity-content">
+                                                <span class="activity-time">Mar 14, 2023</span>
+                                                <h6 class="activity-title">Month-End Closing Entries</h6>
+                                                <p class="activity-text">12 closing entries were posted for February
+                                                    2023</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats & Actions -->
+                        <div class="col-12 col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title"><i class="bi bi-bar-chart me-2"></i>Account Activity</h5>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div class="account-activity-chart" style="height: 200px;">
+                                        <!-- Chart will be rendered here -->
+                                    </div>
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Most Active Account</span>
+                                            <span class="fw-bold">Cash (1000)</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Largest Transaction</span>
+                                            <span class="fw-bold">Rp 15,000,000</span>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <span>Missing Journal Numbers</span>
+                                            <span class="badge bg-warning rounded-pill">3</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="d-grid gap-2">
+                                        {{-- <a href="{{ route('reconciliation') }}" class="btn btn-outline-primary">
+                                            <i class="bi bi-check2-square me-2"></i>Start Reconciliation
+                                        </a> --}}
                                     </div>
                                 </div>
                             </div>
@@ -538,30 +664,45 @@
                     </div>
                 </section>
             </div>
-
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2025 &copy; Invoice Management System</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by Your Company
-                        </p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
         </div>
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle journal entry details
+            const toggleButtons = document.querySelectorAll('.toggle-details');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const parentRow = this.closest('.parent-row');
+                    const detailRow = parentRow.nextElementSibling;
+
+                    if (detailRow.style.display === 'none') {
+                        detailRow.style.display = 'table-row';
+                        this.querySelector('i').classList.replace('bi-chevron-down',
+                            'bi-chevron-up');
+                    } else {
+                        detailRow.style.display = 'none';
+                        this.querySelector('i').classList.replace('bi-chevron-up',
+                            'bi-chevron-down');
+                    }
+                });
+            });
+
+            // Initialize chart for Account Activity
+            // Chart initialization code would go here
+        });
+    </script>
+
+    <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
-
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/js/main.js"></script>
 </body>

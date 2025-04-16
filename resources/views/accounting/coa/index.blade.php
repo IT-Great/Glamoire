@@ -593,8 +593,7 @@
                                         </td>
                                         <td>
                                             <span class="coa-name">{{ Str::limit($coa->name, 30, '...') }}</span>
-                                            <span
-                                                class="coa-description">{{ Str::limit($coa->description ?? 'No description', 40, '...') }}</span>
+
                                         </td>
                                         <td>
                                             @php

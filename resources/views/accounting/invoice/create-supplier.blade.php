@@ -246,17 +246,11 @@
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="{{ route('index-invoice') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                        <i class="bi bi-receipt"></i>Invoice Management
+                    <a href="{{ route('store-invoice') }}" class="promo-nav-item">
+                        <i class="bi bi-receipt"></i>Create Invoice
                     </a>
-                    <a href="{{ route('index-supplier') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                        <i class="bi bi-truck"></i>Supplier Management
-                    </a>
-                    <a href="{{ route('create-invoice') }}"
-                        class="promo-nav-item {{ Route::currentRouteName() == 'invoice-reports' ? 'active' : '' }}">
-                        <i class="bi bi-graph-up"></i>Reports & Analytics
+                    <a href="{{ route('create-supplier') }}" class="promo-nav-item active">
+                        <i class="bi bi-truck"></i>Create Supplier
                     </a>
                 </div>
 
@@ -265,213 +259,179 @@
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h4><i class="bi bi-file-earmark-plus"></i> Create New Supplier</h4>
-                                    <p class="text-subtitle text-muted">Fill in the form below to create a new Supplier
-                                    </p>
-                                </div>
                                 <div class="card-content">
                                     <div class="card-body">
                                         <form action="{{ route('store-supplier') }}" class="form form-vertical"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
+                                                <h3><i class="bi bi-file-earmark-plus"></i> Create New Supplier</h3>
+                                                <p class="text-subtitle text-muted">Fill in the form below to create a
+                                                    new Supplier</p>
                                                 <div class="row">
                                                     {{-- start kiri --}}
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">Name
-                                                                <span class="text-danger">*</span></label>
+                                                            <label for="name" class="form-label">Nama <span
+                                                                    class="text-danger">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Name" id="name"
+                                                                    placeholder="Masukkan Nama" id="name"
                                                                     name="name">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-person"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('name'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('name') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter a name supplier
-                                                                (Helmi, beni)</small>
+                                                            @error('name')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan nama supplier (contoh:
+                                                                Helmi, Beni)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">Email
-                                                                <span class="text-danger">*</span></label>
+                                                            <label for="email" class="form-label">Email <span
+                                                                    class="text-danger">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Email" id="email"
+                                                                    placeholder="Masukkan Email" id="email"
                                                                     name="email">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-envelope"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('email'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('email') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter email Supplier
-                                                                (beni@example.com)</small>
+                                                            @error('email')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan email supplier (contoh:
+                                                                beni@example.com)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">City
-                                                            </label>
+                                                            <label for="city" class="form-label">Kota</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('city') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter City" id="city"
+                                                                    placeholder="Masukkan Kota" id="city"
                                                                     name="city">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-building"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('city'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('city') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter a city supplier
-                                                                (Surabaya, SIdoarjo)</small>
+                                                            @error('city')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan kota supplier (contoh:
+                                                                Surabaya, Sidoarjo)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">Post Code
-                                                            </label>
+                                                            <label for="post_code" class="form-label">Kode Pos</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('post_code') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Post Code" id="post_code"
+                                                                    placeholder="Masukkan Kode Pos" id="post_code"
                                                                     name="post_code">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-mailbox"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('post_code'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('post_code') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter post code supplier
-                                                                (61124)</small>
+                                                            @error('post_code')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan kode pos supplier
+                                                                (contoh: 61124)</small>
                                                         </div>
                                                     </div>
-
 
                                                     {{-- start kanan --}}
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">No. Telp
-                                                                <span class="text-danger">*</span></label>
+                                                            <label for="no_telp" class="form-label">No. Telepon <span
+                                                                    class="text-danger">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('no_telp') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter No Telp" id="no_telp"
+                                                                    placeholder="Masukkan No. Telepon" id="no_telp"
                                                                     name="no_telp">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-telephone"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('no_telp'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('no_telp') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter no telp supplier
-                                                                (+6298979****)</small>
+                                                            @error('no_telp')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan nomor telepon supplier
+                                                                (contoh: +62898979****)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">Address
-                                                            </label>
+                                                            <label for="address" class="form-label">Alamat</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Address" id="address"
+                                                                    placeholder="Masukkan Alamat" id="address"
                                                                     name="address">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-geo-alt"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('address'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('address') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter address supplier
-                                                                (Jl. Raya No 112)</small>
+                                                            @error('address')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan alamat supplier (contoh:
+                                                                Jl. Raya No 112)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-number" class="form-label">Province
-                                                            </label>
+                                                            <label for="province" class="form-label">Provinsi</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('province') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Province" id="province"
+                                                                    placeholder="Masukkan Provinsi" id="province"
                                                                     name="province">
                                                                 <div class="form-control-icon">
-                                                                    <i class="bi bi-receipt"></i>
+                                                                    <i class="bi bi-geo-alt"></i>
                                                                 </div>
                                                             </div>
-                                                            @if ($errors->has('province'))
-                                                                <p class="text-danger">
-                                                                    {{ $errors->first('province') }}</p>
-                                                            @endif
-                                                            <small class="text-muted">Enter Province supplier
-                                                                (Jawa Timur, Jawa Tengah)</small>
+                                                            @error('province')
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                            <small class="text-muted">Masukkan provinsi supplier
+                                                                (contoh: Jawa Timur, Jawa Tengah)</small>
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="description" class="form-label">Description
-                                                            </label>
+                                                            <label for="description"
+                                                                class="form-label">Deskripsi</label>
                                                             <div class="form-floating">
-                                                                <textarea class="form-control" placeholder="Enter description" id="description" rows="4"
+                                                                <textarea class="form-control" placeholder="Masukkan deskripsi" id="description" name="description" rows="4"
                                                                     style="height: 100px"></textarea>
-                                                                <label for="description">Description</label>
+                                                                <label for="description">Deskripsi</label>
                                                             </div>
-                                                            <small class="text-muted">Enter details about this
-                                                                supplier</small>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="col-12">
-                                                        <div class="card bg-light-primary bg-opacity-25 mb-4">
-                                                            <div class="card-body py-3">
-                                                                <div class="d-flex align-items-center">
-                                                                    <i class="bi bi-info-circle-fill text-primary me-2"
-                                                                        style="font-size: 1.5rem;"></i>
-                                                                    <div>
-                                                                        <h6 class="mb-0">Invoice Summary</h6>
-                                                                        <p class="mb-0 text-muted small">Please review
-                                                                            all information before submitting</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <small class="text-muted">Masukkan keterangan tambahan
+                                                                mengenai supplier ini</small>
                                                         </div>
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end mt-3">
-                                                        <button type="button" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-x-circle me-1"></i>
-                                                            Cancel
-                                                        </button>
-                                                        <button type="reset" class="btn btn-light-secondary me-2"
-                                                            style="border-radius: 8px;">
-                                                            <i class="bi bi-arrow-repeat me-1"></i>
-                                                            Reset
-                                                        </button>
-                                                        <button type="submit" class="btn btn-primary"
-                                                            style="border-radius: 8px;">
+                                                        <a href="{{ route('index-supplier') }}" type="button"
+                                                            class="btn btn-sm btn-light-secondary me-2">
+                                                            <i class="bi bi-arrow-left-circle me-1"></i>
+                                                            Kembali
+                                                        </a>
+                                        
+                                                        <button type="submit" class="btn btn-sm btn-primary">
                                                             <i class="bi bi-check-circle me-1"></i>
-                                                            Submit Invoice
+                                                            Submit Supplier
                                                         </button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </form>
+
                                     </div>
                                 </div>
                             </div>
@@ -487,6 +447,8 @@
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
     <script>
         $(document).ready(function() {
             $('.select2-basic-category').select2({
@@ -496,6 +458,26 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            @if ($errors->any())
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 4000,
+                    timerProgressBar: true,
+                    icon: 'error',
+                    title: 'Error: {{ $errors->first() }}',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            @endif
+        });
+    </script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
