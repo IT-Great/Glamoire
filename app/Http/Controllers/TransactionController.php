@@ -154,4 +154,123 @@ class TransactionController extends Controller
             return redirect()->back()->with('error', 'Failed to create transaction. Please check the logs.');
         }
     }
+
+    public function editTransaction($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        $coas = Coa::all();
+        $type = $transaction->type;
+
+        if ($type === 'transfer') {
+            return view('accounting.transaction.edit-transfer', compact('transaction', 'coas', 'type'));
+        } elseif ($type === 'receive') {
+            return view('accounting.transaction.edit-receive', compact('transaction', 'coas', 'type'));
+        } else {
+            abort(404);
+        }
+    }
+
+    public function updateTransactionTransfer(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'no_transaction'    => 'required|string|unique:transactions,no_transaction,' . $id,
+            'debit_coa_id'      => 'required|exists:coas,id',
+            'kredit_coa_id'     => 'required|exists:coas,id',
+            'amount'            => 'required|numeric|min:1',
+            'description'       => 'nullable|string|max:1000',
+            'date'              => 'required|date',
+        ]);
+
+        try {
+            // Update transaksi
+            $transaction->update([
+                'no_transaction' => $validated['no_transaction'],
+                'debit_coa_id'   => $validated['debit_coa_id'],
+                'kredit_coa_id'  => $validated['kredit_coa_id'],
+                'amount'         => $validated['amount'],
+                'description'    => $validated['description'] ?? null,
+                'date'           => $validated['date'],
+            ]);
+
+            return redirect()->route('index-transaction')->with('success', 'Transaction updated successfully.');
+        } catch (\Exception $e) {
+            // Log error jika terjadi masalah
+            Log::error('Error updating transaction: ' . $e->getMessage(), [
+                'data_input' => $request->all(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to update transaction. Please check the logs.');
+        }
+    }
+
+    public function updateTransactionReceive(Request $request, $id)
+    {
+        $transaction = Transaction::findOrFail($id);
+
+        // Validasi input
+        $validated = $request->validate([
+            'no_transaction'    => 'required|string|unique:transactions,no_transaction,' . $id,
+            'debit_coa_id'      => 'required|exists:coas,id',
+            'kredit_coa_id'     => 'required|exists:coas,id',
+            'recipient_name'    => 'required|string|max:255',
+            'amount'            => 'required|numeric|min:1',
+            'description'       => 'nullable|string|max:1000',
+            'date'              => 'required|date',
+        ]);
+
+        try {
+            // Update transaksi
+            $transaction->update([
+                'no_transaction' => $validated['no_transaction'],
+                'debit_coa_id'   => $validated['debit_coa_id'],
+                'kredit_coa_id'  => $validated['kredit_coa_id'],
+                'recipient_name' => $validated['recipient_name'],
+                'amount'         => $validated['amount'],
+                'description'    => $validated['description'] ?? null,
+                'date'           => $validated['date'],
+            ]);
+
+            return redirect()->route('index-transaction')->with('success', 'Transaction updated successfully.');
+        } catch (\Exception $e) {
+            // Log error jika terjadi masalah
+            Log::error('Error updating transaction: ' . $e->getMessage(), [
+                'data_input' => $request->all(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            return redirect()->back()->with('error', 'Failed to update transaction. Please check the logs.');
+        }
+    }
+
+    public function getTransaction($id)
+    {
+        $transaction = Transaction::with(['kreditCoa', 'debitCoa'])->findOrFail($id);
+        return response()->json($transaction);
+    }
+
+
+    public function deleteTransaction($id)
+    {
+        try {
+            $transaction = Transaction::findOrFail($id);
+            $transaction->delete();
+
+            return response()->json(['message' => 'Transaction deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            $transaction = Transaction::find($id); // coba ambil datanya
+
+            Log::error('Error deleting transaction.', [
+                'transaction' => $transaction,
+                'user_id' => auth()->id(),
+                'url' => request()->fullUrl(),
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json(['message' => 'Failed to delete transaction.'], 500);
+        }
+    }
 }

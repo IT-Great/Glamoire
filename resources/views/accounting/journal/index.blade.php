@@ -291,7 +291,7 @@
                                 </ol>
                             </nav>
                         </div>
-                     
+
                     </div>
                 </div>
 
@@ -383,18 +383,7 @@
                             class="promo-nav-item {{ Route::currentRouteName() == 'index-journal' ? 'active' : '' }}">
                             <i class="bi bi-journal-bookmark"></i>Journal Entries
                         </a>
-                        {{-- <a href="{{ route('index-chart-accounts') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'index-chart-accounts' ? 'active' : '' }}">
-                            <i class="bi bi-diagram-3"></i>Chart of Accounts
-                        </a>
-                        <a href="{{ route('general-ledger') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'general-ledger' ? 'active' : '' }}">
-                            <i class="bi bi-book"></i>General Ledger
-                        </a>
-                        <a href="{{ route('accounting-reports') }}"
-                            class="promo-nav-item {{ Route::currentRouteName() == 'accounting-reports' ? 'active' : '' }}">
-                            <i class="bi bi-graph-up"></i>Financial Reports
-                        </a> --}}
+
                     </div>
 
                     <!-- Filters Row -->
@@ -451,15 +440,14 @@
                                                         class="bi bi-file-earmark-text me-2"></i>CSV</a></li>
                                         </ul>
                                     </div>
-                                    {{-- <a href="{{ route('create-journal') }}" type="button"
-                                        class="btn btn-sm btn-primary d-flex align-items-center">
-                                        <i class="bi bi-plus-circle me-2"></i>New Journal Entry
-                                    </a> --}}
+
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            <table class="table" id="table1">
+                            <!-- Transactions Section -->
+                            <h4 class="mb-3">Transaction Journals</h4>
+                            <table class="table" id="transactions-table">
                                 <thead>
                                     <tr>
                                         <th>JOURNAL #</th>
@@ -473,35 +461,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {{-- @foreach ($journals as $journal)
-                                        <tr class="parent-row" data-id="{{ $journal->id }}">
-                                            <td><strong>JRN-{{ $journal->id }}</strong></td>
-                                            <td>{{ $journal->date ? date('M d, Y', strtotime($journal->date)) : '-' }}
+                                    @foreach ($transactions as $transaction)
+                                        <tr class="parent-row" data-id="TRN-{{ $transaction->id }}">
+                                            <td><strong>TRN-{{ $transaction->id }}</strong></td>
+                                            <td>{{ $transaction->date ? date('M d, Y', strtotime($transaction->date)) : '-' }}
                                             </td>
-                                            <td>{{ $journal->description ?? 'Monthly Expense Allocation' }}</td>
-                                            <td>{{ $journal->reference ?? 'REF-2023/03-124' }}</td>
+                                            <td>{{ $transaction->description ?? 'Transaction' }}</td>
+                                            <td>{{ $transaction->no_transaction }}</td>
                                             <td>
                                                 <span class="badge bg-light-success">Posted</span>
                                             </td>
-                                            <td class="text-end">Rp 5,750,000</td>
-                                            <td class="text-end">Rp 5,750,000</td>
+                                            <td class="text-end">Rp
+                                                {{ number_format($transaction->amount, 0, ',', '.') }}</td>
+                                            <td class="text-end">Rp
+                                                {{ number_format($transaction->amount, 0, ',', '.') }}</td>
                                             <td>
                                                 <div class="action-buttons">
                                                     <button class="btn btn-sm btn-outline-secondary toggle-details">
                                                         <i class="bi bi-chevron-down"></i>
                                                     </button>
-                                                    <a href="{{ route('view-journal', ['id' => $journal->id]) }}"
-                                                        class="btn btn-sm btn-info">
+                                                    <a href="" class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('edit-journal', ['id' => $journal->id]) }}"
-                                                        class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    <button class="btn btn-sm btn-danger delete-journal"
-                                                        data-id="{{ $journal->id }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -521,56 +503,311 @@
                                                         </thead>
                                                         <tbody>
                                                             <tr>
-                                                                <td>5100</td>
-                                                                <td>Office Rent Expense</td>
-                                                                <td>March 2023 Office Rent</td>
-                                                                <td class="text-end">Rp 3,500,000</td>
+                                                                <td>{{ $transaction->debitCoa->code ?? '-' }}</td>
+                                                                <td>{{ $transaction->debitCoa->name ?? '-' }}</td>
+                                                                <td>{{ $transaction->description ?? 'Transaction' }}
+                                                                    (Debit)
+                                                                </td>
+                                                                <td class="text-end">Rp
+                                                                    {{ number_format($transaction->amount, 0, ',', '.') }}
+                                                                </td>
                                                                 <td class="text-end">-</td>
                                                             </tr>
                                                             <tr>
-                                                                <td>5200</td>
-                                                                <td>Utilities Expense</td>
-                                                                <td>March 2023 Utilities</td>
-                                                                <td class="text-end">Rp 1,250,000</td>
+                                                                <td>{{ $transaction->kreditCoa->code ?? '-' }}</td>
+                                                                <td>{{ $transaction->kreditCoa->name ?? '-' }}</td>
+                                                                <td>{{ $transaction->description ?? 'Transaction' }}
+                                                                    (Credit)</td>
                                                                 <td class="text-end">-</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>5300</td>
-                                                                <td>Internet & Phone Expense</td>
-                                                                <td>March 2023 Internet & Phone</td>
-                                                                <td class="text-end">Rp 1,000,000</td>
-                                                                <td class="text-end">-</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>1000</td>
-                                                                <td>Cash</td>
-                                                                <td>Payment for Monthly Expenses</td>
-                                                                <td class="text-end">-</td>
-                                                                <td class="text-end">Rp 5,750,000</td>
+                                                                <td class="text-end">Rp
+                                                                    {{ number_format($transaction->amount, 0, ',', '.') }}
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                         <tfoot>
                                                             <tr class="table-light">
                                                                 <td colspan="3"><strong>TOTAL</strong></td>
-                                                                <td class="text-end"><strong>Rp 5,750,000</strong></td>
-                                                                <td class="text-end"><strong>Rp 5,750,000</strong></td>
+                                                                <td class="text-end"><strong>Rp
+                                                                        {{ number_format($transaction->amount, 0, ',', '.') }}</strong>
+                                                                </td>
+                                                                <td class="text-end"><strong>Rp
+                                                                        {{ number_format($transaction->amount, 0, ',', '.') }}</strong>
+                                                                </td>
                                                             </tr>
                                                         </tfoot>
                                                     </table>
                                                     <div class="entry-meta mt-3">
                                                         <span class="badge bg-light-secondary me-2"><i
-                                                                class="bi bi-person me-1"></i>Created by: Admin</span>
+                                                                class="bi bi-calendar me-1"></i>Created:
+                                                            {{ date('M d, Y', strtotime($transaction->created_at)) }}</span>
                                                         <span class="badge bg-light-secondary me-2"><i
-                                                                class="bi bi-calendar me-1"></i>Created: Mar 15,
-                                                            2023</span>
-                                                        <span class="badge bg-light-secondary"><i
-                                                                class="bi bi-check-circle me-1"></i>Approved by:
-                                                            Finance Manager</span>
+                                                                class="bi bi-info-circle me-1"></i>Type:
+                                                            {{ ucfirst($transaction->type) }}</span>
+                                                        @if ($transaction->recipient_name)
+                                                            <span class="badge bg-light-secondary"><i
+                                                                    class="bi bi-person me-1"></i>Recipient:
+                                                                {{ $transaction->recipient_name }}</span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
-                                    @endforeach --}}
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+                            <!-- Divider -->
+                            <hr class="my-5">
+                            
+                            <!-- Invoice Suppliers Section -->
+                            <h4 class="mb-3">Invoice Supplier Journals</h4>
+                            <table class="table" id="invoices-table">
+                                <thead>
+                                    <tr>
+                                        <th>JOURNAL #</th>
+                                        <th>DATE</th>
+                                        <th>DESCRIPTION</th>
+                                        <th>REFERENCE</th>
+                                        <th>STATUS</th>
+                                        <th>TOTAL DEBIT</th>
+                                        <th>TOTAL CREDIT</th>
+                                        <th>ACTIONS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($invoiceSuppliers as $invoice)
+                                        <tr class="parent-row {{ $invoice->payment_status === 'Not Yet' ? 'table-warning' : '' }}"
+                                            data-id="INV-{{ $invoice->id }}">
+                                            <td><strong>INV-{{ $invoice->id }}</strong></td>
+                                            <td>{{ $invoice->date ? date('M d, Y', strtotime($invoice->date)) : '-' }}
+                                            </td>
+                                            <td>{{ $invoice->description ?? 'Invoice Payment' }}</td>
+                                            <td>{{ $invoice->no_invoice }}</td>
+                                            <td>
+                                                <span
+                                                    class="badge bg-{{ $invoice->payment_status === 'Paid' ? 'success' : 'warning' }}">
+                                                    {{ $invoice->payment_status }}
+                                                </span>
+                                            </td>
+                                            <td class="text-end">Rp {{ number_format($invoice->amount, 0, ',', '.') }}
+                                            </td>
+                                            <td class="text-end">Rp {{ number_format($invoice->amount, 0, ',', '.') }}
+                                            </td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn btn-sm btn-outline-secondary toggle-details">
+                                                        <i class="bi bi-chevron-down"></i>
+                                                    </button>
+                                                    <a href=""
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                   
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="detail-row" style="display: none;">
+                                            <td colspan="8">
+                                                <div class="journal-details">
+                                                    <h6 class="mb-3">Entry Details</h6>
+                                                    <table class="table table-sm table-borderless mb-0">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>ACCOUNT CODE</th>
+                                                                <th>ACCOUNT NAME</th>
+                                                                <th>DESCRIPTION</th>
+                                                                <th class="text-end">DEBIT</th>
+                                                                <th class="text-end">CREDIT</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if ($invoice->payment_status === 'Paid' && $invoice->debitCoa && $invoice->kreditCoa)
+                                                                <tr>
+                                                                    <td>{{ $invoice->debitCoa->code ?? '-' }}</td>
+                                                                    <td>{{ $invoice->debitCoa->name ?? '-' }}</td>
+                                                                    <td>Payment to
+                                                                        {{ $invoice->supplier->name ?? 'Supplier' }}
+                                                                        (Debit)</td>
+                                                                    <td class="text-end">Rp
+                                                                        {{ number_format($invoice->amount, 0, ',', '.') }}
+                                                                    </td>
+                                                                    <td class="text-end">-</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>{{ $invoice->kreditCoa->code ?? '-' }}</td>
+                                                                    <td>{{ $invoice->kreditCoa->name ?? '-' }}</td>
+                                                                    <td>Invoice {{ $invoice->no_invoice }} (Credit)
+                                                                    </td>
+                                                                    <td class="text-end">-</td>
+                                                                    <td class="text-end">Rp
+                                                                        {{ number_format($invoice->amount, 0, ',', '.') }}
+                                                                    </td>
+                                                                </tr>
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="5" class="text-center">
+                                                                        <i>Journal entries will be created when payment
+                                                                            is processed.</i>
+                                                                    </td>
+                                                                </tr>
+                                                            @endif
+                                                        </tbody>
+                                                        @if ($invoice->payment_status === 'Paid' && $invoice->debitCoa && $invoice->kreditCoa)
+                                                            <tfoot>
+                                                                <tr class="table-light">
+                                                                    <td colspan="3"><strong>TOTAL</strong></td>
+                                                                    <td class="text-end"><strong>Rp
+                                                                            {{ number_format($invoice->amount, 0, ',', '.') }}</strong>
+                                                                    </td>
+                                                                    <td class="text-end"><strong>Rp
+                                                                            {{ number_format($invoice->amount, 0, ',', '.') }}</strong>
+                                                                    </td>
+                                                                </tr>
+                                                            </tfoot>
+                                                        @endif
+                                                    </table>
+
+                                                    <div class="invoice-info mt-3">
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="card border-light mb-3">
+                                                                    <div class="card-body">
+                                                                        <h6 class="card-title">Invoice Information</h6>
+                                                                        <table class="table table-sm">
+                                                                            <tr>
+                                                                                <td><strong>Supplier:</strong></td>
+                                                                                <td>{{ $invoice->supplier->name ?? 'Unknown' }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td><strong>Invoice Date:</strong></td>
+                                                                                <td>{{ date('M d, Y', strtotime($invoice->date)) }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td><strong>Due Date:</strong></td>
+                                                                                <td>{{ date('M d, Y', strtotime($invoice->deadline_invoice)) }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td><strong>Status:</strong></td>
+                                                                                <td>
+                                                                                    <span
+                                                                                        class="badge bg-{{ $invoice->payment_status === 'Paid' ? 'success' : 'warning' }}">
+                                                                                        {{ $invoice->payment_status }}
+                                                                                    </span>
+                                                                                </td>
+                                                                            </tr>
+                                                                            @if ($invoice->pph)
+                                                                                <tr>
+                                                                                    <td><strong>PPh:</strong></td>
+                                                                                    <td>{{ $invoice->pph_percentage }}%
+                                                                                        (Rp
+                                                                                        {{ number_format($invoice->pph, 0, ',', '.') }})
+                                                                                    </td>
+                                                                                </tr>
+                                                                            @endif
+                                                                            <tr>
+                                                                                <td><strong>Payment Method:</strong>
+                                                                                </td>
+                                                                                <td>{{ $invoice->payment_method ?? 'Not specified' }}
+                                                                                </td>
+                                                                            </tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                @if ($invoice->image_invoice || $invoice->image_proof)
+                                                                    <div class="card border-light mb-3">
+                                                                        <div class="card-body">
+                                                                            <h6 class="card-title">Documents</h6>
+                                                                            <div class="d-flex flex-wrap gap-2">
+                                                                                @if ($invoice->image_invoice)
+                                                                                    <a href="{{ asset('storage/' . $invoice->image_invoice) }}"
+                                                                                        target="_blank"
+                                                                                        class="btn btn-sm btn-outline-primary">
+                                                                                        <i
+                                                                                            class="bi bi-file-earmark-text me-1"></i>Invoice
+                                                                                        Document
+                                                                                    </a>
+                                                                                @endif
+
+                                                                                @if ($invoice->image_proof)
+                                                                                    <a href="{{ asset('storage/' . $invoice->image_proof) }}"
+                                                                                        target="_blank"
+                                                                                        class="btn btn-sm btn-outline-primary">
+                                                                                        <i
+                                                                                            class="bi bi-file-earmark-check me-1"></i>Payment
+                                                                                        Proof
+                                                                                    </a>
+                                                                                @endif
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    @if ($invoice->payments->count() > 0)
+                                                        <h6 class="mt-4 mb-2">Payment History</h6>
+                                                        <table class="table table-sm table-bordered mb-0">
+                                                            <thead class="table-light">
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Date</th>
+                                                                    <th>Method</th>
+                                                                    <th>Reference</th>
+                                                                    <th>Notes</th>
+                                                                    <th class="text-end">Amount</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($invoice->payments as $payment)
+                                                                    <tr>
+                                                                        <td>{{ $loop->iteration }}</td>
+                                                                        <td>{{ date('M d, Y', strtotime($payment->payment_date)) }}
+                                                                        </td>
+                                                                        <td>{{ $payment->payment_method }}</td>
+                                                                        <td>{{ $payment->reference_number ?? '-' }}
+                                                                        </td>
+                                                                        <td>{{ $payment->notes ?? '-' }}</td>
+                                                                        <td class="text-end">Rp
+                                                                            {{ number_format($payment->amount, 0, ',', '.') }}
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                            <tfoot class="table-light">
+                                                                <tr>
+                                                                    <td colspan="5"><strong>TOTAL PAID</strong></td>
+                                                                    <td class="text-end"><strong>Rp
+                                                                            {{ number_format($invoice->payments->sum('amount'), 0, ',', '.') }}</strong>
+                                                                    </td>
+                                                                </tr>
+                                                                @if ($invoice->payments->sum('amount') < $invoice->amount)
+                                                                    <tr class="table-warning">
+                                                                        <td colspan="5"><strong>REMAINING</strong>
+                                                                        </td>
+                                                                        <td class="text-end"><strong>Rp
+                                                                                {{ number_format($invoice->amount - $invoice->payments->sum('amount'), 0, ',', '.') }}</strong>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endif
+                                                            </tfoot>
+                                                        </table>
+                                                    @elseif ($invoice->payment_status === 'Not Yet')
+                                                        <div class="alert alert-warning mt-3">
+                                                            <i class="bi bi-exclamation-triangle me-2"></i>
+                                                            This invoice hasn't been paid yet. Due date:
+                                                            {{ date('M d, Y', strtotime($invoice->deadline_invoice)) }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -669,6 +906,41 @@
     </div>
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle journal details for both tables
+            document.querySelectorAll('.toggle-details').forEach(button => {
+                button.addEventListener('click', function() {
+                    const parentRow = this.closest('.parent-row');
+                    const detailRow = parentRow.nextElementSibling;
+
+                    // Toggle display
+                    if (detailRow.style.display === 'none' || !detailRow.style.display) {
+                        detailRow.style.display = 'table-row';
+                        this.querySelector('i').classList.replace('bi-chevron-down',
+                            'bi-chevron-up');
+                    } else {
+                        detailRow.style.display = 'none';
+                        this.querySelector('i').classList.replace('bi-chevron-up',
+                            'bi-chevron-down');
+                    }
+                });
+            });
+
+            // Delete journal functionality
+            document.querySelectorAll('.delete-journal').forEach(button => {
+                button.addEventListener('click', function() {
+                    const journalId = this.dataset.id;
+                    if (confirm('Are you sure you want to delete this journal entry?')) {
+                        // Send delete request via AJAX or redirect to delete route
+                        // Example: window.location.href = `/accounting/journal/delete/${journalId}`;
+                    }
+                });
+            });
+        });
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle journal entry details

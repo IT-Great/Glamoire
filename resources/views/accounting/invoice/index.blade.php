@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Invoice - Glamoire</title>
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -16,6 +16,8 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 
     <style>
         :root {
@@ -665,6 +667,7 @@
                         </div>
                     </div>
 
+                    {{-- data table invoice --}}
                     <div class="card">
                         <div class="card-header">
                             <div class="row align-items-center">
@@ -703,9 +706,14 @@
                                         <tr>
                                             <td><strong>{{ $invoice->no_invoice }}</strong></td>
                                             <td>{{ $invoice->supplier->name ?? '-' }}</td>
-                                            <td class="amount-cell">Rp 5,750,000</td>
-                                            <td>Mar 15, 2023</td>
-                                            <td class="deadline-safe">Apr 15, 2023</td>
+                                            <td class="amount-cell">
+                                                {{ number_format($invoice->amount, 0, ',', '.') }}</p>
+                                            </td>
+                                            <td> {{ \Carbon\Carbon::parse($invoice->deadline_invoice)->format('M d, Y') }}
+                                            </td>
+                                            <td class="deadline-safe">
+                                                {{ \Carbon\Carbon::parse($invoice->date)->format('M d, Y') }}
+                                            </td>
                                             <td>
                                                 <span
                                                     class="badge bg-light-success">{{ $invoice->payment_status }}</span>
@@ -717,7 +725,7 @@
                                                         class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('edit-invoice', ['id' => 1]) }}"
+                                                    <a href="{{ route('edit-invoice', ['id' => $invoice->id]) }}"
                                                         class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
@@ -728,7 +736,7 @@
                                                         </a>
                                                     @endif
                                                     <button class="btn btn-sm btn-danger delete-invoice"
-                                                        data-id="1">
+                                                        data-id="{{ $invoice->id }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
@@ -741,205 +749,77 @@
                     </div>
                 </section>
 
-                <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="paymentModalLabel"><i class="bi bi-credit-card"></i>
-                                    Process Payment</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="paymentForm" action="{{ route('process-invoice-payment') }}"
-                                    method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="hidden" name="invoice_id" id="invoice_id">
-
-                                    <div class="invoice-details">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Invoice Number:</strong> <span
-                                                        id="modal_invoice_number"></span></p>
-                                                <p><strong>Supplier:</strong> <span id="modal_supplier_name"></span>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-6 text-end">
-                                                <p><strong>Amount Due:</strong></p>
-                                                <p class="invoice-amount" id="modal_invoice_amount"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <p class="text-subtitle text-muted">Fill in the form below to process the payment
-                                    </p>
-
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group has-icon-left mb-4">
-                                                <label for="payment_date" class="form-label">Payment Date <span
-                                                        class="text-danger">*</span></label>
-                                                <div class="position-relative">
-                                                    <input type="date" class="form-control" id="payment_date"
-                                                        name="payment_date" value="{{ date('Y-m-d') }}" required>
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-calendar"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">Date when payment was made</small>
-                                            </div>
-
-                                            <div class="form-group has-icon-left mb-4">
-                                                <label for="payment_method" class="form-label">Payment Method <span
-                                                        class="text-danger">*</span></label>
-                                                <div class="position-relative">
-                                                    <select class="form-select" id="payment_method"
-                                                        name="payment_method" required>
-                                                        <option value="">Select Payment Method</option>
-                                                        <option value="Cash">Cash</option>
-                                                        <option value="Bank">Bank Transfer</option>
-                                                    </select>
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-wallet2"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">Method used for payment</small>
-                                            </div>
-
-                                            <div class="form-group has-icon-left mb-4">
-                                                <label for="payment_reference"
-                                                    class="form-label">Reference/Transaction Number</label>
-                                                <div class="position-relative">
-                                                    <input type="text" class="form-control" id="payment_reference"
-                                                        name="payment_reference"
-                                                        placeholder="Bank transfer reference, check number, etc.">
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-hash"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">Reference number for tracking payment</small>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group mb-4">
-                                                <label for="kredit_coa_id" class="form-label">Debit Account (Credit)
-                                                    <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="kredit_coa_id" name="kredit_coa_id"
-                                                    required>
-                                                    <option value="">Select Credit Account</option>
-                                                    @foreach ($coas as $coa)
-                                                        <option value="{{ $coa->id }}">{{ $coa->name }}
-                                                            ({{ $coa->coa_no }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <small class="text-muted">Select the account to be credited</small>
-                                            </div>
-
-                                            <div class="form-group mb-4">
-                                                <label for="debit_coa_id" class="form-label">Credit Account (Debit)
-                                                    <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="debit_coa_id" name="debit_coa_id"
-                                                    required>
-                                                    <option value="">Select Debit Account</option>
-                                                    @foreach ($coas as $coa)
-                                                        <option value="{{ $coa->id }}">{{ $coa->name }}
-                                                            ({{ $coa->coa_no }})
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <small class="text-muted">Select the account to be debited</small>
-                                            </div>
-
-                                            <div class="form-group has-icon-left mb-4">
-                                                <label for="payment_amount" class="form-label">Payment Amount <span
-                                                        class="text-danger">*</span></label>
-                                                <div class="position-relative">
-                                                    <input type="number" class="form-control" id="payment_amount"
-                                                        name="payment_amount" required>
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-cash"></i>
-                                                    </div>
-                                                </div>
-                                                <small class="text-muted">Enter the amount being paid</small>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="card mb-4">
-                                        <div class="card-header">
-                                            <h5 class="card-title mb-0">Upload Payment Proof</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="image-upload-wrap" id="payment-image-upload-wrap">
-                                                <input type="file" name="image_proof" class="file-upload-input"
-                                                    onchange="readURL(this, 'payment-');" accept="image/*">
-                                                <div
-                                                    class="drag-text d-flex flex-column align-items-center justify-content-center py-5">
-                                                    <i class="bi bi-cloud-arrow-up"
-                                                        style="font-size: 3rem; color: #ccc;"></i>
-                                                    <p class="mt-3 mb-0">Drag and drop a file or click to upload</p>
-                                                    <small class="text-muted">Accepted formats: JPG, PNG, PDF (Max
-                                                        5MB)</small>
-                                                </div>
-                                            </div>
-                                            <div class="file-upload-content mt-3" id="payment-file-upload-content"
-                                                style="display:none;">
-                                                <div class="d-flex align-items-center">
-                                                    <img class="file-upload-image me-3" id="payment-file-upload-image"
-                                                        src="#" alt="your image"
-                                                        style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 5px;">
-                                                    <div class="flex-grow-1">
-                                                        <div class="image-file-name fw-bold"
-                                                            id="payment-image-file-name"></div>
-                                                        <div class="text-muted small">Uploaded payment proof</div>
-                                                    </div>
-                                                    <button type="button" onclick="removeUpload(this, 'payment-')"
-                                                        class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group mb-4">
-                                        <label for="payment_notes" class="form-label">Notes</label>
-                                        <div class="form-floating">
-                                            <textarea class="form-control" id="payment_notes" name="payment_notes" rows="3"
-                                                placeholder="Additional payment information" style="height: 100px"></textarea>
-                                            <label for="payment_notes">Additional Notes</label>
-                                        </div>
-                                        <small class="text-muted">Any additional information about this payment</small>
-                                    </div>
-
-                                    <div class="d-flex justify-content-end mt-4">
-                                        <button type="button" class="btn btn-light-secondary me-2"
-                                            data-bs-dismiss="modal">
-                                            <i class="bi bi-x-circle me-1"></i>
-                                            Cancel
-                                        </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-check-circle me-1"></i>
-                                            Process Payment
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
             </div>
             @include('admin.layouts.footer')
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+
+    {{-- modal delete data --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.delete-invoice', function(e) {
+                e.preventDefault();
+
+                const invoiceId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: "Data invoice akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim request delete ke server
+                        $.ajax({
+                            url: `/invoice-suppliers/${invoiceId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                // Tampilkan pesan sukses dengan timer dan progress bar
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: response.message ||
+                                        'Invoice berhasil dihapus.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#4A69E2',
+                                    timer: 2000, // waktu dalam ms
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    // Refresh halaman setelah sukses
+                                    window.location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#dc3545',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- modal sukses --}}
     @if (session('success'))
         <script>
             Swal.fire({
@@ -955,47 +835,11 @@
     @endif
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle showing payment modal with invoice details
-            const payButtons = document.querySelectorAll('.pay-invoice');
-            payButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const invoiceId = this.getAttribute('data-id');
-                    const invoiceNumber = this.getAttribute('data-invoice');
-                    const invoiceAmount = this.getAttribute('data-amount');
-                    const supplierName = this.getAttribute('data-supplier');
-
-                    document.getElementById('invoice_id').value = invoiceId;
-                    document.getElementById('modal_invoice_number').textContent = invoiceNumber;
-                    document.getElementById('modal_supplier_name').textContent = supplierName;
-                    document.getElementById('modal_invoice_amount').textContent = 'Rp ' +
-                        Number(invoiceAmount).toLocaleString('id-ID');
-                    document.getElementById('payment_amount').value = invoiceAmount;
-                });
-            });
-
-            // Preview uploaded payment proof
-            document.getElementById('payment_proof').addEventListener('change', function(event) {
-                const preview = document.getElementById('proofPreview');
-                const file = event.target.files[0];
-
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.style.display = 'block';
-                    }
-                    reader.readAsDataURL(file);
-                }
-            });
-        });
-    </script>
-
-    <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
+    
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

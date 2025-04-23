@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CategoryCoa;
 use App\Models\Coa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\CssSelector\Node\FunctionNode;
 
 class ChartofAccountController extends Controller
@@ -81,16 +82,80 @@ class ChartofAccountController extends Controller
         }
     }
 
-    public function deleteChartofAccount() {}
-
-
-    public function editChartofAccount()
+    public function editChartofAccount($id)
     {
-        return view('accounting.coa.edit');
+        try {
+            // Cari data COA berdasarkan ID
+            $coa = Coa::findOrFail($id);
+            $categories = CategoryCoa::all();
+
+            return view('accounting.coa.edit', compact('coa', 'categories'));
+        } catch (\Exception $e) {
+            // Log error dan kembalikan ke halaman index dengan pesan error
+            Log::error('Error loading COA edit page: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'coa_id' => $id,
+            ]);
+
+            return redirect()->route('index-coa')->with('error', 'Failed to load chart of account for editing.');
+        }
     }
 
-    public function updateChartofAccount() {}
+    public function updateChartofAccount(Request $request, $id)
+    {
+        try {
+            // Validasi input
+            $request->validate([
+                'name' => 'required',
+                'coa_no' => 'required',
+                'coa_category_id' => 'required',
+            ]);
 
+            $accountNumbers = Coa::findOrFail($id);
+
+            $accountNumbers->update([
+                'name' => $request->name,
+                'coa_no' => $request->coa_no,
+                'coa_category_id' => $request->coa_category_id,
+                'amount' => $request->amount,
+                'description' => $request->description,
+            ]);
+
+            return redirect()->route('index-chartofaccount')->with('success', 'Account Updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error updating Chart of Account: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'coa_id' => $id,
+                'user_id' => auth()->id(),
+                'url' => request()->fullUrl(),
+                'input' => $request->all()
+            ]);
+
+            return redirect()->route('index-chartofaccount')->with('error', 'Failed to update Chart of Account.');
+        }
+    }
+
+
+
+
+    public function deleteChartofAccount($id) {
+
+        try {
+            $coa = Coa::findOrFail($id);
+            $coa->delete();
+
+            return response()->json(['message' => 'COA deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error deleting supplier: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'supplier_id' => $id,
+                'user_id' => auth()->id(),
+                'url' => request()->fullUrl()
+            ]);
+
+            return response()->json(['message' => 'Failed to delete supplier.'], 500);
+        }
+    }
 
     public function indexCategoryChartofAccount()
     {

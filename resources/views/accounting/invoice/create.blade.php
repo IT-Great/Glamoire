@@ -291,10 +291,10 @@
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             <div class="form-body">
-                                                <h3><i class="bi bi-file-earmark-plus"></i> Create New Invoice</h3>
-                                                <p class="text-subtitle text-muted">Fill in the form below to create a
-                                                    new invoice
-                                                </p>
+                                                <h3><i class="bi bi-file-earmark-plus"></i> Buat Invoice Baru</h3>
+                                                <p class="text-subtitle text-muted">Isi formulir di bawah ini untuk
+                                                    membuat invoice baru</p>
+
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
@@ -303,7 +303,7 @@
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('no_invoice') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Invoice Number"
+                                                                    placeholder="Masukkan Nomor Invoice"
                                                                     id="invoice-number" name="no_invoice">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-receipt"></i>
@@ -313,19 +313,19 @@
                                                                 <p class="text-danger">
                                                                     {{ $errors->first('no_invoice') }}</p>
                                                             @endif
-                                                            <small class="text-muted">Enter a unique invoice number
-                                                                (e.g. INV-2025-001)</small>
+                                                            <small class="text-muted">Masukkan nomor invoice yang unik
+                                                                (contoh: INV-2025-001)</small>
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="debit-account" class="form-label">Debit Account
+                                                            <label for="debit-account" class="form-label">Akun Debit
                                                                 <span class="text-danger">*</span></label>
                                                             <select
                                                                 class="form-control select2-basic-category {{ $errors->has('debit_coa_id') ? 'is-invalid' : '' }}"
                                                                 name="debit_coa_id" style="margin-bottom: 10px;">
                                                                 <option value="" disabled
                                                                     {{ old('debit_coa_id') ? '' : 'selected' }}>Pilih
-                                                                    Debit Account</option>
+                                                                    Akun Debit</option>
                                                                 @foreach ($coas as $coa)
                                                                     <option value="{{ $coa->id }}"
                                                                         {{ old('debit_coa_id') == $coa->id ? 'selected' : '' }}>
@@ -337,18 +337,19 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('debit_coa_id') }}</p>
                                                             @else
-                                                                <small class="text-muted">Select the account to be
-                                                                    debited</small>
+                                                                <small class="text-muted">Pilih akun yang akan
+                                                                    didebit</small>
                                                             @endif
                                                         </div>
 
+
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="amount" class="form-label">Amount <span
+                                                            <label for="amount" class="form-label">Jumlah <span
                                                                     class="text-danger">*</span></label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter Amount" id="amount"
+                                                                    placeholder="Masukkan Jumlah" id="amount"
                                                                     name="amount">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-cash"></i>
@@ -358,18 +359,18 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('amount') }}</p>
                                                             @else
-                                                                <small class="text-muted">Enter the invoice amount in
+                                                                <small class="text-muted">Masukkan jumlah invoice dalam
                                                                     IDR</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="pph-percentage" class="form-label">PPH
-                                                                Percentage </label>
+                                                            <label for="pph-percentage" class="form-label">Persentase
+                                                                PPH</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Enter PPH Percentage"
+                                                                    placeholder="Masukkan Persentase PPH"
                                                                     id="pph-percentage" name="stock_quantity">
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-percent"></i>
@@ -379,12 +380,13 @@
                                                                 <p class="text-danger">
                                                                     {{ $errors->first('stock_quantity') }}</p>
                                                             @endif
-                                                            <small class="text-muted">Enter the PPH percentage (e.g. 10
-                                                                for 10%)</small>
+                                                            <small class="text-muted">Masukkan persentase PPH (misal:
+                                                                10 untuk 10%)</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="end-date" class="form-label">Due Date</label>
+                                                            <label for="end-date" class="form-label">Tanggal Jatuh
+                                                                Tempo</label>
                                                             <div class="position-relative">
                                                                 <input type="date"
                                                                     class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
@@ -397,33 +399,34 @@
                                                                 <p class="text-danger">{{ $errors->first('diskon') }}
                                                                 </p>
                                                             @endif
-                                                            <small class="text-muted">Select the invoice due
-                                                                date</small>
+                                                            <small class="text-muted">Pilih tanggal jatuh tempo
+                                                                invoice</small>
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="description" class="form-label">Description
-                                                            </label>
+                                                            <label for="description"
+                                                                class="form-label">Deskripsi</label>
                                                             <div class="form-floating">
-                                                                <textarea class="form-control" placeholder="Enter description" id="description" rows="4"
+                                                                <textarea class="form-control" placeholder="Masukkan deskripsi" id="description" rows="4"
                                                                     style="height: 100px"></textarea>
-                                                                <label for="description">Description</label>
+                                                                <label for="description">Deskripsi</label>
                                                             </div>
-                                                            <small class="text-muted">Enter details about this
-                                                                invoice</small>
+                                                            <small class="text-muted">Masukkan rincian mengenai invoice
+                                                                ini</small>
                                                         </div>
+
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <div class="form-group mb-4">
-                                                            <label for="supplier-name" class="form-label">Supplier
-                                                                Name <span class="text-danger">*</span></label>
+                                                            <label for="supplier-name" class="form-label">Nama
+                                                                Supplier <span class="text-danger">*</span></label>
                                                             <select
                                                                 class="form-control select2-basic-category {{ $errors->has('supplier_id') ? 'is-invalid' : '' }}"
                                                                 name="supplier_id" style="margin-bottom: 10px;">
                                                                 <option value="" disabled
                                                                     {{ old('supplier_id') ? '' : 'selected' }}>
-                                                                    Pilih Supplier Name</option>
+                                                                    Pilih Nama Supplier</option>
                                                                 @foreach ($suppliers as $supplier)
                                                                     <option value="{{ $supplier->id }}">
                                                                         {{ $supplier->name }}
@@ -434,19 +437,19 @@
                                                                 <p class="text-danger">
                                                                     {{ $errors->first('supplier_id') }}</p>
                                                             @endif
-                                                            <small class="text-muted">Select the supplier for this
-                                                                invoice</small>
+                                                            <small class="text-muted">Pilih supplier untuk invoice
+                                                                ini</small>
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="kredit-account" class="form-label">Kredit
-                                                                Account <span class="text-danger">*</span></label>
+                                                            <label for="kredit-account" class="form-label">Akun Kredit
+                                                                <span class="text-danger">*</span></label>
                                                             <select
                                                                 class="form-control select2-basic-category {{ $errors->has('kredit_coa_id') ? 'is-invalid' : '' }}"
                                                                 name="kredit_coa_id" style="margin-bottom: 10px;">
                                                                 <option value="" disabled
-                                                                    {{ old('kredit_coa_id') ? '' : 'selected' }}>Pilih
-                                                                    Kredit Account</option>
+                                                                    {{ old('kredit_coa_id') ? '' : 'selected' }}>
+                                                                    Pilih Akun Kredit</option>
                                                                 @foreach ($coas as $coa)
                                                                     <option value="{{ $coa->id }}"
                                                                         {{ old('kredit_coa_id') == $coa->id ? 'selected' : '' }}>
@@ -458,17 +461,17 @@
                                                                 <p style="color: red">
                                                                     {{ $errors->first('kredit_coa_id') }}</p>
                                                             @else
-                                                                <small class="text-muted">Select the account to be
-                                                                    credited</small>
+                                                                <small class="text-muted">Pilih akun yang akan
+                                                                    dikredit</small>
                                                             @endif
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="pph" class="form-label">PPH </label>
+                                                            <label for="pph" class="form-label">PPH</label>
                                                             <div class="position-relative">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('stock_quantity') ? 'is-invalid' : '' }}"
-                                                                    placeholder="PPH Amount (calculated)"
+                                                                    placeholder="Jumlah PPH (otomatis dihitung)"
                                                                     id="pph" name="stock_quantity" readonly>
                                                                 <div class="form-control-icon">
                                                                     <i class="bi bi-calculator"></i>
@@ -478,13 +481,13 @@
                                                                 <p class="text-danger">
                                                                     {{ $errors->first('stock_quantity') }}</p>
                                                             @endif
-                                                            <small class="text-muted">Calculated PPH amount based on
-                                                                percentage</small>
+                                                            <small class="text-muted">Jumlah PPH dihitung berdasarkan
+                                                                persentase</small>
                                                         </div>
 
                                                         <div class="form-group has-icon-left mb-4">
-                                                            <label for="invoice-date" class="form-label">Invoice Date
-                                                            </label>
+                                                            <label for="invoice-date" class="form-label">Tanggal
+                                                                Invoice</label>
                                                             <div class="position-relative">
                                                                 <input type="date"
                                                                     class="form-control {{ $errors->has('diskon') ? 'is-invalid' : '' }}"
@@ -497,14 +500,14 @@
                                                                 <p class="text-danger">{{ $errors->first('diskon') }}
                                                                 </p>
                                                             @endif
-                                                            <small class="text-muted">Enter the invoice issue
-                                                                date</small>
+                                                            <small class="text-muted">Masukkan tanggal diterbitkannya
+                                                                invoice</small>
                                                         </div>
+
 
                                                         <div class="card mb-4">
                                                             <div class="card-header">
-                                                                <h5 class="card-title mb-0">Upload Invoice Document
-                                                                </h5>
+                                                                <h5 class="card-title mb-0">Unggah Dokumen Invoice</h5>
                                                             </div>
                                                             <div class="card-body">
                                                                 <div class="image-upload-wrap {{ $errors->has('image_invoice') ? 'border border-danger' : '' }}"
@@ -517,10 +520,10 @@
                                                                         class="drag-text d-flex flex-column align-items-center justify-content-center py-5">
                                                                         <i class="bi bi-cloud-arrow-up"
                                                                             style="font-size: 3rem; color: {{ $errors->has('image_invoice') ? '#dc3545' : '#ccc' }};"></i>
-                                                                        <p class="mt-3 mb-0">Drag and drop a file or
-                                                                            click to upload</p>
-                                                                        <small class="text-muted">Accepted formats:
-                                                                            JPG, PNG, PDF (Max 5MB)</small>
+                                                                        <p class="mt-3 mb-0">Seret dan jatuhkan file
+                                                                            atau klik untuk mengunggah</p>
+                                                                        <small class="text-muted">Format yang diterima:
+                                                                            JPG, PNG, PDF (Maks 5MB)</small>
                                                                     </div>
                                                                 </div>
                                                                 <div class="file-upload-content mt-3"
@@ -528,13 +531,13 @@
                                                                     <div class="d-flex align-items-center">
                                                                         <img class="file-upload-image me-3"
                                                                             id="file-upload-image" src="#"
-                                                                            alt="your image"
+                                                                            alt="gambar dokumen"
                                                                             style="max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 5px;">
                                                                         <div class="flex-grow-1">
                                                                             <div class="image-file-name fw-bold"
                                                                                 id="image-file-name"></div>
-                                                                            <div class="text-muted small">Uploaded
-                                                                                document</div>
+                                                                            <div class="text-muted small">Dokumen
+                                                                                berhasil diunggah</div>
                                                                         </div>
                                                                         <button type="button"
                                                                             onclick="removeUpload(this, '')"
@@ -550,6 +553,7 @@
                                                                 @endif
                                                             </div>
                                                         </div>
+
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end mt-3">
@@ -583,6 +587,7 @@
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
 
+    {{-- select 2 --}}
     <script>
         $(document).ready(function() {
             $('.select2-basic-category').select2({
@@ -610,12 +615,14 @@
             }
         });
     </script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+    {{-- modal pesan error --}}
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             @if ($errors->any())
@@ -636,6 +643,7 @@
         });
     </script>
 
+    {{-- upload gambar --}}
     <script>
         function readURL(input, id) {
             if (input.files && input.files[0]) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Coa;
 use App\Models\Invoice_Supplier;
+use App\Models\Payment;
 use App\Models\Supplier_Data;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -13,22 +14,23 @@ class FinancialController extends Controller
 {
     public function indexFinancialIncome(Request $request)
     {
-        $query = Coa::query();
+        $query = Payment::with(['user', 'order'])
+            ->where('status', 'completed');
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('date', [
+            $query->whereBetween('payment_date', [
                 Carbon::parse($request->start_date),
                 Carbon::parse($request->end_date)
             ]);
         }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+        // Urutkan berdasarkan payment_date terbaru
+        $finances = $query->latest('payment_date')->get();
 
-        $finances = $query->get();
         return view('accounting.financial.index-income', compact('finances'));
     }
+
+
 
     public function indexFinancialExpense(Request $request)
     {

@@ -299,6 +299,30 @@
                 flex-wrap: wrap;
             }
         }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .transaction-icon i {
+            opacity: 0.8;
+        }
+
+        .account-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .account-icon i {
+            font-size: 1.2rem;
+        }
     </style>
 
 </head>
@@ -537,18 +561,21 @@
                                             <td>{{ $transaction->type }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('create-invoice', ['id' => $transaction->id]) }}"
-                                                        class="btn btn-sm btn-info">
+                                                    <a href="javascript:void(0)"
+                                                        class="btn btn-sm btn-info view-transaction"
+                                                        data-id="{{ $transaction->id }}">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('edit-invoice', ['id' => $transaction->id]) }}"
+
+                                                    <a href="{{ route('edit-transaction', ['id' => $transaction->id]) }}"
                                                         class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <button class="btn btn-sm btn-danger delete-invoice"
+                                                    <button class="btn btn-danger delete-transaction"
                                                         data-id="{{ $transaction->id }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -559,6 +586,187 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Transaction Modal -->
+                <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Tambahkan modal-dialog-centered -->
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: #183018; color: white;">
+                                <h5 class="modal-title text-white" id="transactionModalLabel">
+                                    <i class="bi bi-credit-card-2-front me-2"></i>Transaction Details
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Transaction Header Info -->
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="transaction-icon me-3">
+                                                        <i class="bi bi-hash fs-1 text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="text-muted mb-0">Transaction Number</h6>
+                                                        <h4 id="transactionNumber" class="mb-0">TX123456789</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+                                                    <div class="transaction-status text-end">
+                                                        <h6 class="text-muted mb-0">Type</h6>
+                                                        <span id="transactionTypeBadge"
+                                                            class="badge bg-success">Transfer</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Transaction Details -->
+                                <div class="row">
+                                    <!-- Left Column -->
+                                    <div class="col-md-6">
+                                        <!-- Amount Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-2">
+                                                    <i class="bi bi-cash-coin me-2"></i>Amount
+                                                </h6>
+                                                <h3 id="transactionAmount" class="text-success mb-0">Rp 1,000,000</h3>
+                                            </div>
+                                        </div>
+
+                                        <!-- From/To Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">
+                                                    <i class="bi bi-arrow-left-right me-2"></i>From/To
+                                                </h6>
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div
+                                                        class="account-icon bg-danger bg-opacity-10 p-2 rounded-circle me-3">
+                                                        <i class="bi bi-arrow-up-right text-danger"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <small class="text-muted">FROM (CREDIT)</small>
+                                                                <p id="transactionKreditCoa" class="mb-0 fw-bold">Cash
+                                                                    - 1111</p>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <small class="text-muted d-block">CREDIT AMOUNT</small>
+                                                                <span id="transactionKreditAmount"
+                                                                    class="badge bg-danger px-2 py-1">-Rp
+                                                                    1,000,000</span>
+                                                            </div>
+                                                        </div>
+                                                        <small id="transactionKreditType" class="text-muted">Account
+                                                            Type: Cash</small>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <div
+                                                        class="account-icon bg-success bg-opacity-10 p-2 rounded-circle me-3">
+                                                        <i class="bi bi-arrow-down-left text-success"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <div>
+                                                                <small class="text-muted">TO (DEBIT)</small>
+                                                                <p id="transactionDebitCoa" class="mb-0 fw-bold">Bank
+                                                                    - 2222</p>
+                                                            </div>
+                                                            <div class="text-end">
+                                                                <small class="text-muted d-block">DEBIT AMOUNT</small>
+                                                                <span id="transactionDebitAmount"
+                                                                    class="badge bg-success px-2 py-1">+Rp
+                                                                    1,000,000</span>
+                                                            </div>
+                                                        </div>
+                                                        <small id="transactionDebitType" class="text-muted">Account
+                                                            Type: Bank</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div class="col-md-6">
+                                        <!-- Details Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">
+                                                    <i class="bi bi-info-circle me-2"></i>Transaction Details
+                                                </h6>
+                                                <div class="transaction-details">
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">Date</div>
+                                                        <div id="transactionDate" class="col-7 fw-bold">Jan 01, 2023
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">Recipient</div>
+                                                        <div id="transactionRecipient" class="col-7">John Doe</div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">Transaction Type</div>
+                                                        <div id="transactionType" class="col-7">Transfer</div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-5 text-muted">Description</div>
+                                                        <div id="transactionDescription" class="col-7">Monthly
+                                                            payment</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Created Info -->
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">
+                                                    <i class="bi bi-clock-history me-2"></i>Transaction History
+                                                </h6>
+                                                <div class="row mb-2">
+                                                    <div class="col-5 text-muted">Created On</div>
+                                                    <div id="transactionCreatedAt" class="col-7">Jan 01, 2023 10:30
+                                                        AM</div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-5 text-muted">Last Updated</div>
+                                                    <div id="transactionUpdatedAt" class="col-7">Jan 01, 2023 10:30
+                                                        AM</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle me-2"></i>Close
+                                </button>
+                                <a href="#" id="editTransaction" class="btn btn-warning">
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                </a>
+                                <button type="button" id="printTransaction" class="btn btn-primary">
+                                    <i class="bi bi-printer me-2"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
             @include('admin.layouts.footer')
         </div>
@@ -571,6 +779,217 @@
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
+
+
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.delete-transaction', function(e) {
+                e.preventDefault();
+
+                const transactionId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: "Data transaksi akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/transaction/${transactionId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: response.message ||
+                                        'Transaksi berhasil dihapus.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#4A69E2',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#dc3545',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function() {
+            // Handle view transaction button click
+            $(document).on('click', '.view-transaction', function(e) {
+                e.preventDefault();
+
+                // Get transaction ID from data attribute
+                const transactionId = $(this).data('id');
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Send AJAX request to get transaction details
+                $.ajax({
+                    url: `/transactions/${transactionId}`,
+                    type: 'GET',
+                    success: function(response) {
+                        // Close loading indicator
+                        Swal.close();
+
+                        // Populate modal with transaction data
+                        $('#transactionNumber').text(response.no_transaction);
+
+                        // Format date
+                        const transactionDate = new Date(response.date);
+                        const formattedDate = transactionDate.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        $('#transactionDate').text(formattedDate);
+
+                        // Format created_at and updated_at
+                        const createdAt = new Date(response.created_at);
+                        const updatedAt = new Date(response.updated_at);
+
+                        const formatDateTime = (date) => {
+                            return date.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            }) + ' ' + date.toLocaleTimeString('en-US', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        };
+
+                        $('#transactionCreatedAt').text(formatDateTime(createdAt));
+                        $('#transactionUpdatedAt').text(formatDateTime(updatedAt));
+
+                        // Set COA information
+                        $('#transactionKreditCoa').text(
+                            `${response.kredit_coa.name} - ${response.kredit_coa.coa_no}`);
+                        $('#transactionDebitCoa').text(
+                            `${response.debit_coa.name} - ${response.debit_coa.coa_no}`);
+
+                        // Set recipient
+                        $('#transactionRecipient').text(response.recipient_name || 'N/A');
+
+                        // Set transaction type
+                        const typeCap = response.type.charAt(0).toUpperCase() + response.type
+                            .slice(1);
+                        $('#transactionType').text(typeCap);
+
+                        // Set transaction type badge
+                        const typeBadge = $('#transactionTypeBadge');
+                        typeBadge.text(typeCap);
+
+                        if (response.type === 'transfer') {
+                            typeBadge.removeClass('bg-success').addClass('bg-primary');
+                        } else if (response.type === 'receive') {
+                            typeBadge.removeClass('bg-primary').addClass('bg-success');
+                        }
+
+                        // Format amount
+                        $('#transactionAmount').text(
+                            `Rp ${new Intl.NumberFormat('id-ID').format(response.amount)}`);
+
+                        // Format amount for display
+                        const formattedAmount =
+                            `Rp ${new Intl.NumberFormat('id-ID').format(response.amount)}`;
+
+                        // Set debit/credit information
+                        $('#transactionKreditAmount').text(`-${formattedAmount}`);
+                        $('#transactionDebitAmount').text(`+${formattedAmount}`);
+
+                        // Set account types - you might need to adjust this based on your data structure
+                        if (response.kredit_coa.type) {
+                            $('#transactionKreditType').text(
+                                `Account Type: ${response.kredit_coa.type}`);
+                        } else {
+                            // If type is not available, you can hide this or use a placeholder
+                            $('#transactionKreditType').text('');
+                        }
+
+                        if (response.debit_coa.type) {
+                            $('#transactionDebitType').text(
+                                `Account Type: ${response.debit_coa.type}`);
+                        } else {
+                            // If type is not available, you can hide this or use a placeholder
+                            $('#transactionDebitType').text('');
+                        }
+
+                        // Set description
+                        $('#transactionDescription').text(response.description || 'N/A');
+
+                        // Store transaction ID for edit button
+                        $('#editTransaction').attr('href',
+                            `/transactions/${transactionId}/edit`);
+
+                        // Show the modal
+                        $('#transactionModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Failed to load transaction details', 'error');
+                    }
+                });
+            });
+
+            // Handle print transaction button click
+            $(document).on('click', '#printTransaction', function() {
+                const printContent = $('.modal-body').html();
+                const originalContent = $('body').html();
+
+                // Create a print window
+                $('body').html(`
+                    <div style="padding: 20px;">
+                        <h2 style="text-align: center; margin-bottom: 20px;">Transaction Details</h2>
+                        ${printContent}
+                    </div>
+                `);
+
+                // Print
+                window.print();
+
+                // Restore original content
+                $('body').html(originalContent);
+
+                // Re-initialize Bootstrap elements
+                $('#transactionModal').modal('show');
+            });
+        });
+    </script>
+
+
 
     @if (session('success'))
         <script>

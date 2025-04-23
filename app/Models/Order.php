@@ -27,7 +27,7 @@ class Order extends Model
         'kurir',
         'resi',
     ];
-    
+
     public function shippingAddress()
     {
         return $this->belongsTo(Shipping_address::class, 'shipping_address_id');
@@ -43,9 +43,14 @@ class Order extends Model
         return $this->hasMany(OrderItem::class, 'order_id');
     }
 
+    // public function payment()
+    // {
+    //     return $this->belongsTo(Payment::class);
+    // }
+
     public function payment()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->hasOne(Payment::class, 'order_id', 'id');
     }
 
     public function invoice()

@@ -18,19 +18,54 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
 
     <style>
+        /* Modern Color Scheme - Reusing from COA page */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
-            --primary-light: #546fd0;
-            --success: #4fbe87;
-            --danger: #eb5757;
-            --warning: #f59e0b;
-            --info: #3b82f6;
-            --secondary: #6c757d;
+            --success: #10b981;
+            --info: #4895ef;
+            --warning: #f72585;
+            --danger: #e63946;
             --light: #f8f9fa;
             --dark: #212529;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-800: #343a40;
         }
 
+        /* Card Styling */
+        .card {
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: none;
+            margin-bottom: 24px;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.25rem 1.5rem;
+            border-top-left-radius: 15px !important;
+            border-top-right-radius: 15px !important;
+        }
+
+        .card-header h4 {
+            margin-bottom: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        /* Navigation Tabs */
         .finance-nav {
             background: white;
             border-radius: 12px;
@@ -59,156 +94,7 @@
             background: var(--gray-100);
         }
 
-        .card {
-            border: none;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-            transform: translateY(-5px);
-        }
-
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-            padding: 25px 30px;
-        }
-
-        .card-header h4 {
-            margin: 0;
-            font-weight: 600;
-            color: var(--dark);
-            display: flex;
-            align-items: center;
-        }
-
-        .card-header h4 i {
-            margin-right: 10px;
-            color: var(--primary);
-        }
-
-        .card-body {
-            padding: 25px 30px;
-        }
-
-        .btn {
-            border-radius: 10px;
-            padding: 0.6rem 1.2rem;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-
-        .btn-sm {
-            padding: 0.4rem 0.8rem;
-            font-size: 0.85rem;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 3px 10px rgba(67, 94, 190, 0.2);
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-light);
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(67, 94, 190, 0.3);
-        }
-
-        .btn-warning {
-            background-color: var(--warning);
-            border-color: var(--warning);
-            color: white;
-        }
-
-        .btn-danger {
-            background-color: var(--danger);
-            border-color: var(--danger);
-        }
-
-        .btn-info {
-            background-color: var(--info);
-            border-color: var(--info);
-            color: white;
-        }
-
-        .badge {
-            font-weight: 500;
-            padding: 0.5em 0.8em;
-            border-radius: 6px;
-        }
-
-        .bg-light-success {
-            background-color: rgba(79, 190, 135, 0.15);
-            color: var(--success);
-        }
-
-        .bg-light-danger {
-            background-color: rgba(235, 87, 87, 0.15);
-            color: var(--danger);
-        }
-
-        .bg-light-warning {
-            background-color: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
-        }
-
-        .bg-light-info {
-            background-color: rgba(59, 130, 246, 0.15);
-            color: var(--info);
-        }
-
-        table {
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        table th {
-            background-color: #f8f9fa;
-            color: var(--dark);
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.5px;
-            padding: 15px !important;
-        }
-
-        table td {
-            padding: 18px 15px !important;
-            vertical-align: middle;
-            color: #495057;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        table tr:hover td {
-            background-color: rgba(67, 94, 190, 0.03);
-        }
-
-        .amount-cell {
-            font-weight: 600;
-            font-family: monospace;
-            font-size: 1.05rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-buttons .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-
-
+        /* Stats Cards - From COA */
         .stats-card {
             border-radius: 12px;
             overflow: hidden;
@@ -278,84 +164,141 @@
             color: #ef4444;
         }
 
-        .icon-primary {
-            background-color: rgba(67, 94, 190, 0.15);
-            color: var(--primary);
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
-        .icon-success {
-            background-color: rgba(79, 190, 135, 0.15);
-            color: var(--success);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            box-shadow: 0 4px 8px rgba(67, 97, 238, 0.25);
         }
 
-        .icon-warning {
-            background-color: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.3);
         }
 
-        .icon-danger {
-            background-color: rgba(235, 87, 87, 0.15);
-            color: var(--danger);
+        .btn-secondary {
+            background: var(--gray-200);
+            color: var(--gray-800);
+            border: none;
         }
 
-        .deadline-near {
-            color: var(--danger);
+        /* Small Action Buttons */
+        .btn-action {
+            padding: 0.35rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
             font-weight: 500;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            margin-right: 0.5rem;
         }
 
-        .deadline-upcoming {
-            color: var(--warning);
+        .btn-action.edit {
+            background-color: var(--info);
+            color: white;
+        }
+
+        .btn-action.delete {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-action.view {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
             font-weight: 500;
+            white-space: nowrap;
         }
 
-        .deadline-safe {
-            color: var(--success);
-            font-weight: 500;
+        .status-badge.success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: #10b981;
         }
 
-        .filters-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
+        .status-badge.pending {
+            background-color: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
         }
 
-        .filter-item {
-            flex: 1;
-            min-width: 200px;
+        .status-badge.failed {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
         }
 
-        .filter-item select,
-        .filter-item input {
-            width: 100%;
-            padding: 10px 15px;
-            border-radius: 10px;
-            border: 1px solid #e0e0e0;
-            background-color: #f8f9fa;
-            transition: all 0.3s;
+        /* Invoice Number Style */
+        .invoice-number {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--dark);
+            padding: 0.3rem 0.6rem;
+            background-color: var(--gray-100);
+            border-radius: 4px;
+            display: inline-block;
         }
 
-        .filter-item select:focus,
-        .filter-item input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(67, 94, 190, 0.1);
+        /* Currency formatting */
+        .currency {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
         }
 
-        .text-primary {
-            color: var(--primary) !important;
+        /* Chart container */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 1rem;
         }
 
-        .text-success {
-            color: var(--success) !important;
+        /* Date label */
+        .date-label {
+            font-size: 0.85rem;
+            color: #6c757d;
         }
 
-        .text-danger {
-            color: var(--danger) !important;
+        /* Summary block */
+        .summary-block {
+            background-color: var(--gray-100);
+            border-radius: 8px;
+            padding: 1rem;
         }
 
-        .text-warning {
-            color: var(--warning) !important;
+        .summary-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        /* Export button */
+        .btn-export {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-export:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
         }
     </style>
 </head>
@@ -640,10 +583,8 @@
                 <!-- expense Table -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4>Income Transactions</h4>
-                        <a href="#" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Add Income
-                        </a>
+                        <h4>Expense Transactions</h4>
+
                     </div>
                     <div class="card-body">
                         <table class="table" id="table1">

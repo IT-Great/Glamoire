@@ -15,9 +15,11 @@ use App\Models\PaymentHistories;
 use App\Models\Supplier_Data;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller
 {
+    // invoice supplier
     public function indexInvoice(Request $request)
     {
         $query = Invoice_Supplier::with('supplier');
@@ -216,17 +218,179 @@ class InvoiceController extends Controller
         return view('accounting.invoice.detail', compact('invoice', 'paymentHistories'));
     }
 
+    public function editInvoice($id)
+    {
+        try {
+            // Get the invoice data
+            $invoice = Invoice_Supplier::findOrFail($id);
+
+            // Load required data for the form
+            $suppliers = Supplier_Data::all();
+            $coas = Coa::all();
+
+            // Check if payment exists for this invoice
+            $payment = PaymentHistories::where('invoice_id', $id)->first();
+
+            return view('accounting.invoice.edit', compact('invoice', 'suppliers', 'coas', 'payment'));
+        } catch (\Exception $e) {
+            Log::error('Error loading invoice edit page: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'invoice_id' => $id,
+            ]);
+
+            return redirect()->route('index-invoice')->with('error', 'Failed to load invoice for editing.');
+        }
+    }
+
+    public function updateInvoice(Request $request)
+    {
+        try {
+            $invoiceId = $request->invoice_id;
+            $invoice = Invoice_Supplier::findOrFail($invoiceId);
+
+            // Check if this is a payment update
+            if ($request->has('is_payment_update') && $request->is_payment_update == 1) {
+                // Validate payment update request
+                $request->validate([
+                    'invoice_id' => 'required|exists:invoice_suppliers,id',
+                    'payment_date' => 'required|date',
+                    'payment_method' => 'required',
+                    'amount' => 'required|numeric',
+                    'debit_coa_id' => 'required',
+                    'kredit_coa_id' => 'required',
+                    'image_proof' => 'nullable|mimes:jpeg,png,jpg,pdf|max:5120',
+                ]);
+
+                // Get or create payment history
+                $payment = PaymentHistories::where('invoice_id', $invoiceId)->first();
+                if (!$payment) {
+                    $payment = new PaymentHistories();
+                    $payment->invoice_id = $invoiceId;
+                }
+
+                // Update payment details
+                $payment->payment_date = $request->payment_date;
+                $payment->payment_method = $request->payment_method;
+                $payment->reference_number = $request->reference_number;
+                $payment->amount = $request->amount;
+                $payment->notes = $request->payment_notes;
+                $payment->save();
+
+                // Update invoice status if needed
+                $invoice->payment_status = 'Paid';
+                $invoice->debit_coa_id = $request->debit_coa_id;
+                $invoice->kredit_coa_id = $request->kredit_coa_id;
+
+                // Handle payment proof image if provided
+                if ($request->hasFile('image_proof')) {
+                    if ($invoice->image_proof) {
+                        Storage::disk('public')->delete($invoice->image_proof);
+                    }
+                    $proofPath = $request->file('image_proof')->store('payment_proofs', 'public');
+                    $invoice->image_proof = $proofPath;
+                }
+
+                $invoice->save();
+
+                return redirect()->route('index-invoice')->with('success', 'Payment information updated successfully!');
+            } else {
+                // This is a regular invoice update
+                $request->validate([
+                    'invoice_id' => 'required|exists:invoice_suppliers,id',
+                    'no_invoice' => 'required',
+                    'supplier_id' => 'required',
+                    'amount' => 'required|numeric',
+                    'kredit_coa_id' => 'required',
+                    'debit_coa_id' => 'required',
+                    'image_invoice' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+                ]);
+
+                // Your existing invoice update logic
+                if ($request->hasFile('image_invoice')) {
+                    // Delete old image if exists
+                    if ($invoice->image_invoice) {
+                        Storage::disk('public')->delete($invoice->image_invoice);
+                    }
+
+                    $path = $request->file('image_invoice')->store('invoice_images', 'public');
+                    $invoice->image_invoice = $path;
+                }
+
+                // Update invoice details
+                $invoice->no_invoice = $request->no_invoice;
+                $invoice->supplier_id = $request->supplier_id;
+                $invoice->amount = $request->amount;
+                $invoice->kredit_coa_id = $request->kredit_coa_id;
+                $invoice->debit_coa_id = $request->debit_coa_id;
+
+                // Update optional fields
+                if ($request->has('pph_percentage')) {
+                    $invoice->pph_percentage = $request->pph_percentage;
+                }
+
+                if ($request->has('date')) {
+                    $invoice->date = $request->date;
+                }
+
+                if ($request->has('deadline_invoice')) {
+                    $invoice->deadline_invoice = $request->deadline_invoice;
+                }
+
+                if ($request->has('description')) {
+                    $invoice->description = $request->description;
+                }
+
+                $invoice->save();
+
+                return redirect()->route('index-invoice')->with('success', 'Invoice updated successfully!');
+            }
+        } catch (\Exception $e) {
+            Log::error('Error updating invoice: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'request' => $request->all(),
+            ]);
+
+            return redirect()->back()->withInput()->with('error', 'Failed to update invoice: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteInvoice($id)
+    {
+        try {
+            // Find the invoice
+            $invoice = Invoice_Supplier::findOrFail($id);
+
+            // Delete associated images if they exist
+            if ($invoice->image_invoice) {
+                Storage::disk('public')->delete($invoice->image_invoice);
+            }
+
+            if ($invoice->image_proof) {
+                Storage::disk('public')->delete($invoice->image_proof);
+            }
+
+            // Delete the invoice record
+            $invoice->delete();
+
+            // Return success response
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            // Return error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete invoice: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
 
-    public function editInvoice() {}
-
-    public function updateInvoice() {}
-
-    public function deleteInvoice() {}
-
+    // supplier
     public function indexSupplier()
     {
-        $suppliers = Supplier_Data::all();
+        $suppliers = Supplier_Data::latest()->get();
         return view('accounting.invoice.index-supplier', compact('suppliers'));
     }
 
@@ -257,6 +421,104 @@ class InvoiceController extends Controller
 
         return redirect()->route('index-supplier')->with('success', 'Add Supplier successfully!');
     }
+
+    public function getSupplierDetails($id)
+    {
+        $supplier = Supplier_Data::findOrFail($id);
+
+        return response()->json([
+            'name' => $supplier->name,
+            'no_telp' => $supplier->no_telp,
+            'email' => $supplier->email,
+            'address' => $supplier->address,
+            'city' => $supplier->city,
+            'province' => $supplier->province,
+            'post_code' => $supplier->post_code,
+            'accountnumber' => $supplier->accountnumber,
+            'accountnumber_holders_name' => $supplier->accountnumber_holders_name,
+            'bank_name' => $supplier->bank_name,
+            'description' => $supplier->description,
+        ]);
+    }
+
+
+    public function editSupplier($id)
+    {
+        try {
+            // Cari data supplier berdasarkan ID
+            $suppliers = Supplier_Data::findOrFail($id);
+
+            return view('accounting.invoice.edit-supplier', compact('suppliers'));
+        } catch (\Exception $e) {
+            // Log error dan kembalikan ke halaman index dengan pesan error
+            Log::error('Error loading supplier edit page: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'supplier_id' => $id,
+            ]);
+
+            return redirect()->route('index-supplier')->with('error', 'Failed to load supplier for editing.');
+        }
+    }
+
+
+    public function updateSupplier(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|exists:supplier_data,id',
+                'name' => 'required',
+                'no_telp' => 'required',
+                'email' => 'required',
+            ]);
+
+            $supplier = Supplier_Data::findOrFail($request->id);
+
+            $supplier->update([
+                'name' => $request->name,
+                'no_telp' => $request->no_telp,
+                'email' => $request->email,
+                'address' => $request->address,
+                'city' => $request->city,
+                'province' => $request->province,
+                'post_code' => $request->post_code,
+                'description' => $request->description,
+            ]);
+
+            return redirect()->route('index-supplier')->with('success', 'Supplier updated successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error updating supplier: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'supplier_id' => $request->id,
+                'user_id' => auth()->id(),
+                'url' => request()->fullUrl(),
+                'input' => $request->all()
+            ]);
+
+            return redirect()->route('index-supplier')->with('error', 'Failed to update supplier.');
+        }
+    }
+
+
+    public function deleteSupplier($id)
+    {
+        try {
+            $supplier = Supplier_Data::findOrFail($id);
+            $supplier->delete();
+
+            return response()->json(['message' => 'Supplier deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            Log::error('Error deleting supplier: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'supplier_id' => $id,
+                'user_id' => auth()->id(),
+                'url' => request()->fullUrl()
+            ]);
+
+            return response()->json(['message' => 'Failed to delete supplier.'], 500);
+        }
+    }
+
+
 
     public function viewInvoiceUser($noInvoice)
     {

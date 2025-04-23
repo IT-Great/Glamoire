@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>COA - Glamoire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction - Glamoire</title>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
@@ -394,6 +395,7 @@
             height: auto;
         }
 
+
         /* Styling container Select2 */
         .select2-container--default .select2-selection--single {
             height: 38px !important;
@@ -419,6 +421,7 @@
             padding: 6px 12px;
         }
     </style>
+
 </head>
 
 <body>
@@ -431,17 +434,27 @@
                 <div class="page-title" style="margin-bottom: 25px;">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h2 class="mb-3">COA Management</h2>
+                            <h2 class="mb-3">Transaction Management</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="/dashboard"><i
                                                 class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="/transaction">COA</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add New COA</li>
+                                    <li class="breadcrumb-item"><a href="/transaction">Transaction</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Add New Transaction</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="{{ route('create-transaction', ['type' => 'transfer']) }}" class="promo-nav-item active">
+                        <i class="bi bi-arrow-left-right me-2"></i>Transfer
+                    </a>
+                    <a href="{{ route('create-transaction', ['type' => 'receive']) }}" class="promo-nav-item">
+                        <i class="bi bi-download me-2"></i>Receive
+                    </a>
                 </div>
 
                 <!-- Basic form layout section start -->
@@ -451,122 +464,167 @@
                             <div class="card">
                                 <div class="card-content">
                                     <div class="card-body">
-                                        <form action="{{ route('update-chartofaccount', ['id' => $coa->id]) }}"
-                                            method="POST" enctype="multipart/form-data" class="form form-vertical">
-
+                                        <form
+                                            action="{{ route('update-transaction-transfer', ['id' => $transaction->id]) }}"
+                                            class="form form-vertical" method="POST" enctype="multipart/form-data">
                                             @csrf
+                                            @method('PUT')
+                                            <input type="hidden" name="type" value="{{ $type }}">
+
                                             <div class="form-body">
-                                                <h3 class="mb-2">Buat COA Baru</h3>
-                                                <p class="text-muted">Silahkan isi dibawah ini untuk membuat COA baru.
+                                                <h3 class="mb-2"><i class="bi bi-file-earmark-plus me-2"></i>Create
+                                                    New
+                                                    Transaction</h3>
+                                                <p class="text-muted">Fill in the form below to create a new
+                                                    transaction
                                                 </p>
                                                 <div class="row">
-                                                    <!-- Brand Name Section -->
                                                     <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="brand-name-icon">Account Number<span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative mt-2 mb-2">
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="no_transaction" class="form-label">No. Transaksi
+                                                                <span class="text-danger">*</span></label>
+                                                            <div class="position-relative">
                                                                 <input type="text"
-                                                                    class="form-control {{ $errors->has('coa_no') ? 'is-invalid' : '' }}"
-                                                                    value="{{ $coa->coa_no }}" id="brand-name-icon"
-                                                                    name="coa_no">
+                                                                    class="form-control {{ $errors->has('no_transaction') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Masukkan Nomor Transaksi"
+                                                                    id="no_transaction" name="no_transaction"
+                                                                    value="{{ $transaction->no_transaction }}">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-receipt"></i>
+                                                                </div>
                                                             </div>
-                                                            @if ($errors->has('name'))
-                                                                <p style="color: red">{{ $errors->first('coa_no') }}
-                                                                </p>
+                                                            @if ($errors->has('no_transaction'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('no_transaction') }}</p>
                                                             @else
-                                                                <small class="text-muted" style="font-size: 14px;">
-                                                                    Berikan Account COA Anda yang akan
-                                                                    mudah dikenali oleh pengguna.
-                                                                </small>
+                                                                <small class="text-muted">Masukkan nomor transaksi unik
+                                                                    (contoh: INV-2025-001)</small>
                                                             @endif
                                                         </div>
 
-                                                        <div class="form-group">
-                                                            <label for="brand-name-icon">Category<span
-                                                                    style="color: red">*</span></label>
+                                                        <div class="form-group mb-4">
+                                                            <label for="kredit-account" class="form-label">Akun Kredit
+                                                                <span class="text-danger">*</span></label>
                                                             <select
-                                                                class="form-control select2-basic-category {{ $errors->has('coa_category_id') ? 'is-invalid' : '' }}"
-                                                                name="coa_category_id" style="margin-bottom: 10px;">
-                                                                <option value="" disabled>Pilih Category Account
+                                                                class="form-control select2-basic-category {{ $errors->has('kredit_coa_id') ? 'is-invalid' : '' }}"
+                                                                name="kredit_coa_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled>Pilih Kredit Account
                                                                 </option>
-                                                                @foreach ($categories as $category)
-                                                                    <option value="{{ $category->id }}">
-                                                                        {{ $category->category_name }}
+                                                                @foreach ($coas as $coa)
+                                                                    <option value="{{ $coa->id }}"
+                                                                        {{ $transaction->kredit_coa_id == $coa->id ? 'selected' : '' }}>
+                                                                        {{ $coa->coa_no }} - {{ $coa->name }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            @if ($errors->has('kredit_coa_id'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('kredit_coa_id') }}</p>
+                                                            @else
+                                                                <small class="text-muted">Pilih akun yang akan
+                                                                    dikreditkan</small>
+                                                            @endif
+                                                        </div>
+
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="end-date" class="form-label">Tanggal <span
+                                                                    class="text-danger">*</span></label>
+
+                                                            <div class="position-relative">
+                                                                <input type="date"
+                                                                    class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }}"
+                                                                    id="date" name="date"
+                                                                    value="{{ isset($transaction->date) ? \Carbon\Carbon::parse($transaction->date)->format('Y-m-d') : '' }}">
+
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-calendar"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            @if ($errors->has('date'))
+                                                                <p style="color: red">{{ $errors->first('date') }}</p>
+                                                            @else
+                                                                <small class="text-muted">Pilih tanggal
+                                                                    transaksi</small>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="form-group has-icon-left mb-4">
+                                                            <label for="amount" class="form-label">Jumlah <span
+                                                                    class="text-danger">*</span></label>
+
+                                                            <div class="position-relative">
+                                                                <input type="text"
+                                                                    class="form-control {{ $errors->has('amount') ? 'is-invalid' : '' }}"
+                                                                    placeholder="Enter Amount" id="amount"
+                                                                    name="amount"
+                                                                    value="{{ $transaction->amount }}">
+                                                                <div class="form-control-icon">
+                                                                    <i class="bi bi-cash"></i>
+                                                                </div>
+                                                            </div>
+
+                                                            @if ($errors->has('amount'))
+                                                                <p style="color: red">{{ $errors->first('amount') }}
+                                                                </p>
+                                                            @else
+                                                                <small class="text-muted">Masukkan jumlah tagihan dalam
+                                                                    IDR</small>
+                                                            @endif
+                                                        </div>
+
+                                                        <div class="form-group mb-4">
+                                                            <label for="debit-account" class="form-label">Akun Debit
+                                                                <span class="text-danger">*</span></label>
+                                                            <select
+                                                                class="form-control select2-basic-category {{ $errors->has('debit_coa_id') ? 'is-invalid' : '' }}"
+                                                                name="debit_coa_id" style="margin-bottom: 10px;">
+                                                                <option value="" disabled>Pilih Debit Account
+                                                                </option>
+                                                                @foreach ($coas as $coa)
+                                                                    <option value="{{ $coa->id }}"
+                                                                        {{ $transaction->debit_coa_id == $coa->id ? 'selected' : '' }}>
+                                                                        {{ $coa->coa_no }} - {{ $coa->name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
 
-                                                            <!-- Link untuk menambahkan kategori baru -->
-                                                            <a href="#" data-bs-toggle="modal"
-                                                                data-bs-target="#categoryModal"
-                                                                style="display: inline-block; margin-top: 5px; margin-bottom: 5px;">
-                                                                <i class="fa fa-plus"></i> Add New Category
-                                                            </a>
-
-                                                            <!-- Pesan error atau informasi tambahan -->
-                                                            @if ($errors->has('coa_category_id'))
-                                                                <p style="color: red; margin-top: 5px;">
-                                                                    {{ $errors->first('coa_category_id') }}</p>
+                                                            @if ($errors->has('debit_coa_id'))
+                                                                <p style="color: red">
+                                                                    {{ $errors->first('debit_coa_id') }}</p>
                                                             @else
-                                                                <small class="text-muted"
-                                                                    style="font-size: 14px; display: block;">
-                                                                    Pilih Kategori yang sesuai atau tambahkan Kategori
-                                                                    yang baru
-                                                                </small>
+                                                                <small class="text-muted">Pilih akun yang akan
+                                                                    didebit</small>
                                                             @endif
                                                         </div>
 
-                                                    </div>
+                                                        <div class="form-group mb-4">
+                                                            <label for="description"
+                                                                class="form-label">Deskripsi</label>
 
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="brand-name-icon">Name<span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative mt-2 mb-2">
-                                                                <input type="text"
-                                                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
-                                                                    placeholder="Nama" id="brand-name-icon"
-                                                                    name="name" value="{{ $coa->name }}">
-                                                            </div>
-                                                            @if ($errors->has('name'))
-                                                                <p style="color: red">{{ $errors->first('name') }}</p>
-                                                            @else
-                                                                <small class="text-muted" style="font-size: 14px;">
-                                                                    Berikan nama yang unik untuk Anda yang akan
-                                                                    mudah dikenali oleh pengguna.
-                                                                </small>
-                                                            @endif
-                                                        </div>
-
-                                                        <!-- Description Section -->
-                                                        <div class="form-group mb-2">
-                                                            <label for="description" class="form-label">Description
-                                                            </label>
                                                             <div class="form-floating">
                                                                 <textarea class="form-control" placeholder="Enter description" id="description" name="description" rows="4"
-                                                                    style="height: 100px">{{ $coa->description ?? '' }}</textarea>
+                                                                    style="height: 100px">{{ $transaction->description ?? '' }}</textarea>
                                                             </div>
-                                                            <small class="text-muted">Enter details about this
-                                                                invoice</small>
+                                                            <small class="text-muted">Masukkan rincian mengenai tagihan
+                                                                ini</small>
                                                         </div>
+                                                    </div>
 
+                                                    <div class="col-12 d-flex justify-content-end mt-3">
+                                                        <button type="button"
+                                                            class="btn btn-sm btn-light-secondary me-2">
+                                                            <i class="bi bi-arrow-left-circle me-1"></i>
+                                                            Kembali
+                                                        </button>
+                                                        <button type="submit" class="btn btn-sm btn-primary">
+                                                            <i class="bi bi-check-circle me-1"></i>
+                                                            Submit Transaction
+                                                        </button>
                                                     </div>
                                                 </div>
-
-                                                <!-- Submit Button -->
-                                                <div class="col-12 d-flex justify-content-end mt-3">
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-light-secondary me-2">
-                                                        <i class="bi bi-arrow-left-circle me-1"></i>
-                                                        Kembali
-                                                    </button>
-                                                    <button type="submit" class="btn btn-sm btn-primary">
-                                                        <i class="bi bi-check-circle me-1"></i>
-                                                        Submit COA
-                                                    </button>
-                                                </div>
-
                                             </div>
                                         </form>
 
@@ -576,59 +634,15 @@
                         </div>
                     </div>
                 </section>
-
-                {{-- modal add category --}}
-                <div class="modal fade" id="categoryModal" tabindex="-1" role="dialog"
-                    aria-labelledby="categoryModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="categoryModalLabel">Add New
-                                    Category</h4>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <form action="{{ route('store-categorycoa') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="parent_id" id="parentId">
-                                <input type="hidden" name="type" id="categoryType" value="category">
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="category_name">Category Name <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" class="form-control mb-2 mt-2" id="category_name"
-                                            name="category_name" placeholder="Masukan Nama Kategory" required>
-                                        <small class="text-muted" style="font-size: 14px;">
-                                            Silakan masukkan nama kategori yang unik dan
-                                            deskriptif.
-                                        </small>
-
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light"
-                                        data-bs-dismiss="modal">Cancel</button>
-                                    <button type="submit" class="btn btn-primary">Save
-                                        Category</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
             </div>
             @include('admin.layouts.footer')
         </div>
     </div>
 
+    <script src="{{ asset('assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/fontawesome/all.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
-    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-
-    {{-- select 2 --}}
     <script>
         $(document).ready(function() {
             $('.select2-basic-category').select2({
@@ -657,23 +671,6 @@
         });
     </script>
 
-    {{-- modal sukses create category --}}
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                title: 'Success!',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#4A69E2',
-                timer: 2000,
-                timerProgressBar: true
-            });
-        </script>
-    @endif
-
-
-    {{-- modal pesan error --}}
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             @if ($errors->any())
@@ -694,6 +691,16 @@
         });
     </script>
 
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendors/fontawesome/all.min.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 </body>
 
 </html>

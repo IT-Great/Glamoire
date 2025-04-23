@@ -637,14 +637,15 @@
 
                                         <td>
                                             <div class="d-flex flex-row gap-2">
-                                                <!-- Changed from flex-column to flex-row -->
-                                                <a href="{{ url('/edit-coa/' . $coa->id) }}" class="btn-action edit">
-                                                    <i class="bi bi-pencil"></i> Edit
+                                                <a href="{{ route('edit-chartofaccount', ['id' => $coa->id]) }}"
+                                                    class="btn btn-sm btn-action edit">
+                                                    <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <a href="javascript:void(0);" class="btn-action delete delete-coa"
+
+                                                <button class="btn btn-sm btn-danger delete-coa"
                                                     data-id="{{ $coa->id }}">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </a>
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -662,12 +663,72 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+
+    {{-- modal delete --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.delete-coa', function(e) {
+                e.preventDefault();
+
+                const coaId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: "Data Chart of Account akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Kirim request delete ke server
+                        $.ajax({
+                            url: `/coa/${coaId}`,
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: response.message ||
+                                        'Chart of Account berhasil dihapus.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#4A69E2',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#dc3545',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+    {{-- modal sukses --}}
     @if (session('success'))
         <script>
             Swal.fire({

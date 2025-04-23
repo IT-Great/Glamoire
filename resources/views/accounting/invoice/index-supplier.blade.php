@@ -16,6 +16,7 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
         :root {
@@ -422,7 +423,6 @@
                     </div>
 
                     <!-- Filters Row -->
-                    <!-- Filters Row -->
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h4>Filter Income</h4>
@@ -480,6 +480,7 @@
                         </div>
                     </div>
 
+                    {{-- tabel supplier --}}
                     <div class="card">
                         <div class="card-header">
                             <div class="row align-items-center">
@@ -519,18 +520,21 @@
                                             <td>{{ $supplier->address }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('create-invoice', ['id' => 1]) }}"
-                                                        class="btn btn-sm btn-info">
+                                                    <a href="javascript:void(0)"
+                                                        class="btn btn-sm btn-info view-supplier"
+                                                        data-id="{{ $supplier->id }}">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('edit-invoice', ['id' => 1]) }}"
+
+                                                    <a href="{{ route('edit-supplier', ['id' => $supplier->id]) }}"
                                                         class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    <button class="btn btn-sm btn-danger delete-invoice"
-                                                        data-id="1">
-                                                        <i class="bi bi-trash"></i>
+                                                    <button class="btn btn-danger btn-sm delete-invoice"
+                                                        data-id="{{ $supplier->id }}">
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -540,6 +544,126 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Modal -->
+                <div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Tambahkan modal-dialog-centered -->
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: #183018; color: white;">
+                                <h5 class="modal-title text-white" id="supplierModalLabel">
+                                    <i class="fas fa-building me-2"></i>Supplier Details
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="row">
+                                    <!-- Left column - Contact Information -->
+                                    <div class="col-md-6 mb-4 mb-md-0">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><i class="fas fa-id-card me-2"></i>Contact
+                                                    Information</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+
+                                                    <h4 id="supplierName" class="mb-0"></h4>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-phone-alt text-primary me-2"></i>
+                                                        <strong>Phone:</strong>
+                                                    </div>
+                                                    <p id="supplierTelp" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-envelope text-primary me-2"></i>
+                                                        <strong>Email:</strong>
+                                                    </div>
+                                                    <p id="supplierEmail" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                        <strong>Address:</strong>
+                                                    </div>
+                                                    <div class="ms-4">
+                                                        <p id="supplierAddress" class="mb-1"></p>
+                                                        <div class="d-flex">
+                                                            <span id="supplierCity" class="me-1"></span>,
+                                                            <span id="supplierProvince" class="mx-1"></span>
+                                                            <span id="supplierPostCode" class="ms-1"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right column - Banking & Additional Info -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><i class="fas fa-university me-2"></i>Banking
+                                                    Information</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-university text-primary me-2"></i>
+                                                        <strong>Bank Name:</strong>
+                                                    </div>
+                                                    <p id="supplierBankName" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-credit-card text-primary me-2"></i>
+                                                        <strong>Account Number:</strong>
+                                                    </div>
+                                                    <p id="supplierAccountNumber" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-user text-primary me-2"></i>
+                                                        <strong>Account Holder:</strong>
+                                                    </div>
+                                                    <p id="supplierAccountHolder" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mt-4">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                                        <strong>Description:</strong>
+                                                    </div>
+                                                    <div class="p-3 bg-light rounded ms-4">
+                                                        <p id="supplierDescription" class="mb-0 fst-italic"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i>Close
+                                </button>
+                                <button type="button" class="btn btn-primary" id="editSupplier">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>
@@ -556,6 +680,137 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+
+    {{-- modal views supplier --}}
+    <script>
+        $(document).ready(function() {
+            // Handle view supplier button click
+            $(document).on('click', '.view-supplier', function() {
+                // Get the supplier ID from data attribute
+                const supplierId = $(this).data('id');
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Send AJAX request to get the supplier details
+                $.ajax({
+                    url: `/supplier-data/${supplierId}`, // Adjust route as needed
+                    type: 'GET',
+                    success: function(response) {
+                        // Close loading indicator
+                        Swal.close();
+
+                        // Get initials for the avatar
+                        const nameParts = response.name.split(' ');
+                        const initials = nameParts.length > 1 ?
+                            nameParts[0].charAt(0) + nameParts[1].charAt(0) :
+                            nameParts[0].charAt(0);
+
+                        // Populate modal with supplier details
+                        $('#supplierInitials').text(initials.toUpperCase());
+                        $('#supplierName').text(response.name);
+                        $('#supplierTelp').text(response.no_telp || 'N/A');
+                        $('#supplierEmail').text(response.email || 'N/A');
+                        $('#supplierAddress').text(response.address || 'N/A');
+                        $('#supplierCity').text(response.city || 'N/A');
+                        $('#supplierProvince').text(response.province || 'N/A');
+                        $('#supplierPostCode').text(response.post_code || 'N/A');
+                        $('#supplierAccountNumber').text(response.accountnumber || 'N/A');
+                        $('#supplierAccountHolder').text(response.accountnumber_holders_name ||
+                            'N/A');
+                        $('#supplierBankName').text(response.bank_name || 'N/A');
+                        $('#supplierDescription').text(response.description ||
+                            'No description available');
+
+                        // Store supplier ID for edit button
+                        $('#editSupplier').data('id', supplierId);
+
+                        // Show the modal
+                        $('#supplierModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Failed to load supplier details', 'error');
+                    }
+                });
+            });
+
+            // Handle edit supplier button click (you can implement this functionality)
+            $(document).on('click', '#editSupplier', function() {
+                const supplierId = $(this).data('id');
+                $('#supplierModal').modal('hide');
+                // Redirect to edit page or open edit modal
+                // window.location.href = `/suppliers/${supplierId}/edit`;
+                // Or trigger another modal
+                // $('#editSupplierModal').modal('show');
+            });
+        });
+    </script>
+
+    {{-- modal delete --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.delete-invoice', function(e) {
+                e.preventDefault();
+
+                const invoiceId = $(this).data('id');
+
+                Swal.fire({
+                    title: 'Apakah kamu yakin?',
+                    text: "Data invoice akan dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/invoice-delete-suppliers/${invoiceId}`, // sesuaikan route jika diperlukan
+                            type: 'DELETE',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: response.message ||
+                                        'Invoice berhasil dihapus.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#4A69E2',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                }).then(() => {
+                                    // Reload halaman setelah sukses
+                                    window.location.reload();
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: 'Gagal!',
+                                    text: xhr.responseJSON?.message ||
+                                        'Terjadi kesalahan.',
+                                    icon: 'error',
+                                    confirmButtonText: 'OK',
+                                    confirmButtonColor: '#dc3545',
+                                    timer: 2000,
+                                    timerProgressBar: true
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+    {{-- modal sukses --}}
     @if (session('success'))
         <script>
             Swal.fire({
@@ -572,10 +827,8 @@
 
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
-
     <script src="assets/js/main.js"></script>
 </body>
 

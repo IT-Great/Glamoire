@@ -164,50 +164,6 @@
             color: #ef4444;
         }
 
-        /* Table Styling */
-        .finance-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-        }
-
-        .finance-table thead th {
-            background-color: var(--gray-100);
-            padding: 1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            border-bottom: 2px solid var(--gray-200);
-            white-space: nowrap;
-        }
-
-        .finance-table tbody tr {
-            transition: all 0.2s ease;
-        }
-
-        .finance-table tbody tr:hover {
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-
-        .finance-table td {
-            padding: 1rem;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--gray-200);
-        }
-
-        /* Form Controls */
-        .form-control,
-        .form-select {
-            padding: 0.6rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--gray-300);
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.25);
-            border-color: var(--primary);
-        }
-
         /* Buttons */
         .btn {
             padding: 0.6rem 1.2rem;
@@ -574,20 +530,18 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h4>Income Transactions</h4>
-                        <a href="#" class="btn btn-primary btn-sm">
-                            <i class="bi bi-plus-circle me-1"></i> Add Income
-                        </a>
+
                     </div>
                     <div class="card-body">
-                        <table class="table finance-table" id="table1">
+                        <table class="table" id="table1">
                             <thead>
                                 <tr>
                                     <th>Invoice No</th>
-                                    <th>Supplier</th>
-                                    <th>Description</th>
+                                    <th>Customer</th>
+                                    <th>Payment Method</th>
                                     <th>Amount</th>
-                                    <th>Date</th>
-                                    <th>Due Date</th>
+                                    <th>Order Date</th>
+                                    <th>Payment Date</th>
                                     <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
@@ -596,48 +550,33 @@
                                 @foreach ($finances as $finance)
                                     <tr>
                                         <td>
-                                            <span class="invoice-number">{{ $finance->invoice_number }}</span>
+                                            <span
+                                                class="invoice-number">{{ $finance->transaction_id ?? ($finance->order->doku_order_id ?? '—') }}</span>
                                         </td>
-                                        <td>{{ $finance->supplier_name }}</td>
-                                        <td>{{ Str::limit($finance->description ?? 'Payment for goods/services', 30, '...') }}
-                                        </td>
+                                        <td>{{ $finance->user->name ?? 'N/A' }}</td>
+                                        <td>{{ Str::limit($finance->payment_method ?? 'N/A', 30, '...') }}</td>
                                         <td>
                                             <span class="currency">Rp
                                                 {{ number_format($finance->amount, 0, ',', '.') }}</span>
                                         </td>
                                         <td>
-                                            <span
-                                                class="date-label">{{ \Carbon\Carbon::parse($finance->date)->format('d M Y') }}</span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="date-label">{{ \Carbon\Carbon::parse($finance->deadline)->format('d M Y') }}</span>
-                                        </td>
-                                        <td>
-                                            @php
-                                                $statusClass = strtolower($finance->status);
-                                                if (in_array($statusClass, ['success', 'pending', 'failed'])) {
-                                                    $class = $statusClass;
-                                                } else {
-                                                    $class = 'pending';
-                                                }
-                                            @endphp
-                                            <span class="status-badge {{ $class }}">
-                                                {{ ucfirst($finance->status) }}
+                                            <span class="date-label">
+                                                {{ $finance->order->order_date ? \Carbon\Carbon::parse($finance->order->order_date)->format('d M Y') : '—' }}
                                             </span>
                                         </td>
                                         <td>
+                                            <span class="date-label">
+                                                {{ $finance->payment_date ? \Carbon\Carbon::parse($finance->payment_date)->format('d M Y') : '—' }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge success">{{ ucfirst($finance->status) }}</span>
+                                        </td>
+                                        <td>
                                             <div class="d-flex gap-2">
-                                                <a href="#" class="btn-action view" title="View">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="#" class="btn-action edit" title="Edit">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <a href="javascript:void(0);" class="btn-action delete delete-finance"
-                                                    data-id="{{ $finance->id }}" title="Delete">
-                                                    <i class="bi bi-trash"></i>
-                                                </a>
+                                                <a href="" class="btn-action view" title="View Order"><i
+                                                        class="bi bi-eye"></i></a>
+
                                             </div>
                                         </td>
                                     </tr>
@@ -651,7 +590,9 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
@@ -661,7 +602,7 @@
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
-
+    <script src="assets/js/pages/dashboard.js"></script>
     <script src="assets/js/main.js"></script>
 </body>
 

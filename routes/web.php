@@ -516,8 +516,8 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     Route::get('/coa-create', [ChartofAccountController::class, 'createChartofAccount'])->name('create-chartofaccount');
     Route::post('/create-coa', [ChartofAccountController::class, 'storeChartofAccount'])->name('store-chartofaccount');
     Route::post('/create-categorycoa', [ChartofAccountController::class, 'storeCategoryCoa'])->name('store-categorycoa');
-    Route::get('/edit-coa', [ChartofAccountController::class, 'editChartofAccount'])->name('edit-chartofaccount');
-    Route::post('/edit-coa', [ChartofAccountController::class, 'updateChartofAccount'])->name('update-chartofaccount');
+    Route::get('/coa-edit/{id}', [ChartofAccountController::class, 'editChartofAccount'])->name('edit-chartofaccount');
+    Route::post('/coa-edit/{id}', [ChartofAccountController::class, 'updateChartofAccount'])->name('update-chartofaccount');
     Route::delete('/coa/{id}', [ChartofAccountController::class, 'deleteChartofAccount'])->name('delete-chartofaccount');
     Route::get('/category-coa', [ChartofAccountController::class, 'indexCategoryChartofAccount'])->name('index-category-chartofaccount');
 
@@ -528,32 +528,40 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     // Invoice payment routes
     Route::get('/invoice/{id}/process-payment', [InvoiceController::class, 'viewProcessPayment'])->name('view-process-payment');
     Route::post('/invoices/process-payment', [InvoiceController::class, 'processPayment'])->name('process-invoice-payment');
-   
+
     Route::get('/invoices/{id}/payment-history', [InvoiceController::class, 'paymentHistory'])->name('invoice-payment-history');
     Route::get('/invoices/{id}/details', [InvoiceController::class, 'getInvoiceDetails'])->name('get-invoice-details');
 
 
-
-
-
-
-
-
-
-    Route::get('/invoice-edit', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
+    Route::get('/invoice/{id}/edit', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
     Route::post('/invoice-edit', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
-    Route::delete('/invoice/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
+    Route::delete('/invoice-suppliers/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
+
 
     // SUPPLIER-INVOICE
     Route::get('/invoice-supplier', [InvoiceController::class, 'indexSupplier'])->name('index-supplier');
     Route::get('/invoice-create-supplier', [InvoiceController::class, 'createSupplier'])->name('create-supplier');
     Route::post('/create-supplier', [InvoiceController::class, 'storeSupplier'])->name('store-supplier');
+    Route::get('/supplier-data/{id}', [InvoiceController::class, 'getSupplierDetails']);
+
+    Route::get('/invoice-supplier/{id}/edit', [InvoiceController::class, 'editSupplier'])->name('edit-supplier');
+    Route::post('/invoice-edit-supplier', [InvoiceController::class, 'updateSupplier'])->name('update-supplier');
+    Route::delete('/invoice-delete-suppliers/{id}', [InvoiceController::class, 'deleteSupplier'])->name('delete-supplier');
+
 
     // TRANSACTION
     Route::get('/transaction', [TransactionController::class, 'indexTransaction'])->name('index-transaction');
     Route::get('/transaction-create', [TransactionController::class, 'createTransaction'])->name('create-transaction');
-    Route::post('/transaction-trasnfer-create', [TransactionController::class, 'storeTransactionTransfer'])->name('store-transaction-transfer');
+    Route::post('/transaction-transfer-create', [TransactionController::class, 'storeTransactionTransfer'])->name('store-transaction-transfer');
     Route::post('/transaction-receive-create', [TransactionController::class, 'storeTransactionReceive'])->name('store-transaction-receive');
+  
+    Route::get('/transaction-edit/{id}', [TransactionController::class, 'editTransaction'])->name('edit-transaction');
+    Route::put('/transaction-transfer-update/{id}', [TransactionController::class, 'updateTransactionTransfer'])->name('update-transaction-transfer');
+    Route::put('/transaction-receive-update/{id}', [TransactionController::class, 'updateTransactionReceive'])->name('update-transaction-receive');
+
+    Route::get('/transactions/{id}', [TransactionController::class, 'getTransaction'])->name('get-transaction');
+
+    Route::delete('/transaction/{id}', [TransactionController::class, 'deleteTransaction'])->name('delete-transaction');
 
     // FINANCIAL
     Route::get('/financial-income', [FinancialController::class, 'indexFinancialIncome'])->name('index-financial-income');
