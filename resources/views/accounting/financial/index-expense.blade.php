@@ -171,6 +171,15 @@
             transition: all 0.3s ease;
         }
 
+        .btn-action.tiny {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            /* biasanya setara 14px */
+            line-height: 1.5;
+            border-radius: 0.2rem;
+
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
@@ -613,19 +622,10 @@
                                         </td>
                                         <td>Bank Transfer</td>
                                         <td>
-                                            <div class="action-buttons">
-                                                <a href="{{ route('create-invoice', ['id' => 1]) }}"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                                <a href="{{ route('edit-invoice', ['id' => 1]) }}"
-                                                    class="btn btn-sm btn-warning">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button class="btn btn-sm btn-danger delete-invoice" data-id="1">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </div>
+                                            <a href="#" class="btn-action view tiny view-income btn-primary"
+                                                data-id="{{ $invoice->id }}">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -633,6 +633,118 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="modal fade" id="incomeModal" tabindex="-1" aria-labelledby="incomeModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: #183018; color: white;">
+                                <h5 class="modal-title text-white" id="incomeModalLabel">
+                                    <i class="bi bi-cash-coin me-2"></i>Income Detail
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Transaction Header Info -->
+                                <div class="card mb-3 bg-light">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="transaction-icon me-3">
+                                                        <i class="bi bi-hash fs-1 text-primary"></i>
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="text-muted mb-0">Transaction ID</h6>
+                                                        <h4 id="modalTransactionID" class="mb-0">-</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div
+                                                    class="d-flex align-items-center justify-content-md-end mt-3 mt-md-0">
+                                                    <div class="transaction-status text-end">
+                                                        <h6 class="text-muted mb-0">Status</h6>
+                                                        <span id="modalStatus" class="badge bg-success">-</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Income Details -->
+                                <div class="row">
+                                    <!-- Left Column -->
+                                    <div class="col-md-6">
+                                        <!-- Amount Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-2">
+                                                    <i class="bi bi-cash-coin me-2"></i>Amount
+                                                </h6>
+                                                <h3 id="modalAmount" class="text-success mb-0">-</h3>
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Method Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">
+                                                    <i class="bi bi-credit-card me-2"></i>Payment Method
+                                                </h6>
+                                                <div class="d-flex align-items-center">
+                                                    <div
+                                                        class="account-icon bg-success bg-opacity-10 p-2 rounded-circle me-3">
+                                                        <i class="bi bi-wallet2 text-success"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p id="modalPaymentMethod" class="mb-0 fw-bold">-</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div class="col-md-6">
+                                        <!-- Details Card -->
+                                        <div class="card mb-3 border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">
+                                                    <i class="bi bi-info-circle me-2"></i>Payment Details
+                                                </h6>
+                                                <div class="transaction-details">
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">User</div>
+                                                        <div id="modalUserName" class="col-7 fw-bold">-</div>
+                                                    </div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">Payment Date</div>
+                                                        <div id="modalPaymentDate" class="col-7">-</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x-circle me-2"></i>Close
+                                </button>
+                                <a href="#" id="editIncome" class="btn btn-warning">
+                                    <i class="bi bi-pencil me-2"></i>Edit
+                                </a>
+                                <button type="button" id="printIncome" class="btn btn-primary">
+                                    <i class="bi bi-printer me-2"></i>Print
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>

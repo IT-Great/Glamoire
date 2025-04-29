@@ -123,8 +123,8 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Voucher Management</h3>
-                            <p class="text-subtitle text-muted">Create and manage your store vouchers effectively</p>
+                            <h3>Manajemen Voucher</h3>
+                            <p class="text-subtitle text-muted">Buat dan kelola voucher toko Anda dengan efektif</p>
                         </div>
                     </div>
                 </div>
@@ -136,8 +136,8 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
-                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
+                                        <h6 class="text-muted mb-2">Active Promos</h6>
+                                        <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
                                     </div>
                                     <div class="stats-icon blue">
                                         <i class="bi bi-box fs-3"></i>
@@ -146,33 +146,31 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 ">
                         <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Voucher Usage</h6>
-                                        <h3 class="mb-0">{{ $voucherUsage ?? 0 }}</h3>
+                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
+                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
                                     </div>
                                     <div class="stats-icon green">
-                                        <i class="bi bi-receipt fs-3"></i>
+                                        <i class="bi bi-receipt"></i>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 ">
                         <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">Expired Vouchers</h6>
-                                        <h3 class="mb-0">{{ $expiredVouchers ?? 0 }}</h3>
+                                        <h6 class="text-muted mb-2">Active Discounts</h6>
+                                        <h3 class="mb-0">{{ $activeDiscounts ?? 0 }}</h3>
                                     </div>
                                     <div class="stats-icon red">
-                                        <i class="bi bi-x-circle fs-3"></i>
+                                        <i class="bi bi-percent"></i>
                                     </div>
                                 </div>
                             </div>
@@ -182,13 +180,16 @@
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo') }}"
+                        class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
                         <i class="bi bi-grid-fill me-2"></i>All Promos
                     </a>
-                    <a href="/promo-voucher" class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-voucher') }}"
+                        class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
                         <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
                     </a>
-                    <a href="/promo-diskon" class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-diskon') }}"
+                        class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Discounts
                     </a>
                 </div>

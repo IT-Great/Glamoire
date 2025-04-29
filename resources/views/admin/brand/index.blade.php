@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -22,7 +20,7 @@
     <link rel="stylesheet" href="assets/css/brand/createbrand.css">
 
     <style>
-         .stats-card {
+        .stats-card {
             transition: transform 0.3s ease;
             cursor: pointer;
         }
@@ -53,23 +51,6 @@
             transform: scale(1.1);
         }
 
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            /* Menyusun tombol secara vertikal */
-        }
-
-        .action-buttons .badge {
-            cursor: pointer;
-            padding: 8px 12px;
-            margin: 0 3px;
-            transition: all 0.2s ease;
-        }
-
-        .action-buttons .badge:hover {
-            transform: translateY(-2px);
-        }
-
         .brand-details {
             display: flex;
             flex-direction: column;
@@ -85,6 +66,30 @@
         .brand-meta {
             font-size: 0.9rem;
             color: #666;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        .transaction-icon i {
+            opacity: 0.8;
+        }
+
+        .account-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .account-icon i {
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -102,12 +107,12 @@
                             <h2>Brand Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                                     <li class="breadcrumb-item active">Brands</li>
                                 </ol>
                             </nav>
                         </div>
-                       
+
                     </div>
                 </div>
 
@@ -192,6 +197,7 @@
                                                 <img src="{{ Storage::url($brand->brand_logo) }}"
                                                     alt="{{ $brand->name }}" class="brand-logo lazyload"
                                                     onclick="openImageInNewTab('{{ Storage::url($brand->brand_logo) }}')">
+
                                                 <div class="brand-details">
                                                     <span
                                                         class="brand-name">{{ Str::limit($brand->name, 20, '...') }}</span>
@@ -204,20 +210,20 @@
                                         </td>
                                         <td>{{ $brand->brand_code }}</td>
                                         <td>
-                                            <div class="action-buttons">
-                                                <a href="{{ url('/detail-brand/' . $brand->id) }}"
-                                                    class="badge bg-info mb-2">
-                                                    <i class="bi bi-eye"></i> View
-                                                </a>
-                                                <a href="{{ url('/edit-brand/' . $brand->id) }}"
-                                                    class="badge bg-warning mb-2">
-                                                    <i class="bi bi-pencil"></i> Edit
-                                                </a>
-                                                <a href="javascript:void(0);" class="badge bg-danger delete-brand"
-                                                    data-id="{{ $brand->id }}">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </a>
-                                            </div>
+                                            <a href="{{ route('detail-brand-admin', $brand->id) }}"
+                                                class="badge bg-warning mb-2">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+
+                                            <a href="#" class="badge bg-info mb-2 view-brand"
+                                                data-id="{{ $brand->id }}">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+
+                                            <a href="javascript:void(0);" class="badge bg-danger delete-brand"
+                                                data-id="{{ $brand->id }}">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
                                         </td>
 
                                     </tr>
@@ -225,6 +231,116 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background: #183018; color: white;">
+                                    <h5 class="modal-title text-white" id="brandModalLabel">
+                                        <i class="bi bi-tag me-2"></i>Brand Detail
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-4">
+                                    <!-- Main Card -->
+                                    <div class="card bg-light mb-4">
+                                        <div class="card-body p-4">
+                                            <div class="row">
+                                                <!-- Brand Code Section -->
+                                                <div class="col-md-8">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="icon-container me-3">
+                                                            <i class="bi bi-tag-fill fs-1 text-primary"></i>
+                                                        </div>
+                                                        <div>
+                                                            <div class="text-secondary">Brand Code</div>
+                                                            <h2 id="modalBrandCode" class="mb-0 fw-bold">-</h2>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Brand Logo Section -->
+                                                <div class="col-md-4 text-end">
+                                                    <div class="d-flex flex-column align-items-end">
+                                                        <div class="text-secondary mb-2">Brand Logo</div>
+                                                        <a href="#" id="modalBrandLogoLink" target="_blank">
+                                                            <div class="brand-logo-container bg-white rounded p-2"
+                                                                style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                                                <img id="modalBrandLogo" src=""
+                                                                    alt="Brand Logo"
+                                                                    style="max-width: 90px; max-height: 90px; object-fit: contain;">
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <!-- Left Column - Brand Name -->
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-fonts me-2 text-secondary"></i>
+                                                        <div class="text-secondary">Brand Name</div>
+                                                    </div>
+                                                    <h3 id="modalBrandName" class="mb-0 fw-bold">-</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Column - Brand Details -->
+                                        <div class="col-md-6 mb-4">
+                                            <div class="card border-0 shadow-sm h-100">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <i class="bi bi-info-circle me-2 text-secondary"></i>
+                                                        <div class="text-secondary">Brand Details</div>
+                                                    </div>
+                                                    <div class="py-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-5 text-secondary">Created Date</div>
+                                                            <div id="modalCreatedDate" class="col-7 fw-medium">-</div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-5 text-secondary">Updated Date</div>
+                                                            <div id="modalUpdatedDate" class="col-7 fw-medium">-</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Brand Description -->
+                                    <div class="card border-0 shadow-sm mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex align-items-center mb-3">
+                                                <i class="bi bi-card-text me-2 text-secondary"></i>
+                                                <div class="text-secondary">Brand Description</div>
+                                            </div>
+                                            <p id="modalDescription" class="mb-0">-</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="bi bi-x-circle me-2"></i>Close
+                                    </button>
+
+                                    <a id="editBrand" href="#" class="btn btn-warning">
+                                        <i class="bi bi-pencil me-2"></i>Edit
+                                    </a>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Pagination -->
@@ -252,6 +368,11 @@
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>
     <script src="assets/js/brand/indexbrand.js"></script>
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
 
     @if (session('success'))
         <script>
@@ -266,6 +387,106 @@
             });
         </script>
     @endif
+
+    <script>
+        // View brand details
+        $(document).on('click', '.view-brand', function(e) {
+            e.preventDefault();
+            let id = $(this).data('id');
+
+            // Show loading state
+            Swal.fire({
+                title: 'Loading...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            $.ajax({
+                url: `/brands/${id}`,
+                method: 'GET',
+                success: function(response) {
+                    // Close loading indicator
+                    Swal.close();
+
+                    // Populate modal with brand data
+                    $('#modalBrandCode').text(response.brand_code || '-');
+                    $('#modalBrandName').text(response.name || '-');
+                    $('#modalDescription').text(response.description || '-');
+
+                    // Set brand logo if available
+                    if (response.brand_logo) {
+                        $('#modalBrandLogo').attr('src', response.brand_logo).show();
+                        $('#modalBrandLogoLink').attr('href', response.brand_logo);
+                        $('.brand-logo-container').css('background-color', '#fff');
+                    } else {
+                        $('#modalBrandLogo').attr('src', '/placeholder-image.png').show();
+                        $('#modalBrandLogoLink').attr('href', '/placeholder-image.png');
+                        $('.brand-logo-container').css('background-color', '#f8f9fa');
+                    }
+
+                    // Format created date
+                    if (response.created_at) {
+                        const createdDate = new Date(response.created_at);
+                        const formattedCreatedDate = createdDate.toLocaleDateString('id-ID', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        $('#modalCreatedDate').text(formattedCreatedDate);
+                    } else {
+                        $('#modalCreatedDate').text('-');
+                    }
+
+                    // Format updated date
+                    if (response.updated_at) {
+                        const updatedDate = new Date(response.updated_at);
+                        const formattedUpdatedDate = updatedDate.toLocaleDateString('id-ID', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        });
+                        $('#modalUpdatedDate').text(formattedUpdatedDate);
+                    } else {
+                        $('#modalUpdatedDate').text('-');
+                    }
+
+                    // Set edit link
+                    $('#editBrand').attr('href', `/edit-brand/${id}`);
+
+                    // Show the modal
+                    $('#brandModal').modal('show');
+                },
+                error: function() {
+                    Swal.fire('Error', 'Failed to load brand data.', 'error');
+                }
+            });
+        });
+
+        // Handle print brand button click
+        $(document).on('click', '#printBrand', function() {
+            const printContent = $('.modal-body').html();
+            const originalContent = $('body').html();
+
+            // Create a print window
+            $('body').html(`
+                <div style="padding: 20px;">
+                    <h2 style="text-align: center; margin-bottom: 20px;">Brand Details</h2>
+                    ${printContent}
+                </div>
+            `);
+
+            // Print
+            window.print();
+
+            // Restore original content
+            $('body').html(originalContent);
+
+            // Re-initialize Bootstrap elements
+            $('#brandModal').modal('show');
+        });
+    </script>
 
 </body>
 

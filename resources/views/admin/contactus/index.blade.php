@@ -117,7 +117,7 @@
                             <!-- Breadcrumb Navigation -->
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin/contact">Contact Us</a></li>
+                                    <li class="breadcrumb-item"><a href="{{route('index-contactus-admin')}}">Contact Us</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Contact Messages</li>
                                 </ol>
                             </nav>
@@ -248,7 +248,7 @@
                                         title: 'Deleted!',
                                         text: data.message,
                                         icon: 'success',
-                                        timer: 1800,
+                                        timer: 2000,
                                         timerProgressBar: true,
                                         showConfirmButton: true
                                     });
@@ -257,7 +257,7 @@
                                         title: 'Error!',
                                         text: data.message,
                                         icon: 'error',
-                                        timer: 1800,
+                                        timer: 2000,
                                         timerProgressBar: true,
                                         showConfirmButton: true
                                     });
@@ -272,7 +272,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/main.js"></script>

@@ -64,7 +64,6 @@
         }
     </style>
 
-
 </head>
 
 <body>
@@ -79,7 +78,7 @@
                         <div class="col-12 col-md-6 d-flex">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/affiliate-admin"
+                                    <li class="breadcrumb-item"><a href="{{ route('index-affiliate-admin') }}"
                                             style="text-decoration: none;">Affiliate</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Detail Affiliate</li>
                                 </ol>
@@ -270,8 +269,6 @@
 
                     </div>
                 </section>
-
-
             </div>
 
             @include('admin.layouts.footer')
@@ -287,13 +284,9 @@
 
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/vendors/choices.js/choices.min.js') }}"></script>
-
-    <!-- toastify -->
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
 
 </body>

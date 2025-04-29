@@ -69,9 +69,10 @@ class CategoryController extends Controller
     // CATEGORY ARTICLE
     public function indexCategoryArticle()
     {
-        $categoryArticle = CategoryArticle::all(); // Mengambil semua data kategori
+        $categoryArticle = CategoryArticle::withCount('articles')->get(); // Menghitung jumlah artikel per kategori
         return view('admin.article.category.index', compact('categoryArticle'));
     }
+
 
     public function createCategoryArticle(Request $request)
     {

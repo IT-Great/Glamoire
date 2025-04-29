@@ -79,7 +79,7 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="#">FAQ</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-faq-admin') }}">FAQ</a></li>
                                     <li class="breadcrumb-item active">All FAQ</li>
                                 </ol>
                             </nav>
@@ -97,7 +97,7 @@
                             <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                     data-bs-target="#faqModal">
-                                    <i class="fa fa-plus"></i>  Buat FAQ 
+                                    <i class="fa fa-plus"></i> Buat FAQ
                                 </button>
 
                             </div>
@@ -120,12 +120,13 @@
                                             <div class="category-name">{{ $category }}</div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-primary">{{ count($faqList) }} FAQs</span>
+                                            <span class="badge bg-info">{{ count($faqList) }} FAQs</span>
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-info" data-bs-toggle="collapse"
+                                            <button class="btn btn-sm btn-primary d-inline-flex align-items-center"
+                                                data-bs-toggle="collapse"
                                                 data-bs-target="#faq-{{ Str::slug($category) }}" aria-expanded="false">
-                                                <i class="bi bi-eye"></i> View
+                                                <i class="bi bi-eye me-1"></i> View
                                             </button>
                                         </td>
                                     </tr>
@@ -243,12 +244,12 @@
 
     <script>
         $(document).ready(function() {
+            // Initialize Select2 when modal is shown
             $('#faqModal').on('shown.bs.modal', function() {
                 $('.select2').select2({
-                    dropdownParent: $('#faqModal') // Penting untuk modal
+                    dropdownParent: $('#faqModal') // Important for modal
                 });
             });
-
 
             // Handle FAQ form submission
             $('#faqForm').on('submit', function(e) {
@@ -264,30 +265,64 @@
                     data: form.serialize(),
                     success: function(response) {
                         if (response.success) {
-                            // Tutup modal
+                            // Close modal
                             const faqModal = new bootstrap.Modal(document.getElementById('faqModal'));
                             faqModal.hide();
 
                             // Reset form
                             form[0].reset();
 
-                            // Tampilkan pesan sukses
+                            // Show success message with timer and progress bar
+                            let timerInterval;
                             Swal.fire({
                                 title: 'Success!',
                                 text: 'FAQ has been successfully added.',
                                 icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: '#4A69E2',
-                            });
+                                didOpen: () => {
+                                    // Initialize timer
+                                    const content = Swal.getHtmlContainer();
+                                    const $ = Swal.getPopup().querySelector.bind(Swal
+                                        .getPopup());
 
-                            // Reload halaman setelah beberapa detik
-                            setTimeout(function() {
+                                    // Add timer text
+                                    const timerElement = document.createElement('div');
+                                    timerElement.textContent = 'Auto-closing in 2s';
+                                    timerElement.style.marginTop = '10px';
+                                    timerElement.style.fontSize = '0.8em';
+                                    timerElement.style.color = '#666';
+                                    timerElement.id = 'swal-timer-text';
+
+                                    if (content) {
+                                        content.appendChild(timerElement);
+                                    }
+
+                                    timerInterval = setInterval(() => {
+                                        const timeLeft = Math.ceil(Swal
+                                            .getTimerLeft() / 1000);
+                                        if (document.getElementById(
+                                                'swal-timer-text')) {
+                                            document.getElementById(
+                                                    'swal-timer-text').textContent =
+                                                `Auto-closing in ${timeLeft}s`;
+                                        }
+                                    }, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then((result) => {
+                                // Reload page after alert is closed
                                 location.reload();
-                            }, 1500);
+                            });
                         }
                     },
                     error: function(xhr) {
-                        // Tangani error dari server
+                        // Handle server errors
                         Swal.fire({
                             title: 'Error!',
                             text: 'Failed to add FAQ. Please try again.',
@@ -319,18 +354,59 @@
                             },
                             success: function(response) {
                                 if (response.success) {
+                                    // Show success message with timer and progress bar
+                                    let timerInterval;
                                     Swal.fire({
                                         title: 'Deleted!',
                                         text: 'FAQ has been deleted.',
                                         icon: 'success',
+                                        timer: 2000,
+                                        timerProgressBar: true,
+                                        showConfirmButton: true,
                                         confirmButtonText: 'OK',
                                         confirmButtonColor: '#4A69E2',
-                                    });
+                                        didOpen: () => {
+                                            // Initialize timer
+                                            const content = Swal.getHtmlContainer();
+                                            const $ = Swal.getPopup().querySelector
+                                                .bind(Swal.getPopup());
 
-                                    // Reload halaman setelah beberapa detik
-                                    setTimeout(function() {
+                                            // Add timer text
+                                            const timerElement = document
+                                                .createElement('div');
+                                            timerElement.textContent =
+                                                'Auto-closing in 2s';
+                                            timerElement.style.marginTop = '10px';
+                                            timerElement.style.fontSize = '0.8em';
+                                            timerElement.style.color = '#666';
+                                            timerElement.id = 'swal-timer-text';
+
+                                            if (content) {
+                                                content.appendChild(timerElement);
+                                            }
+
+                                            timerInterval = setInterval(() => {
+                                                const timeLeft = Math.ceil(
+                                                    Swal
+                                                    .getTimerLeft() /
+                                                    1000);
+                                                if (document.getElementById(
+                                                        'swal-timer-text'
+                                                    )) {
+                                                    document.getElementById(
+                                                            'swal-timer-text'
+                                                        ).textContent =
+                                                        `Auto-closing in ${timeLeft}s`;
+                                                }
+                                            }, 100);
+                                        },
+                                        willClose: () => {
+                                            clearInterval(timerInterval);
+                                        }
+                                    }).then((result) => {
+                                        // Reload page after alert is closed
                                         location.reload();
-                                    }, 1500);
+                                    });
                                 }
                             },
                             error: function() {

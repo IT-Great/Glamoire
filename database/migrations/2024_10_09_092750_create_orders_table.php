@@ -32,8 +32,8 @@ return new class extends Migration
             $table->date('order_date');
 
             // relation invoice
-            // $table->unsignedBigInteger('invoice_id')->nullable();
-            // $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');    
+            $table->unsignedBigInteger('invoice_id')->nullable();
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');    
 
             // doku_order_id di tabel orders untuk menyimpan ID yang digenerate untuk DOKU
             $table->string('doku_order_id')->nullable(); // Simpan order ID dari DOKU sebagai string

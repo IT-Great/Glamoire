@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Article || Admin Glamoire</title>
+    <title>Category Article - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -33,7 +32,7 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/category-article">Category Article</a></li>
+                                    <li class="breadcrumb-item"><a href="{{route('index-category-article')}}">Category Article</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All Category Article</li>
                                 </ol>
                             </nav>
@@ -49,7 +48,7 @@
                                     <h4>List Category Article</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <a href="/article-admin" type="button"
+                                    <a href="{{route('index-article')}}" type="button"
                                         class="btn btn-sm btn-dark d-flex align-items-center"
                                         style="margin-right: 10px;">
                                         <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>All Article
@@ -67,23 +66,22 @@
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
+                                        <th>No</th>
                                         <th>Category Name</th>
-                                        <th>Total Product</th>
+                                        <th>Total Article</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($categoryArticle as $item)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->name }}</td>
                                             <td>
-                                                <!-- Jika Anda memiliki data total produk -->
                                                 <span
-                                                    class="badge bg-light-success">{{ $item->products_count ?? '0' }}</span>
+                                                    class="badge bg-light-success">{{ $item->articles_count ?? '0' }}</span>
                                             </td>
                                             <td>
-                                                <a href="/order-detail" class="btn btn-sm btn-warning">
-                                                    <i class="bi bi-eye" style="margin-right: 3px"></i>View </a>
                                                 <button class="btn btn-sm btn-danger delete-category"
                                                     data-id="{{ $item->id }}"> <i class="bi bi-trash"
                                                         style="margin-right: 3px"></i>Delete</button>
@@ -101,26 +99,50 @@
             <form id="categoryForm">
                 @csrf
                 <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
-                    aria-labelledby="myModalLabel33" aria-hidden="true">
+                    aria-labelledby="categoryModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="myModalLabel33">Form Add Categories</h4>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <i data-feather="x"></i>
-                                </button>
+                        <div class="modal-content"
+                            style="border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                            <div class="modal-header text-white"
+                                style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                                <h4 class="modal-title" id="categoryModalLabel">
+                                    <i class="bi bi-folder-plus me-2"></i>Tambah Kategori Baru
+                                </h4>
+                                <button type="button" class="btn-close text-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
 
-                            <div class="modal-body">
-                                <label>Category Name <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control"
-                                        name="name" id="name">
+                            <div class="modal-body p-4">
+                                <div class="mb-3">
+                                    <p class="text-muted small mb-4">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Kategori membantu mengorganisir konten Anda dan memudahkan pengguna untuk
+                                        menemukan
+                                        item terkait.
+                                    </p>
+
+                                    <label for="name" class="form-label fw-bold">Nama Kategori <span
+                                            class="text-danger">*</span></label>
+                                    <div class="input-group mb-2">
+                                        <span class="input-group-text bg-light">
+                                            <i class="bi bi-tag"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            placeholder="Contoh: Berita, Tutorial, Pengumuman">
+                                    </div>
+                                    <div class="form-text text-muted small">Pilih nama yang jelas dan ringkas.
+                                        Misalnya:
+                                        "Elektronik", "Koleksi Musim Panas"</div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-sm btn-primary ml-1">
-                                    <span class="d-none d-sm-block">Submit</span>
+
+                            <div class="modal-footer bg-light"
+                                style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    <i class="bi bi-x me-1"></i>Batal
+                                </button>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-check2 me-1"></i>Buat Kategori
                                 </button>
                             </div>
                         </div>
@@ -133,21 +155,14 @@
         </div>
     </div>
 
-
-
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
-
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script>
         $(document).ready(function() {
             $('#categoryForm').on('submit', function(e) {
@@ -156,7 +171,7 @@
                 let name = $('#name').val();
                 let _token = $('input[name="_token"]').val();
 
-                console.log("Submitting form with name: " + name); // Debugging line
+                console.log("Mengirim formulir dengan nama: " + name); // Baris debugging
 
                 $.ajax({
                     url: "{{ route('create-category-article') }}",
@@ -166,7 +181,7 @@
                         _token: _token
                     },
                     success: function(response) {
-                        console.log(response); // Debugging line
+                        console.log(response); // Baris debugging
                         if (response.success) {
                             $('#inlineForm').modal('hide');
 
@@ -175,11 +190,12 @@
 
                             // Tampilkan SweetAlert sukses
                             Swal.fire({
-                                title: 'Success!',
-                                text: 'Category Article has been successfully created.',
+                                title: 'Berhasil!',
+                                text: 'Kategori artikel berhasil dibuat.',
                                 icon: 'success',
-                                confirmButtonText: 'OK',
-                                confirmButtonColor: '#4A69E2', // Mengatur warna tombol OK
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
                                 customClass: {
                                     icon: 'swal-icon-success'
                                 }
@@ -191,17 +207,17 @@
                             }, 1500);
                         } else {
                             Swal.fire(
-                                'Error!',
-                                'There was an issue creating the category.',
+                                'Gagal!',
+                                'Terjadi kesalahan saat membuat kategori.',
                                 'error'
                             );
                         }
                     },
                     error: function(xhr) {
-                        console.log(xhr.responseText); // Debugging line
+                        console.log(xhr.responseText); // Baris debugging
                         Swal.fire(
-                            'Error!',
-                            'An error occurred while creating the category.',
+                            'Gagal!',
+                            'Terjadi kesalahan saat membuat kategori.',
                             'error'
                         );
                     }
@@ -212,13 +228,14 @@
                 let id = $(this).data('id');
 
                 Swal.fire({
-                    title: 'Are you sure?',
-                    text: "You won't be able to revert this!",
+                    title: 'Apakah Anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#4A69E2',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
@@ -229,29 +246,31 @@
                             },
                             success: function(response) {
                                 if (response.success) {
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'Category Article has been deleted.',
-                                        'success'
-                                    );
-
-                                    // Refresh halaman setelah 1,5 detik
-                                    setTimeout(function() {
-                                        location.reload();
-                                    }, 1500);
+                                    Swal.fire({
+                                        title: 'Terhapus!',
+                                        text: 'Kategori artikel berhasil dihapus.',
+                                        icon: 'success',
+                                        timer: 2000, // Timer 2 detik
+                                        timerProgressBar: true, // Tampilkan progress bar
+                                        showConfirmButton: false, // Tidak perlu tombol OK
+                                        willClose: () => {
+                                            location
+                                                .reload(); // Reload setelah 2 detik
+                                        }
+                                    });
                                 } else {
                                     Swal.fire(
-                                        'Error!',
+                                        'Gagal!',
                                         response.message,
                                         'error'
                                     );
                                 }
                             },
                             error: function(xhr) {
-                                console.log(xhr.responseText); // Debugging line
+                                console.log(xhr.responseText);
                                 Swal.fire(
-                                    'Error!',
-                                    'An error occurred while deleting the category.',
+                                    'Gagal!',
+                                    'Terjadi kesalahan saat menghapus kategori.',
                                     'error'
                                 );
                             }
@@ -259,6 +278,7 @@
                     }
                 });
             });
+
         });
     </script>
 

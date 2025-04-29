@@ -131,7 +131,8 @@
                         <div class="col-12 col-md-6 mb-3">
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/order-admin">Order</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-admin-order') }}">Order</a>
+                                    </li>
                                     <li class="breadcrumb-item active" aria-current="page">All Order</li>
                                 </ol>
                             </nav>
@@ -289,11 +290,12 @@
                                         </td>
 
                                         <td>
-                                            <a href="/order-detail/{{ $order->id }}"
+                                            <a href="{{ route('detail-admin-order', $order->id) }}" 
                                                 class="badge bg-primary d-inline-flex align-items-center">
                                                 <i class="bi bi-box-arrow-in-right me-1"></i>
                                                 Info Detail
-                                            </a>
+                                             </a>
+                                             
                                         </td>
                                     </tr>
                                 @endforeach

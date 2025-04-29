@@ -169,7 +169,8 @@
                             <h2>Stock Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/stock-product-admin">Product</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-product-admin') }}">Product</a>
+                                    </li>
                                     <li class="breadcrumb-item active">Stock</li>
                                 </ol>
                             </nav>
@@ -778,6 +779,13 @@
                 try {
                     let endpoint, isVariant;
                     const stockStatus = $(button).data('status');
+                    // const baseUrl = window.location.origin + '/Glamoire/public'; // sesuaikan dengan path Anda
+
+                    // if (variantId) {
+                    //     endpoint = `${baseUrl}/get-variant-stock-details/${variantId}`;
+                    // } else {
+                    //     endpoint = `${baseUrl}/get-stock-details/${productId}`;
+                    // }
 
                     if (variantId) {
                         endpoint = `/get-variant-stock-details/${variantId}`;

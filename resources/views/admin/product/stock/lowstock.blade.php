@@ -169,7 +169,8 @@
                             <h2>Stock Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/stock-product-admin">Product</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-product-admin') }}">Product</a>
+                                    </li>
                                     <li class="breadcrumb-item active">Stock</li>
                                 </ol>
                             </nav>

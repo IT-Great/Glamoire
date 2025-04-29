@@ -781,6 +781,8 @@
     </script>
 
 
+
+    {{-- modal delete --}}
     <script>
         $(document).ready(function() {
             $(document).on('click', '.delete-transaction', function(e) {

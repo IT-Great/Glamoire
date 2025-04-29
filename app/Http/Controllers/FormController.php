@@ -14,6 +14,7 @@ use App\Models\Partner;
 use App\Models\VoucherNewUser;
 use App\Models\File;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class FormController extends Controller
 {
@@ -33,75 +34,60 @@ class FormController extends Controller
         return response()->json(['exists' => $emailExists]);
     }
 
-    // public function sendQuestion(Request $request)
-    // {
-    //     try { 
-    //         $question = Question::create([
-    //             'fullname'   => $request->fullname,
-    //             'email'      => $request->email,
-    //             'question'   => $request->question,
-    //             'created_at' => now(),
-    //         ]);
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'Pertanyaan Anda Sudah Kami Terima. 
-    //             Tunggu Balasan Email Dari Kami Yaa'
-    //         ]);
-    //     } catch (Exception $err) {
-    //         dd($err);
-    //     }
-    // }
-
     public function sendQuestion(Request $request)
     {
         try {
-            $request->validate([
+            // Validasi input
+            $validator = Validator::make($request->all(), [
                 'fullname' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'question' => 'required|string',
-                'upload.*' => 'file|mimes:jpeg,png,jpg,mp4|max:5120', // Max 5MB per file
+                'upload.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:5120', // Max 5MB per file
             ]);
 
-            $imagePaths = [];
-            $videoPath = null;
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
 
-            // dd($request->file('upload'));
+            $responseImages = []; // Bisa multiple
+            $responseVideo = null; // Asumsi hanya 1 video diambil
 
-            if ($request->file('upload')) {
+            if ($request->hasFile('upload')) {
                 foreach ($request->file('upload') as $file) {
-                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                    if ($file->isValid()) {
                         $mimeType = $file->getMimeType();
                         $fileName = time() . '_' . $file->getClientOriginalName();
 
                         if (strpos($mimeType, 'image/') === 0) {
-                            $imagePath = $file->storeAs('contact_us_images', $fileName, 'public');
-                            $imagePaths[] = $imagePath;
-                        } elseif (strpos($mimeType, 'video/') === 0) {
-                            $videoPath = $file->storeAs('contact_us_videos', $fileName, 'public');
+                            $responseImages[] = $file->storeAs('contact_us_images', $fileName, 'public');
+                        } elseif (strpos($mimeType, 'video/') === 0 && !$responseVideo) {
+                            $responseVideo = $file->storeAs('contact_us_videos', $fileName, 'public');
                         }
                     }
                 }
             }
 
-            // dd($videoPath);
-            $dataToSave = [
+            Question::create([
                 'fullname' => $request->fullname,
                 'email' => $request->email,
                 'question' => $request->question,
-                'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
-                'videos' => $videoPath,
+                'response_image' => !empty($responseImages) ? json_encode($responseImages) : null, // Disimpan json array
+                'response_video' => $responseVideo,
+                'status' => 'unread',
                 'created_at' => now(),
-            ];
+            ]);
 
-            Log::info('Saving data:', $dataToSave);
-
-            Question::create($dataToSave);
-
-
-            return view('user.component.contact');
+            return response()->json([
+                'success' => true,
+                'message' => 'Pertanyaan anda berhasil dikirim!'
+            ]);
         } catch (\Exception $err) {
             Log::error('Error saving question:', ['error' => $err->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat menyimpan pertanyaan',
@@ -109,7 +95,6 @@ class FormController extends Controller
             ], 500);
         }
     }
-
 
     public function files(Request $request)
     {

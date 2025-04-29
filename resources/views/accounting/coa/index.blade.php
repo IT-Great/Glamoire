@@ -438,7 +438,8 @@
                             <h2>Chart of Accounts</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{route('dashboard')}}"><i
+                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Chart of Accounts</li>
                                 </ol>
                             </nav>
@@ -491,14 +492,14 @@
                                         <a href="{{ route('create-chartofaccount') }}" class="btn btn-create mb-2">
                                             <i class="bi bi-plus-circle"></i> New COA
                                         </a>
-                                        <button class="btn btn-create mb-2"
+                                        {{-- <button class="btn btn-create mb-2"
                                             style="background: linear-gradient(135deg, #10b981, #059669);">
                                             <i class="bi bi-file-earmark-excel"></i> Export
                                         </button>
                                         <button class="btn btn-create mb-2"
                                             style="background: linear-gradient(135deg, #6366f1, #4f46e5);">
                                             <i class="bi bi-file-earmark-arrow-up"></i> Import
-                                        </button>
+                                        </button> --}}
                                     </div>
                                 </div>
                             </div>

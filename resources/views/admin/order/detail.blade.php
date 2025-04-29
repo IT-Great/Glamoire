@@ -28,7 +28,8 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/order-admin">Order</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-admin-order') }}">Order</a>
+                                    </li>
                                     <li class="breadcrumb-item active" aria-current="page">Detail Order</li>
                                 </ol>
                             </nav>
@@ -157,9 +158,11 @@
                                                                             @foreach ($order->orderItems as $item)
                                                                                 <tr>
                                                                                     <td class="text-bold-500">
-                                                                                        {{ Str::limit($item->product->product_name, 40, '...') }}
+                                                                                        {{ Str::limit($item->product->product_name ?? '-', 40, '...') }}
                                                                                     </td>
-                                                                                    <td>{{ $item->product->brand ? $item->product->brand->name : 'No Brand' }}
+
+                                                                                    <td>{{ $item->product?->brand?->name ?? 'No Brand' }}
+                                                                                    </td>
                                                                                     </td>
                                                                                     <td>{{ $order->id }}</td>
                                                                                     <td class="text-bold-500">
@@ -199,23 +202,6 @@
                                                                         Kembali
                                                                     </a>
 
-                                                                    <button type="button"
-                                                                        class="btn btn-success btn-sm d-inline-flex align-items-center gap-1 me-2"><i
-                                                                            class="bi bi-check-circle"></i>
-                                                                        Konfirmasi
-                                                                        Pemesanan</button>
-
-                                                                    {{-- <button type="button"
-                                                                        class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1 me-2"><i
-                                                                            class="bi bi-truck"></i>
-                                                                        Pesanan
-                                                                        Dikirim</button> --}}
-                                                                        
-                                                                    {{-- <button type="button"
-                                                                        class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 me-2"><i
-                                                                            class="bi bi-bag-check"></i>
-                                                                        Selesaikan
-                                                                        Pesanan</button> --}}
                                                                 </div>
                                                             </div>
                                                         </div>

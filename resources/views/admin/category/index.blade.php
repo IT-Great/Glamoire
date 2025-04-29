@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Category Product - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -76,7 +77,7 @@
                             <h2>Category Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/category-product">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                                     <li class="breadcrumb-item active">Categories</li>
                                 </ol>
                             </nav>
@@ -136,7 +137,6 @@
                         </div>
                     </div>
                 </div>
-
 
                 <!-- Categories Table Section -->
                 <div class="card category-card">
@@ -342,6 +342,61 @@
             // Add edit and delete functionality here
         });
     </script>
+
+    <script>
+        $(document).ready(function() {
+            // Handle delete button clicks
+            $(document).on('click', '.delete-category', function() {
+                const categoryId = $(this).data('id');
+
+                // Show confirmation dialog
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this action!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to delete
+                        $.ajax({
+                            url: `/delete-category-product/${categoryId}`,
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        title: 'Deleted!',
+                                        text: 'Category has been successfully deleted.',
+                                        icon: 'success',
+                                        confirmButtonText: 'OK',
+                                        confirmButtonColor: '#4A69E2',
+                                    });
+                                    setTimeout(function() {
+                                        location.reload();
+                                    }, 1500);
+                                } else {
+                                    Swal.fire('Error!', response.message ||
+                                        'Failed to delete category.', 'error');
+                                }
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Error!',
+                                    'An error occurred while deleting the category.',
+                                    'error');
+                                console.log(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>

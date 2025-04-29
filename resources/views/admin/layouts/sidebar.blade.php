@@ -30,116 +30,110 @@
                 <!-- Jika User adalah Admin -->
                 @if (Auth::user()->role === 'admin' || Auth::user()->role === 'superadmin')
                     <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
-                        <a href="/dashboard" class='sidebar-link'>
+                        <a href="{{ route('dashboard') }}" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-
-                    <li class="sidebar-item has-sub {{ Request::is('product-admin*') ? 'active' : '' }} ">
-                        <a href="/product-admin" class='sidebar-link'>
+                    <li
+                        class="sidebar-item has-sub {{ Request::is('product-admin*') || Request::is('stock-product-admin*') ? 'active' : '' }}">
+                        <a href="#" class='sidebar-link'>
                             <i class="bi bi-bag-fill"></i>
                             <span>Product</span>
                         </a>
 
                         <ul class="submenu">
                             <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">
-                                <a href="/product-admin">
+                                <a href="{{ route('index-product-admin') }}">
                                     Product
                                 </a>
                             </li>
                             <li class="submenu-item {{ Request::is('stock-product-admin') ? 'active' : '' }}">
-                                <a href="/stock-product-admin">Stock Product</a>
+                                <a href="{{ route('index-stock-product-admin') }}">
+                                    Stock Product
+                                </a>
                             </li>
                         </ul>
-
                     </li>
 
                     <li class="sidebar-item {{ Request::is('order-admin') ? 'active' : '' }}">
-                        <a href="/order-admin" class='sidebar-link'>
+                        <a href="{{ route('index-admin-order') }}" class='sidebar-link'>
                             <i class="bi bi-cart-check-fill"></i>
                             <span>Order</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('brand-admin') ? 'active' : '' }}">
-                        <a href="/brand-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('brand-admin*') ? 'active' : '' }}">
+                        <a href="{{ route('index-brand-admin') }}" class='sidebar-link'>
                             <i class="bi bi-file-earmark-medical-fill"></i>
                             <span>Brand</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('category-product') ? 'active' : '' }}">
-                        <a href="/category-product" class='sidebar-link'>
+                        <a href="{{ route('index-category-product') }}" class='sidebar-link'>
                             <i class="bi bi-bookmark-star-fill"></i>
                             <span>Category</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item has-sub {{ Request::is('promo*') ? 'active' : '' }} ">
-                        <a href="/promo" class='sidebar-link'>
+                    <li
+                        class="sidebar-item has-sub {{ Request::is('promo*') || Request::is('detail-promo*') || Request::is('detail-promo-voucher*') || Request::is('detail-diskon*') || Request::is('create-promo-diskon') || Request::is('create-promo') || Request::is('create-promo-brand-voucher') || Request::is('create-promo-product-voucher') || Request::is('create-promo-voucher') || Request::is('create-promo-voucher-shippingfee') || Request::is('create-promo-voucher-new-user') ? 'active' : '' }}">
+                        <a href="#" class='sidebar-link'>
                             <i class="bi bi-receipt"></i>
                             <span>Promo</span>
                         </a>
                         <ul class="submenu">
                             <li class="submenu-item {{ Request::is('promo') ? 'active' : '' }}">
-                                <a href="/promo">Promo</a>
+                                <a href="{{ route('index-promo') }}">Promo</a>
                             </li>
                             <li class="submenu-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
-                                <a href="/promo-voucher">Voucher</a>
+                                <a href="{{ route('index-promo-voucher') }}">Voucher</a>
                             </li>
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                                <a href="/promo-diskon">Discount</a>
+                                <a href="{{ route('index-promo-diskon') }}">Discount</a>
                             </li>
                         </ul>
-
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('article-admin') ? 'active' : '' }}">
-                        <a href="/article-admin" class='sidebar-link'>
+
+                    <li class="sidebar-item {{ Request::is('article-admin*') ? 'active' : '' }}">
+                        <a href="{{ route('index-article') }}" class='sidebar-link'>
                             <i class="bi bi-file-earmark-post"></i>
                             <span>Article</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('contact-us-admin') ? 'active' : '' }}">
-                        <a href="/contact-us-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('contact-us-admin*') ? 'active' : '' }}">
+                        <a href="{{ route('index-contactus-admin') }}" class='sidebar-link'>
                             <i class="bi bi-telephone-plus-fill"></i>
                             <span>Contact Us</span>
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('affiliate-admin') ? 'active' : '' }}">
-                        <a href="/affiliate-admin" class='sidebar-link'>
+                    <li class="sidebar-item {{ Request::is('affiliate-admin*') ? 'active' : '' }}">
+                        <a href="{{ route('index-affiliate-admin') }}" class='sidebar-link'>
                             <i class="bi bi-person-lines-fill"></i>
                             <span>Affiliate</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('faq-admin') ? 'active' : '' }}">
-                        <a href="/faq-admin" class='sidebar-link'>
+                        <a href="{{ route('index-faq-admin') }}" class='sidebar-link'>
                             <i class="bi bi-patch-question-fill"></i>
                             <span>FAQ</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('user-admin') ? 'active' : '' }}">
-                        <a href="/user-admin" class='sidebar-link'>
+                        <a href="{{ route('index-user-admin') }}" class='sidebar-link'>
                             <i class="bi bi-people-fill"></i>
                             <span>User</span>
                         </a>
                     </li>
 
-                    {{-- <li class="sidebar-item {{ Request::is('chat-admin') ? 'active' : '' }}">
-                        <a href="/chat-admin" class='sidebar-link'>
-                            <i class="bi bi-chat-dots-fill"></i>
-                            <span>Chat</span>
-                        </a>
-                    </li> --}}
-
-
                     <li class="sidebar-item {{ Request::is('subscribe-admin') ? 'active' : '' }}">
-                        <a href="/subscribe-admin" class='sidebar-link'>
+                        <a href="{{ route('index-subscribe-admin') }}" class='sidebar-link'>
                             <i class="bi bi-person-plus-fill"></i>
                             <span>Subscribe</span>
                         </a>
@@ -152,35 +146,35 @@
                     <li class="sidebar-title">Accounting</li>
 
                     <li class="sidebar-item {{ Request::is('coa*') ? 'active' : '' }}">
-                        <a href="/coa" class='sidebar-link'>
+                        <a href="{{ route('index-chartofaccount') }}" class='sidebar-link'>
                             <i class="bi bi-calculator"></i>
                             <span>COA</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('financial-*') ? 'active' : '' }}">
-                        <a href="/financial-income" class='sidebar-link'>
+                        <a href="{{ route('index-financial-income') }}" class='sidebar-link'>
                             <i class="bi bi-cash-stack"></i>
                             <span>Financial</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('invoice*') ? 'active' : '' }}">
-                        <a href="/invoice" class='sidebar-link'>
+                        <a href="{{ route('index-invoice') }}" class='sidebar-link'>
                             <i class="bi bi-calendar-month"></i>
                             <span>Invoice</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('transaction*') ? 'active' : '' }}">
-                        <a href="/transaction" class='sidebar-link'>
+                        <a href="{{ route('index-transaction') }}" class='sidebar-link'>
                             <i class="bi bi-cash"></i>
                             <span>Transaction</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('journal') ? 'active' : '' }}">
-                        <a href="/journal" class='sidebar-link'>
+                        <a href="{{ route('index-journal') }}" class='sidebar-link'>
                             <i class="bi bi-journal-check"></i>
                             <span>Journal</span>
                         </a>

@@ -109,7 +109,7 @@
                             <h2>Product Management</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/brand-admin">Dashboard</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                                     <li class="breadcrumb-item active">Products</li>
                                 </ol>
                             </nav>
@@ -154,19 +154,10 @@
                         <div class="card stats-card">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    {{-- <div>
-                                        <h6 class="text-muted mb-2">Low Stock</h6>
-                                        <h3 class="mb-0">
-                                            {{ $products->where('stock_quantity', '<', 10)->where('stock_quantity', '>', 0)->count() }}
-                                        </h3>
-                                    </div> --}}
-
                                     <div>
                                         <h6 class="text-muted mb-2">Low Stock</h6>
                                         <h3 class="mb-0">
-                                            {{-- {{ $products->where('stock_quantity', '<=', 10)->where('stock_quantity', '>', 0)->count() }} --}}
                                             {{ $products->where('stock_quantity', '<=', 15)->where('stock_quantity', '>', 0)->count() }}
-
                                         </h3>
                                     </div>
                                     <div class="stats-icon yellow">
@@ -280,16 +271,18 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <a href="{{ url('detail-product-admin/' . $item->id) }}"
-                                                    class="badge bg-info mb-2 d-inline-flex align-items-center">
-                                                    <i class="bi bi-eye"></i> View
+                                                <a href="{{ route('detail-product-admin', $item->id) }}"
+                                                    class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                                                    <i class="bi bi-eye me-1"></i> View
                                                 </a>
-                                                <a href="{{ url('edit-product-admin/' . $item->id) }}"
-                                                    class="badge bg-warning mb-2 d-inline-flex align-items-center">
+
+                                                <a href="{{ route('edit-product-admin', $item->id) }}"
+                                                    class="badge bg-warning d-inline-flex align-items-center">
                                                     <i class="bi bi-pencil"></i> Edit
                                                 </a>
+
                                                 <a href="javascript:void(0);"
-                                                    class="badge bg-danger delete-product mb-2 d-inline-flex align-items-center"
+                                                    class="badge bg-danger delete-product d-inline-flex align-items-center"
                                                     data-id="{{ $item->id }}">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
@@ -338,6 +331,7 @@
         function openImageInNewTab(url) {
             window.open(url, '_blank');
         }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Simple DataTable
             let table1 = document.querySelector('#table1');
@@ -360,48 +354,64 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Send AJAX request to delete product
+                            // fetch(`/Glamoire/public/delete-product/${productId}`, {
                             fetch(`/delete-product/${productId}`, {
-                                    method: 'DELETE',
+                                    method: 'POST', // Use POST instead of DELETE
                                     headers: {
+                                        'Content-Type': 'application/json',
                                         'X-CSRF-TOKEN': document.querySelector(
                                             'meta[name="csrf-token"]').getAttribute(
                                             'content')
-                                    }
+                                    },
+                                    body: JSON.stringify({
+                                        _method: 'DELETE' // Spoof DELETE method
+                                    })
                                 })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {
                                         // Remove the product from the page
-                                        document.querySelector(`#product-item-${productId}`)
-                                            .remove();
+                                        const productElement = document.querySelector(
+                                            `#product-item-${productId}`);
+                                        if (productElement) {
+                                            productElement.remove();
+                                        }
+
                                         Swal.fire({
                                             title: 'Deleted!',
                                             text: data.message,
                                             icon: 'success',
-                                            timer: 1800, // Auto-close alert after 2 seconds
-                                            timerProgressBar: true, // Show progress bar
-                                            showConfirmButton: true // Show OK button
+                                            timer: 1800,
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
                                         });
                                     } else {
                                         Swal.fire({
                                             title: 'Error!',
                                             text: data.message,
                                             icon: 'error',
-                                            timer: 1800, // Auto-close alert after 2 seconds
-                                            timerProgressBar: true, // Show progress bar
-                                            showConfirmButton: true // Show OK button
+                                            timer: 1800,
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
                                         });
                                     }
                                 })
-                                .catch(error => console.error('Error:', error));
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Something went wrong while deleting the product.',
+                                        icon: 'error'
+                                    });
+                                });
                         }
                     });
                 }
 
+                // Bagian untuk fitur kirim notifikasi
                 if (event.target.closest('.notify-product')) {
                     let productId = event.target.closest('.notify-product').getAttribute('data-id');
 
-                    // SweetAlert2 confirmation dialog
                     Swal.fire({
                         title: 'Are you sure?',
                         text: 'You won\'t be able to revert this!',
@@ -412,7 +422,6 @@
                         confirmButtonText: 'Yes, Send it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Send AJAX request
                             fetch(`/send-notify/${productId}`, {
                                     method: 'POST',
                                     headers: {
@@ -452,6 +461,8 @@
             });
         });
     </script>
+
+
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

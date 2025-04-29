@@ -134,8 +134,8 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Discount Management</h3>
-                            <p class="text-subtitle text-muted">Manage all your discount campaigns effectively</p>
+                            <h3>Manajemen Diskon</h3>
+                            <p class="text-subtitle text-muted">Kelola semua kampanye diskon Anda dengan efektif</p>
                         </div>
                     </div>
                 </div>
@@ -191,13 +191,16 @@
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo') }}"
+                        class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
                         <i class="bi bi-grid-fill me-2"></i>All Promos
                     </a>
-                    <a href="/promo-voucher" class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-voucher') }}"
+                        class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
                         <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
                     </a>
-                    <a href="/promo-diskon" class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-diskon') }}"
+                        class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Discounts
                     </a>
                 </div>
@@ -205,8 +208,9 @@
                 <!-- Main Content -->
                 <div class="card discount-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">All Discount Campaigns</h5>
-                        <a href="{{ route('create-promo-diskon') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
+                        <h5 class="mb-0">All Discount</h5>
+                        <a href="{{ route('create-promo-diskon') }}"
+                            class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
                             <i class="bi bi-plus"></i>Buat Diskon
                         </a>
                     </div>
@@ -261,16 +265,14 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <div class="d-flex flex-column gap-2">
-                                                    <a href="{{ url('detail-diskon/' . $item->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i> View Details
-                                                    </a>
-                                                    <button class="btn btn-sm btn-danger delete-promo"
-                                                        data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
-                                                    </button>
-                                                </div>
+                                                <a href="{{ url('detail-diskon/' . $item->id) }}"
+                                                    class="btn btn-sm btn-info">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                                <button class="btn btn-sm btn-danger delete-promo"
+                                                    data-id="{{ $item->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach

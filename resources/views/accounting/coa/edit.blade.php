@@ -434,10 +434,11 @@
                             <h2 class="mb-3">COA Management</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/dashboard"><i
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i
                                                 class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="/transaction">COA</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add New COA</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-chartofaccount') }}">COA</a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Update COA</li>
                                 </ol>
                             </nav>
                         </div>
@@ -556,16 +557,19 @@
 
                                                 <!-- Submit Button -->
                                                 <div class="col-12 d-flex justify-content-end mt-3">
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-light-secondary me-2">
+                                                    <a href="{{ route('index-chartofaccount') }}" type="button"
+                                                        class="btn btn-sm btn-secondary me-2 d-inline-flex align-items-center">
                                                         <i class="bi bi-arrow-left-circle me-1"></i>
                                                         Kembali
-                                                    </button>
-                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                    </a>
+
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-primary d-inline-flex align-items-center">
                                                         <i class="bi bi-check-circle me-1"></i>
                                                         Submit COA
                                                     </button>
                                                 </div>
+
 
                                             </div>
                                         </form>

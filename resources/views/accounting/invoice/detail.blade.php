@@ -432,10 +432,11 @@
                                                 @if ($invoice->image_invoice)
                                                     <div class="detail-section">
                                                         <p class="detail-label mb-2">Invoice Image</p>
-                                                        <img src="{{ asset('storage/' . $invoice->image_invoice) }}"
-                                                            alt="Invoice Image" class="proof-image"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#invoiceImageModal">
+                                                        <a href="{{ asset('storage/' . $invoice->image_invoice) }}"
+                                                            target="_blank">
+                                                            <img src="{{ asset('storage/' . $invoice->image_invoice) }}"
+                                                                alt="Invoice Image" class="proof-image">
+                                                        </a>
                                                     </div>
                                                 @endif
                                             </div>
@@ -443,10 +444,11 @@
                                                 @if ($invoice->image_proof)
                                                     <div class="detail-section">
                                                         <p class="detail-label mb-2">Payment Proof</p>
-                                                        <img src="{{ asset('storage/' . $invoice->image_proof) }}"
-                                                            alt="Payment Proof" class="proof-image"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#paymentProofModal">
+                                                        <a href="{{ asset('storage/' . $invoice->image_proof) }}"
+                                                            target="_blank">
+                                                            <img src="{{ asset('storage/' . $invoice->image_proof) }}"
+                                                                alt="Payment Proof" class="proof-image">
+                                                        </a>
                                                     </div>
                                                 @endif
                                             </div>
@@ -575,31 +577,6 @@
                         </div>
                     </div>
                 </section>
-            </div>
-
-            <!-- Invoice Image Modal -->
-            <div class="modal fade payment-proof-modal" id="invoiceImageModal" tabindex="-1"
-                aria-labelledby="invoiceImageModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="invoiceImageModalLabel">Invoice Image</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @if ($invoice->image_invoice)
-                                <img src="{{ asset('storage/' . $invoice->image_invoice) }}" alt="Invoice Image"
-                                    class="img-fluid">
-                            @else
-                                <div class="text-center py-5">
-                                    <p>No invoice image available</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
             </div>
 
             @include('admin.layouts.footer')

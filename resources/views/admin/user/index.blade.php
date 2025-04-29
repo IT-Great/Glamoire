@@ -30,7 +30,7 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/user-admin">User</a></li>
+                                    <li class="breadcrumb-item"><a href="{{route('index-user-admin')}}">User</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">All User</li>
                                 </ol>
                             </nav>
@@ -62,8 +62,8 @@
                                             <td>{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}</td>
                                             <td>
                                                 <a href="{{ route('detail-user-admin', $user->id) }}"
-                                                    class="badge bg-info mb-2 d-inline-flex align-items-center">
-                                                    <i class="bi bi-eye"></i> View
+                                                    class="btn btn-sm btn-primary mb-2 d-inline-flex align-items-center">
+                                                    <i class="bi bi-eye me-1"></i> View
                                                 </a>
                                             </td>
 

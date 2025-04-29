@@ -178,7 +178,8 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/product-admin">Product</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-product-admin') }}">Product</a>
+                                    </li>
                                     <li class="breadcrumb-item active">Detail Product</li>
                                 </ol>
                             </nav>

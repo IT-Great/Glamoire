@@ -117,7 +117,7 @@
             }
         }
     </style>
-    
+
 </head>
 
 <body>
@@ -132,7 +132,8 @@
                         <div class="col-12 col-md-6 mb-3">
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/order-admin">Order</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-admin-order') }}">Order</a>
+                                    </li>
                                     <li class="breadcrumb-item active" aria-current="page">All Order</li>
                                 </ol>
                             </nav>
@@ -280,7 +281,7 @@
                                                 Info Detail
                                             </a>
 
-                                          
+
                                         </td>
                                     </tr>
                                 @endforeach

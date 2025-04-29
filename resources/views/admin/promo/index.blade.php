@@ -194,13 +194,16 @@
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="/promo" class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo') }}"
+                        class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
                         <i class="bi bi-grid-fill me-2"></i>All Promos
                     </a>
-                    <a href="/promo-voucher" class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-voucher') }}"
+                        class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
                         <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
                     </a>
-                    <a href="/promo-diskon" class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
+                    <a href="{{ route('index-promo-diskon') }}"
+                        class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Discounts
                     </a>
                 </div>
@@ -214,137 +217,6 @@
                             <i class="fa fa-plus me-2"></i>Buat Promo
                         </a>
                     </div>
-                    {{-- <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover" id="table1">
-                                <thead>
-                                    <tr>
-                                        <th>Campaign Details</th>
-                                        <th>Period</th>
-                                        <th>Discount</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                        <th>Is Active</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($promo as $item)
-                                        <tr id="promo-item-{{ $item->id }}">
-                                            <td>
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <img src="{{ Storage::url($item->image) }}"
-                                                        alt="{{ $item->promo_name }}" class="promo-image"
-                                                        onclick="openImageInNewTab('{{ Storage::url($item->image) }}')">
-                                                    <div>
-                                                        <h6 class="mb-0">
-                                                            {{ Str::limit($item->promo_name, 40, '...') }}</h6>
-                                                        <small class="text-muted">Code: {{ $item->promo_code }}</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div>
-                                                    <div class="mb-1">
-                                                        <i class="bi bi-calendar-event me-2"></i>
-                                                        @if ($item->start_date)
-                                                            {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d F Y') }}
-                                                        @endif
-                                                    </div>
-                                                    <div>
-                                                        <i class="bi bi-calendar-event-fill me-2"></i>
-                                                        @if ($item->end_date)
-                                                            {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d F Y') }}
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                <span class="badge bg-light-primary">
-                                                    @if ($item->discount_type === 'nominal')
-                                                        Rp {{ number_format($item->discount, 0, ',', '.') }}
-                                                    @else
-                                                        {{ $item->discount }}%
-                                                    @endif
-                                                </span>
-                                            </td>
-
-                                            <td>
-                                                @php
-                                                    $endDate = \Carbon\Carbon::parse($item->end_date);
-                                                    $isDateValid = $endDate->isFuture();
-                                                    $isActive = $item->is_active && $isDateValid;
-                                                @endphp
-                                                <span
-                                                    class="badge status-badge {{ $isActive ? 'status-active' : 'status-expired' }}">
-                                                    {{ $isActive ? 'Active' : 'Expired' }}
-                                                </span>
-                                            </td>
-
-
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <a href="{{ url('detail-promo/' . $item->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i> View
-                                                    </a>
-                                                    <a href="{{ url('edit-promo/' . $item->id) }}"
-                                                        class="badge bg-warning mb-2">
-                                                        <i class="bi bi-pencil"></i> Edit
-                                                    </a>
-                                                    <a href="javascript:void(0);" class="badge bg-danger delete-promo"
-                                                        data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
-                                                    </a>
-                                                </div>
-                                            </td>
-
-                                            <!-- Update kode switch toggle pada table -->
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input status-toggle" type="checkbox"
-                                                        id="statusToggle{{ $item->id }}"
-                                                        data-id="{{ $item->id }}"
-                                                        {{ $item->is_active ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="statusToggle{{ $item->id }}">
-                                                        Toggle Status
-                                                    </label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-
-                                    <!-- Tambahkan modal konfirmasi ini di bagian bawah view -->
-                                    <div class="modal fade" id="toggleStatusModal" tabindex="-1"
-                                        aria-labelledby="toggleStatusModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="toggleStatusModalLabel">Konfirmasi
-                                                        Perubahan Status</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p id="toggleStatusMessage">Apakah Anda yakin ingin mengubah status
-                                                        promo ini?</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Batal</button>
-                                                    <button type="button" class="btn btn-primary"
-                                                        id="confirmToggle">Ya, Ubah Status</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div> --}}
 
                     <div class="card-body">
                         <div class="table-responsive">
@@ -413,7 +285,6 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <div class="action-buttons">
                                                     <a href="{{ url('detail-promo/' . $item->id) }}"
                                                         class="btn btn-sm btn-info">
                                                         <i class="bi bi-eye"></i> View
@@ -426,23 +297,8 @@
                                                         data-id="{{ $item->id }}">
                                                         <i class="bi bi-trash"></i> Delete
                                                     </a>
-                                                </div>
                                             </td>
-
-                                            {{-- <!-- Update kode switch toggle pada table -->
-                                            <td>
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input status-toggle" type="checkbox"
-                                                        id="statusToggle{{ $item->id }}"
-                                                        data-id="{{ $item->id }}"
-                                                        {{ $isActive ? 'checked' : '' }}>
-                                                    <label class="form-check-label"
-                                                        for="statusToggle{{ $item->id }}">
-                                                        Toggle Status
-                                                    </label>
-                                                </div>
-                                            </td> --}}
-
+                            
                                         </tr>
                                     @endforeach
 
@@ -588,109 +444,6 @@
             });
         });
     </script>
-
-    {{-- <script>
-        // Tambahkan script ini di bagian bawah view atau dalam file js terpisah
-        $(document).ready(function() {
-            let toggleTarget = null;
-            let originalState = false;
-
-            // Handler untuk toggle switch
-            $('.status-toggle').on('change', function(e) {
-                e.preventDefault();
-                toggleTarget = $(this);
-                originalState = !toggleTarget.prop('checked');
-
-                // Tampilkan SweetAlert konfirmasi
-                const newStatus = toggleTarget.prop('checked') ? 'Active' : 'Expired';
-
-                Swal.fire({
-                    title: 'Konfirmasi Perubahan Status',
-                    text: `Apakah Anda yakin ingin mengubah status promo menjadi ${newStatus}?`,
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#4A69E2',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Ubah Status',
-                    cancelButtonText: 'Batal',
-                    customClass: {
-                        icon: 'swal-icon-question'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const promoId = toggleTarget.data('id');
-                        const newCheckedState = toggleTarget.prop('checked');
-
-                        $.ajax({
-                            url: `/promo/toggle-status/${promoId}`,
-                            type: 'POST',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                if (response.success) {
-                                    // Update badge status
-                                    const statusBadge = toggleTarget.closest('tr').find(
-                                        '.status-badge');
-                                    const newStatus = response
-                                        .isActive; // Use the server's response instead of local state
-
-                                    if (newStatus) {
-                                        statusBadge.removeClass('status-expired')
-                                            .addClass('status-active');
-                                        statusBadge.text('Active');
-                                    } else {
-                                        statusBadge.removeClass('status-active')
-                                            .addClass('status-expired');
-                                        statusBadge.text('Expired');
-                                    }
-
-                                    // Update toggle switch state
-                                    toggleTarget.prop('checked', response.isActive);
-
-                                    // Tampilkan notifikasi sukses
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: response.message,
-                                        icon: 'success',
-                                        confirmButtonText: 'OK',
-                                        confirmButtonColor: '#4A69E2',
-                                        customClass: {
-                                            icon: 'swal-icon-success'
-                                        },
-                                        timer: 1800,
-                                        timerProgressBar: true,
-                                        didClose: () => {
-                                            // Optional: trigger any action after alert closes
-                                        }
-                                    });
-                                }
-                            },
-                            error: function(xhr) {
-                                // Kembalikan toggle ke posisi semula jika terjadi error
-                                toggleTarget.prop('checked', originalState);
-
-                                // Tampilkan pesan error
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Terjadi kesalahan saat mengubah status promo',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK',
-                                    confirmButtonColor: '#4A69E2',
-                                    customClass: {
-                                        icon: 'swal-icon-error'
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        // Jika user membatalkan, kembalikan toggle ke posisi semula
-                        toggleTarget.prop('checked', originalState);
-                    }
-                });
-            });
-        });
-    </script> --}}
 
     {{-- handle hapus data --}}
     <script>

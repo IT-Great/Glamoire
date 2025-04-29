@@ -76,7 +76,7 @@
                 <h3>Dashboard</h3>
                 <nav aria-label="breadcrumb" class="breadcrumb-header me-3">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
                     </ol>
                 </nav>
