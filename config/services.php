@@ -41,4 +41,16 @@ return [
         'environment' => env('DOKU_ENVIRONMENT', 'sandbox'),
     ],
 
+
+    'prismalink' => [
+        'merch_id' => env('PRISMALINK_MERCH_ID'),
+        'merch_key_id' => env('PRISMALINK_MERCH_KEY_ID'),
+        'secret_key' => env('PRISMALINK_SECRET_KEY'),
+        'base_url' => env('PRISMALINK_BASE_URL'),
+        'mac' => env('PRISMALINK_MAC'),
+        'frontend_callback' => env('PRISMALINK_FRONTEND_CALLBACK'),
+        'backend_callback' => env('PRISMALINK_BACKEND_CALLBACK'),
+        'transaction_api' => env('PRISMALINK_TRANSACTION_API', 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/submit-trx'),
+    ],
+
 ];

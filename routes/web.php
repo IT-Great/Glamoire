@@ -29,6 +29,7 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PrismalinkController;
 use App\Http\Controllers\StockExportImportController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
@@ -284,6 +285,11 @@ Route::get('/error-403', function () {
     return view('error-403');
 })->name('error-403');
 
+// PRISMALINK ROUTE
+Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
+Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
+// Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
+// Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
 
 
 // DASHBOARD
