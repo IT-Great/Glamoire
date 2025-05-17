@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="assets/vendors/sweetalert2/sweetalert2.min.css">
 
     <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
         .custom-dropdown-menu {
             padding: 8px;
             border-radius: 8px;
@@ -119,6 +125,12 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
+                    <h3 class="mb-2">Buat Voucher</h3>
+                    <p class="mb-3">
+                        Buat Voucher Terbatas, Voucher Produk, atau Voucher Merek sekarang untuk menarik Pembeli.
+                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
+                    </p>
+
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
@@ -136,11 +148,7 @@
 
                 <!-- Basic Horizontal form layout section start -->
                 <section id="multiple-column-form">
-                    <h3 class="mb-2">Buat Voucher</h3>
-                    <p class="mb-3">
-                        Buat Voucher Terbatas, Voucher Produk, atau Voucher Merek sekarang untuk menarik Pembeli.
-                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
-                    </p>
+
                     <div class="row match-height">
                         <div class="col-12">
                             <div class="card">
@@ -241,7 +249,7 @@
                                                             </div>
 
                                                             <div class="col">
-                                                                <label for="max_quantity_buyer">Jumlah Maks Per Pembeli
+                                                                <label for="max_quantity_buyer">Kuota Maksimal Pembeli
                                                                     <span style="color: red">*</span></label>
                                                                 <input type="text"
                                                                     class="form-control mt-2 {{ $errors->has('max_quantity_buyer') ? 'is-invalid' : '' }}"

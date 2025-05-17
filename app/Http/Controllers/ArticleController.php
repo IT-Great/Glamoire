@@ -14,10 +14,12 @@ class ArticleController extends Controller
     public function indexArticleAdmin()
     {
 
-        $articles = Article::with(['categoryArticle'])->paginate(9); // Eager load kategori dan brand
+        $articles = Article::with(['categoryArticle'])->get(); // Eager load kategori dan brand
+        $categories = CategoryArticle::all(); // Ambil semua kategori artikel
 
         return view('admin.article.index', [
             'articles' => $articles,
+            'categories' => $categories,
         ]);
     }
 
@@ -69,15 +71,6 @@ class ArticleController extends Controller
         return redirect()->route('index-article')->with('success', 'Article created successfully!');
     }
 
-
-    // public function editArticle()
-    // {
-    //     return view('admin.article.edit');
-    // }
-
-    // Add these methods to your existing Article controller
-
-    // Show edit form
     public function editArticle($id)
     {
         $article = Article::findOrFail($id);

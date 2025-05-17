@@ -179,7 +179,7 @@ class DokuPaymentController extends Controller
                     'auto_redirect' => true
                 ],
                 'payment' => [
-                    'payment_due_date' => 1,
+                    'payment_due_date' => 60,
                     'payment_method_types' => $selectedPaymentMethods
                 ],
                 'customer' => [

@@ -14,6 +14,13 @@
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+    </style>
 </head>
 
 <body>
@@ -24,16 +31,26 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{route('index-subscribe-admin')}}">Subscribe</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Subscribe</li>
-                                </ol>
-                            </nav>
+                <!-- Judul Halaman -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Subscribe Management</h3>
+                            <p>Kelola pelanggan subscribe dan kirimkan email secara langsung dari sistem.</p>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="{{ route('index-subscribe-admin') }}">Subscribe</a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">All Subscribe</li>
+                            </ol>
+                        </nav>
                     </div>
                 </div>
 
@@ -58,7 +75,7 @@
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y') }}
                                             </td>
                                             <td>
-                                                <a href="/order-detail"
+                                                <a href="#"
                                                     class="badge bg-warning mb-2 d-inline-flex align-items-center">
                                                     <i class="bi bi-envelope-fill" style="margin-right: 3px"></i>Send
                                                 </a>
@@ -72,37 +89,6 @@
                     </div>
                 </section>
             </div>
-
-            <!-- Modal -->
-            <form id="categoryForm">
-                @csrf
-                <div class="modal fade text-left" id="inlineForm" tabindex="-1" role="dialog"
-                    aria-labelledby="myModalLabel33" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="myModalLabel33">Form Add Categories</h4>
-                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                                    <i data-feather="x"></i>
-                                </button>
-                            </div>
-
-                            <div class="modal-body">
-                                <label>Category Name <span style="color: red">*</span> </label>
-                                <div class="form-group mt-2">
-                                    <input type="text" placeholder="Enter Category Name" class="form-control"
-                                        name="name" id="name">
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-sm btn-primary ml-1">
-                                    <span class="d-none d-sm-block">Submit</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
 
             @include('admin.layouts.footer')
 

@@ -17,6 +17,12 @@
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 
     <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
         /* Article preview styling */
         .article-preview {
             border-radius: 0.5rem;
@@ -158,13 +164,13 @@
                             <h2 class="page-title mb-0">
                                 <i class="bi bi-file-earmark-text me-2"></i>Article Preview
                             </h2>
-                            <p class="text-muted">Review your article</p>
+                            <p class="text-muted">Tinjau Article anda</p>
                         </div>
                         <div>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/article-admin"><i
-                                                class="bi bi-journal-text me-1"></i>Articles</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}"><i
+                                                class="bi bi-journal-text me-1"></i>Article</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Review Article</li>
                                 </ol>
                             </nav>
@@ -177,7 +183,7 @@
                             <div>
                                 <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Article Information</h5>
                             </div>
-                          
+
                         </div>
                         <div class="card-body">
                             <div class="row">

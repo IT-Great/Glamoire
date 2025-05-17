@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\CategoryArticle;
 use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
@@ -20,8 +21,6 @@ class CategoryController extends Controller
 
         return view('admin.category.index', compact('categories'));
     }
-
-
 
     public function createCategoryProduct(Request $request)
     {
@@ -69,8 +68,11 @@ class CategoryController extends Controller
     // CATEGORY ARTICLE
     public function indexCategoryArticle()
     {
-        $categoryArticle = CategoryArticle::withCount('articles')->get(); // Menghitung jumlah artikel per kategori
-        return view('admin.article.category.index', compact('categoryArticle'));
+        $categoryArticle = CategoryArticle::with(['articles'])->get(); // Eager load
+        $articles = Article::count(); // Jumlah artikel
+        $categories = $categoryArticle->count(); // Hitung jumlah kategori saja
+
+        return view('admin.article.category.index', compact('categoryArticle', 'articles', 'categories'));
     }
 
 

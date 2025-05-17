@@ -354,8 +354,8 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             // Send AJAX request to delete product
-                            // fetch(`/Glamoire/public/delete-product/${productId}`, {
-                            fetch(`/delete-product/${productId}`, {
+                            fetch(`/Glamoire/public/delete-product/${productId}`, {
+                            // fetch(`/delete-product/${productId}`, {
                                     method: 'POST', // Use POST instead of DELETE
                                     headers: {
                                         'Content-Type': 'application/json',

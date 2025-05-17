@@ -33,6 +33,31 @@
             background: #3b82f6;
             border-color: #3b82f6;
         }
+
+        /* Styling container Select2 */
+        .select2-container--default .select2-selection--single {
+            height: 38px !important;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        /* Styling rendered text */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-left: 12px;
+            padding-right: 30px;
+        }
+
+        /* Styling arrow position */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            right: 6px;
+        }
+
+        /* Tambahkan styling untuk dropdown options */
+        .select-lg-dropdown .select2-results__option {
+            padding: 6px 12px;
+        }
     </style>
 </head>
 
@@ -396,8 +421,9 @@
                                                                 </div>
                                                             </div>
 
-                                                            <span id="main-image-error"
-                                                                style="color: red; display: none;"></span>
+                                                            <span id="main-image-error" class="text-danger"
+                                                                style="display:none; font-size: 13px;"></span>
+
                                                             <!-- Unik untuk Single Image -->
 
                                                             <div class="file-upload-content"
@@ -527,13 +553,13 @@
                                                             style="font-weight: bold; border-radius: 5px; min-width: 120px;">
                                                             <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
                                                         </a>
-                                                    
+
                                                         <button type="reset"
                                                             class="btn btn-light-secondary btn-sm d-flex align-items-center justify-content-center me-2"
                                                             style="border-radius: 5px; font-weight: bold; min-width: 120px;">
                                                             Reset Product
                                                         </button>
-                                                    
+
                                                         <button type="submit"
                                                             class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
                                                             id="submitButton"
@@ -541,7 +567,7 @@
                                                             Submit Product
                                                         </button>
                                                     </div>
-                                                    
+
                                                 </div>
                                             </div>
                                         </form>
@@ -684,7 +710,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
-
+    {{-- handle select brand & category --}}
     <script>
         // handle brand
         $(document).ready(function() {

@@ -18,21 +18,97 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <style>
-        .action-buttons .btn {
-            margin-right: 5px;
-            margin-bottom: 5px;
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
         }
 
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f9fafb;
+            --dark-color: #111827;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        /* Stats Card Styling */
         .stats-card {
-            transition: transform 0.3s ease;
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
         }
 
         .stats-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-card-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .stats-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .action-buttons .btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
 
         .discount-nav {
@@ -134,57 +210,42 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Manajemen Diskon</h3>
-                            <p class="text-subtitle text-muted">Kelola semua kampanye diskon Anda dengan efektif</p>
+                            <h3>Discount Management</h3>
+                            <p class="text-subtitle text-muted">Kelola semua data diskon Anda dengan efektif</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="row quick-stats">
+                <div class="row mb-4 slide-in">
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-primary">
+                            <div class="stats-icon">
+                                <i class="bi bi-box fs-3"></i>
+                            </div>
+                            <div class="stats-title">Active Promo</div>
+                            <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
+
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-warning">
+                            <div class="stats-icon">
+                                <i class="bi bi-exclamation-circle-fill"></i>
+                            </div>
+                            <div class="stats-title">Active Vouchers</div>
+                            <h3 class="stats-number">{{ $activeVouchers ?? 0 }}</h3>
+
+                        </div>
+                    </div>
                     <div class="col-12 col-md-4">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Active Promos</h6>
-                                        <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
-                                    </div>
-                                    <div class="stats-icon blue">
-                                        <i class="bi bi-box fs-3"></i>
-                                    </div>
-                                </div>
+                        <div class="stats-card stats-card-success">
+                            <div class="stats-icon">
+                                <i class="bi bi-percent"></i>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4 ">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Active Vouchers</h6>
-                                        <h3 class="mb-0">{{ $activeVouchers ?? 0 }}</h3>
-                                    </div>
-                                    <div class="stats-icon green">
-                                        <i class="bi bi-receipt"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4 ">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Active Discounts</h6>
-                                        <h3 class="mb-0">{{ $activeDiscounts ?? 0 }}</h3>
-                                    </div>
-                                    <div class="stats-icon red">
-                                        <i class="bi bi-percent"></i>
-                                    </div>
-                                </div>
-                            </div>
+                            <div class="stats-title">Active Discount</div>
+                            <h3 class="stats-number">{{ $activeDiscounts ?? 0 }}</h3>
+
                         </div>
                     </div>
                 </div>

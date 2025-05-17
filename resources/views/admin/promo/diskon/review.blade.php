@@ -40,15 +40,9 @@
         }
 
         body {
-            background-color: var(--bg-light);
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
             color: var(--text-primary);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-
-        /* Main Layout Styles */
-        .premium-container {
-            padding: 2rem;
-            background-color: var(--bg-light);
         }
 
         .premium-card {
@@ -67,16 +61,19 @@
         }
 
         .premium-card-header {
-            background: rgba(97, 67, 133, 0.05);
-            color: white;
+            border-bottom: 1px solid #ccc;
+            /* Warna abu pembatas, bisa kamu ubah */
+            color: #183018;
+            /* Warna teks utama */
             padding: 1.25rem 1.5rem;
             font-weight: 600;
             font-size: 1.125rem;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: transparent;
+            /* Pastikan tidak ada background */
         }
-
 
         .premium-card-header-icon {
             background: rgba(255, 255, 255, 0.2);
@@ -601,53 +598,6 @@
             width: 100%;
             position: relative;
         }
-
-        .upload__img-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .upload__img-box-single,
-        .upload__img-box-multiple {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-        }
-
-        .upload__img-box-single:hover,
-        .upload__img-box-multiple:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .img-bg-single,
-        .img-bg {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .upload__img-close {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 50%;
-            padding: 0.25rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            width: 1.5rem;
-            height: 1.5rem;
-        }
     </style>
 
 </head>
@@ -657,594 +607,40 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        {{-- <div id="main" class="premium-container">
-            <!-- Breadcrumb -->
-            <div class="premium-breadcrumb">
-                <div class="premium-breadcrumb-item">
-                    <a href="/promo"><i class="bi bi-grid me-2"></i>Promo Dashboard</a>
-                </div>
-                <div class="premium-breadcrumb-item active">
-                    <i class="bi bi-tag me-2"></i>Detail Promo Diskon
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-8">
-                    <h2 class="section-title">{{ $promo->promo_name }}</h2>
-                </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge bg-success p-2" style="font-size: 0.9rem;">
-                        <i class="bi bi-check-circle me-1"></i> Active Campaign
-                    </span>
-                </div>
-            </div>
-
-            <!-- Stats Overview -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-calendar-event"></i>
-                    </div>
-                    <div class="stat-label">Campaign Duration</div>
-                    <div class="stat-value">
-                        {{ \Carbon\Carbon::parse($promo->start_date)->diffInDays($promo->end_date) + 1 }}</div>
-                    <div class="stat-label">Days</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-label">Products in Promo</div>
-                    <div class="stat-value">{{ count($promo->products) }}</div>
-                    <div class="stat-label">Items</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-layers"></i>
-                    </div>
-                    <div class="stat-label">Discount Tiers</div>
-                    <div class="stat-value">{{ count($promo->tiers) }}</div>
-                    <div class="stat-label">Levels</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
-                    <div class="stat-label">Days Remaining</div>
-                    @php
-                        $daysRemaining = max(0, \Carbon\Carbon::parse($promo->end_date)->diffInDays(now()));
-                    @endphp
-                    <div class="stat-value">{{ $daysRemaining }}</div>
-                    <div class="stat-label">Days</div>
-                </div>
-            </div>
-
-            <!-- Promo Timeline -->
-            <div class="col-md-12">
-                <div class="premium-card">
-                    <div class="premium-card-header">
-                        <span style="color: #183018;">Promo Timeline</span>
-                        <div class="premium-card-header-icon">
-                            <i class="bi bi-calendar3"></i>
-                        </div>
-                    </div>
-                    <div class="premium-card-body">
-                        <div class="premium-form-group">
-                            <label class="premium-label">Start Date</label>
-                            <input type="text" class="premium-input"
-                                value="{{ \Carbon\Carbon::parse($promo->start_date)->format('d M Y, h:i A') }}"
-                                readonly>
-                        </div>
-
-                        <div class="premium-form-group">
-                            <label class="premium-label">End Date</label>
-                            <input type="text" class="premium-input"
-                                value="{{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y, h:i A') }}" readonly>
-                        </div>
-
-                        <div class="timeline-container">
-                            @php
-                                $startDate = \Carbon\Carbon::parse($promo->start_date);
-                                $endDate = \Carbon\Carbon::parse($promo->end_date);
-                                $currentDate = now();
-                                $totalDuration = $startDate->diffInSeconds($endDate);
-                                $elapsedDuration = $startDate->diffInSeconds($currentDate);
-                                $progressPercentage = min(100, max(0, ($elapsedDuration / $totalDuration) * 100));
-                            @endphp
-
-                            <div class="timeline-track">
-                                <div class="timeline-progress" style="width: {{ $progressPercentage }}%"></div>
-
-                                <div class="timeline-marker start">
-                                    <div class="timeline-label">Start</div>
-                                    <div class="timeline-date">{{ $startDate->format('d M Y') }}</div>
-                                </div>
-
-                                <div class="timeline-marker current"
-                                    style="--progress-percentage: {{ $progressPercentage }}%">
-                                    <div class="timeline-label">Current</div>
-                                    <div class="timeline-date">{{ $currentDate->format('d M Y') }}</div>
-                                </div>
-
-                                <div class="timeline-marker end">
-                                    <div class="timeline-label">End</div>
-                                    <div class="timeline-date">{{ $endDate->format('d M Y') }}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <div>
-                                <div class="premium-label">Campaign Progress</div>
-                                <div class="fw-bold">{{ round($progressPercentage) }}% Complete</div>
-                            </div>
-                            <div class="text-end">
-                                <div class="premium-label">Time Remaining</div>
-                                <div class="fw-bold">{{ $daysRemaining }} days</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Discount Tiers -->
-            <div class="premium-card mt-4">
-                <div class="premium-card-header">
-                    <span style="color: #183018;">Discount Tiers</span>
-                    <div class="premium-card-header-icon">
-                        <i class="bi bi-graph-up"></i>
-                    </div>
-                </div>
-                <div class="premium-card-body">
-                    <table class="premium-table">
-                        <thead>
-                            <tr>
-                                <th>Tier Level</th>
-                                <th>Purchase Requirement</th>
-                                <th>Discount Type</th>
-                                <th>Discount Value</th>
-                                <th>Customer Savings</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($promo->tiers as $tier)
-                                <tr>
-                                    <td>
-                                        <span class="tier-badge tier-{{ $tier->tier_level }}">
-                                            <i class="bi bi-star-fill me-2"></i> Tier {{ $tier->tier_level }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <i class="bi bi-basket me-2 text-muted"></i>
-                                            <div>
-                                                <div class="fw-medium">{{ $tier->min_quantity }} items</div>
-                                                <small class="text-muted">Minimum purchase</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @switch($tier->discount_type)
-                                            @case('percentage')
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-percent me-2 text-primary"></i>
-                                                    <div>Percentage Discount</div>
-                                                </div>
-                                            @break
-
-                                            @case('nominal')
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-currency-dollar me-2 text-primary"></i>
-                                                    <div>Fixed Amount Discount</div>
-                                                </div>
-                                            @break
-
-                                            @case('package')
-                                                <div class="d-flex align-items-center">
-                                                    <i class="bi bi-box me-2 text-primary"></i>
-                                                    <div>Package Price</div>
-                                                </div>
-                                            @break
-
-                                            @default
-                                                <div>Standard Discount</div>
-                                        @endswitch
-                                    </td>
-                                    <td>
-                                        <div class="fw-bold text-primary">
-                                            @switch($tier->discount_type)
-                                                @case('percentage')
-                                                    {{ $tier->discount_value }}% Off
-                                                @break
-
-                                                @case('nominal')
-                                                    Rp {{ number_format($tier->discount_value, 0, ',', '.') }} Per Item
-                                                @break
-
-                                                @case('package')
-                                                    Rp {{ number_format($tier->package_price, 0, ',', '.') }} For
-                                                    {{ $tier->min_quantity }} Items
-                                                @break
-
-                                                @default
-                                                    -
-                                            @endswitch
-                                        </div>
-                                    </td>
-                                    <td>
-                                        @php
-                                            $avgPrice = $promo->products->avg('regular_price');
-                                            $regularTotal = $avgPrice * $tier->min_quantity;
-
-                                            if ($tier->discount_type == 'percentage') {
-                                                $discountedTotal = $regularTotal * (1 - $tier->discount_value / 100);
-                                                $savings = $regularTotal - $discountedTotal;
-                                            } elseif ($tier->discount_type == 'nominal') {
-                                                $savings = $tier->discount_value * $tier->min_quantity;
-                                            } elseif ($tier->discount_type == 'package') {
-                                                $savings = $regularTotal - $tier->package_price;
-                                            } else {
-                                                $savings = 0;
-                                            }
-
-                                            $savingsPercentage = ($savings / $regularTotal) * 100;
-                                        @endphp
-
-                                        <div class="d-flex align-items-center">
-                                            <div class="me-3">
-                                                <div class="fw-bold text-success">Rp
-                                                    {{ number_format($savings, 0, ',', '.') }}</div>
-                                                <small class="text-muted">Est. total savings</small>
-                                            </div>
-                                            <span class="discount-percentage">{{ round($savingsPercentage) }}%</span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
-                    <div class="alert alert-light mt-4 discount-info">
-                        <h6 class="d-flex align-items-center">
-                            <i class="bi bi-megaphone me-2"></i>
-                            <span>All Discount Tiers Description</span>
-                        </h6>
-                        <div class="mt-2">
-                            {!! $promo->all_discount_tiers !!}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Products in Promo -->
-            <div class="premium-card mt-4">
-                <div class="premium-card-header">
-                    <span style="color: #183018;">Featured Products in Promo</span>
-                    <div class="premium-card-header-icon">
-                        <i class="bi bi-grid"></i>
-                    </div>
-                </div>
-                <div class="premium-card-body">
-                    <!-- Summary Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3 col-sm-6">
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <div class="info-icon">
-                                        <i class="bi bi-box-seam"></i>
-                                    </div>
-                                    <h6 class="info-title">Total Products</h6>
-                                </div>
-                                <div class="stat-value">{{ count($promo->products) }}</div>
-                                <small class="text-muted">Items eligible for discount</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <div class="info-icon">
-                                        <i class="bi bi-currency-dollar"></i>
-                                    </div>
-                                    <h6 class="info-title">Average Price</h6>
-                                </div>
-                                <div class="stat-value">Rp
-                                    {{ number_format($promo->products->avg('regular_price'), 0, ',', '.') }}</div>
-                                <small class="text-muted">Before discount</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <div class="info-icon">
-                                        <i class="bi bi-check-circle"></i>
-                                    </div>
-                                    <h6 class="info-title">In Stock</h6>
-                                </div>
-                                @php
-                                    $inStockCount = $promo->products->where('stock_quantity', '>', 0)->count();
-                                @endphp
-                                <div class="stat-value">{{ $inStockCount }}</div>
-                                <small
-                                    class="text-muted">{{ round(($inStockCount / count($promo->products)) * 100) }}%
-                                    availability</small>
-                            </div>
-                        </div>
-                        <div class="col-md-3 col-sm-6">
-                            <div class="info-card">
-                                <div class="info-header">
-                                    <div class="info-icon">
-                                        <i class="bi bi-tag"></i>
-                                    </div>
-                                    <h6 class="info-title">Best Savings</h6>
-                                </div>
-                                @php
-                                    $lastTier = $promo->tiers->last();
-                                    $bestPercentage = 0;
-
-                                    if ($lastTier->discount_type == 'percentage') {
-                                        $bestPercentage = $lastTier->discount_value;
-                                    } elseif ($lastTier->discount_type == 'nominal') {
-                                        $avgPrice = $promo->products->avg('regular_price');
-                                        $bestPercentage = ($lastTier->discount_value / $avgPrice) * 100;
-                                    } elseif ($lastTier->discount_type == 'package') {
-                                        $avgPrice = $promo->products->avg('regular_price');
-                                        $regularTotal = $avgPrice * $lastTier->min_quantity;
-                                        $bestPercentage =
-                                            (($regularTotal - $lastTier->package_price) / $regularTotal) * 100;
-                                    }
-                                @endphp
-                                <div class="stat-value">{{ round($bestPercentage) }}%</div>
-                                <small class="text-muted">Maximum discount available</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product Cards Grid View -->
-                    <div class="product-grid">
-                        @foreach ($promo->products as $product)
-                            <div class="product-card">
-                                <div class="product-image-container">
-                                    <img src="{{ Storage::url($product->main_image) }}"
-                                        alt="{{ $product->product_name }}" class="product-image"
-                                        onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                    @if ($product->stock_quantity <= 5 && $product->stock_quantity > 0)
-                                        <div class="product-badge">Low Stock</div>
-                                    @elseif($product->stock_quantity == 0)
-                                        <div class="product-badge"
-                                            style="background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);">Sold
-                                            Out</div>
-                                    @endif
-                                </div>
-                                <div class="product-info">
-                                    <h5 class="product-name">{{ $product->product_name }}</h5>
-                                    <p class="product-description">{{ Str::limit($product->description, 100) }}</p>
-
-                                    <div class="price-comparison">
-                                        <span class="original-price">Rp
-                                            {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                        @php
-                                            $bestTier = $promo->tiers->last();
-                                            $discountedPrice = 0;
-
-                                            if ($bestTier->discount_type == 'percentage') {
-                                                $discountedPrice =
-                                                    $product->regular_price * (1 - $bestTier->discount_value / 100);
-                                            } elseif ($bestTier->discount_type == 'nominal') {
-                                                $discountedPrice = $product->regular_price - $bestTier->discount_value;
-                                            } elseif ($bestTier->discount_type == 'package') {
-                                                $discountedPrice = $bestTier->package_price / $bestTier->min_quantity;
-                                            }
-
-                                            $discountedPrice = max(0, $discountedPrice);
-                                            $savingsPercentage =
-                                                (($product->regular_price - $discountedPrice) /
-                                                    $product->regular_price) *
-                                                100;
-                                        @endphp
-                                        <span class="discount-price">Rp
-                                            {{ number_format($discountedPrice, 0, ',', '.') }}</span>
-                                        <span class="discount-percentage">-{{ round($savingsPercentage) }}%</span>
-                                    </div>
-
-                                    <div class="product-meta">
-                                        <div class="product-stock">
-                                            @if ($product->stock_quantity > 10)
-                                                <span class="stock-badge in-stock"></span>
-                                                <span>In Stock ({{ $product->stock_quantity }})</span>
-                                            @elseif($product->stock_quantity > 0)
-                                                <span class="stock-badge low-stock"></span>
-                                                <span>Low Stock ({{ $product->stock_quantity }})</span>
-                                            @else
-                                                <span class="stock-badge out-of-stock"></span>
-                                                <span>Out of Stock</span>
-                                            @endif
-                                        </div>
-                                        <div>
-                                            <button class="btn btn-sm btn-outline-primary"
-                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                                <i class="bi bi-eye"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-
-                    <!-- Table View (Hidden by Default) -->
-                    <div class="table-responsive mt-4" id="tableView" style="display: none;">
-                        <table class="premium-table">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Name</th>
-                                    <th>Stock</th>
-                                    <th>Original Price</th>
-                                    <th>Best Deal Price</th>
-                                    <th>Savings</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($promo->products as $product)
-                                    <tr>
-                                        <td>
-                                            <img src="{{ Storage::url($product->main_image) }}"
-                                                alt="{{ $product->product_name }}"
-                                                style="width: 60px; height: 60px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer;"
-                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                        </td>
-                                        <td>
-                                            <div class="fw-medium">{{ $product->product_name }}</div>
-                                            <small
-                                                class="text-muted">{{ Str::limit($product->description, 60) }}</small>
-                                        </td>
-                                        <td>
-                                            @if ($product->stock_quantity > 10)
-                                                <span class="badge bg-success">In Stock
-                                                    ({{ $product->stock_quantity }})
-                                                </span>
-                                            @elseif($product->stock_quantity > 0)
-                                                <span class="badge bg-warning text-dark">Low Stock
-                                                    ({{ $product->stock_quantity }})</span>
-                                            @else
-                                                <span class="badge bg-danger">Out of Stock</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <div class="fw-medium">Rp
-                                                {{ number_format($product->regular_price, 0, ',', '.') }}</div>
-                                        </td>
-                                        <td>
-                                            @php
-                                                $bestTier = $promo->tiers->last();
-                                                $discountedPrice = 0;
-
-                                                if ($bestTier->discount_type == 'percentage') {
-                                                    $discountedPrice =
-                                                        $product->regular_price * (1 - $bestTier->discount_value / 100);
-                                                } elseif ($bestTier->discount_type == 'nominal') {
-                                                    $discountedPrice =
-                                                        $product->regular_price - $bestTier->discount_value;
-                                                } elseif ($bestTier->discount_type == 'package') {
-                                                    $discountedPrice =
-                                                        $bestTier->package_price / $bestTier->min_quantity;
-                                                }
-
-                                                $discountedPrice = max(0, $discountedPrice);
-                                            @endphp
-                                            <div class="fw-bold text-primary">Rp
-                                                {{ number_format($discountedPrice, 0, ',', '.') }}</div>
-                                            <small class="text-muted">with {{ $bestTier->min_quantity }}+
-                                                items</small>
-                                        </td>
-                                        <td>
-                                            @php
-                                                $savings = $product->regular_price - $discountedPrice;
-                                                $savingsPercentage = ($savings / $product->regular_price) * 100;
-                                            @endphp
-                                            <div class="fw-bold text-success">Rp
-                                                {{ number_format($savings, 0, ',', '.') }}</div>
-                                            <span class="discount-percentage">{{ round($savingsPercentage) }}%</span>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <div>
-                    <a href="{{ route('index-promo-diskon') }}" class="premium-btn">
-                        <i class="bi bi-arrow-left"></i> Back to Promo List
-                    </a>
-                </div>
-
-            </div>
-
-        </div> --}}
-
-
         <div id="main" class="premium-container">
             <!-- Breadcrumb -->
-            <div class="premium-breadcrumb">
-                <div class="premium-breadcrumb-item">
-                    <a href="{{ route('index-promo-diskon') }}"><i class="bi bi-grid me-2"></i>Dashboard Promo</a>
-                </div>
-                <div class="premium-breadcrumb-item active">
-                    <i class="bi bi-tag me-2"></i>Detail Promo Diskon
+            <div class="page-title">
+                <h3 class="mb-2">Detail Promo Diskon</h3>
+                <p class="mb-3">
+                    Buat Diskon Produk Untuk Menarik Minat Pembeli.
+                    <a href="#" class="text-blue" style="text-decoration: none;">Pelajari Selengkapnya</a>
+                </p>
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="{{ route('index-promo-diskon') }}"
+                                        style="text-decoration: none;">Promo Discount</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Add Promo Discount</li>
+                            </ol>
+                        </nav>
+                    </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-md-8">
-                    <h2 class="section-title">{{ $promo->promo_name }}</h2>
-                </div>
-                <div class="col-md-4 text-end">
-                    <span class="badge bg-success p-2" style="font-size: 0.9rem;">
-                        <i class="bi bi-check-circle me-1"></i> Kampanye Aktif
-                    </span>
-                </div>
-            </div>
-
-            <!-- Stats Overview -->
-            <div class="stats-container">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-calendar-event"></i>
-                    </div>
-                    <div class="stat-label">Durasi Kampanye</div>
-                    <div class="stat-value">
-                        {{ \Carbon\Carbon::parse($promo->start_date)->diffInDays($promo->end_date) + 1 }}</div>
-                    <div class="stat-label">Hari</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-box-seam"></i>
-                    </div>
-                    <div class="stat-label">Produk dalam Promo</div>
-                    <div class="stat-value">{{ count($promo->products) }}</div>
-                    <div class="stat-label">Item</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-layers"></i>
-                    </div>
-                    <div class="stat-label">Tingkat Diskon</div>
-                    <div class="stat-value">{{ count($promo->tiers) }}</div>
-                    <div class="stat-label">Level</div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
-                    <div class="stat-label">Sisa Waktu</div>
-                    @php
-                        $daysRemaining = max(0, \Carbon\Carbon::parse($promo->end_date)->diffInDays(now()));
-                    @endphp
-                    <div class="stat-value">{{ $daysRemaining }}</div>
-                    <div class="stat-label">Hari</div>
-                </div>
-            </div>
-
-            <!-- Promo Timeline -->
             <div class="col-md-12">
                 <div class="premium-card">
                     <div class="premium-card-header">
-                        <span style="color: #183018;">Jadwal Promo</span>
+                        <span style="color: #183018;">Detail Promo Diskon</span>
+
                         <div class="premium-card-header-icon">
                             <i class="bi bi-calendar3"></i>
                         </div>
                     </div>
                     <div class="premium-card-body">
+                        <div class="premium-info-header mb-4">
+                            <h4>{{ $promo->promo_name }}</h4>
+                        </div>
+
                         <div class="premium-form-group">
                             <label class="premium-label">Tanggal Mulai</label>
                             <input type="text" class="premium-input"
@@ -1258,45 +654,120 @@
                                 value="{{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y, h:i A') }}" readonly>
                         </div>
 
-                        <div class="timeline-container">
-                            @php
-                                $startDate = \Carbon\Carbon::parse($promo->start_date);
-                                $endDate = \Carbon\Carbon::parse($promo->end_date);
-                                $currentDate = now();
-                                $totalDuration = $startDate->diffInSeconds($endDate);
-                                $elapsedDuration = $startDate->diffInSeconds($currentDate);
-                                $progressPercentage = min(100, max(0, ($elapsedDuration / $totalDuration) * 100));
-                            @endphp
-
-                            <div class="timeline-track">
-                                <div class="timeline-progress" style="width: {{ $progressPercentage }}%"></div>
-
-                                <div class="timeline-marker start">
-                                    <div class="timeline-label">Mulai</div>
-                                    <div class="timeline-date">{{ $startDate->format('d M Y') }}</div>
+                        <!-- Stats Overview -->
+                        <div class="premium-stats-overview mt-4 mb-4">
+                            <div class="row gx-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="premium-stat-item">
+                                        <div class="premium-stat-icon">
+                                            <i class="bi bi-calendar-event"></i>
+                                        </div>
+                                        <div class="premium-stat-info">
+                                            <div class="premium-stat-value">
+                                                {{ \Carbon\Carbon::parse($promo->start_date)->diffInDays($promo->end_date) + 1 }}
+                                                Hari</div>
+                                            <div class="premium-stat-label">Durasi Kampanye</div>
+                                            <div class="premium-stat-desc">Periode
+                                                {{ \Carbon\Carbon::parse($promo->start_date)->format('d M') }} -
+                                                {{ \Carbon\Carbon::parse($promo->end_date)->format('d M Y') }}</div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="timeline-marker current"
-                                    style="--progress-percentage: {{ $progressPercentage }}%">
-                                    <div class="timeline-label">Sekarang</div>
-                                    <div class="timeline-date">{{ $currentDate->format('d M Y') }}</div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="premium-stat-item">
+                                        <div class="premium-stat-icon">
+                                            <i class="bi bi-box-seam"></i>
+                                        </div>
+                                        <div class="premium-stat-info">
+                                            <div class="premium-stat-value">{{ count($promo->products) }} Item</div>
+                                            <div class="premium-stat-label">Produk dalam Promo</div>
+                                            <div class="premium-stat-desc">Terdaftar dalam kampanye ini</div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="timeline-marker end">
-                                    <div class="timeline-label">Selesai</div>
-                                    <div class="timeline-date">{{ $endDate->format('d M Y') }}</div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="premium-stat-item">
+                                        <div class="premium-stat-icon">
+                                            <i class="bi bi-layers"></i>
+                                        </div>
+                                        <div class="premium-stat-info">
+                                            <div class="premium-stat-value">{{ count($promo->tiers) }} Level</div>
+                                            <div class="premium-stat-label">Tingkat Diskon</div>
+                                            <div class="premium-stat-desc">Tersedia dalam kampanye ini</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <div class="premium-stat-item">
+                                        <div class="premium-stat-icon">
+                                            <i class="bi bi-hourglass-split"></i>
+                                        </div>
+                                        <div class="premium-stat-info">
+                                            @php
+                                                $daysRemaining = max(
+                                                    0,
+                                                    \Carbon\Carbon::parse($promo->end_date)->diffInDays(now()),
+                                                );
+                                            @endphp
+                                            <div class="premium-stat-value">{{ $daysRemaining }} Hari</div>
+                                            <div class="premium-stat-label">Sisa Waktu</div>
+                                            <div class="premium-stat-desc">Sebelum kampanye berakhir</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <div>
-                                <div class="premium-label">Progres Kampanye</div>
-                                <div class="fw-bold">{{ round($progressPercentage) }}% Selesai</div>
+                        <div class="premium-timeline-section mt-4">
+                            <div class="premium-info-header">
+                                <h4>Progres Kampanye</h4>
+                                <div class="premium-info-subtitle">Status kampanye saat ini</div>
                             </div>
-                            <div class="text-end">
-                                <div class="premium-label">Sisa Waktu</div>
-                                <div class="fw-bold">{{ $daysRemaining }} hari</div>
+
+                            <div class="timeline-container mt-3">
+                                @php
+                                    $startDate = \Carbon\Carbon::parse($promo->start_date);
+                                    $endDate = \Carbon\Carbon::parse($promo->end_date);
+                                    $currentDate = now();
+                                    $totalDuration = $startDate->diffInSeconds($endDate);
+                                    $elapsedDuration = $startDate->diffInSeconds($currentDate);
+                                    $progressPercentage = min(100, max(0, ($elapsedDuration / $totalDuration) * 100));
+                                @endphp
+
+                                <div class="timeline-track">
+                                    <div class="timeline-progress" style="width: {{ $progressPercentage }}%"></div>
+
+                                    <div class="timeline-marker start">
+                                        <div class="timeline-label">Mulai</div>
+                                        <div class="timeline-date">{{ $startDate->format('d M Y') }}</div>
+                                    </div>
+
+                                    <div class="timeline-marker current"
+                                        style="--progress-percentage: {{ $progressPercentage }}%">
+                                        <div class="timeline-label">Sekarang</div>
+                                        <div class="timeline-date">{{ $currentDate->format('d M Y') }}</div>
+                                    </div>
+
+                                    <div class="timeline-marker end">
+                                        <div class="timeline-label">Selesai</div>
+                                        <div class="timeline-date">{{ $endDate->format('d M Y') }}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <div class="premium-progress-label">Status Progres</div>
+                                    <div class="premium-progress-value">{{ round($progressPercentage) }}% Selesai
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="premium-progress-label">Sisa Waktu</div>
+                                    <div class="premium-progress-value">{{ $daysRemaining }} hari</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1669,15 +1140,17 @@
                     </div>
                 </div>
             </div>
+            @include('admin.layouts.footer')
 
-            <!-- Action Buttons -->
+
+            {{-- <!-- Action Buttons -->
             <div class="d-flex justify-content-between align-items-center mt-4">
                 <div>
                     <a href="{{ route('index-promo-diskon') }}" class="premium-btn">
                         <i class="bi bi-arrow-left"></i> Kembali ke Daftar Promo
                     </a>
                 </div>
-            </div>
+            </div> --}}
         </div>
 
         <script>

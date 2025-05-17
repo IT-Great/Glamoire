@@ -20,6 +20,12 @@
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
 
     <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
         /* Form styling improvements */
         label {
             margin-bottom: 0.5rem;
@@ -134,154 +140,160 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="container-fluid">
-                    <!-- Breadcrumb with improved styling -->
-                    <nav aria-label="breadcrumb" class="breadcrumb-header mb-4">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('index-article') }}"><i
-                                        class="bi bi-journal-text me-1"></i>Articles</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Add Article</li>
-                        </ol>
-                    </nav>
-
-                    <!-- Main card with shadow and rounded corners -->
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-light">
-                            <h4 class="mb-0"><i class="bi bi-file-earmark-plus me-2"></i>Buat Artikel Baru</h4>
-                            <p class="text-muted small mb-0">Isi formulir di bawah ini untuk membuat artikel baru</p>
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title">
+                                <h3 class="mb-2">Manajemen Artikel</h3>
+                                <p>Kelola semua artikel dan konten Anda dari satu dasbor</p>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="card-body">
-                            <form class="form" action="{{ route('store-article') }}" method="POST"
-                                enctype="multipart/form-data">
-                                @csrf
-                                <div class="row">
-                                    <!-- Kolom kiri -->
-                                    <div class="col-lg-8">
-                                        <!-- Input Judul Artikel dengan penghitung karakter -->
-                                        <div class="form-group mb-4">
-                                            <label for="article-title" class="form-label fw-bold">
-                                                <i class="bi bi-type me-1"></i>Judul Artikel <span
-                                                    class="text-danger">*</span>
-                                            </label>
-                                            <div class="input-group">
-                                                <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                                                <input type="text" class="form-control" name="title"
-                                                    id="article-title" placeholder="Masukkan judul yang menarik"
-                                                    required>
-                                            </div>
-                                            <small class="text-muted mt-1">Judul yang menarik meningkatkan keterlibatan
-                                                pembaca (0/100 karakter)</small>
-                                        </div>
-
-                                        <!-- Editor Konten -->
-                                        <div class="form-group mb-4">
-                                            <label for="summernote" class="form-label fw-bold">
-                                                <i class="bi bi-file-richtext me-1"></i>Konten Artikel <span
-                                                    class="text-danger">*</span>
-                                            </label>
-                                            <div class="card">
-                                                <div class="card-header bg-light">
-                                                    <div class="d-flex justify-content-between align-items-center">
-                                                        <span class="text-muted small">Format konten artikel Anda dengan
-                                                            editor di bawah ini</span>
-
-                                                    </div>
-                                                </div>
-                                                <div class="card-body p-0">
-                                                    <textarea id="summernote" name="content" class="form-control"></textarea>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <!-- Kolom kanan (sidebar) -->
-                                    <div class="col-lg-4">
-                                        <!-- Kartu Pengaturan Artikel -->
-                                        <div class="card mb-4 border-light shadow-sm">
-                                            <div class="card-header bg-light">
-                                                <h5 class="mb-0"><i class="bi bi-gear me-1"></i>Pengaturan Artikel
-                                                </h5>
-                                            </div>
-                                            <div class="card-body">
-                                                <!-- Dropdown Kategori -->
-                                                <div class="form-group mb-4">
-                                                    <label for="category-select" class="form-label fw-bold">
-                                                        <i class="bi bi-tag me-1"></i>Kategori <span
-                                                            class="text-danger">*</span>
-                                                    </label>
-                                                    <select class="form-select select2-basic-category"
-                                                        id="category-select" name="category_article_id" required>
-                                                        <option value="" disabled selected>Pilih kategori
-                                                        </option>
-                                                        @foreach ($categories as $category)
-                                                            <option value="{{ $category->id }}">{{ $category->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <small class="text-muted">Pilih kategori yang paling
-                                                        relevan</small>
-                                                </div>
-
-                                                <!-- Upload Gambar -->
-                                                <div class="form-group mb-4">
-                                                    <label class="form-label fw-bold">
-                                                        <i class="bi bi-image me-1"></i>Gambar Unggulan <span
-                                                            class="text-danger">*</span>
-                                                    </label>
-
-                                                    <div class="image-upload-container">
-                                                        <!-- Area Upload -->
-                                                        <div class="image-upload-wrap" id="single-image-upload-wrap">
-                                                            <input type="file" name="image"
-                                                                class="file-upload-input"
-                                                                onchange="readURLSingle(this);" accept="image/*">
-                                                            <div class="drag-text text-center p-4">
-                                                                <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
-                                                                <p class="mb-0">Seret dan lepas atau klik untuk
-                                                                    mengunggah</p>
-                                                                <small class="text-muted">Rekomendasi: 1200×628px,
-                                                                    maksimal 2MB</small>
-                                                            </div>
-                                                        </div>
-
-                                                        <!-- Pratinjau -->
-                                                        <div class="file-upload-content"
-                                                            id="single-file-upload-content"></div>
-                                                    </div>
-
-                                                    @if ($errors->has('image'))
-                                                        <p style="color: red" class="mt-2">
-                                                            {{ $errors->first('image') }}</p>
-                                                    @endif
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Tombol Aksi -->
-                                <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-4">
-                                    <a href="{{ route('index-article') }}" class="btn btn-outline-secondary">
-                                        <i class="bi bi-arrow-left me-1"></i>Kembali
-                                    </a>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-check-lg me-1"></i>Posting Artikel
-                                    </button>
-                                </div>
-                            </form>
-
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}">Artikel</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Semua Artikel</li>
+                                </ol>
+                            </nav>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Main card with shadow and rounded corners -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h4 class="mb-0"><i class="bi bi-file-earmark-plus me-2"></i>Buat Artikel Baru</h4>
+                    <p class="text-muted small mb-0">Isi formulir di bawah ini untuk membuat artikel baru</p>
+                </div>
+
+                <div class="card-body">
+                    <form class="form" action="{{ route('store-article') }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="row">
+                            <!-- Kolom kiri -->
+                            <div class="col-lg-8">
+                                <!-- Input Judul Artikel dengan penghitung karakter -->
+                                <div class="form-group mb-4">
+                                    <label for="article-title" class="form-label fw-bold">
+                                        <i class="bi bi-type me-1"></i>Judul Artikel <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                        <input type="text" class="form-control" name="title" id="article-title"
+                                            placeholder="Masukkan judul yang menarik" required>
+                                    </div>
+                                    <small class="text-muted mt-1">Judul yang menarik meningkatkan keterlibatan
+                                        pembaca (0/100 karakter)</small>
+                                </div>
+
+                                <!-- Editor Konten -->
+                                <div class="form-group mb-4">
+                                    <label for="summernote" class="form-label fw-bold">
+                                        <i class="bi bi-file-richtext me-1"></i>Konten Artikel <span
+                                            class="text-danger">*</span>
+                                    </label>
+                                    <div class="card">
+                                        <div class="card-header bg-light">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="text-muted small">Format konten artikel Anda dengan
+                                                    editor di bawah ini</span>
+
+                                            </div>
+                                        </div>
+                                        <div class="card-body p-0">
+                                            <textarea id="summernote" name="content" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Kolom kanan (sidebar) -->
+                            <div class="col-lg-4">
+                                <!-- Kartu Pengaturan Artikel -->
+                                <div class="card mb-4 border-light shadow-sm">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0"><i class="bi bi-gear me-1"></i>Pengaturan Artikel
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Dropdown Kategori -->
+                                        <div class="form-group mb-4">
+                                            <label for="category-select" class="form-label fw-bold">
+                                                <i class="bi bi-tag me-1"></i>Kategori <span
+                                                    class="text-danger">*</span>
+                                            </label>
+                                            <select class="form-select select2-basic-category" id="category-select"
+                                                name="category_article_id" required>
+                                                <option value="" disabled selected>Pilih kategori
+                                                </option>
+                                                @foreach ($categories as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <small class="text-muted">Pilih kategori yang paling
+                                                relevan</small>
+                                        </div>
+
+                                        <!-- Upload Gambar -->
+                                        <div class="form-group mb-4">
+                                            <label class="form-label fw-bold">
+                                                <i class="bi bi-image me-1"></i>Gambar Unggulan <span
+                                                    class="text-danger">*</span>
+                                            </label>
+
+                                            <div class="image-upload-container">
+                                                <!-- Area Upload -->
+                                                <div class="image-upload-wrap" id="single-image-upload-wrap">
+                                                    <input type="file" name="image" class="file-upload-input"
+                                                        onchange="readURLSingle(this);" accept="image/*">
+                                                    <div class="drag-text text-center p-4">
+                                                        <i class="bi bi-cloud-arrow-up fs-1 text-muted"></i>
+                                                        <p class="mb-0">Seret dan lepas atau klik untuk
+                                                            mengunggah</p>
+                                                        <small class="text-muted">Rekomendasi: 1200×628px,
+                                                            maksimal 2MB</small>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Pratinjau -->
+                                                <div class="file-upload-content" id="single-file-upload-content">
+                                                </div>
+                                            </div>
+
+                                            @if ($errors->has('image'))
+                                                <p style="color: red" class="mt-2">
+                                                    {{ $errors->first('image') }}</p>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tombol Aksi -->
+                        <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-4">
+                            <a href="{{ route('index-article') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Kembali
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg me-1"></i>Posting Artikel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             @include('admin.layouts.footer')
         </div>
-
     </div>
+
     <script src="assets/vendors/jquery/jquery.min.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>

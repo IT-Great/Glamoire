@@ -125,7 +125,7 @@
                         </a>
                     </li>
 
-                    <li class="sidebar-item {{ Request::is('user-admin') ? 'active' : '' }}">
+                    <li class="sidebar-item {{ Request::is('user-admin*') ? 'active' : '' }}">
                         <a href="{{ route('index-user-admin') }}" class='sidebar-link'>
                             <i class="bi bi-people-fill"></i>
                             <span>User</span>

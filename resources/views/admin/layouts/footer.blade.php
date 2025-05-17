@@ -4,8 +4,7 @@
             <p>2024 &copy; Glamoire</p>
         </div>
         <div class="float-end">
-            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                    href="http://ahmadsaugi.com">IT Glamoire</a></p>
+            <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <span>IT Glamoire</span></p>
         </div>
     </div>
 </footer>

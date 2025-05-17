@@ -16,6 +16,36 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
 
     <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+
         /* Styling container Select2 */
         .select2-container--default .select2-selection--single {
             height: 38px !important;
@@ -51,15 +81,22 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
-                    <div class="row mb-3">
-                        <div class="col-12 col-md-6">
-                            <h3>Edit Article</h3>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title">
+                                <h3 class="mb-2">Article Management</h3>
+                                <p>Tinjau dan update semua artikel anda</p>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/article-admin">Article</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Edit Article</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}"
+                                            style="text-decoration: none;">Article</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">All Article</li>
                                 </ol>
                             </nav>
                         </div>
@@ -261,7 +298,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
 
                                             <!-- Tombol Aksi -->
@@ -281,13 +317,12 @@
                         </div>
                     </div>
                 </section>
-
             </div>
-
             @include('admin.layouts.footer')
-
         </div>
     </div>
+
+    
     <script src="{{ asset('assets/vendors/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
