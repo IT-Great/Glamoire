@@ -616,12 +616,14 @@ class UserController extends Controller
         try {
             $userId = session('id_user');
 
+            // dd($request);
             // Loop through each product ID from the request
-            foreach ($request->ratingReviewProductId as $productId) {
+            foreach ($request->ratingReviewProductId as $index => $productId) {
                 // Collect rating, description, and files from the request
-                $rating = $request->star[$productId];
-                $description = $request->description[$productId];
-                $productVariantId = $request->productVariantId[$productId];
+                $rating = $request->star[$index];
+                $description = $request->description[$index];
+                $productVariantId = $request->productVariantId[$index];
+                // dd($productVariantId);
 
                 // Initialize paths for images and video
                 $imagePaths = [];

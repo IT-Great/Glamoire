@@ -26,10 +26,21 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DokuPaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+
+use App\Http\Controllers\PrismalinkController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\NotifyMe;
 use App\Models\User;
+
+// PRISMALINK ROUTE
+Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
+Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
+Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
+Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
+// Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
+// Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
+
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -414,7 +425,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::put('update-promo-voucher-newuser/{id}', [PromoController::class, 'updatePromoVoucherNewUser'])->name('update-promo-voucher-newuser');
 
     Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
-    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
+    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promoo');
 
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 
@@ -445,7 +456,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
 
     // SEND EMAIL RESPONSE
-    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
+    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin1');
     Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
 
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');

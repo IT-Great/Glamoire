@@ -316,7 +316,7 @@
 
 <!-- KATEGORI MOBILE -->
 <script>
-  if (window.innerWidth <= 425){
+  if (window.innerWidth <= 455){
     document.getElementById('shop-link').addEventListener('click', function(event) {
       event.preventDefault();
       const categoriesDiv = document.getElementById('categories');
@@ -344,7 +344,7 @@
 
 <!-- BRAND MOBILE -->
 <script>
-  if (window.innerWidth <= 425){
+  if (window.innerWidth <= 455){
     document.getElementById('brand-link').addEventListener('click', function(event) {
       event.preventDefault();
       const brandsDiv = document.getElementById('brands');

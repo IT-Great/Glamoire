@@ -657,9 +657,9 @@
     function selectPromo(promoElement, promo_code, voucherType) {
         // Constants for different voucher types
         const isPromoType = voucherType === 'limited voucher';
-        const isOngkirType = voucherType === 'ongkir voucher';
         const isProductType = voucherType === 'product voucher';
         const isBrandType = voucherType === 'brand voucher';
+        const isOngkirType = voucherType === 'ongkir voucher';
 
         // Reference to the currently selected voucher
         let currentlySelectedElement = null;
@@ -785,7 +785,6 @@
         // Reset discounts
         discountAmount = 0;
     }
-
 
     // Function to update totals based on selected vouchers
     function updateTotals(response) {
@@ -995,7 +994,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color: #183018">
-                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px]" id="dokuPaymentModalLabel">Pembayaran</h5>
+                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[16px] xl:text-[16px]" id="dokuPaymentModalLabel">Informasi Pembayaran</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="dokuPaymentContainer">
@@ -1012,67 +1011,67 @@
     `);
 
     // Handle payment button click
-    $('#paynow').click(function(e) {
-        e.preventDefault();
+    // $('#paynow').click(function(e) {
+    //     e.preventDefault();
 
-        $('#paynow').prop('disabled', true);
-        $('#dokuPaymentModal').modal('show');
+    //     $('#paynow').prop('disabled', true);
+    //     $('#dokuPaymentModal').modal('show');
 
-        // Make AJAX request
-        $.ajax({
-            url: '/initiate-doku-payment',
-            method: 'POST',
-            data: {
-                total_amount: subTotal,
-                products: formattedData,
-                subtotal: subTotal,          // Removed the colon inside the key
-                shipping_cost: ongkir,
-                shipping_address_id: shippingAddressId,
-                total_item: totalItem,
-                total_item_price: totalItemPrice,
-                discount_amount: discountAmount,
-                discount_ongkir: shippingDiscount,
-                voucher_promo: selectedPromoCode,
-                voucher_ongkir: selectedOngkirCode,
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success && response.payment_url) {
-                    // Load DOKU payment iframe
-                    console.log({
-                        paymentUrl:response.payment_url,
-                        result:response.tes,
-                    });
-                    $('#dokuPaymentContainer').html(`
-                        <iframe 
-                            src="${response.payment_url}"
-                            frameborder="0"
-                            width="100%"
-                            height="600px"
-                            style="overflow: hidden;">
-                        </iframe>
-                    `);
-                } else {
-                    throw new Error('Invalid payment URL');
-                }
-            },
-            error: function(xhr, status, error) {
-                // Show error message
-                $('#dokuPaymentContainer').html(`
-            <div class="alert alert-danger">
-                <p>Terjadi kesalahan saat memproses pembayaran:</p>
-                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-            </div>
-        `);
-                console.error('Payment error:', error);
-            },
-            complete: function() {
-                $('#paynow').prop('disabled', false);
-            }
-        });
-    });
+    //     // Make AJAX request
+    //     $.ajax({
+    //         url: '/initiate-doku-payment',
+    //         method: 'POST',
+    //         data: {
+    //             total_amount: subTotal,
+    //             products: formattedData,
+    //             subtotal: subTotal,         
+    //             shipping_cost: ongkir,
+    //             shipping_address_id: shippingAddressId,
+    //             total_item: totalItem,
+    //             total_item_price: totalItemPrice,
+    //             discount_amount: discountAmount,
+    //             discount_ongkir: shippingDiscount,
+    //             voucher_promo: selectedPromoCode,
+    //             voucher_ongkir: selectedOngkirCode,
+    //         },
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(response) {
+    //             if (response.success && response.payment_url) {
+    //                 // Load DOKU payment iframe
+    //                 console.log({
+    //                     paymentUrl:response.payment_url,
+    //                     result:response.tes,
+    //                 });
+    //                 $('#dokuPaymentContainer').html(`
+    //                     <iframe 
+    //                         src="${response.payment_url}"
+    //                         frameborder="0"
+    //                         width="100%"
+    //                         height="600px"
+    //                         style="overflow: hidden;">
+    //                     </iframe>
+    //                 `);
+    //             } else {
+    //                 throw new Error('Invalid payment URL');
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // Show error message
+    //             $('#dokuPaymentContainer').html(`
+    //         <div class="alert alert-danger">
+    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
+    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+    //         </div>
+    //     `);
+    //             console.error('Payment error:', error);
+    //         },
+    //         complete: function() {
+    //             $('#paynow').prop('disabled', false);
+    //         }
+    //     });
+    // });
 
 </script>
 
@@ -1868,4 +1867,115 @@
     </script>  
 @endif
 
+
+
+
+
+
+
+
+
+
+
+{{-- PRIMSALINK --}}
+<script>
+     $('#paynow').click(function(e) {
+        e.preventDefault();
+
+        $('#paynow').prop('disabled', true);
+        $('#dokuPaymentModal').modal('show');
+
+        
+        // console.log("Promo:",selectedPromoCode);
+        // console.log("Ongkir:",selectedOngkirCode);
+
+        // Make AJAX request
+        $.ajax({
+            url: '/payment/submit',
+            method: 'POST',
+            data: {
+                total_amount: subTotal,
+                products: formattedData,
+                subtotal: subTotal,         
+                shipping_cost: ongkir,
+                shipping_address_id: shippingAddressId,
+                total_item: totalItem,
+                total_item_price: totalItemPrice,
+                discount_amount: discountAmount,
+                discount_ongkir: shippingDiscount,
+                voucher_promo: selectedPromoCode,
+                voucher_ongkir: selectedOngkirCode,
+                condition: "standard",
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success && response.payment_url) {
+                    $('#dokuPaymentContainer').html(`
+                        <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
+                            <div class="flex items-center gap-3 mb-2">
+                                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
+                                </svg>
+                                <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
+                            </div>
+                            <p class="text-sm text-gray-700">
+                                Silakan selesaikan pembayaran sebelum:
+                            </p>
+                            <div class="mt-2 text-xl font-bold text-red-600">
+                                ${response.deadline}
+                            </div>
+                             <p class="mt-2 text-sm text-gray-700">
+                                Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
+                            </p>
+
+                            <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
+                            <ol class="text-gray-700 text-sm">
+                                <li>1. Pilih metode pembayaran</li>
+                                <li>2. Lakukan transaksi sebelum batas waktu</li>
+                                <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
+                                <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
+                            </ol>
+                            <p class="mt-2 text-sm text-gray-700">
+                                Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
+                            </p>
+                            <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
+                                Selesai
+                            </a>
+                        </div>
+                    `);
+
+                    if (window.innerWidth <= 455){
+                        console.log(window.innerWidth)
+                        window.location.href = response.payment_url;
+                    }
+                    else{
+                        // console.log(window.innerWidth)
+                        window.open(response.payment_url, '_blank', 'width=800,height=600');
+                    }
+
+                } else {
+                    throw new Error('Invalid payment URL');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+                $('#dokuPaymentContainer').html(`
+            <div class="alert alert-danger">
+                <p>Terjadi kesalahan saat memproses pembayaran:</p>
+                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+            </div>
+        `);
+                console.error('Payment error:', error);
+            },
+            complete: function() {
+                $('#paynow').prop('disabled', false);
+            }
+        });
+    });
+</script>
 @endsection

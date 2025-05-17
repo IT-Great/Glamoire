@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\View;
 use App\Models\CategoryProduct;
 use App\Models\Brand;
 use Illuminate\Support\Facades\URL;
+use Carbon\Carbon;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Carbon::setLocale('id');
         View::composer('user.layouts.navbar', function ($view) {
             $categories = CategoryProduct::where('parent_id', '=', NULL)->get();
             $subCategories =  CategoryProduct::where('parent_id', '!=', NULL)->get();

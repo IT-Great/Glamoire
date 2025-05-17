@@ -431,7 +431,7 @@
                                                 Belanja</p>
                                             <p
                                                 class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
-                                                {{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}</p>
+                                                {{ \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y') }}</p>
                                             <p
                                                 class="text-danger mb-0 mx-2 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
                                                 {{ $order->invoice->no_invoice }}
@@ -465,7 +465,7 @@
                                                             <div class="col-2 col-md-1 p-0 m-0">
                                                                 <img class="border border-[#183018] rounded-sm"
                                                                     src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                    alt="{{ $item->product->product_name }}">
+                                                                    alt="">
                                                             </div>
                                                             <div class="col-7 col-md-8 px-2 px-md-3">
                                                                 <p
@@ -495,7 +495,7 @@
                                                             <div class="col-2 col-md-1 p-0 m-0">
                                                                 <img class="border border-[#183018] rounded-sm"
                                                                     src="{{ Storage::url($item->product->main_image) }}"
-                                                                    alt="{{ $item->product->product_name }}">
+                                                                    alt="">
                                                             </div>
                                                             <div class="col-7 col-md-8 px-1 px-md-3">
                                                                 <p
@@ -533,7 +533,7 @@
                                             @foreach ($order->items as $item)
                                                 <img class="border border-[#183018] rounded-sm"
                                                     src="{{ Storage::url($item->product->main_image) }}"
-                                                    alt="{{ $item->product->product_name }}">
+                                                    alt="">
                                             @endforeach 
                                             </div>   
                                             <div class="flex items-center justify-start">
@@ -675,7 +675,7 @@
                                                                             <div class="col-2 col-md-2 p-0 m-0">
                                                                                 <img class="border"
                                                                                     src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                                    alt="{{ $item->product->product_name }}">
+                                                                                    alt="">
                                                                             </div>
                                                                             <div class="col-6 col-md-7">
                                                                                 <p
@@ -709,7 +709,7 @@
                                                                             <div class="col-2 col-md-2 p-0 m-0">
                                                                                 <img class="border"
                                                                                     src="{{ Storage::url($item->product->main_image) }}"
-                                                                                    alt="{{ $item->product->product_name }}">
+                                                                                    alt="">
                                                                             </div>
                                                                             <div class="col-6 col-md-7">
                                                                                 <p
@@ -954,19 +954,18 @@
                                                             enctype="multipart/form-data"
                                                             class="grid gap-2">
                                                             @csrf
-                                                            @foreach ($order->items as $item)
-                                                                <input type="number" name="ratingReviewOrderId"
-                                                                    value="{{ $order->id }}" hidden>
-                                                                <input type="number" name="ratingReviewProductId[]"
-                                                                    id="productId-{{ $order->id }}-{{ $item->product->id }}"
-                                                                    value="{{ $item->product->id }}" hidden>
-                                                                <input type="number" name="productVariantId[{{$item->product->id}}]"
-                                                                    id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product->product_variant_id }}"
-                                                                    value="{{ $item->product->product_variant_id }}" hidden>
-
-                                                                    
+                                                            @foreach ($order->items as $index => $item)
                                                                 <div class="grid p-0 border border-secondary custom-shadow">
                                                                     @if ($item->product_variant_id !== null)
+                                                                        <input type="number" name="ratingReviewOrderId"
+                                                                            value="{{ $order->id }}" hidden>
+                                                                        <input type="number" name="ratingReviewProductId[]"
+                                                                            id="productId-{{ $order->id }}-{{ $item->product->id }}-{{$item->product_variant_id}}"
+                                                                            value="{{ $item->product->id }}" hidden>
+                                                                        <input type="number" name="productVariantId[]"
+                                                                            id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product_variant_id }}"
+                                                                            value="{{ $item->product_variant_id }}" hidden>
+
                                                                         <div class="d-flex mb-1">
                                                                             <div class="col-2 col-md-2 p-0 m-0">
                                                                                 <img class="border"
@@ -993,19 +992,19 @@
                                                                                             class="d-flex align-items-center p-0">
                                                                                             @for ($i = 1; $i <= 5; $i++)
                                                                                                 <i class="fas fa-star"
-                                                                                                    id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}"
+                                                                                                    id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}-{{ $item->product_variant_id }}"
                                                                                                     style="width:20px;height:20px;">
                                                                                                 </i>
                                                                                             @endfor
                                                                                             <input type="number"
-                                                                                                name="star[{{ $item->product->id }}]"
-                                                                                                id="star-product-{{ $item->product->id }}-{{ $order->id }}"
+                                                                                                name="star[{{ $index }}]"
+                                                                                                id="star-product-{{ $item->product->id }}-{{ $order->id }}-{{ $item->product_variant_id }}"
                                                                                                 value="" hidden required>
                                                                                         </div>
 
                                                                                         <!-- REVIEW -->
                                                                                         <div class="col-12 p-0">
-                                                                                            <textarea name="description[{{ $item->product->id }}]"
+                                                                                            <textarea name="description[{{ $index }}]"
                                                                                                 class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
                                                                                                 name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
                                                                                                 required></textarea>
@@ -1024,14 +1023,14 @@
                                                                                         <div>
                                                                                             <label
                                                                                                 class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
-                                                                                                for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload Gambar</label>
+                                                                                                for="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">Upload Gambar</label>
                                                                                             <input type="file"
                                                                                                 name="upload[{{ $item->product->id }}][]"
                                                                                                 multiple
                                                                                                 accept="image/*,video/*"
                                                                                                 class="form-control d-none"
                                                                                                 onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}')"
-                                                                                                id="customFile-{{ $order->id }}-{{ $item->product->product_name }}">
+                                                                                                id="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">
                                                                                         </div>
 
                                                                                         <!-- BUTTON SUBMIT -->
@@ -1040,6 +1039,14 @@
                                                                             </div>
                                                                         </div>
                                                                     @else
+                                                                        <input type="number" name="ratingReviewOrderId"
+                                                                            value="{{ $order->id }}" hidden>
+                                                                        <input type="number" name="ratingReviewProductId[]"
+                                                                            id="productId-{{ $order->id }}-{{ $item->product->id }}"
+                                                                            value="{{ $item->product->id }}" hidden>
+                                                                        <input type="number" name="productVariantId[]"
+                                                                            id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product_variant_id }}"
+                                                                            value="0" hidden>
                                                                         <div class="d-flex mb-1">
                                                                             <div class="col-2 col-md-2 p-0 m-0">
                                                                                 <img class="border"
@@ -1068,14 +1075,14 @@
                                                                                                 </i>
                                                                                             @endfor
                                                                                             <input type="number"
-                                                                                                name="star[{{ $item->product->id }}]"
+                                                                                                name="star[{{ $index }}]"
                                                                                                 id="star-product-{{ $item->product->id }}-{{ $order->id }}"
                                                                                                 value="" hidden required>
                                                                                         </div>
 
                                                                                         <!-- REVIEW -->
                                                                                         <div class="col-12 p-0">
-                                                                                            <textarea name="description[{{ $item->product->id }}]"
+                                                                                            <textarea name="description[{{ $index }}]"
                                                                                                 class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
                                                                                                 name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
                                                                                                 required></textarea>
@@ -2281,6 +2288,7 @@
                 const clickedStar = parseInt(starId[1]); // Get the star number
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Store the clicked star for this product
                 clickedStars[productId] = clickedStar;
@@ -2288,18 +2296,33 @@
                     'clickedStar': clickedStar,
                     'orderId': orderId,
                     'productId': productId,
+                    'variantId' : variantId,
                 });
 
-                $(`#star-product-${productId}-${orderId}`).val(clickedStar);
-
-                // Change star color for the clicked product
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    let valueStar = document.getElementById
-                    if (i <= clickedStar) {
-                        currentStar.style.color = 'orange';
-                    } else {
-                        currentStar.style.color = '';
+                if(variantId == null){
+                    $(`#star-product-${productId}-${orderId}`).val(clickedStar);
+    
+                    // Change star color for the clicked product
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= clickedStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
+                    }
+                }
+                else{
+                    $(`#star-product-${productId}-${orderId}-${variantId}`).val(clickedStar);
+    
+                    // Change star color for the clicked product
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= clickedStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
                     }
                 }
             });
@@ -2310,14 +2333,27 @@
                 const hoverStar = parseInt(starId[1]); // Get the star number
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Change star color while hovering
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    if (i <= hoverStar) {
-                        currentStar.style.color = 'orange';
-                    } else {
-                        currentStar.style.color = '';
+                if(variantId == null){
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= hoverStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
+                    }
+                }
+                else{
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= hoverStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
                     }
                 }
             });
@@ -2327,16 +2363,29 @@
                 const starId = this.id.split('-');
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Get the last clicked star for this product
                 const lastClicked = clickedStars[productId] || 0; // Default to 0 if none clicked
 
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    if (i <= lastClicked) {
-                        currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
-                    } else {
-                        currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                if(variantId == null){
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= lastClicked) {
+                            currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
+                        } else {
+                            currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                        }
+                    }
+                }
+                else{
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= lastClicked) {
+                            currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
+                        } else {
+                            currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                        }
                     }
                 }
             });

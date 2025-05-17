@@ -165,7 +165,10 @@
                         @else
                             <div class="grid">
                                 <div>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stok : {{ $product->stock_quantity }}</p>
+                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stock : {{ $product->stock_quantity }}</p>
+                                    @if ($product->sale != 0)
+                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Sale : {{ $product->sale }}</p>
+                                    @endif
                                 </div>
                                 <div class="align-items-center flex gap-2">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
