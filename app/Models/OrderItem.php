@@ -14,6 +14,8 @@ class OrderItem extends Model
         'product_id',
         'quantity',
         'price',
+        'product_variant_id',
+        'is_tier',
         'subtotal',
     ];
 
@@ -26,4 +28,9 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariations::class, 'product_variant_id');
+    }   
 }

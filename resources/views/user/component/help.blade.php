@@ -1,32 +1,31 @@
 @extends('user.layouts.master')
 
 @section('content')
-    <section class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2">
-        <!-- Existing breadcrumb code -->
+<section class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2">
+  <div class="container-fluid px-0 px-md-3">
+    <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
+      <div class="d-flex gap-1 pl-3">
+        <a href="/home" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
+        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
+        <a href="#" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Pusat Bantuan</a>
+      </div>
+    </div>
+  </div>
 
-        <div class="container-fluid">
-            <nav class="tabbable">
-                <div class="nav nav-tabs border-secondary mb-4">
-                    @php
-                        $categories = $faqsByCategory->keys();
-                    @endphp
+  <div class="container-fluid px-0 px-md-3">
+    <nav class="tabbable">
+      <div class="nav nav-tabs border-secondary mb-4">
+          <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#akun">Akun</a>
+          <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#order">Pembelian</a>
+          <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#payment">Pembayaran</a>
+          <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#shipping">Pengiriman</a>
+      </div>
+    </nav>
 
-                    @foreach ($categories as $index => $category)
-                        <a class="nav-item nav-link {{ $index === 0 ? 'active' : '' }} text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]"
-                            data-bs-toggle="tab" href="#{{ Str::slug($category) }}">
-                            {{ ucfirst($category) }}
-                        </a>
-                    @endforeach
-                </div>
-            </nav>
-
-            <div class="tab-content">
-                @foreach ($categories as $index => $category)
-                    <div class="tab-pane {{ $index === 0 ? 'active' : '' }}" id="{{ Str::slug($category) }}">
-                        <div class="container mt-5">
-                            <div class="faq-title text-center text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
-                                Hal yang sering ditanyakan terkait {{ strtolower($category) }}
-                            </div>
+    <div class="tab-content">
+      <div class="tab-pane active" id="akun">
+        <div class="container mt-2 mt-md-5">
+          <div class="faq-title text-center text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Hal yang sering ditanyakan terkait akun</div>
 
                             <div class="row">
                                 <div class="col-md-12">

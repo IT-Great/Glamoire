@@ -4,10 +4,10 @@
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2 mb-4">
   <div class="container-fluid px-0 px-md-3">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
-      <div class="d-flex gap-2 px-3 px-md-0">
-        <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
-        <a href="/shop" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
+      <div class="d-flex gap-1 px-3 px-md-0">
+        <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px]">Beranda</a>
+        <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px]"> > </p>
+        <a href="/shop" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px]">Belanja</a>
       </div>
     </div>
   </div>
@@ -19,15 +19,15 @@
       <div class="col-lg-2 pr-md-0 col-md-3 d-none d-md-block">
         <!-- Filter Start -->
         <div class="border border-black shadow-md rounded-sm md:mb-0 lg:mb-0 xl:mb-0 py-1 px-3 px-md-2">
-          <h5 class="font-weight-semi-bold text-[#183018] my-2">Filter</h5>
+          <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Filter</h5>
           <form action="{{route('shop.all')}}" method="GET" id="form-filter">
             <!-- Categories Start -->
             <div class="border-bottom pb-2">
-              <h5 class="font-weight-semi-bold text-[#183018] mb-2">Kategori</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] mb-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kategori</h5>
               @foreach ($categories as $category)
                   <div class="d-flex align-items-center">
-                      <a href="/belanja-{{$category->name}}" class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ ucwords(strtolower($category->name)) }}</a>
-                      <a class="ml-auto text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-decoration-none" style="color: #183018;" onclick="toggleListSubCategory(event, '#sub-category-{{$category->name}}', this)">
+                      <a href="/belanja-{{$category->name}}" class="text-[7px] md:text-[9px] lg:text-[10px] xl:text-[12px]">{{ ucwords(strtolower($category->name)) }}</a>
+                      <a class="ml-auto text-[7px] md:text-[9px] lg:text-[10px] xl:text-[11px] text-decoration-none" style="color: #183018;" onclick="toggleListSubCategory(event, '#sub-category-{{$category->name}}', this)">
                           <i class="fas fa-chevron-down hover:cursor-pointer"></i>
                           <i class="fas fa-chevron-up hover:cursor-pointer" hidden></i>
                       </a>
@@ -48,12 +48,12 @@
 
             <!-- Brands Start -->
             <div class="border-bottom mb-4">
-              <h5 class="font-weight-semi-bold text-[#183018] my-2">Brand</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Brand</h5>
               <div class="max-h-[150px] overflow-y-auto custom-scroll">
 
               <div class="form-check ml-2">
                 <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $brandName === null ||  $brandName === 'allbrand' ? 'checked' : '' }}>
-                <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="allbrand">
+                <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="allbrand">
                   Semua Brand
                 </label>
               </div>
@@ -66,7 +66,7 @@
                   value="{{ $brand->name}}" 
                   {{ $brandName == $brand->name ? 'checked' : '' }}>
 
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="{{ $brand->name}}-{{$brand->id}}">
                     {{ $brand->name}}
                   </label>
                 </div>
@@ -78,21 +78,21 @@
   
             <!-- Price Start -->
             <div class="border-bottom mb-4 pb-4">
-              <h5 class="font-weight-semi-bold text-[#183018] my-2">Kisaran Harga</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kisaran Harga</h5>
               <div>
                 <div class="price-range-container">
-                  <div>
-                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Terendah: </label><br>
+                  <div class="">
+                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Harga Terendah: </label><br>
                     <input class="w-full" type="range" id="min-price" name="min_price" min="0" max="500000" step="10000" 
                       value="{{ $minPrice !== null ? $minPrice : 0 }}" 
                       oninput="updatePriceRange()"/>
-                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
+                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
                   </div>
   
-                  <div>
-                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Tertinggi: </label><br>
+                  <div class="">
+                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Harga Tertinggi: </label><br>
                     <input class="w-full" type="range" id="max-price" name="max_price" min="100000" max="1000000" step="50000" value="{{ $minPrice !== null ? $maxPrice : 1000000 }}" oninput="updatePriceRange()"/>
-                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
+                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
                   </div>
   
                 </div>
@@ -102,11 +102,11 @@
   
             <!-- Rating Start -->
             <div class="border-bottom mb-2 mb-md-3">
-              <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Rating</h5>
               <div class="mb-4">
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $rating === null ||  $rating === 'all' ? 'checked' : '' }}>
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="allRating">All Rating</label>
                 </div>
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5" {{ $rating == 5 ? 'checked' : '' }}>
@@ -171,13 +171,13 @@
               <div class="row">
                 <div class="flex align-items-center justify-content-between mb-2 mb-my-4">
                   <div class="flex justify-content-center align-items-center">
-                    <h1 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-[#183018] ml-2 ml-md-0">Semua Produk</h1>
+                    <h1 class="text-[12px] md:text-[12px] lg:text-[13px] xl:text-[15px] text-[#183018] ml-2 ml-md-0">Semua Produk</h1>
                   </div>
 
                   <div class="dropdown ml-auto"> <!-- Menambahkan inline style -->
                     <input type="hidden" name="sort" id="sort" value="">
 
-                    <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                    <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[13px] xl:text-[15px]" 
                       type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {{ $sort !== null ? $sort : 'Urut Berdasarkan' }}
                     </button>
@@ -217,21 +217,21 @@
                             @foreach ($products as $product)
                               <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                                 <div class="position-relative overflow-hidden bg-transparent p-0">
-                                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                                    <img class="img-fluid rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}" loading="lazy">
                                 </div>
                                 <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
-                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
+                                        <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
                                         @php
                                             $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                                         @endphp
                                         <i 
-                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
+                                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000] hover-primary' : 'text-[#183018] hover-red' }} text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between" 
                                             onclick="{{ $inWishlist ? 'event.stopPropagation();removeFromWishlist(' . $product->id . ')' : 'event.stopPropagation();addToWishlist(' . $product->id . ')' }}">
                                         </i>
                                     </div>
-                                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                    <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[13px] overflow-hidden">
                                         <a href="/{{ $product->product_code }}_product" 
                                         class="text-decoration-none truncate-ellipsis" 
                                         data-bs-toggle="tooltip" 
@@ -247,17 +247,23 @@
                                           $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                       @endphp
 
-                                      @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                      <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                          <del>
-                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                          </del>
-                                      </p>
-                                      <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                      @if ($product->priceVariation !== null)
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            {{ $product->priceVariation }}
+                                        </p>
                                       @else
-                                      <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                      </p>
+                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                        <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            <del>
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </del>
+                                        </p>
+                                        <p class="text-decoration-none text-black text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                        @else
+                                        <p class="text-decoration-none text-[#183018] text-[8px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </p>
+                                        @endif
                                       @endif
                                     </div>
                                     
@@ -297,7 +303,7 @@
                         @else
                             <div style="min-height:48vh;">
                                 <div style="display:flex; align-items:center; justify-content:center;">
-                                    <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                                    <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan" loading="lazy">
                                 </div>
                                 <div style="display:flex; align-items:center; justify-content:center;">
                                     <p class="text-danger text-md">Produk tidak ada</p>
@@ -309,7 +315,7 @@
                             <div class="grid-container-shop" style="min-height:48vh;">
                                 @foreach ($products as $product)
                                   <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-                                    <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                    <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" loading="lazy">
 
                                     <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
@@ -337,17 +343,23 @@
                                               $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                           @endphp
 
-                                          @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                          <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              <del>
-                                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                              </del>
-                                          </p>
-                                          <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                          @if ($product->priceVariation !== null)
+                                            <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                {{ $product->priceVariation }}
+                                            </p>
                                           @else
-                                          <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                          </p>
+                                            @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                <del>
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </del>
+                                            </p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            @else
+                                            <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                            </p>
+                                            @endif    
                                           @endif
                                         </div>
                                         {{-- @if ($product->stock_quantity == 0)
@@ -376,7 +388,7 @@
                         @else
                             <div style="min-height:48vh;">
                                 <div style="display:flex; align-items:center; justify-content:center;">
-                                    <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                                    <img src="images/product-empty.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan" loading="lazy">
                                 </div>
                                 <div style="display:flex; align-items:center; justify-content:center;">
                                     <p class="text-danger text-md">Produk tidak ada</p>
@@ -400,8 +412,8 @@
 
 <div class="d-flex d-block d-md-none mx-auto justify-content-center rounded-sm w-fit py-2 fixed-bottom mb-12" style="background-color:#183018;" data-bs-toggle="modal" data-bs-target="#filter">
   <div class="col d-flex justify-content-center gap-1 hover:cursor-pointer">
-    <i class="fas fa-regular fa-filter" style="color: #ffffff;"></i>
-    <a class="text-white text-[12px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Filter</a>
+    <i class="fas fa-regular fa-filter text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px]" style="color: #ffffff;"></i>
+    <a class="text-white text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px]">Filter</a>
   </div>
 </div>
 

@@ -39,7 +39,7 @@
       </div>
 
       <div>
-        <a href="/shop" class="btn rounded-sm w-fit text-white text-[8px] md:text-[7px] lg:text-[8px] xl:text-[14px]" style="background-color: #183018">Belanja Sekarang</a>
+        <a href="/shop" class="btn rounded-sm w-fit text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" style="background-color: #183018">Belanja Sekarang</a>
       </div>
 
     </div>

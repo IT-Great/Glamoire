@@ -25,6 +25,7 @@ class UserController extends Controller
     public function account($user)
     {
         try {
+            // dd(session()->all());
             $id      = session('id_user');
             $profile = User::with([
                 'shippingAddress' => function ($query) {
@@ -34,6 +35,7 @@ class UserController extends Controller
                 'cart.cartItems',
                 'orders.items.product.brand',
                 'orders.invoice',
+                'orders.items.productVariant',
                 'orders.ratingAndReviews'
             ])->where('id', $id)
             ->with(['orders' => function ($query) {
@@ -50,6 +52,23 @@ class UserController extends Controller
                     ->wherePivot('discounted_price', '>', 0);
                 }])
             ->get();
+
+            foreach ($getProductWishlist as $prod) {
+                $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                }
+                elseif($variationPrices->count() == 0){
+                    $prod->priceVariation = null;
+                } 
+                else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
             
             return view('user.component.account', [
                 'profile' => $profile,
@@ -367,11 +386,19 @@ class UserController extends Controller
             if (session('id_user')) {
                 $userId = session('id_user');
     
-                Wishlist::create([
-                    'user_id'    => $userId,
-                    'product_id' => $request->product_id,
-                ]);
-    
+                if($request->product_variant_id !== null){
+                    Wishlist::create([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                        'product_variant_id' => $request->product_variant_id,
+                    ]);
+                }
+                else{
+                    Wishlist::create([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                    ]);
+                }
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Favoritmu']);
             }
             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
@@ -386,9 +413,16 @@ class UserController extends Controller
             if (session('id_user')) {
                 $userId = session('id_user');
     
-                Wishlist::where('product_id', $request->product_id)
-                ->where('user_id', $userId)
-                ->delete();
+                if($request->product_variant_id){
+                    Wishlist::where('product_id', $request->product_id)
+                    ->where('product_variant_id', $request->product_variant_id)
+                    ->where('user_id', $userId)
+                    ->delete();
+                } else {
+                    Wishlist::where('product_id', $request->product_id)
+                    ->where('user_id', $userId)
+                    ->delete();
+                }
     
                 return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Wishlist']);
             }
@@ -582,11 +616,14 @@ class UserController extends Controller
         try {
             $userId = session('id_user');
 
+            // dd($request);
             // Loop through each product ID from the request
-            foreach ($request->ratingReviewProductId as $productId) {
+            foreach ($request->ratingReviewProductId as $index => $productId) {
                 // Collect rating, description, and files from the request
-                $rating = $request->star[$productId];
-                $description = $request->description[$productId];
+                $rating = $request->star[$index];
+                $description = $request->description[$index];
+                $productVariantId = $request->productVariantId[$index];
+                // dd($productVariantId);
 
                 // Initialize paths for images and video
                 $imagePaths = [];
@@ -622,6 +659,7 @@ class UserController extends Controller
                 RatingAndReview::create([
                     'user_id' => $userId,
                     'product_id' => $productId,
+                    'product_variant_id' => $productVariantId,
                     'order_id' => $request->ratingReviewOrderId,
                     'rating' => $rating,
                     'description' => $description,

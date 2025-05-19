@@ -138,7 +138,11 @@ class CartController extends Controller
                                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                         }]);
                     }])
+                    ->orderBy('created_at', 'desc')
                     ->get();
+
+                // dd($data);
+
 
                 
 
@@ -204,6 +208,19 @@ class CartController extends Controller
             $cartId = Cart::where('user_id', session('id_user'))->value('id');
             Cart_item::where('cart_id', $cartId)
                 ->where('product_variant_id', $request->product_variant_id)
+                ->delete();
+
+            return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Keranjang']);
+        } catch (Exception $err) {
+            //throw $th;
+        }
+    }
+
+    public function deleteAllProductItem(Request $request){
+        try {
+            $cartId = Cart::where('user_id', session('id_user'))->value('id');
+            Cart_item::where('cart_id', $cartId)
+                ->where('is_choose', '=', 1)
                 ->delete();
 
             return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Keranjang']);

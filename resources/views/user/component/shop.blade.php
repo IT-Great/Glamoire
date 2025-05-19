@@ -4,7 +4,7 @@
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2 mb-4">
   <div class="container-fluid px-0 px-md-3">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
-      <div class="d-flex gap-2 px-3 px-md-0">
+      <div class="d-flex gap-1 px-3 px-md-0">
         <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
         <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
         <a href="/shop" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
@@ -27,7 +27,7 @@
             <div class="border-bottom pb-2">
               <h5 class="font-weight-semi-bold text-[#183018] mb-1">{{ ucwords(strtolower($category)) }}</h5>
               @foreach ($subCategories as $subCategory)
-                <a href="{{ route('shop.category.sub', ['category' => $category, 'subcategory' => $subCategory->name]) }}" class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px] d-flex align-items-center justify-content-between">
+                <a href="{{ route('shop.category.sub', ['category' => $category, 'subcategory' => $subCategory->name]) }}" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px] d-flex align-items-center justify-content-between">
                   {{ $subCategory->name }}
                   <i class="fas fa-chevron-right hover:cursor-pointer"></i>
                 </a>
@@ -42,7 +42,7 @@
  
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $brandName === null ||  $brandName === 'allbrand' ? 'checked' : '' }}>
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allbrand">
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="allbrand">
                     Semua Brand
                   </label>
                 </div>
@@ -55,7 +55,7 @@
                     value="{{ $brand->name}}" 
                     {{ $brandName == $brand->name ? 'checked' : '' }}>
 
-                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
                       {{ $brand->name}}
                     </label>
                   </div>
@@ -72,17 +72,17 @@
               <div>
                 <div class="price-range-container">
                   <div>
-                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Harga Terendah: </label><br>
+                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Terendah: </label><br>
                     <input class="w-full" type="range" id="min-price" name="min_price" min="0" max="500000" step="10000" 
                       value="{{ $minPrice !== null ? $minPrice : 0 }}" 
                       oninput="updatePriceRange()"/>
-                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
+                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
                   </div>
   
                   <div>
-                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Harga Tertinggi: </label><br>
+                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Tertinggi: </label><br>
                     <input class="w-full" type="range" id="max-price" name="max_price" min="100000" max="1000000" step="50000" value="{{ $minPrice !== null ? $maxPrice : 1000000 }}" oninput="updatePriceRange()"/>
-                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
+                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
                   </div>
   
                 </div>
@@ -213,13 +213,13 @@
                                     </div>
                                     <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                            <i class="text-decoration-none fas fa-star text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
                                             <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $product->rating }}</p>
                                             @php
                                                 $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                                             @endphp
                                             <i 
-                                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
+                                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
                                                 onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
                                             </i>
                                         </div>
@@ -239,17 +239,23 @@
                                               $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                           @endphp
 
-                                          @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              <del>
+                                          @if ($product->priceVariation !== null)
+                                            <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                {{ $product->priceVariation }}
+                                            </p>
+                                          @else
+                                            @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                              <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                <del>
+                                                  Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </del>
+                                              </p>
+                                              <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                              @else
+                                              <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
                                                 Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                              </del>
-                                            </p>
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                            @else
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                              Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                            </p>
+                                              </p>
+                                            @endif
                                           @endif
                                         </div>
                                         
@@ -330,17 +336,23 @@
                                       $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                   @endphp
 
-                                  @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                      <del>
+                                  @if ($product->priceVariation !== null)
+                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                        {{ $product->priceVariation }}
+                                    </p>
+                                  @else
+                                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                      <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                        <del>
+                                          Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                        </del>
+                                      </p>
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                      @else
+                                      <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
                                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                      </del>
-                                    </p>
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                    @else
-                                    <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                      Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                    </p>
+                                      </p>
+                                    @endif
                                   @endif
                                 </div>
                                 {{-- @if ($product->stock_quantity == 0)

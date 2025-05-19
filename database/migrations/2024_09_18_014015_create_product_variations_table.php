@@ -24,6 +24,7 @@ return new class extends Migration
             $table->bigInteger('variant_price')->nullable();
             $table->string('variant_expired')->nullable(); 
             $table->string('weight_variant')->nullable();
+            $table->integer('sale')->nullable()->default(0);
             $table->timestamps();
         });
     }

@@ -29,12 +29,21 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\StockExportImportController;
-use App\Http\Controllers\TransactionController;
+
+use App\Http\Controllers\PrismalinkController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\NotifyMe;
 use App\Models\User;
+
+// PRISMALINK ROUTE
+Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
+Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
+Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
+Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
+// Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
+// Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
+
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -86,19 +95,37 @@ Route::post('/notify-me', function (Request $request) {
     $email = User::where('id', $userId)->value('email');
 
     if ($userId) {
-        $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
-            ->where('email', $email)
-            ->exists();
+        if($request->product_variant_id !== null) {
+            $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
+                ->where('product_variant_id', $request->product_variant_id)
+                ->where('email', $email)
+                ->exists();
+        }else{
+            $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
+                ->where('email', $email)
+                ->exists();    
+        }
 
         if ($checkIsAlreadyExists) {
             return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
-        } else {
-            NotifyMe::create([
-                'user_id' => $userId,
-                'product_id' => $request->product_id,
-                'email' => $email,
-            ]);
-            return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+        }else{
+            if($request->product_variant_id !== null){
+                NotifyMe::create([
+                    'user_id' => $userId,
+                    'product_id' => $request->product_id,
+                    'product_variant_id' => $request->product_variant_id,
+                    'email' => $email,
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+            }
+            else{
+                NotifyMe::create([
+                    'user_id' => $userId,
+                    'product_id' => $request->product_id,
+                    'email' => $email,
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
+            }
         }
     }
     return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
@@ -120,7 +147,7 @@ Route::post('/check-email-voucher', [FormController::class, 'checkEmailVoucher']
 Route::post('/check-handphone', [AuthController::class, 'checkHandphone'])->name('check.handphone');
 
 Route::get('/forgot-password-user', [PasswordResetController::class, 'showForgotPasswordForm'])->name('forgot.password.form');
-Route::post('/forgot-password-user', [PasswordResetController::class, 'sendResetLink'])->withoutMiddleware('throttle:60,1')->name('forgot.password.link');
+Route::post('/forgot-password-link', [PasswordResetController::class, 'sendResetLink'])->withoutMiddleware('throttle:60,1')->name('forgot.password.link');
 Route::get('/reset-password-user-form/{email}', [PasswordResetController::class, 'showResetPasswordForm'])->name('password.reset');
 Route::post('/reset-password-user', [PasswordResetController::class, 'resetPassword'])->name('reset.password');
 
@@ -154,7 +181,7 @@ Route::get('/belanja-{category}-{subcategory}', [ShopController::class, 'subCate
 Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('shop.category');
 
 // DETAIL PRODUCT
-Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product');
+Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product.varian');
 
 // SHIPPING 
 Route::get('/provinces', [CheckoutController::class, 'getProvinces']);
@@ -180,6 +207,7 @@ Route::post('/chart', [UserController::class, 'addToChart'])->name('add.to.chart
 Route::post('/chart-with-quantity', [UserController::class, 'addToChartWithQuantity'])->name('add.to.chart.with.quantity');
 Route::post('/chart-with-quantity-variant', [UserController::class, 'addToChartWithQuantityVariant'])->name('add.to.chart.with.quantity.variant');
 Route::post('/remove-product-cart', [CartController::class, 'deleteProductItem'])->name('delete.product.cart');
+Route::post('/remove-all-product-cart', [CartController::class, 'deleteAllProductItem'])->name('delete.all.product.cart');
 Route::post('/remove-product-variant-cart', [CartController::class, 'deleteProductVariantItem'])->name('delete.product.variant.cart');
 Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
 Route::post('/update-cart-quantity-variant', [CartController::class, 'updateCartQuantityVariant'])->name('update.cart.quantity.variant');
@@ -191,6 +219,7 @@ Route::post('/remove-wishlist', [UserController::class, 'removeFromWishlist'])->
 
 // BUY NOW
 Route::post('/add-product-buy-now', [CheckoutController::class, 'addProductBuyNow'])->name('add.product.buy.now');
+Route::post('/add-product-variant-buy-now', [CheckoutController::class, 'addProductVariantBuyNow'])->name('add.product.variant.buy.now');
 Route::get('/buy-now', [CheckoutController::class, 'buyNow'])->middleware(['auth', 'verified'])->name('buy.now');
 Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'updateCartQuantityBuyNow'])->name('update.cart.quantity.buy.now');
 
@@ -441,7 +470,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::put('update-promo-voucher-newuser/{id}', [PromoController::class, 'updatePromoVoucherNewUser'])->name('update-promo-voucher-newuser');
 
     Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
-    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
+    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promoo');
 
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 
@@ -481,7 +510,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::delete('/delete-contact/{id}', [ContactusController::class, 'deleteResponse'])->name('delete-contact');
 
     // SEND EMAIL RESPONSE
-    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
+    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin1');
     Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
 
     Route::get('/notifications/contact-us', [ContactusController::class, 'getUnreadQuestionsCount'])

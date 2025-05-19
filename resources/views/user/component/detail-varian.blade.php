@@ -109,7 +109,7 @@
                 </div>
             </div>
 
-            <div class="grid gap-1 col-lg-8 pl-lg-0">
+            <div class="grid col-lg-8 pl-lg-0 h-fit gap-1">
                 <div class="grid gap-1">
                     <!-- <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> -->
                     <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
@@ -133,12 +133,20 @@
                     <p class="text-decoration-none text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">({{ $product->rating_and_reviews_count }} Ulasan)</p>
                     @if (session('id_user'))
                         @php
-                            $inWishlist = collect($wishlists)->contains('product_id', $product->id);
+                            $inWishlist = collect($wishlists)->contains('product_variant_id', $firstVariant->id);
                         @endphp
                         <i 
-                            class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
-                            onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" title="Hapus dari Favorit">
-                        </i>
+                        class="fas fa-heart ml-auto text-decoration-none 
+                               {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} 
+                               text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] 
+                               grid align-items-center justify-content-between 
+                               hover-red hover:cursor-pointer" 
+                        onclick="{{ $inWishlist 
+                                     ? 'removeFromWishlist(' . $product->id . ',' . $firstVariant->id . ')' 
+                                     : 'addToWishlist(' . $product->id . ',' . $firstVariant->id . ')' }}" 
+                        title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
+                    </i>
+                    
                     @else
                         <i 
                             class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
@@ -175,7 +183,7 @@
                             title="Beritahu Saya Jika Stok Sudah Ada" 
                             type="button" 
                             id="notify-me-{{$product->id}}"
-                            onclick="notifyMe({{$product->id}})">
+                            onclick="notifyMe('{{$product->id}}', '{{$firstVariant->id}}')">
                             Beritahu Saya
                         </span>
                     </div>
@@ -216,7 +224,7 @@
                                     </div>
                                     
                                     <a onclick="addToChartWithQuantityVariant({{ $product->id }}, {{ $firstVariant->id }})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                    <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                    <a onclick="buyNowVariant({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                                 </div>
                                 <p id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</p>
                             </div>
@@ -246,7 +254,7 @@
                                 </div>
                                 
                                 <a onclick="addToChartWithQuantityVariant({{ $product->id }}, {{ $firstVariant->id }})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                <a onclick="buyNowVariant({{$product->id}}, {{ $firstVariant->id }})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                             </div>
                             <span id="quantity-warning" class="text-danger d-none">Batas untuk pembelian produk terpenuhi</span>
                         </div>
@@ -320,7 +328,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex py-2 py-md-0 py-lg-4">
+                {{-- <div class="d-flex py-2 py-md-0 py-lg-4">
                     <p class="text-dark text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold mb-0 mr-2">Bagikan Produk ke:</p>
                     <div class="d-inline-flex">
                         <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
@@ -333,7 +341,7 @@
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
         <!-- END IMAGE PRODUCT -->
@@ -386,18 +394,25 @@
                                             $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                         @endphp
 
-                                        @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                            <del>
-                                                Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                            </del>
+                                        @if ($yl->priceVariation !== null)
+                                            <p class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
+                                                {{ $yl->priceVariation }}
                                             </p>
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                            @else
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
-                                            Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                            </p>
+                                        @else
+                                            @if ($discountedPrice && $discountedPrice < $yl->regular_price)
+                                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                <del>
+                                                    Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                </del>
+                                                </p>
+                                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                                @else
+                                                <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px]">
+                                                    Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                </p>
+                                            @endif
                                         @endif
+
                                     </div>
                                     
                                     {{-- @if ($yl->stock_quantity == 0)
@@ -530,10 +545,10 @@
 
 <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
   <div class="container-fluid d-flex gap-2 py-1">
-    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+    <a onclick="addToChartWithQuantityVariant({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
         + Keranjang
     </a>
-    <a onclick="buyNow({{$product->id}}, {{ $firstVariant->id }})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+    <a onclick="buyNowVariant({{$product->id}}, {{ $firstVariant->id }})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
         Beli Sekarang
     </a>
   </div>
@@ -635,12 +650,6 @@
 
     function addToChartWithQuantityVariant(productId, productVariantId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity').val());
-
-        console.log({
-            productId : productId,
-            productVariantId: productVariantId,
-            quantity: currentQuantity,
-        });
         
         $.ajax({
             url: "{{ route('add.to.chart.with.quantity.variant') }}", // Route register di Laravel
@@ -704,15 +713,16 @@
         });
     }
 
-    function buyNow(productId) {
+    function buyNowVariant(productId, productVariantId) {
         var currentQuantity = parseInt($('#total-detail-product-quantity').val());
 
         $.ajax({
-            url: "{{ route('add.product.buy.now') }}", // Route register di Laravel
+            url: "{{ route('add.product.variant.buy.now') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: productId,
+                product_variant_id: productVariantId,
                 quantity: currentQuantity,
             },
             success: function (response) {

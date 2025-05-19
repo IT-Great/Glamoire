@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 use App\Mail\sendMailCodeNewUser;
 use App\Models\User;
@@ -54,105 +55,60 @@ class FormController extends Controller
 
     public function sendQuestion(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'fullname' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'question' => 'required|string',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Max 2MB
-            'video' => 'nullable|mimes:mp4,mov,avi|max:10240', // Max 10MB
-        ]);
-
         try {
-            $data = [
+            $request->validate([
+                'fullname' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'question' => 'required|string',
+                'upload.*' => 'file|mimes:jpeg,png,jpg,mp4|max:5120', // Max 5MB per file
+            ]);
+
+            $imagePaths = [];
+            $videoPath = null;
+
+            // dd($request->file('upload'));
+
+            if ($request->file('upload')) {
+                foreach ($request->file('upload') as $file) {
+                    if ($file instanceof \Illuminate\Http\UploadedFile) {
+                        $mimeType = $file->getMimeType();
+                        $fileName = time() . '_' . $file->getClientOriginalName();
+
+                        if (strpos($mimeType, 'image/') === 0) {
+                            $imagePath = $file->storeAs('contact_us_images', $fileName, 'public');
+                            $imagePaths[] = $imagePath;
+                        } elseif (strpos($mimeType, 'video/') === 0) {
+                            $videoPath = $file->storeAs('contact_us_videos', $fileName, 'public');
+                        }
+                    }
+                }
+            }
+
+            // dd($videoPath);
+            $dataToSave = [
                 'fullname' => $request->fullname,
                 'email' => $request->email,
                 'question' => $request->question,
+                'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
+                'videos' => $videoPath,
                 'created_at' => now(),
             ];
 
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
-                $data['response_image'] = $imagePath; // Simpan path gambar ke field response_image
-            }
+            Log::info('Saving data:', $dataToSave);
 
-            // Handle video upload
-            if ($request->hasFile('video')) {
-                $video = $request->file('video');
-                $videoName = time() . '_' . $video->getClientOriginalName();
-                $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
-                $data['response_video'] = $videoPath; // Simpan path video ke field response_video
-            }
+            Question::create($dataToSave);
 
-            // Simpan ke database
-            Question::create($data);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pertanyaan Anda Sudah Kami Terima. Tunggu Balasan Email Dari Kami Yaa',
-            ]);
+            return view('user.component.contact');
         } catch (\Exception $err) {
-            // Tangani error
+            Log::error('Error saving question:', ['error' => $err->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
+                'message' => 'Terjadi kesalahan saat menyimpan pertanyaan',
+                'error' => $err->getMessage()
             ], 500);
         }
     }
-
-    // public function sendQuestion(Request $request)
-    // {
-    //     // Validasi input
-    //     $request->validate([
-    //         'fullname' => 'required|string|max:255',
-    //         'email' => 'required|email|max:255',
-    //         'question' => 'required|string',
-    //         'image' => 'nullable|image|mimes:jpg,jpeg,png,gif|max:2048', // Max 2MB
-    //         'video' => 'nullable|mimes:mp4,mov,avi|max:10240', // Max 10MB
-    //     ]);
-
-    //     try {
-    //         $data = [
-    //             'fullname' => $request->fullname,
-    //             'email' => $request->email,
-    //             'question' => $request->question,
-    //             'created_at' => now(),
-    //         ];
-
-    //         // Handle image upload
-    //         if ($request->hasFile('image')) {
-    //             $image = $request->file('image');
-    //             $imageName = time() . '_' . $image->getClientOriginalName();
-    //             $imagePath = $image->storeAs('contact_us/images', $imageName, 'public');
-    //             $data['response_image'] = $imagePath; // Simpan path gambar ke field response_image
-    //         }
-
-    //         // Handle video upload
-    //         if ($request->hasFile('video')) {
-    //             $video = $request->file('video');
-    //             $videoName = time() . '_' . $video->getClientOriginalName();
-    //             $videoPath = $video->storeAs('contact_us/videos', $videoName, 'public');
-    //             $data['response_video'] = $videoPath; // Simpan path video ke field response_video
-    //         }
-
-    //         // Simpan ke database
-    //         Question::create($data);
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'message' => 'Pertanyaan Anda Sudah Kami Terima. Tunggu Balasan Email Dari Kami Yaa',
-    //         ]);
-    //     } catch (\Exception $err) {
-    //         // Tangani error
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.',
-    //         ], 500);
-    //     }
-    // }
 
 
     public function files(Request $request)

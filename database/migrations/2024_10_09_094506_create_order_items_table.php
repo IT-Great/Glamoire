@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('product_variant_id')->nullable();
             $table->integer('quantity');
             $table->bigInteger('price');
+            $table->bigInteger('is_tier')->nullable();
             $table->bigInteger('subtotal');
             $table->timestamps();
         });
