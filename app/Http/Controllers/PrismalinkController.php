@@ -369,8 +369,8 @@ class PrismalinkController extends Controller
                 ->get();
     
             foreach ($cartItems as $item) {
-                if ($item->product && $item->product->promos) {
-                    foreach ($item->product->promos as $promo) {
+                if ($item->product && $item->product->promos->where('status', 'Active')) {
+                    foreach ($item->product->promos->where('status', 'Active') as $promo) {
                         if ($promo->tiers) {
                             foreach ($promo->tiers as $tier) {
                                 switch ($tier->discount_type) {
@@ -442,8 +442,9 @@ class PrismalinkController extends Controller
                 ->get();
     
             foreach ($cartItems as $item) {
-                if ($item->product && $item->product->promos) {
-                    foreach ($item->product->promos as $promo) {
+                if ($item->product && $item->product->promos->where('status', 'Active')) {
+                    // dd($item->product->promos);
+                    foreach ($item->product->promos->where('status', 'Active') as $promo) {
                         if ($promo->tiers) {
                             foreach ($promo->tiers as $tier) {
                                 switch ($tier->discount_type) {
@@ -454,6 +455,7 @@ class PrismalinkController extends Controller
                                             $item->bundle_price = $discountedPrice;
                                             $item->total = $discountedPrice;
                                         }
+                                        // dd($item->bundle_price);
                                         break;
             
                                     case 'nominal':
@@ -463,6 +465,7 @@ class PrismalinkController extends Controller
                                             $item->bundle_price = $discountedPrice;
                                             $item->total = $discountedPrice;
                                         }
+                                        // dd($item->bundle_price);
                                         break;
             
                                     case 'package':
@@ -470,6 +473,7 @@ class PrismalinkController extends Controller
                                             $item->bundle_price = $tier->package_price; // Tetapkan harga paket
                                             $item->total = $tier->package_price;
                                         }
+                                        // dd($item->bundle_price);
                                         break;
             
                                     default:

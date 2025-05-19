@@ -424,7 +424,6 @@
                     ongkir = response.ongkir;
                     // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
-                   
                     restoreOriginalValues();
 
                     shippingDiscountAmount = 0;
@@ -516,7 +515,7 @@
         button.prop('disabled', true);
 
         $.ajax({
-            url: "{{ route('apply.voucher.new.user') }}",
+            url: "{{ route('apply.voucher.buy.now') }}",
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
@@ -528,7 +527,7 @@
             success: function(response) {
                 spinner.hide();
                 button.prop('disabled', false);
-                
+                console.log(response);
                 if (response.success) {
                     // console.log(response.discountFormatted);
                     $("#discount").text("-Rp" + formatRupiah(response.discountFormatted));
@@ -691,7 +690,8 @@
                 $(".input-code").removeClass("d-none");
                 $("#choose-voucher").text("Pilih Voucher").removeClass("text-success").addClass("text-dark").show();
             }
-            restoreOriginalValues(); // Reset calculations
+
+            restoreOriginalValues();
             return;
         }
 
@@ -718,8 +718,9 @@
         }
 
         // Make AJAX request to apply the voucher
+        // console.log(selectedPromoCode, selectedOngkirCode, ongkir);
         $.ajax({
-            url: "{{ route('check.apply.voucher') }}",
+            url: "{{ route('check.apply.voucher.buy.now') }}",
             method: 'POST',
             data: {
                 _token: '{{ csrf_token() }}',
@@ -731,8 +732,8 @@
                 $('.loading-container').show(); // Show the spinner
             },
             success: function (response) {
+                // console.log(response);
                 if (response.success) {
-
                     saveOriginalValues(response); // Save values for later restoration
                     updateTotals(response); // Update totals based on the response
                     updateThriftyDisplay(); // Show savings based on the response
@@ -816,8 +817,6 @@
     // Restore original values
     function restoreOriginalValues() {
         let newTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-        // discountAmount = 0;
-        // shippingDiscount = 0;
         subTotal = newTotal;
         
         if (discountAmount == 0 || discountAmount == null) {
@@ -842,7 +841,7 @@
     function updateThriftyDisplay() {
         let totalSavings = discountAmount + shippingDiscount; // Calculate total savings
         
-        console.log({discountAmount, shippingDiscount});
+        // console.log({discountAmount, shippingDiscount});
 
         if (totalSavings == 0) {
             $("#hore").removeClass("d-flex").addClass("d-none");
@@ -1003,71 +1002,71 @@
     `);
 
     // Handle payment button click
-    $('#paynow').click(function(e) {
-        // console.log(subTotal);
-        e.preventDefault();
+    // $('#paynow').click(function(e) {
+    //     // console.log(subTotal);
+    //     e.preventDefault();
 
-        // Show loading state
-        $('#paynow').prop('disabled', true);
-        $('#dokuPaymentModal').modal('show');
+    //     // Show loading state
+    //     $('#paynow').prop('disabled', true);
+    //     $('#dokuPaymentModal').modal('show');
 
-        // Prepare form data
-        // const formData = {
-        //     total_amount: subTotal,
-        // };
+    //     // Prepare form data
+    //     // const formData = {
+    //     //     total_amount: subTotal,
+    //     // };
 
-        // Make AJAX request
-        $.ajax({
-            url: '/initiate-doku-payment',
-            method: 'POST',
-            data: {
-                total_amount: subTotal,
-                products: formattedData,
-                subtotal: subTotal,          // Removed the colon inside the key
-                shipping_cost: ongkir,
-                shipping_address_id: shippingAddressId,
-                total_item: totalItem,
-                total_item_price: totalItemPrice,
-                discount_amount: discountAmount,
-                discount_ongkir: shippingDiscount,
-                voucher_promo: selectedPromoCode,
-                voucher_ongkir: selectedOngkirCode,
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success && response.payment_url) {
-                    // console.log(response.payment_url);
-                    // Load DOKU payment iframe
-                    $('#dokuPaymentContainer').html(`
-                <iframe 
-                    src="${response.payment_url}"
-                    frameborder="0"
-                    width="100%"
-                    height="600px"
-                    style="overflow: hidden;">
-                </iframe>
-            `);
-                } else {
-                    throw new Error('Invalid payment URL');
-                }
-            },
-            error: function(xhr, status, error) {
-                // Show error message
-                $('#dokuPaymentContainer').html(`
-            <div class="alert alert-danger">
-                <p>Terjadi kesalahan saat memproses pembayaran:</p>
-                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-            </div>
-        `);
-                console.error('Payment error:', error);
-            },
-            complete: function() {
-                $('#paynow').prop('disabled', false);
-            }
-        });
-    });
+    //     // Make AJAX request
+    //     $.ajax({
+    //         url: '/initiate-doku-payment',
+    //         method: 'POST',
+    //         data: {
+    //             total_amount: subTotal,
+    //             products: formattedData,
+    //             subtotal: subTotal,          // Removed the colon inside the key
+    //             shipping_cost: ongkir,
+    //             shipping_address_id: shippingAddressId,
+    //             total_item: totalItem,
+    //             total_item_price: totalItemPrice,
+    //             discount_amount: discountAmount,
+    //             discount_ongkir: shippingDiscount,
+    //             voucher_promo: selectedPromoCode,
+    //             voucher_ongkir: selectedOngkirCode,
+    //         },
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(response) {
+    //             if (response.success && response.payment_url) {
+    //                 // console.log(response.payment_url);
+    //                 // Load DOKU payment iframe
+    //                 $('#dokuPaymentContainer').html(`
+    //             <iframe 
+    //                 src="${response.payment_url}"
+    //                 frameborder="0"
+    //                 width="100%"
+    //                 height="600px"
+    //                 style="overflow: hidden;">
+    //             </iframe>
+    //         `);
+    //             } else {
+    //                 throw new Error('Invalid payment URL');
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // Show error message
+    //             $('#dokuPaymentContainer').html(`
+    //         <div class="alert alert-danger">
+    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
+    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+    //         </div>
+    //     `);
+    //             console.error('Payment error:', error);
+    //         },
+    //         complete: function() {
+    //             $('#paynow').prop('disabled', false);
+    //         }
+    //     });
+    // });
 
 </script>
 
@@ -1822,7 +1821,7 @@
         });
         Toast.fire({
             icon: "success",
-            text: "Berhasil menambahkan alamat pengiriman",
+            text: "Berhasil menambahkan alamat pengiriman", 
             willOpen: () => {
                 const title = document.querySelector('.swal2-title');
                 const content = document.querySelector('.swal2-html-container');
@@ -1832,6 +1831,104 @@
         });
     </script>  
 @endif
+
+{{-- PRIMSALINK --}}
+<script>
+    $('#paynow').click(function(e) {
+        e.preventDefault();
+
+        $('#paynow').prop('disabled', true);
+        $('#dokuPaymentModal').modal('show');
+
+        // Make AJAX request
+        $.ajax({
+            url: '/payment/submit',
+            method: 'POST',
+            data: {
+                total_amount: subTotal,
+                products: formattedData,
+                subtotal: subTotal,         
+                shipping_cost: ongkir,
+                shipping_address_id: shippingAddressId,
+                total_item: totalItem,
+                total_item_price: totalItemPrice,
+                discount_amount: discountAmount,
+                discount_ongkir: shippingDiscount,
+                voucher_promo: selectedPromoCode,
+                voucher_ongkir: selectedOngkirCode,
+                total_amount: subTotal,
+                total_amount: subTotal,
+                condition: "buynow",
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                if (response.success && response.payment_url) {
+                    $('#dokuPaymentContainer').html(`
+                        <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
+                            <div class="flex items-center gap-3 mb-2">
+                                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
+                                </svg>
+                                <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
+                            </div>
+                            <p class="text-sm text-gray-700">
+                                Silakan selesaikan pembayaran sebelum:
+                            </p>
+                            <div class="mt-2 text-xl font-bold text-red-600">
+                                ${response.deadline}
+                            </div>
+                             <p class="mt-2 text-sm text-gray-700">
+                                Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
+                            </p>
+
+                            <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
+                            <ol class="text-gray-700 text-sm">
+                                <li>1. Pilih metode pembayaran</li>
+                                <li>2. Lakukan transaksi sebelum batas waktu</li>
+                                <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
+                                <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
+                            </ol>
+                            <p class="mt-2 text-sm text-gray-700">
+                                Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
+                            </p>
+                            <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
+                                Selesai
+                            </a>
+                        </div>
+                    `);
+                    if (window.innerWidth <= 455){
+                        // console.log(window.innerWidth)
+                        window.location.href = response.payment_url;
+                    }
+                    else{
+                        // console.log(window.innerWidth)
+                        window.open(response.payment_url, '_blank', 'width=800,height=600');
+                    }
+                } else {
+                    throw new Error('Invalid payment URL');
+                }
+            },
+            error: function(xhr, status, error) {
+                // console.log(xhr);
+                // console.log(status);
+                // console.log(error);
+                $('#dokuPaymentContainer').html(`
+            <div class="alert alert-danger">
+                <p>Terjadi kesalahan saat memproses pembayaran:</p>
+                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+            </div>
+        `);
+                console.error('Payment error:', error);
+            },
+            complete: function() {
+                $('#paynow').prop('disabled', false);
+            }
+        });
+    });
+</script>
 
 
 @endsection

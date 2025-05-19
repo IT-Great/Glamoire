@@ -1,5 +1,4 @@
 @extends('user.layouts.master')
-
 @section('content')
 
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-1 pt-md-2 h-fit">
@@ -426,14 +425,13 @@
                     ongkir = response.ongkir;
                     // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
-                   
                     restoreOriginalValues();
 
                     shippingDiscountAmount = 0;
                     shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
                     // console.log(shippingDiscount);
-                    $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
-                    $("#choose-voucher").removeClass("text-success").addClass("text-dark");
+                    // $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+                    // $("#choose-voucher").removeClass("text-success").addClass("text-dark");
 
                     // Update displayed prices with the latest values
                     resetVoucherOngkir();
@@ -457,6 +455,7 @@
             currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
             currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
             currentlySelectedElement.classList.remove('selected');
+            $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
         }
     }
 
@@ -591,7 +590,7 @@
         if (code === "") {
             $('#validationVoucher').text("");
         } 
-        
+
         if (code) {
             $.ajax({
                 url: "{{ route('check.code.voucher') }}",
@@ -606,6 +605,7 @@
                     $('.spinner-border').show();
                 },
                 success: function (response) {
+                    console.log(response);
                     if (response.exists) {
                         $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
                         $('#button-code-voucher').prop('disabled', false);
@@ -720,6 +720,7 @@
         }
 
         // Make AJAX request to apply the voucher
+        // console.log(selectedPromoCode, selectedOngkirCode, ongkir);
         $.ajax({
             url: "{{ route('check.apply.voucher') }}",
             method: 'POST',
@@ -733,15 +734,8 @@
                 $('.loading-container').show(); // Show the spinner
             },
             success: function (response) {
+                // console.log(response);
                 if (response.success) {
-                    // if (shippingDiscountAmount !== 0) {
-                    //     if (shippingDiscountAmount > ongkir) {
-                    //         shippingDiscount = ongkir;
-                    //     } else {
-                    //         shippingDiscount = response.shippingDiscount;
-                    //     }
-                    // }
-
                     saveOriginalValues(response); // Save values for later restoration
                     updateTotals(response); // Update totals based on the response
                     updateThriftyDisplay(); // Show savings based on the response
@@ -824,8 +818,6 @@
     // Restore original values
     function restoreOriginalValues() {
         let newTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-        // discountAmount = 0;
-        // shippingDiscount = 0;
         subTotal = newTotal;
         
         if (discountAmount == 0 || discountAmount == null) {
@@ -1467,7 +1459,7 @@
                                             $data['totalPrice'] >= $voucher->min_transaction &&
                                             $data['totalItem'] <= $voucher->max_quantity_buyer;
                                 }
-                            }
+                            }   
                         });
 
                         $unusableVouchers = $data['vouchers']->filter(function ($voucher) use ($data, $brandIds, $productIds, $voucherDisabled) {
@@ -1868,15 +1860,6 @@
 @endif
 
 
-
-
-
-
-
-
-
-
-
 {{-- PRIMSALINK --}}
 <script>
      $('#paynow').click(function(e) {
@@ -1884,10 +1867,6 @@
 
         $('#paynow').prop('disabled', true);
         $('#dokuPaymentModal').modal('show');
-
-        
-        // console.log("Promo:",selectedPromoCode);
-        // console.log("Ongkir:",selectedOngkirCode);
 
         // Make AJAX request
         $.ajax({
@@ -1948,7 +1927,7 @@
                     `);
 
                     if (window.innerWidth <= 455){
-                        console.log(window.innerWidth)
+                        // console.log(window.innerWidth)
                         window.location.href = response.payment_url;
                     }
                     else{
@@ -1961,9 +1940,9 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.log(xhr);
-                console.log(status);
-                console.log(error);
+                // console.log(xhr);
+                // console.log(status);
+                // console.log(error);
                 $('#dokuPaymentContainer').html(`
             <div class="alert alert-danger">
                 <p>Terjadi kesalahan saat memproses pembayaran:</p>
