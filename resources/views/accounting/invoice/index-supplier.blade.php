@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Glamoire</title>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Supplier - Glamoire</title>
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -130,6 +130,11 @@
 
         .stats-card-warning {
             background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-card-danger {
+            background: linear-gradient(135deg, var(--danger-color), #d91f06);
             color: white;
         }
 
@@ -517,26 +522,20 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title mb-4">
+                <div class="page-title" style="margin-bottom: 25px;">
                     <div class="row align-items-center">
-                        <div class="col-12 col-md-6">
-                            <h3 class="d-flex align-items-center gap-2 mb-1">
-                                Manajemen Keuangan
-                                <span class="badge bg-warning text-uppercase">Invoice</span>
-                            </h3>
-                            <p class="text-muted mb-2">
-                                Halaman ini menampilkan semua data <strong>invoice</strong> yang tercatat dalam sistem.
-                            </p>
-                            <nav aria-label="breadcrumb">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3 class="mb-1">Manajemen Supplier</h3>
+                            <p class="text-muted mb-2">Halaman ini digunakan untuk mengelola data supplier yang
+                                terdaftar dalam sistem.</p>
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
                                         <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
                                             <i class="bi bi-grid-fill me-2"></i>Dashboard
                                         </a>
                                     </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Daftar Invoice
-                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Daftar Supplier</li>
                                 </ol>
                             </nav>
                         </div>
@@ -546,47 +545,29 @@
                 <section class="section">
                     <!-- Stats Row -->
                     <div class="row mb-4 slide-in">
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <div class="col-12 col-md-4 mb-3">
                             <div class="stats-card stats-card-primary">
                                 <div class="stats-icon">
-                                    <i class="bi bi-receipt-cutoff"></i>
+                                    <i class="bi bi-person-lines-fill"></i>
                                 </div>
-                                <div class="stats-title">Total Invoice</div>
-                                <h3 class="stats-number">{{ $invoices->count() }}</h3>
+                                <div class="stats-title">Total Supplier</div>
+                                <h3 class="stats-number">{{ $totalSupplier }}</h3>
                                 <div class="mt-3">
                                     <small class="d-flex align-items-center">
                                         <i class="bi bi-info-circle me-1"></i>
-                                        Jumlah semua invoice yang terdata
+                                        Jumlah supplier yang terdaftar
                                     </small>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-success">
-                                <div class="stats-icon">
-                                    <i class="bi bi-cash-stack"></i>
-                                </div>
-                                <div class="stats-title">Total Nominal</div>
-                                <h3 class="stats-number">Rp {{ number_format($invoices->sum('amount'), 0, ',', '.') }}
-                                </h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Total nilai dari semua invoice
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-4 mb-3">
                             <div class="stats-card stats-card-warning">
                                 <div class="stats-icon">
                                     <i class="bi bi-exclamation-circle"></i>
                                 </div>
                                 <div class="stats-title">Invoice Belum Lunas</div>
-                                <h3 class="stats-number">{{ $invoices->where('payment_status', 'Not Yet')->count() }}
-                                </h3>
+                                <h3 class="stats-number">{{ $unpaidInvoiceCount }}</h3>
                                 <div class="mt-3">
                                     <small class="d-flex align-items-center">
                                         <i class="bi bi-info-circle me-1"></i>
@@ -595,7 +576,24 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-12 col-md-4 mb-3">
+                            <div class="stats-card stats-card-success">
+                                <div class="stats-icon">
+                                    <i class="bi bi-person-dash"></i>
+                                </div>
+                                <div class="stats-title">Supplier Tanpa Invoice</div>
+                                <h3 class="stats-number">{{ $supplierWithoutInvoice }}</h3>
+                                <div class="mt-3">
+                                    <small class="d-flex align-items-center">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Supplier yang belum memiliki invoice
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
 
                     <!-- Navigation Tabs -->
                     <div class="finance-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
@@ -605,84 +603,67 @@
                         </a>
                         <a href="{{ route('index-supplier') }}"
                             class="finance-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                            <i class="bi bi-truck"></i>Manajemen Supplier
+                            <i class="bi bi-person-lines-fill"></i>Manajemen Supplier
                         </a>
                     </div>
 
-                    {{-- data table invoice --}}
+                    {{-- tabel supplier --}}
                     <div class="card">
                         <div class="card-header">
                             <div class="row align-items-center">
                                 <div class="col-12 col-md-6">
                                     <h4 class="d-inline-flex align-items-center">
-                                        <i class="bi bi-receipt-cutoff me-2"></i> Invoice List
+                                        <i class="bi bi-person-lines-fill fs-4 me-3"></i> Supplier List
                                     </h4>
+
                                 </div>
                                 <div
                                     class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
-
-                                    <a href="{{ route('create-invoice') }}" type="button"
-                                        class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                                        <i class="bi bi-plus fs-6 me-1"></i> Add Invoice
+                                    <a href="{{ route('create-supplier') }}" type="button"
+                                        class="btn btn-sm btn-primary d-flex align-items-center">
+                                        <i class="bi bi-plus fs-6 me-1"></i>Add Supplier
                                     </a>
                                 </div>
                             </div>
+
                         </div>
                         <div class="card-body">
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>INVOICE</th>
-                                        <th>SUPPLIER</th>
-                                        <th>AMOUNT</th>
-                                        <th>DATE</th>
-                                        <th>DEADLINE</th>
-                                        <th>STATUS</th>
-                                        <th>PAYMENT</th>
+                                        <th>NAME</th>
+                                        <th>NO TELP</th>
+                                        <th>EMAIL</th>
+                                        <th>ADDRESS</th>
                                         <th>ACTIONS</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($invoices as $invoice)
+                                    @foreach ($suppliers as $supplier)
                                         <tr>
-                                            <td><strong>{{ $invoice->no_invoice }}</strong></td>
-                                            <td>{{ $invoice->supplier->name ?? '-' }}</td>
-                                            <td class="amount-cell">
-                                                {{ number_format($invoice->amount, 0, ',', '.') }}</p>
-                                            </td>
-                                            <td> {{ \Carbon\Carbon::parse($invoice->deadline_invoice)->format('M d, Y') }}
-                                            </td>
-                                            <td class="deadline-safe">
-                                                {{ \Carbon\Carbon::parse($invoice->date)->format('M d, Y') }}
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="badge bg-light-success">{{ $invoice->payment_status }}</span>
-                                            </td>
-                                            <td>{{ $invoice->payment_method }}</td>
+                                            <td><strong>{{ $supplier->name }}</strong></td>
+                                            <td>{{ $supplier->no_telp }}</td>
+                                            <td class="amount-cell">{{ $supplier->email }}</td>
+                                            <td>{{ $supplier->address }}</td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <a href="{{ route('get-invoice-details', ['id' => $invoice->id]) }}"
-                                                        class="btn btn-sm btn-info d-flex align-items-center justify-content-center">
+                                                    <a href="#detailsupplier"
+                                                        class="btn btn-sm btn-info view-supplier d-flex align-items-center justify-content-center"
+                                                        data-id="{{ $supplier->id }}">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('edit-invoice', ['id' => $invoice->id]) }}"
+
+                                                    <a href="{{ route('edit-supplier', ['id' => $supplier->id]) }}"
                                                         class="btn btn-sm btn-warning d-flex align-items-center justify-content-center">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                    @if ($invoice->payment_status == 'Not Yet')
-                                                        <a href="{{ route('view-process-payment', ['id' => $invoice->id]) }}"
-                                                            class="btn btn-sm btn-success d-flex align-items-center justify-content-center">
-                                                            <i class="bi bi-credit-card"></i>
-                                                        </a>
-                                                    @endif
                                                     <button
-                                                        class="btn btn-sm btn-danger delete-invoice d-flex align-items-center justify-content-center"
-                                                        data-id="{{ $invoice->id }}">
-                                                        <i class="bi bi-trash"></i>
+                                                        class="btn btn-danger btn-sm delete-supplier d-flex align-items-center justify-content-center"
+                                                        data-id="{{ $supplier->id }}">
+                                                        <i class="fa fa-trash"></i>
                                                     </button>
-                                                </div>
 
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -691,27 +672,225 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Modal -->
+                <div class="modal fade" id="supplierModal" tabindex="-1" aria-labelledby="supplierModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Tambahkan modal-dialog-centered -->
+                        <div class="modal-content">
+                            <div class="modal-header" style="background: #183018; color: white;">
+                                <h5 class="modal-title text-white d-flex align-items-center" id="supplierModalLabel">
+                                    <i class="fas fa-id-card me-2"></i>Supplier Details
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <div class="row">
+                                    <!-- Left column - Contact Information -->
+                                    <div class="col-md-6 mb-4 mb-md-0">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><i class="fas fa-id-card me-2"></i>Contact
+                                                    Information</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-4">
+
+                                                    <h4 id="supplierName" class="mb-0"></h4>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-phone-alt text-primary me-2"></i>
+                                                        <strong>Phone:</strong>
+                                                    </div>
+                                                    <p id="supplierTelp" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-envelope text-primary me-2"></i>
+                                                        <strong>Email:</strong>
+                                                    </div>
+                                                    <p id="supplierEmail" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                                                        <strong>Address:</strong>
+                                                    </div>
+                                                    <div class="ms-4">
+                                                        <p id="supplierAddress" class="mb-1"></p>
+                                                        <div class="d-flex">
+                                                            <span id="supplierCity" class="me-1"></span>,
+                                                            <span id="supplierProvince" class="mx-1"></span>
+                                                            <span id="supplierPostCode" class="ms-1"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right column - Banking & Additional Info -->
+                                    <div class="col-md-6">
+                                        <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card-header bg-light">
+                                                <h6 class="mb-0"><i class="fas fa-university me-2"></i>Banking
+                                                    Information</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-university text-primary me-2"></i>
+                                                        <strong>Bank Name:</strong>
+                                                    </div>
+                                                    <p id="supplierBankName" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-credit-card text-primary me-2"></i>
+                                                        <strong>Account Number:</strong>
+                                                    </div>
+                                                    <p id="supplierAccountNumber" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-user text-primary me-2"></i>
+                                                        <strong>Account Holder:</strong>
+                                                    </div>
+                                                    <p id="supplierAccountHolder" class="ms-4 mb-0"></p>
+                                                </div>
+
+                                                <div class="mt-4">
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <i class="fas fa-info-circle text-primary me-2"></i>
+                                                        <strong>Description:</strong>
+                                                    </div>
+                                                    <div class="p-3 bg-light rounded ms-4">
+                                                        <p id="supplierDescription" class="mb-0 fst-italic"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer bg-light">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                    <i class="fas fa-times me-1"></i>Close
+                                </button>
+                                <button type="button" class="btn btn-primary" id="editSupplier">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
 
-    {{-- modal delete data --}}
+    <script>
+        // Simple Datatable
+        let table1 = document.querySelector('#table1');
+        let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+
+    {{-- modal views supplier --}}
     <script>
         $(document).ready(function() {
-            $(document).on('click', '.delete-invoice', function(e) {
+            // Handle view supplier button click
+            $(document).on('click', '.view-supplier', function() {
+                // Get the supplier ID from data attribute
+                const supplierId = $(this).data('id');
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Loading...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Send AJAX request to get the supplier details
+                $.ajax({
+                    url: `/supplier-data/${supplierId}`, // Adjust route as needed
+                    type: 'GET',
+                    success: function(response) {
+                        // Close loading indicator
+                        Swal.close();
+
+                        // Get initials for the avatar
+                        const nameParts = response.name.split(' ');
+                        const initials = nameParts.length > 1 ?
+                            nameParts[0].charAt(0) + nameParts[1].charAt(0) :
+                            nameParts[0].charAt(0);
+
+                        // Populate modal with supplier details
+                        $('#supplierInitials').text(initials.toUpperCase());
+                        $('#supplierName').text(response.name);
+                        $('#supplierTelp').text(response.no_telp || 'N/A');
+                        $('#supplierEmail').text(response.email || 'N/A');
+                        $('#supplierAddress').text(response.address || 'N/A');
+                        $('#supplierCity').text(response.city || 'N/A');
+                        $('#supplierProvince').text(response.province || 'N/A');
+                        $('#supplierPostCode').text(response.post_code || 'N/A');
+                        $('#supplierAccountNumber').text(response.accountnumber || 'N/A');
+                        $('#supplierAccountHolder').text(response.accountnumber_holders_name ||
+                            'N/A');
+                        $('#supplierBankName').text(response.bank_name || 'N/A');
+                        $('#supplierDescription').text(response.description ||
+                            'No description available');
+
+                        // Store supplier ID for edit button
+                        $('#editSupplier').data('id', supplierId);
+
+                        // Show the modal
+                        $('#supplierModal').modal('show');
+                    },
+                    error: function(xhr) {
+                        Swal.fire('Error', 'Failed to load supplier details', 'error');
+                    }
+                });
+            });
+
+            // Handle edit supplier button click (you can implement this functionality)
+            $(document).on('click', '#editSupplier', function() {
+                const supplierId = $(this).data('id');
+                $('#supplierModal').modal('hide');
+                // Redirect to edit page or open edit modal
+                // window.location.href = `/suppliers/${supplierId}/edit`;
+                // Or trigger another modal
+                // $('#editSupplierModal').modal('show');
+            });
+        });
+    </script>
+
+    {{-- modal delete --}}
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.delete-supplier', function(e) {
                 e.preventDefault();
 
                 const invoiceId = $(this).data('id');
 
                 Swal.fire({
                     title: 'Apakah kamu yakin?',
-                    text: "Data invoice akan dihapus secara permanen!",
+                    text: "Data supplier akan dihapus secara permanen!",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -719,26 +898,24 @@
                     confirmButtonText: 'Ya, hapus!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Kirim request delete ke server
                         $.ajax({
-                            url: `/invoice-suppliers/${invoiceId}`,
+                            url: `/invoice-delete-suppliers/${invoiceId}`, // sesuaikan route jika diperlukan
                             type: 'DELETE',
                             data: {
                                 _token: $('meta[name="csrf-token"]').attr('content')
                             },
                             success: function(response) {
-                                // Tampilkan pesan sukses dengan timer dan progress bar
                                 Swal.fire({
                                     title: 'Berhasil!',
                                     text: response.message ||
-                                        'Invoice berhasil dihapus.',
+                                        'Supplier berhasil dihapus.',
                                     icon: 'success',
                                     confirmButtonText: 'OK',
                                     confirmButtonColor: '#4A69E2',
-                                    timer: 2000, // waktu dalam ms
+                                    timer: 2000,
                                     timerProgressBar: true
                                 }).then(() => {
-                                    // Refresh halaman setelah sukses
+                                    // Reload halaman setelah sukses
                                     window.location.reload();
                                 });
                             },
@@ -775,12 +952,6 @@
             });
         </script>
     @endif
-
-    <script>
-        // Simple Datatable
-        let table1 = document.querySelector('#table1');
-        let dataTable = new simpleDatatables.DataTable(table1);
-    </script>
 
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>

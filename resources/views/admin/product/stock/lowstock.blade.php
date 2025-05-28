@@ -20,25 +20,201 @@
     <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f9fafb;
+            --dark-color: #111827;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Stats Card Styling */
         .stats-card {
-            transition: transform 0.3s ease;
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
         }
 
         .stats-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
 
-        .stock-card {
-            border-radius: 15px;
+        .stats-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-card-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .stats-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-card-danger {
+            background: linear-gradient(135deg, var(--danger-color), #dc2626);
+            color: white;
+        }
+
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Product Card Styling */
+        .product-card {
+            border-radius: 16px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
         }
 
-        .stock-card:hover {
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        .product-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
+        /* Table Styling */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table> :not(:first-child) {
+            border-top: none;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: rgba(243, 246, 249, 0.6);
+            border-color: var(--border-color);
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .table>tbody>tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table>tbody>tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Product Image */
         .product-image {
             width: 80px;
             height: 80px;
@@ -51,33 +227,8 @@
             transform: scale(1.1);
         }
 
-        .stock-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
 
-        .nav-tabs .nav-link.active {
-            border-bottom: 2px solid #435ebe;
-            border-top: none;
-            border-left: none;
-            border-right: none;
-            color: #435ebe;
-            font-weight: 600;
-        }
-
-        .nav-tabs .nav-link {
-            border: none;
-            color: #666;
-            padding: 0.8rem 1.5rem;
-        }
-
-        .form-check-input:checked {
-            background-color: #00C853;
-            border-color: #00C853;
-        }
-
+        /* Product Details */
         .product-details {
             display: flex;
             flex-direction: column;
@@ -87,70 +238,230 @@
         .product-name {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #333;
+            color: var(--text-primary);
         }
 
         .product-meta {
             font-size: 0.9rem;
-            color: #666;
+            color: var(--text-secondary);
         }
 
-        .main-product-row {
-            background-color: #f7f9fc;
-            font-weight: bold;
-        }
-
-        .variant-row {
-            background-color: #ffffff;
-            padding-left: 20px;
-        }
-
-        .variant-row td {
+        /* Message Preview */
+        .message-preview {
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            color: #555;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
-        .badge-variant {
-            background-color: #e3f2fd;
-            color: #1e88e5;
-            font-weight: 600;
-            padding: 0.4rem 0.6rem;
-            border-radius: 20px;
-        }
-
-        .product-row {
-            background-color: #ffffff;
-            border-left: 4px solid #435ebe;
-            transition: background-color 0.3s ease;
-        }
-
-
-        .product-row:hover {
-            background-color: #f8f9fa;
-        }
-
-        /* Variant Indicator */
-        .variant-indicator {
-            background-color: #6c757d;
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            margin-left: 8px;
-        }
-
+        /* Stock Badge */
         .stock-badge {
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .product-details {
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge.bg-info {
+            background-color: var(--info-color) !important;
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* Search and Filter Container */
+        .search-filter-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-input {
+            border-radius: 10px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .filter-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        /* Quick Action Button */
+        .quick-action-btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+
+            .action-buttons {
                 flex-direction: column;
             }
+
+            .table td {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-details {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .d-flex.align-items-center.gap-3 {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            .action-buttons .badge {
+                display: block;
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--secondary-color) !important;
+            color: white !important;
+            border: none;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Empty state */
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
         }
     </style>
 
@@ -164,13 +475,31 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title mb-4">
-                    <div class="row align-items-center">
-                        <div class="col-12 col-md-6">
-                            <h2>Stock Management</h2>
-                            <nav aria-label="breadcrumb">
+                    <!-- Judul Halaman -->
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="page-title d-flex align-items-center">
+                                <div>
+                                    <h3 class="mb-1">Stock Product Management</h3>
+                                    <p class="mb-0">Kelola dan pantau stok produk Anda secara akurat untuk memastikan
+                                        ketersediaan barang dan kelancaran proses penjualan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigasi Breadcrumb -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/stock-product-admin">Product</a></li>
-                                    <li class="breadcrumb-item active">Stock</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-box-seam text-primary me-2"></i>
+                                            All Product
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active" aria-current="page">Stock Product</li>
                                 </ol>
                             </nav>
                         </div>
@@ -178,113 +507,95 @@
                 </div>
 
                 <!-- Quick Stats Section -->
-                <div class="row quick-stats">
-                    <div class="col-12 col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Total Products</h6>
-                                        <h3 class="mb-0">{{ $products->count() }}</h3>
-                                    </div>
-                                    <div class="stats-icon purple">
-                                        <i class="bi bi-box fs-3"></i>
-                                    </div>
-                                </div>
+                  <div class="row mb-4 slide-in">
+                    {{-- Total Produk --}}
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-primary">
+                            <div class="stats-icon">
+                                <i class="bi bi-box-seam"></i>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">In Stock</h6>
-                                        <h3 class="mb-0">{{ $products->where('stock_quantity', '>', 10)->count() }}
-                                        </h3>
-                                    </div>
-                                    <div class="stats-icon green">
-                                        <i class="bi bi-check-circle fs-3"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Low Stock</h6>
-                                        <h3 class="mb-0">
-                                            @php
-                                                // Menghitung low stock untuk produk utama
-                                                $lowStockProducts = $products
-                                                    ->where('stock_quantity', '<=', 15)
-                                                    ->where('stock_quantity', '>', 0)
-                                                    ->count();
-
-                                                // Menghitung low stock untuk varian produk
-                                                $lowStockVariants = $products
-                                                    ->flatMap(function ($product) {
-                                                        return $product->productVariations;
-                                                    })
-                                                    ->filter(function ($variant) {
-                                                        return $variant->variant_stock <= 15 &&
-                                                            $variant->variant_stock > 0;
-                                                    })
-                                                    ->count();
-                                            @endphp
-
-                                            {{-- Menampilkan total low stock --}}
-                                            {{ $lowStockProducts + $lowStockVariants }}
-                                        </h3>
-                                    </div>
-                                    <div class="stats-icon yellow">
-                                        <i class="bi bi-exclamation-triangle fs-3"></i>
-                                    </div>
-                                </div>
+                            <div class="stats-title">Total Produk</div>
+                            <h3 class="stats-number">{{ $products->count() }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-cart-fill"></i>
+                                    Total semua produk aktif
+                                </small>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-12 col-md-3">
-                        <div class="card stats-card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="text-muted mb-2">Out of Stock</h6>
-                                        <h3 class="mb-0">
-                                            @php
-                                                // Menghitung produk utama yang out of stock
-                                                $outOfStockProducts = $products
-                                                    ->where('stock_quantity', '=', 0)
-                                                    ->count();
-
-                                                // Menghitung varian produk yang out of stock
-                                                $outOfStockVariants = $products
-                                                    ->flatMap(function ($product) {
-                                                        return $product->productVariations;
-                                                    })
-                                                    ->filter(function ($variant) {
-                                                        return $variant->variant_stock == 0;
-                                                    })
-                                                    ->count();
-                                            @endphp
-
-                                            {{-- Menampilkan total out of stock --}}
-                                            {{ $outOfStockProducts + $outOfStockVariants }}
-                                        </h3>
-                                    </div>
-                                    <div class="stats-icon red">
-                                        <i class="bi bi-x-circle fs-3"></i>
-                                    </div>
-                                </div>
+                    {{-- Stok Aman --}}
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-success">
+                            <div class="stats-icon">
+                                <i class="bi bi-check-circle-fill"></i>
+                            </div>
+                            <div class="stats-title">Stok Aman</div>
+                            <h3 class="stats-number">{{ $products->where('stock_quantity', '>', 10)->count() }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-check2 me-1"></i>
+                                    Lebih dari 10 item tersedia
+                                </small>
                             </div>
                         </div>
                     </div>
 
+                    {{-- Stok Rendah --}}
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
+                        @php
+                            $lowStockProducts = $products
+                                ->where('stock_quantity', '<=', 15)
+                                ->where('stock_quantity', '>', 0)
+                                ->count();
+                            $lowStockVariants = $products
+                                ->flatMap(fn($product) => $product->productVariations)
+                                ->filter(fn($v) => $v->variant_stock <= 15 && $v->variant_stock > 0)
+                                ->count();
+                            $totalLowStock = $lowStockProducts + $lowStockVariants;
+                        @endphp
+                        <div class="stats-card stats-card-warning">
+                            <div class="stats-icon">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </div>
+                            <div class="stats-title">Stok Rendah</div>
+                            <h3 class="stats-number">{{ $totalLowStock }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-arrow-down me-1"></i>
+                                    Kurang dari 15 unit
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Habis Stok --}}
+                    <div class="col-12 col-md-3">
+                        @php
+                            $outOfStockProducts = $products->where('stock_quantity', '=', 0)->count();
+                            $outOfStockVariants = $products
+                                ->flatMap(fn($product) => $product->productVariations)
+                                ->filter(fn($v) => $v->variant_stock == 0)
+                                ->count();
+                            $totalOutOfStock = $outOfStockProducts + $outOfStockVariants;
+                        @endphp
+                        <div class="stats-card stats-card-danger">
+                            <div class="stats-icon">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </div>
+                            <div class="stats-title">Habis Stok</div>
+                            <h3 class="stats-number">{{ $totalOutOfStock }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-exclamation-octagon me-1"></i>
+                                    Perlu restock segera
+                                </small>
+                            </div>  
+                        </div>
+                    </div>
                 </div>
+
 
                 <!-- Tab Navigation -->
                 <ul class="nav nav-tabs">

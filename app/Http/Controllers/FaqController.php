@@ -19,9 +19,12 @@ class FaqController extends Controller
     // halaman admin
     public function indexFaqAdmin()
     {
-        // Group FAQs by category
-        $faqs = Faq::all()->groupBy('category');
-        return view('admin.faq.index', compact('faqs'));
+        $faqs = Faq::all();
+        $faqsByCategory = $faqs->groupBy('category');
+        $totalFaq = $faqs->count();
+        $totalCategory = $faqs->pluck('category')->unique()->count();
+
+        return view('admin.faq.index', compact('faqsByCategory', 'totalFaq', 'totalCategory', 'faqs'));
     }
 
     public function store(Request $request)
