@@ -524,27 +524,26 @@
         function updateOngkir() {
             const selectedService = shippingFee.value.trim();
 
-            if (selectedService) {
-                $.ajax({
-                    url: '/checkout',
-                    type: 'GET',
-                    data: {
-                        service: selectedService
-                    },
-                    beforeSend: function() {
-                        $('.loading-container').show();
-                    },
-                    success: function(response) {
-                        ongkir = response.ongkir;
-                        // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+        if (selectedService) {
+            $.ajax({
+                url: '/checkout', 
+                type: 'GET',
+                data: { service: selectedService },
+                beforeSend: function() {
+                    $('.loading-container').show();
+                },
+                success: function(response) {
+                    ongkir = response.ongkir;
+                    // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+                   
+                   
+                    restoreOriginalValues();
 
-                        restoreOriginalValues();
-
-                        shippingDiscountAmount = 0;
-                        shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
-                        // console.log(shippingDiscount);
-                        // $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
-                        // $("#choose-voucher").removeClass("text-success").addClass("text-dark");
+                    shippingDiscountAmount = 0;
+                    shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
+                    // console.log(shippingDiscount);
+                    $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+                    $("#choose-voucher").removeClass("text-success").addClass("text-dark");
 
                         // Update displayed prices with the latest values
                         resetVoucherOngkir();
@@ -561,16 +560,15 @@
             }
         }
 
-        // Reset voucher ongkir saat pilih jenis pengiriman
-        function resetVoucherOngkir() {
-            currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
-            if (currentlySelectedElement) {
-                currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
-                currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
-                currentlySelectedElement.classList.remove('selected');
-                $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
-            }
+    // Reset voucher ongkir saat pilih jenis pengiriman
+    function resetVoucherOngkir() {
+        currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
+        if (currentlySelectedElement) {
+            currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
+            currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
+            currentlySelectedElement.classList.remove('selected');
         }
+    }
 
         // Function to update display or calculations that use 'ongkir'
         function updateOngkirDisplay() {
@@ -690,60 +688,57 @@
             $('#show-voucher').prop('disabled', false);
 
 
-            discountAmount = 0;
-            selectedPromoCode = null;
-            var cancel = $("#cancelCode");
-            var validation = $("#validationVoucher");
-            cancel.hide();
-            validation.hide();
-        }
-
-        $('#code-voucher').on('keyup', function() {
-            var code = $(this).val();
-            var cancel = $("#cancelCode");
-
-            if (code === "") {
-                $('#validationVoucher').text("");
-            }
-
-            if (code) {
-                $.ajax({
-                    url: "{{ route('check.code.voucher') }}",
-                    method: "POST",
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        code: code
-                    },
-                    beforeSend: function() {
-                        cancel.hide();
-                        // Tampilkan spinner sebelum request dimulai
-                        $('.spinner-border').show();
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        if (response.exists) {
-                            $('#validationVoucher').text('Kode Voucher Tersedia').addClass(
-                                'text-success').show();
-                            $('#button-code-voucher').prop('disabled', false);
-                            $('.cancel-code-voucher').show();
-                        } else {
-                            $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass(
-                                'text-danger').show();
-                            $('#button-code-voucher').prop('disabled', true);
-                        }
-                    },
-                    complete: function() {
-                        // Sembunyikan spinner setelah request selesai
-                        $('.spinner-border').hide();
-                    },
-                    error: function() {
-                        // console.log(error);
-                        // Jika ada error, tetap sembunyikan spinner
-                        $('.spinner-border').hide();
+        discountAmount = 0;
+        selectedPromoCode = null;
+        var cancel = $("#cancelCode");
+        var validation = $("#validationVoucher");
+        cancel.hide();
+        validation.hide();
+    }
+    
+    $('#code-voucher').on('keyup', function () {
+        var code = $(this).val();
+        var cancel = $("#cancelCode");
+        
+        if (code === "") {
+            $('#validationVoucher').text("");
+        } 
+        
+        if (code) {
+            $.ajax({
+                url: "{{ route('check.code.voucher') }}",
+                method: "POST",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    code: code
+                },
+                beforeSend: function() {
+                    cancel.hide();
+                    // Tampilkan spinner sebelum request dimulai
+                    $('.spinner-border').show();
+                },
+                success: function (response) {
+                    if (response.exists) {
+                        $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
+                        $('#button-code-voucher').prop('disabled', false);
+                        $('.cancel-code-voucher').show();
+                    } else {
+                        $('#validationVoucher').text('Kode Voucher Tidak Tersedia').addClass('text-danger').show();
+                        $('#button-code-voucher').prop('disabled', true);
                     }
-                });
-            }
-        });
+                },
+                complete: function() {
+                    // Sembunyikan spinner setelah request selesai
+                    $('.spinner-border').hide();
+                },
+                error: function() {
+                    // console.log(error);
+                    // Jika ada error, tetap sembunyikan spinner
+                    $('.spinner-border').hide();
+                }
+            });
+        }
+    });
 
         // Function to toggle promo details
         function toggleDetail(event, detailId, link) {
@@ -836,38 +831,44 @@
                 selectedOngkirCode = promo_code;
             }
 
-            // Make AJAX request to apply the voucher
-            // console.log(selectedPromoCode, selectedOngkirCode, ongkir);
-            $.ajax({
-                url: "{{ route('check.apply.voucher') }}",
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    code_voucher_promo: selectedPromoCode,
-                    code_voucher_ongkir: selectedOngkirCode,
-                    shipping_cost: ongkir,
-                },
-                beforeSend: function() {
-                    $('.loading-container').show(); // Show the spinner
-                },
-                success: function(response) {
-                    // console.log(response);
-                    if (response.success) {
-                        saveOriginalValues(response); // Save values for later restoration
-                        updateTotals(response); // Update totals based on the response
-                        updateThriftyDisplay(); // Show savings based on the response
-                    } else {
-                        $("#validationVoucher").text(response.message).show();
-                    }
-                },
-                complete: function() {
-                    $('.loading-container').hide(); // Hide the spinner
-                },
-                error: function(xhr) {
-                    $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();
+        // Make AJAX request to apply the voucher
+        $.ajax({
+            url: "{{ route('check.apply.voucher') }}",
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                code_voucher_promo: selectedPromoCode,
+                code_voucher_ongkir: selectedOngkirCode,
+                shipping_cost: ongkir,
+            },
+            beforeSend: function () {
+                $('.loading-container').show(); // Show the spinner
+            },
+            success: function (response) {
+                if (response.success) {
+                    // if (shippingDiscountAmount !== 0) {
+                    //     if (shippingDiscountAmount > ongkir) {
+                    //         shippingDiscount = ongkir;
+                    //     } else {
+                    //         shippingDiscount = response.shippingDiscount;
+                    //     }
+                    // }
+
+                    saveOriginalValues(response); // Save values for later restoration
+                    updateTotals(response); // Update totals based on the response
+                    updateThriftyDisplay(); // Show savings based on the response
+                } else {
+                    $("#validationVoucher").text(response.message).show();
                 }
-            });
-        }
+            },
+            complete: function () {
+                $('.loading-container').hide(); // Hide the spinner
+            },
+            error: function (xhr) {
+                $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();
+            }
+        });
+    }
 
 
         // Fungsi untuk mereset semua voucher selain ongkir
@@ -933,18 +934,20 @@
             $("#total-shopping").text("Rp" + formatRupiah(subTotal));
         }
 
-        // Restore original values
-        function restoreOriginalValues() {
-            let newTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-            subTotal = newTotal;
-
-            if (discountAmount == 0 || discountAmount == null) {
-                $("#discount-use").removeClass("d-flex").addClass("d-none");
-            }
-            if (shippingDiscount == 0) {
-                $("#ongkir-use").removeClass("d-flex").addClass("d-none");
-                $("#ongkir-use-after").removeClass("d-flex").addClass("d-none");
-            }
+    // Restore original values
+    function restoreOriginalValues() {
+        let newTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+        // discountAmount = 0;
+        // shippingDiscount = 0;
+        subTotal = newTotal;
+        
+        if (discountAmount == 0 || discountAmount == null) {
+            $("#discount-use").removeClass("d-flex").addClass("d-none");
+        }
+        if (shippingDiscount == 0) {
+            $("#ongkir-use").removeClass("d-flex").addClass("d-none");
+            $("#ongkir-use-after").removeClass("d-flex").addClass("d-none");
+        }
 
             if (shippingDiscount == 0 && discountAmount == 0) {
                 $(".input-code").removeClass("d-none").addClass("d-flex");
@@ -1614,9 +1617,9 @@
                                     if ($voucher->type == 'ongkir voucher') {
                                         return $data['totalPrice'] >= $voucher->min_transaction &&
                                             $data['totalItem'] <= $voucher->max_quantity_buyer;
-                                    }
                                 }
-                            });
+                            }
+                        });
 
                             $unusableVouchers = $data['vouchers']->filter(function ($voucher) use (
                                 $data,
@@ -2076,44 +2079,57 @@
         </script>
     @endif
 
-    @if (session('payment_failed'))
-        <script>
-            var Toast = Swal.mixin({
-                toast: true,
-                position: "center",
-                background: "#183018",
-                showConfirmButton: false,
-                timer: 10000,
-                timerProgressBar: true,
-                customClass: {
-                    popup: "small-swal", // Add custom class
-                },
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            });
-            Toast.fire({
-                icon: "error",
-                text: "Pembayaran gagal, ulangi lagi",
-                willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                }
-            });
-        </script>
-    @endif
-
-
-    {{-- PRISMALINK --}}
+@if(session('payment_failed'))
     <script>
-        $('#paynow').click(function(e) {
-            e.preventDefault();
+        var Toast = Swal.mixin({
+            toast: true,
+            position: "center",
+            background: "#183018",
+            showConfirmButton: false,
+            timer: 10000,
+            timerProgressBar: true,
+            customClass: {
+                popup: "small-swal", // Add custom class
+            },
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            },
+        });
+        Toast.fire({
+            icon: "error",
+            text: "Pembayaran gagal, ulangi lagi",
+            willOpen: () => {
+                const title = document.querySelector('.swal2-title');
+                const content = document.querySelector('.swal2-html-container');
+                if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                if (content) content.style.color = '#ffffff'; // Ubah warna konten
+            }
+        });
+    </script>  
+@endif
 
-            $('#paynow').prop('disabled', true);
-            $('#dokuPaymentModal').modal('show');
+
+
+
+
+
+
+
+
+
+
+{{-- PRIMSALINK --}}
+<script>
+     $('#paynow').click(function(e) {
+        e.preventDefault();
+
+        $('#paynow').prop('disabled', true);
+        $('#dokuPaymentModal').modal('show');
+
+        
+        // console.log("Promo:",selectedPromoCode);
+        // console.log("Ongkir:",selectedOngkirCode);
 
             // Make AJAX request
             $.ajax({
@@ -2173,23 +2189,24 @@
                         </div>
                     `);
 
-                        if (window.innerWidth <= 455) {
-                            // console.log(window.innerWidth)
-                            window.location.href = response.payment_url;
-                        } else {
-                            // console.log(window.innerWidth)
-                            window.open(response.payment_url, '_blank', 'width=800,height=600');
-                        }
-
-                    } else {
-                        throw new Error('Invalid payment URL');
+                    if (window.innerWidth <= 455){
+                        console.log(window.innerWidth)
+                        window.location.href = response.payment_url;
                     }
-                },
-                error: function(xhr, status, error) {
-                    // console.log(xhr);
-                    // console.log(status);
-                    // console.log(error);
-                    $('#dokuPaymentContainer').html(`
+                    else{
+                        // console.log(window.innerWidth)
+                        window.open(response.payment_url, '_blank', 'width=800,height=600');
+                    }
+
+                } else {
+                    throw new Error('Invalid payment URL');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
+                console.log(error);
+                $('#dokuPaymentContainer').html(`
             <div class="alert alert-danger">
                 <p>Terjadi kesalahan saat memproses pembayaran:</p>
                 <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>

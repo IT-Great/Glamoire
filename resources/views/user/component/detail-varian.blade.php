@@ -584,7 +584,7 @@
     const warningMessage = document.getElementById("quantity-warning");
     const inputs = document.querySelectorAll('[data-unify="Quantity"]');
     // console.log(warningMessage); 
-    console.log({!! json_encode($firstVariant) !!});
+    // console.log({!! json_encode($firstVariant) !!});
 
     // UPDATE QUANTITY
     inputs.forEach((input) => {

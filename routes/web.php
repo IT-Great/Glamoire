@@ -42,6 +42,8 @@ Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPa
 Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
 Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
+// Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
+// Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
 
 
 // VERIFIKASI EMAIL REGISTER
@@ -267,10 +269,10 @@ Route::prefix('/cart')->group(function () {
 // CHECKOUT
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/check-apply-voucher', [CheckoutController::class, 'checkApplyVoucher'])->name('check.apply.voucher');
-// Route::post('/check-apply-voucher-buy-now', [CheckoutController::class, 'checkApplyVoucherBuyNow'])->name('check.apply.voucher.buy.now');
+Route::post('/check-apply-voucher-buy-now', [CheckoutController::class, 'checkApplyVoucherBuyNow'])->name('check.apply.voucher.buy.now');
 Route::post('/apply-voucher', [CheckoutController::class, 'applyVoucher'])->name('apply.voucher');
 Route::post('/apply-voucher-new-user', [CheckoutController::class, 'applyVoucherNewUser'])->name('apply.voucher.new.user');
-Route::post('/apply-voucher-buy-now', [CheckoutController::class, 'applyVoucherBuyNow'])->name('apply.voucher.buy.now');
+Route::post('/apply-voucher-buy-now', [CheckoutController::class, 'applyVoucherNewUserBuyNow'])->name('apply.voucher.buy.now');
 // CHECK VOUCHER
 Route::post('/check-code-voucher', [CheckoutController::class, 'checkCodeVoucher'])->name('check.code.voucher');
 
