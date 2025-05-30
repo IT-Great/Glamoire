@@ -857,7 +857,6 @@
                                                             @endif
                                                         </div>
 
-
                                                         <div class="form-group has-icon-left mb-4">
                                                             <label for="amount" class="form-label">Jumlah <span
                                                                     class="text-danger">*</span></label>
