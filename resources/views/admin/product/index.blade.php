@@ -487,7 +487,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3>Manajemen Produk</h3>
+                            <h3>Produk</h3>
                             <p>Kelola semua data produk yang tersedia pada halaman ini.</p>
                         </div>
                     </div>

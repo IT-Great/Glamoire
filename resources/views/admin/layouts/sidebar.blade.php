@@ -48,7 +48,7 @@
                                     Product
                                 </a>
                             </li>
-                            <li class="submenu-item {{ Request::is('stock-product') ? 'active' : '' }}">
+                            <li class="submenu-item {{ Request::is('stock-product*') ? 'active' : '' }}">
                                 <a href="{{ route('index-stock-product-admin') }}">
                                     Stock Product
                                 </a>

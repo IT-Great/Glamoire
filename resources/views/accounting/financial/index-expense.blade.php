@@ -517,7 +517,7 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
                             <h3 class="d-flex align-items-center gap-2 mb-1">
-                                Manajemen Keuangan
+                                Finance
                                 <span class="badge bg-danger text-uppercase">Pengeluaran</span>
                             </h3>
                             <p class="text-muted mb-2">

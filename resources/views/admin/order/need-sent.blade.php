@@ -19,6 +19,67 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <style>
+        /* CSS for toast message and button styling */
+        /* Add this to your CSS file or in a style tag in your layout */
+
+        /* Custom styling for toast notifications */
+        .toast {
+            z-index: 1060;
+        }
+
+        /* Styles for the Generate Resi button */
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+
+        /* Style for resi badge */
+        .badge.bg-success {
+            font-size: 0.85rem;
+            padding: 0.35rem 0.65rem;
+        }
+
+        /* Animation for copy to clipboard success */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .toast-show {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        /* Make pointer cursor for copyable elements */
+        .copyable {
+            cursor: pointer;
+        }
+
+        /* Responsive styling for mobile devices */
+        @media (max-width: 767.98px) {
+            td .action-button {
+                margin-bottom: 0.5rem;
+                display: block;
+                width: 100%;
+            }
+        }
+
+        /* Add some hover effect to the resi badge */
+        .badge.bg-success:hover {
+            background-color: #1d9238 !important;
+            cursor: pointer;
+        }
+
+
         .order-table {
             border-radius: 8px;
             overflow: hidden;
@@ -259,7 +320,7 @@
                                         </td>
                                         <td class="shipping-details">
                                             <div class="fw-medium">
-                                                {{ $order->shipping_method ?? 'J&T Express' }} Kirim Ke :
+                                                {{ $order->kurir ?? 'J&T Express' }} Kirim Ke :
                                                 @if ($order->shippingAddress)
                                                     {{ $order->shippingAddress->province ?? '' }},
                                                     {{ $order->shippingAddress->regency ?? '' }},
@@ -269,107 +330,77 @@
                                                     Alamat tidak tersedia
                                                 @endif
                                             </div>
+                                            <!-- Display the resi number if it exists -->
+                                            @if (!empty($order->resi))
+                                                <div class="mt-2">
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-truck me-1"></i>
+                                                        Resi: {{ $order->resi }}
+                                                    </span>
+                                                </div>
+                                            @endif
                                         </td>
 
+                                        {{-- bikin sendiri --}}
                                         <td>
+                                            <!-- Generate Shipping Label Button -->
+                                            @if (empty($order->resi))
+                                                <a href="{{ route('generate-shipping-label', $order->id) }}"
+                                                    class="action-button btn btn-danger btn-sm mb-2">
+                                                    <i class="bi bi-tag-fill me-1"></i>
+                                                    Generate Label Pengiriman
+                                                </a>
+                                            @else
+                                                <!-- View Shipping Label Button -->
+                                                <a href="{{ route('view-shipping-label', $order->id) }}"
+                                                    class="action-button btn btn-info btn-sm mb-2">
+                                                    <i class="bi bi-file-earmark-text me-1"></i>
+                                                    Lihat Label Pengiriman
+                                                </a>
+
+                                                <!-- Update to Shipping Status -->
+                                                @if ($order->status === 'processing')
+                                                    <form action="{{ route('update-shipping-status', $order->id) }}"
+                                                        method="POST" class="mb-2">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="action-button btn btn-primary btn-sm">
+                                                            <i class="bi bi-truck me-1"></i>
+                                                            Kirim Pesanan
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            @endif
+
                                             <button type="button"
                                                 class="action-button btn btn-outline-primary btn-sm"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#sentModal-{{ $order->id }}">
-                                                <i class="bi bi-truck me-1"></i>
+                                                <i class="bi bi-gear me-1"></i>
                                                 Atur Pengiriman
                                             </button>
                                         </td>
-                                    </tr>
 
-                                    <!-- Modal for each order -->
-                                    <div class="modal fade" id="sentModal-{{ $order->id }}" tabindex="-1"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header border-0">
-                                                    <h5 class="modal-title">Kirim Pesanan</h5>
-                                                    <button type="button" class="btn-close"
-                                                        data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body pt-0">
-                                                    <div class="d-flex align-items-center mb-4">
-                                                        <i class="bi bi-arrow-left me-2"></i>
-                                                        <span class="text-secondary">
-                                                            {{-- {{ $order->invoice->no_invoice }} --}}
-                                                        </span>
-                                                    </div>
-                                                    <div class="row g-4">
-                                                        <div class="col-md-6">
-                                                            <label
-                                                                class="card h-100 border rounded position-relative p-3"
-                                                                style="cursor: pointer;">
-                                                                <input type="radio"
-                                                                    name="shipping_method_{{ $order->id }}"
-                                                                    value="counter"
-                                                                    class="shipping-method-radio position-absolute"
-                                                                    style="top: 10px; right: 10px;"
-                                                                    onchange="toggleResiInput(this)">
-                                                                <div class="text-center">
-                                                                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto mb-3"
-                                                                        style="width: 60px; height: 60px;">
-                                                                        <i class="bi bi-shop fs-4"></i>
-                                                                    </div>
-                                                                    <h6 class="mb-2">Saya Akan Antar Ke Counter</h6>
-                                                                    <p class="text-secondary small mb-0">Anda dapat
-                                                                        mengirimkan paket Anda di cabang Ekspedisi
-                                                                        terdekat di kota Anda</p>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label
-                                                                class="card h-100 border rounded position-relative p-3"
-                                                                style="cursor: pointer;">
-                                                                <input type="radio"
-                                                                    name="shipping_method_{{ $order->id }}"
-                                                                    value="pickup"
-                                                                    class="shipping-method-radio position-absolute"
-                                                                    style="top: 10px; right: 10px;"
-                                                                    onchange="toggleResiInput(this)">
-                                                                <div class="text-center">
-                                                                    <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center mx-auto mb-3"
-                                                                        style="width: 60px; height: 60px;">
-                                                                        <i class="bi bi-truck fs-4"></i>
-                                                                    </div>
-                                                                    <h6 class="mb-2">Saya Akan Gunakan Jasa Pick-up
-                                                                        (Jemput)</h6>
-                                                                    <p class="text-secondary small mb-0">Tim Ekspedisi
-                                                                        akan mengambil paket dari alamat Anda</p>
-                                                                </div>
-                                                            </label>
-                                                        </div>
-                                                    </div>
+                                        {{-- berdu agregaotr --}}
+                                        {{-- <td>
+                                            <div class="d-flex flex-column gap-2">
+                                                <button type="button"
+                                                    class="action-button btn btn-outline-primary btn-sm"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#sentModal-{{ $order->id }}">
+                                                    <i class="bi bi-truck me-1"></i>
+                                                    Atur Pengiriman
+                                                </button>
 
-                                                    <!-- Resi Input Section (Initially Hidden) -->
-                                                    <div id="resiInputContainer-{{ $order->id }}" class="row mt-3"
-                                                        style="display: none;">
-                                                        <div class="col-12">
-                                                            <div class="form-group">
-                                                                <label for="resiNumber-{{ $order->id }}"
-                                                                    class="form-label">Nomor Resi</label>
-                                                                <input type="text" class="form-control"
-                                                                    id="resiNumber-{{ $order->id }}"
-                                                                    name="resi_number_{{ $order->id }}"
-                                                                    placeholder="Masukkan Nomor Resi">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-footer border-0">
-                                                    <button type="button" class="btn btn-danger px-4"
-                                                        onclick="konfirmasiPengiriman({{ $order->id }})">
-                                                        Konfirmasi
-                                                    </button>
-                                                </div>
+                                                <a href="{{ route('admin.generate-label', ['order_id' => $order->id]) }}"
+                                                    class="action-button btn btn-outline-success btn-sm">
+                                                    <i class="bi bi-printer me-1"></i>
+                                                    Generate Label
+                                                </a>
                                             </div>
-                                        </div>
-                                    </div>
+                                        </td> --}}
+
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -383,6 +414,112 @@
 
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+
+    {{-- berdu agregator --}}
+    {{-- <script>
+        function toggleResiInput(radioElement) {
+            const orderId = radioElement.name.split('_')[2]; // Extract order ID from name
+            const resiContainer = document.getElementById(`resiInputContainer-${orderId}`);
+
+            if (radioElement.checked) {
+                resiContainer.style.display = 'block';
+            }
+        }
+
+        // Function to handle shipping confirmation
+        function konfirmasiPengiriman(orderId) {
+            const selectedMethod = document.querySelector(`input[name="shipping_method_${orderId}"]:checked`);
+
+            if (!selectedMethod) {
+                alert('Silakan pilih metode pengiriman terlebih dahulu');
+                return;
+            }
+
+            const resiNumber = document.getElementById(`resiNumber-${orderId}`).value;
+
+            if (!resiNumber || resiNumber.trim() === '') {
+                alert('Silakan masukkan nomor resi terlebih dahulu');
+                return;
+            }
+
+            // Send AJAX request to update resi and status
+            fetch('/admin/orders/update-resi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        resi_number: resiNumber
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Pengiriman berhasil dikonfirmasi');
+
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById(`sentModal-${orderId}`));
+                        modal.hide();
+
+                        // Reload page to refresh data
+                        window.location.reload();
+                    } else {
+                        alert('Gagal mengkonfirmasi pengiriman: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat mengkonfirmasi pengiriman');
+                });
+        }
+
+        // Function to open image in new tab
+        function openImageInNewTab(imageUrl) {
+            window.open(imageUrl, '_blank');
+        }
+    </script> --}}
+
+
+    {{-- bikin sendiri --}}
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show toast message
+                const toast = document.createElement('div');
+                toast.className =
+                    'toast align-items-center bg-success text-white border-0 position-fixed bottom-0 end-0 m-3';
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+                toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle me-2"></i>
+                    Nomor resi berhasil disalin!
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+
+                document.body.appendChild(toast);
+                const bsToast = new bootstrap.Toast(toast, {
+                    autohide: true,
+                    delay: 3000
+                });
+                bsToast.show();
+
+                // Remove the toast element after it's hidden
+                toast.addEventListener('hidden.bs.toast', function() {
+                    document.body.removeChild(toast);
+                });
+            }).catch(function(err) {
+                console.error('Failed to copy text: ', err);
+                alert('Gagal menyalin nomor resi!');
+            });
+        }
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

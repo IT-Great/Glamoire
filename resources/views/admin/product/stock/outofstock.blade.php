@@ -479,7 +479,7 @@
                         <div class="col-12">
                             <div class="page-title d-flex align-items-center">
                                 <div>
-                                    <h3 class="mb-1">Stock Product Management</h3>
+                                    <h3 class="mb-1">Stok Produk</h3>
                                     <p class="mb-0">Kelola dan pantau stok produk Anda secara akurat untuk memastikan
                                         ketersediaan barang dan kelancaran proses penjualan.</p>
                                 </div>
@@ -495,10 +495,10 @@
                                     <li class="breadcrumb-item">
                                         <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
                                             <i class="bi bi-box-seam text-primary me-2"></i>
-                                            All Product
+                                            Produk
                                         </a>
                                     </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Stock Product</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Stok Produk</li>
                                 </ol>
                             </nav>
                         </div>

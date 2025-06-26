@@ -473,7 +473,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">Contact Us Management</h3>
+                            <h3 class="mb-2">Contact Us</h3>
                             <p>Tinjau dan tanggapi semua pertanyaan pelanggan di satu tempat</p>
                         </div>
                     </div>

@@ -466,7 +466,7 @@
                 <div class="page-title mb-4">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
-                            <h2>Manajemen Kategori Produk</h2>
+                            <h2>Kategori Produk</h2>
                             <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="{{ route('index-category-product') }}"

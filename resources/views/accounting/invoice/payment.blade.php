@@ -26,10 +26,11 @@
             --bg-light: #f9fafb;
             --card-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
         }
-
+        
         body {
-            background-color: var(--bg-light);
-            font-family: 'Nunito', sans-serif;
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
         }
 
         .main-content {
