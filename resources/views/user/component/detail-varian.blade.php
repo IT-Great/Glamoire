@@ -175,9 +175,9 @@
                 </div>
                 @if ($firstVariant->variant_stock == 0)
                     <div class="flex">
-                        <span class="text-danger text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
+                        <span class="text-danger text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
                         <span
-                            class="text-danger rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
+                            class="text-danger rounded-sm ml-auto text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="top" 
                             title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -201,10 +201,13 @@
                         </div>
                         @else
                             <div class="grid">
-                                <div>
-                                    <p class="text-black">Stok : {{ $firstVariant->variant_stock }}</p>
+                                <div class="d-flex">
+                                    @if ($product->sale != 0)
+                                    <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
+                                    @endif
+                                    <p class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Stok : {{ $firstVariant->variant_stock }}</p>
                                 </div>
-                                <div class="align-items-center gap-2 d-none d-lg-flex py-3">
+                                <div class="align-items-center gap-2 d-none d-lg-flex ">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
                                         <div class="input-group-btn">
                                             <button class="btn btn-minus">
@@ -231,8 +234,11 @@
                         @endif
                     @else
                         <div class="grid">
-                            <div>
-                                <p class="text-black" id="stock-variant">Stok : {{ $firstVariant->variant_stock }}</p>
+                            <div class="d-flex">
+                                @if ($product->sale != 0)
+                                <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
+                                @endif
+                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
                             </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
                                 <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -273,18 +279,18 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active" id="deskripsi">
                                 <h4 class="mb-3">Deskripsi Produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->description }}</p>
+                                <div class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{!! $product->description !!}</div>
                             </div>
                             <div class="tab-pane fade" id="informasi">
                                 <h4 class="mb-3">Informasi terkait produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->information_product }}</p>
+                                <div class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{!! $product->information_product !!}</div>
                             </div>
                             <div class="tab-pane fade" id="ulasan">
                                 <div class="row">
                                     <div class="col-12 overflow-y-auto custom-scroll" style="max-height:60vh;">
                                         <h4 class="mb-4 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
                                         @foreach ($product->ratingAndReviews as $ratingAndReviews)
-                                            <div class="comment mb-4">
+                                            <div class="comment mb-2">
                                                 <div class="media-body grid border border-[#183018] rounded-sm shadow-md p-2">
                                                     <div class="col-12 p-0">
                                                         <div class="grid">
@@ -311,7 +317,7 @@
                                                                 @if ($ratingAndReviews->images !== null)
                                                                     @foreach (json_decode($ratingAndReviews->images, true) as $index => $image)
                                                                     <div class="col-4 pr-1 pl-0">
-                                                                    <img src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
+                                                                    <img src="{{ Storage::url($image) }}" title="Image" style="max-height: full-content; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
                                                                     </div>
                                                                     @endforeach
                                                                 @endif

@@ -607,8 +607,8 @@
 }
 
 .small-swal {
-    max-width: 200px; /* Adjust width as needed */
-    font-size: 10px; /* Adjust font size if needed */
+    max-width: 300px; /* Adjust width as needed */
+    font-size: 12px; /* Adjust font size if needed */
     padding: 8px; /* Adjust padding */
 }
 

@@ -461,7 +461,7 @@
                                                 <div class="flex">
                                                     @if ($item->product_variant_id !== NULL)
                                                         <div class="flex hover:cursor-pointer hover:text-italic"
-                                                            onclick="detailProduct('{{ $item->product->product_code }}')">
+                                                            onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku}}')">
                                                             <div class="col-2 col-md-1 p-0 m-0">
                                                                 <img class="border border-[#183018] rounded-sm"
                                                                     src="{{ Storage::url($item->productVariant->variant_image) }}"
@@ -545,8 +545,6 @@
                                             
                                         </div>    
                                         {{-- END KHUSUS MOBILE --}}
-                                        
-
 
                                         <div class="d-flex justify-content-end input-group-btn mt-2">
                                             <div class="col-12 d-flex p-0 justify-content-end gap-2">
@@ -571,7 +569,15 @@
                                                     <button type="button"
                                                         class="btn border rounded-sm w-fit text-white text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
                                                         style="background-color: #183018"
-                                                        data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
+                                                        data-product-ids="{{$order->id}}
+                                                        
+                                                        {{-- @if ($item->product_variant_id !== NULL)
+                                                        {{ implode(',', $order->items->pluck('product.id')->toArray()) }}
+                                                        @else
+                                                        {{ implode(',', $order->items->pluck('product.id')->toArray()) }}
+                                                        @endif --}}
+                                                        "
+                                                        >
                                                         Beli Lagi
                                                     </button>
                                                 @endif
@@ -1016,7 +1022,7 @@
                                                                                             Anda terima</p>
 
                                                                                         <!-- UPLOAD IMAGE -->
-                                                                                        <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}"
+                                                                                        <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}"
                                                                                             class="media-preview flex gap-1">
                                                                                             <!-- Previews will be inserted here -->
                                                                                         </div>
@@ -1029,7 +1035,7 @@
                                                                                                 multiple
                                                                                                 accept="image/*,video/*"
                                                                                                 class="form-control d-none"
-                                                                                                onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}')"
+                                                                                                onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}')"
                                                                                                 id="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">
                                                                                         </div>
 
@@ -2025,7 +2031,7 @@
                 position: "center",
                 background: "#183018",
                 showConfirmButton: false,
-                timer: 2500,
+                timer: 3500,
                 timerProgressBar: true,
                 customClass: {
                     popup: "small-swal", // Add custom class
@@ -2272,8 +2278,7 @@
             .getElementById("address_district")
             .addEventListener("change", function() {
                 const districtName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("address_district_name").value =
-                    districtName; // Save name in hidden input
+                document.getElementById("address_district_name").value = districtName; // Save name in hidden input
             });
         // END API WILAYAH REGISTER
     </script>
@@ -2292,12 +2297,12 @@
 
                 // Store the clicked star for this product
                 clickedStars[productId] = clickedStar;
-                console.log({
-                    'clickedStar': clickedStar,
-                    'orderId': orderId,
-                    'productId': productId,
-                    'variantId' : variantId,
-                });
+                // console.log({
+                //     'clickedStar': clickedStar,
+                //     'orderId': orderId,
+                //     'productId': productId,
+                //     'variantId' : variantId,
+                // });
 
                 if(variantId == null){
                     $(`#star-product-${productId}-${orderId}`).val(clickedStar);
@@ -2410,34 +2415,48 @@
                             _token: '{{ csrf_token() }}' // Sertakan CSRF token jika perlu
                         },
                         success: function(response) {
-                            Toast.fire({
-                                icon: "success",
-                                text: response.message,
-                                title: "Berhasil",
-                                willOpen: () => {
-                                    const title = document.querySelector(
-                                        '.swal2-title');
-                                    const content = document.querySelector(
-                                        '.swal2-html-container');
-                                    if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
-                                    if (content) content.style.color =
-                                        '#ffffff'; // Ubah warna konten
-                                }
-                            }).then(function() {
-                                window.location.href =
-                                "/cart"; // Redirect ke halaman utama atau halaman lain
-                            });
+                            if (response.outOfStock.length > 0) {
+                                const productList = response.outOfStock.join(", ");
+                                Toast.fire({
+                                    icon: "error",
+                                    text: "Stok habis untuk : " + productList,
+                                    title: "Oops",
+                                    showConfirmButton: false,
+                                    timer: 4500,
+                                    timerProgressBar: true,
+                                    willOpen: () => {
+                                        const title = document.querySelector('.swal2-title');
+                                        const content = document.querySelector('.swal2-html-container');
+                                        if (title) title.style.color = '#ffffff';
+                                        if (content) content.style.color = '#ffffff';
+                                    }
+                                }).then(function() {
+                                    // window.location.href = "/cart"; 
+                                });
+                            }
+                            else{
+                                Toast.fire({
+                                    icon: "success",
+                                    text: response.message,
+                                    title: "Berhasil",
+                                    willOpen: () => {
+                                        const title = document.querySelector('.swal2-title');
+                                        const content = document.querySelector('.swal2-html-container');
+                                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                                    }
+                                }).then(function() {
+                                    window.location.href = "/cart"; 
+                                });
+                            }
                         },
                         error: function(error) {
                             console.log(error); // Cek struktur objek error
-                            let errorMessage =
-                            "Terjadi kesalahan, silakan coba lagi."; // Pesan default
+                            let errorMessage = "Terjadi kesalahan, silakan coba lagi."; // Pesan default
 
                             // Cek apakah error memiliki pesan spesifik
                             if (error.response && error.response.data) {
-                                errorMessage = error.response.data.message || error
-                                    .response.data.error || error.message;
+                                errorMessage = error.response.data.message || error.response.data.error || error.message;
                             } else if (error.message) {
                                 errorMessage = error.message;
                             }
@@ -2447,14 +2466,10 @@
                                 text: errorMessage,
                                 title: "Oops...",
                                 willOpen: () => {
-                                    const title = document.querySelector(
-                                        '.swal2-title');
-                                    const content = document.querySelector(
-                                        '.swal2-html-container');
-                                    if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
-                                    if (content) content.style.color =
-                                        '#ffffff'; // Ubah warna konten
+                                    const title = document.querySelector('.swal2-title');
+                                    const content = document.querySelector('.swal2-html-container');
+                                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
                                 }
                             });
                         }
@@ -2465,6 +2480,11 @@
 
         function detailProduct(productCode) {
             window.location.href = productCode + "_product";
+        }
+
+        function detailProductVariant(productCode, variantCode) {
+            // console.log(variantCode);
+            window.location.href = productCode + "_product?varian=" + variantCode;
         }
     </script>
 

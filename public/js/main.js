@@ -26,7 +26,7 @@
             position: "center",
             background: "#183018",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 3500,
             timerProgressBar: true,
             customClass: {
                 popup: "small-swal", // Add custom class

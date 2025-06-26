@@ -1094,13 +1094,14 @@
 
     <!-- NOITFY ME -->
     <script>
-      function notifyMe(produkId) {
+      function notifyMe(produkId, productVariantId) {
         $.ajax({
             url: "{{ route('notify.me') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: produkId,
+                product_variant_id: productVariantId
             },
             success: function (response) {
               if (response.success) {
@@ -1321,7 +1322,7 @@
         });
         Toast.fire({
           icon: "success",
-          text: "Silahkan cek kode promomu di emailmu",
+          text: "Silahkan cek kode promo di emailmu",
           title: "Selamat",
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
