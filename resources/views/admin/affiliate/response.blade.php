@@ -1,81 +1,150 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            background-image: url('https://example.com/background.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+        }
+
         .email-container {
-            max-width: 600px;
-            margin: 0 auto;
-            font-family: 'Arial', sans-serif;
+            max-width: 680px;
+            margin: 30px auto;
             background-color: #ffffff;
-            border-radius: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             overflow: hidden;
         }
+
         .email-header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #183018 0%, #2c5e2e 100%);
             color: white;
             padding: 40px 30px;
             text-align: center;
         }
-        .email-content {
-            padding: 30px;
-            background-color: #ffffff;
+
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
         }
-        .question-section {
-            background-color: #f3f4f6;
-            padding: 20px;
+
+        .email-content {
+            padding: 40px 30px;
+        }
+
+        .important-notice {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+
+        .important-notice h2 {
+            margin-top: 0;
+            color: #1e40af;
+            font-size: 18px;
+        }
+
+        .important-notice ul {
+            padding-left: 20px;
+        }
+
+        .question-section,
+        .response-section {
+            background-color: #f9fafb;
             border-radius: 8px;
+            padding: 25px;
             margin-bottom: 25px;
         }
-        .response-section {
-            background-color: #ffffff;
-            padding: 20px;
-            border-left: 4px solid #6366f1;
+
+        .question-section {
+            border-left: 4px solid #ff6b6b;
         }
+
+        .response-section {
+            border-left: 4px solid #4ade80;
+        }
+
+        .action-button {
+            display: inline-block;
+            background-color: #183018;
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-button:hover {
+            background-color: #2c5e2e;
+        }
+
         .footer {
+            background-color: #f1f5f9;
+            color: #64748b;
             text-align: center;
             padding: 20px;
-            background-color: #f9fafb;
-            color: #6b7280;
+            font-size: 14px;
         }
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #6366f1;
-            color: #ffffff !important; /* Tambahkan !important untuk memastikan warna teks */
-            text-decoration: none;
-            border-radius: 6px;
-            margin-top: 20px;
+
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                width: 100%;
+                border-radius: 0;
+            }
         }
     </style>
 </head>
+
 <body style="background-color: #f3f4f6; padding: 20px;">
     <div class="email-container">
         <div class="email-header">
             <h1>Response to Your Affiliate</h1>
         </div>
-        
+
         <div class="email-content">
-            <p>Hello {{ $partner->name }},</p>
-            
-            <p>Thank you for reaching out to us. We've reviewed your Affiliate and here's our response:</p>
-            
-            <div class="question-section">
-                <h3>Your Question:</h3>
-                <p>{{ $partner->question }}</p>
+            <div class="important-notice">
+                <h2>🚨 Important Notice</h2>
+                <p>Please DO NOT reply to this email. For further inquiries:</p>
+                <ul>
+                    <li>Send a new question through <a href="{{ $contactUsLink }}" style="color: #3b82f6;">Contact Us
+                            Form</a></li>
+                    <li>Chat with our Admin on WhatsApp: <a href="{{ $whatsappLink }}" style="color: #3b82f6;">Click to
+                            Chat with Admin</a></li>
+                </ul>
             </div>
-            
+
+            <p>Hello {{ $partner->fullname }},</p>
+
+            <p>Thank you for reaching out to us. Our team has carefully reviewed your Affiliate.</p>
+
             <div class="response-section">
-                <h3>Our Response:</h3>
+                <h3 style="color: #22c55e;">💡 Our Response:</h3>
                 <p>{{ $response }}</p>
             </div>
-            
-            <a href="{{ url('/') }}" class="button">Visit Our Website</a>
+
+            <a href="{{ url('/') }}" class="action-button">Visit Our Website</a>
         </div>
-        
+
         <div class="footer">
             <p>© {{ date('Y') }} Glamoire. All rights reserved.</p>
+            <p>If you have any further questions, please contact our support team.</p>
         </div>
     </div>
 </body>
+
 </html>

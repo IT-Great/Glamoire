@@ -1,5 +1,114 @@
 @extends('user.layouts.master')
 
+<style>
+    /* Existing CSS yang Anda berikan */
+    .upload__img-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -10px;
+    }
+
+    .upload__img-box-single {
+        width: 150px;
+        padding: 0 10px;
+        margin-bottom: 12px;
+        position: relative;
+    }
+
+    .upload__img-close {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        text-align: center;
+        line-height: 24px;
+        z-index: 1;
+        cursor: pointer;
+    }
+
+    .upload__img-close:after {
+        content: '\2716';
+        font-size: 14px;
+        color: white;
+    }
+
+    .img-bg {
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
+        position: relative;
+        padding-bottom: 100%;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .video-upload-wrap {
+        border: 2px dashed #ddd;
+        border-radius: 4px;
+        padding: 20px;
+        width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        background: #f8f8f8;
+        margin-bottom: 15px;
+    }
+
+    .file-upload-content {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+
+    .upload__video-box {
+        position: relative;
+        margin: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        padding: 5px;
+        width: 100%;
+        max-width: 640px;
+        height: auto;
+        aspect-ratio: 16 / 9;
+    }
+
+    .upload__video-box video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+    }
+
+
+    .upload__video-close {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: rgba(0, 0, 0, 0.7);
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        text-align: center;
+        line-height: 24px;
+        z-index: 1;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .upload__video-close:after {
+        content: '\2716';
+        font-size: 14px;
+        color: white;
+    }
+
+    .upload__video-close:hover {
+        background-color: rgba(0, 0, 0, 0.9);
+    }
+</style>
+
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2 mb-4">
   <div class="container-fluid px-0 px-md-3">

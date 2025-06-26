@@ -4,16 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductVariations;
+use App\Models\Promo;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
     public function indexDashboard()
     {
+        // Ambil produk utama dengan stok rendah (1-15)
+        $lowStockProducts = Product::where('stock_quantity', '>', 0)
+            ->where('stock_quantity', '<=', 15)
+            ->count();
+
+        // Ambil varian produk dengan stok rendah (1-15)
+        $lowStockVariations = ProductVariations::where('variant_stock', '>', 0)
+            ->where('variant_stock', '<=', 15)
+            ->count();
+
+        // Hitung total stok rendah
+        $totalLowStock = $lowStockProducts + $lowStockVariations;
+
+        // Hitung total order dengan status "processing"
+        $totalProcessingOrders = Order::where('status', 'processing')->count();
+        $totalPendingOrders = Order::where('status', 'pending')->count();
+        $totalDeliveryOrders = Order::where('status', 'delivery')->count();
+
+        // Hitung total promo yang ada
+        $totalPromotions = Promo::count();
+
         $brands = Brand::all();
         $products = Product::all();
-        return view('admin.dashboard.index', compact('brands', 'products'));
+        $totalProducts = $products->count();
+
+        return view('admin.dashboard.index', compact(
+            'brands',
+            'products',
+            'totalProducts',
+            'lowStockProducts',
+            'lowStockVariations',
+            'totalLowStock',
+            'totalProcessingOrders',
+            'totalPendingOrders', // Tambahkan variabel ini
+            'totalDeliveryOrders', // Tambahkan variabel ini
+            'totalPromotions', // Tambahkan variabel ini
+        ));
     }
 
     // public function getSalesData(Request $request)

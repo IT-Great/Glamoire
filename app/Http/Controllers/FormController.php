@@ -30,16 +30,28 @@ class FormController extends Controller
         $emailExists = User::where('email', $request->email)->exists();
         $voucherExists = VoucherNewUser::where('email', $request->email)->exists();
 
-        if($emailExists){
-            return response()->json(['exists' => $emailExists]);
-        }
-        else{
-            if($voucherExists){
-                return response()->json(['exists' => $voucherExists]);
-            }
-        } 
-
+        return response()->json(['exists' => $emailExists]);
     }
+
+    // public function sendQuestion(Request $request)
+    // {
+    //     try { 
+    //         $question = Question::create([
+    //             'fullname'   => $request->fullname,
+    //             'email'      => $request->email,
+    //             'question'   => $request->question,
+    //             'created_at' => now(),
+    //         ]);
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Pertanyaan Anda Sudah Kami Terima. 
+    //             Tunggu Balasan Email Dari Kami Yaa'
+    //         ]);
+    //     } catch (Exception $err) {
+    //         dd($err);
+    //     }
+    // }
 
     public function sendQuestion(Request $request)
     {
@@ -145,8 +157,7 @@ class FormController extends Controller
             ]);
 
             session()->flash('send_success');
-            return redirect()->back();
-
+            return redirect()->back()->with('success', 'File berhasil diupload');
         } catch (Exception $err) {
             dd($err);
         }
@@ -156,7 +167,7 @@ class FormController extends Controller
     {
         try {
             return response()->json([
-                'success' => true, 
+                'success' => true,
                 'message' => 'Komentar Berhasil Ditambahkan'
             ]);
         } catch (Exception $err) {
@@ -167,32 +178,32 @@ class FormController extends Controller
     public function voucherNewUser(Request $request)
     {
         $check = VoucherNewUser::where('email', $request->email)->exists();
-    
+
         // Buat voucher hanya jika email belum terdaftar
         if (!$check) {
             $increment = VoucherNewUser::count() + 1;
-    
+
             // Ambil 4 karakter pertama dari ID user
             $idFragment = substr($request->email, 0, 4);
-    
+
             // Buat kode voucher sesuai format "increment-4hurufID"
             $codeUser = "{$increment}-{$idFragment}";
-    
+
             VoucherNewUser::create([
                 'code' => $codeUser,
                 'email' => $request->email,
                 'is_use' => 0,
             ]);
-    
+
             $data = [
                 'code' => $codeUser,
                 'fullname' => "Calon pengguna",
             ];
-    
+
             $email_target = $request->email;
-    
+
             Mail::to($email_target)->send(new sendMailCodeNewUser($data));
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Silakan cek email kamu untuk melihat voucher yang kamu dapat'
@@ -204,5 +215,4 @@ class FormController extends Controller
             ]);
         }
     }
-    
 }

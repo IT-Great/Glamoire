@@ -34,7 +34,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 12px;
-        }       
+        }
 
         .font-semibold {
             font-weight: 600;
@@ -91,13 +91,14 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon blue">
+                                                    <!-- Replace with "New Order" icon -->
+                                                    <i class="bi bi-check-circle fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
-                                                <h6 class="text-muted font-semibold">Unpaid</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                                <h6 class="text-muted font-semibold">Order Baru</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalPendingOrders }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -109,13 +110,14 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon orange">
+                                                    <!-- Replace with "Shipment Needs Processing" icon -->
+                                                    <i class="iconly-boldSend"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
-                                                <h6 class="text-muted font-semibold">Shipment Needs Processing</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                                <h6 class="text-muted font-semibold">Pengiriman Perlu Diproses</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalProcessingOrders }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -127,13 +129,14 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon green">
+                                                    <!-- Replace with "Processed Shipments" icon -->
+                                                    <i class="bi bi-box fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
-                                                <h6 class="text-muted font-semibold">Processed Shipments</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                                <h6 class="text-muted font-semibold">Pengiriman Sedang Diproses</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalDeliveryOrders }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -145,8 +148,9 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon red">
+                                                    <!-- Replace with "Canceled by Buyer" icon -->
+                                                    <i class="bi bi-x-circle fs-3"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -166,13 +170,52 @@
                                     <div class="card-body px-3 py-4">
                                         <div class="row align-items-center">
                                             <div class="col-auto">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
+                                                <div class="stats-icon red">
+                                                    <!-- Replace with "Out Of Stock" icon -->
+                                                    <i class="iconly-boldDanger"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
-                                                <h6 class="text-muted font-semibold">New Order</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                                <h6 class="text-muted font-semibold">Stok Habis</h6>
+                                                <h6 class="font-extrabold mb-0">
+                                                    {{ $products->where('stock_quantity', '=', 0)->count() }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldWallet"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Stok Rendah</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalLowStock }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon teal">
+                                                    <!-- Replace with "Available Stock" icon -->
+                                                    <i class="iconly-boldBag"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Stok Tersedia</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalProducts }}</h6>
                                             </div>
                                         </div>
                                     </div>
@@ -185,54 +228,20 @@
                                         <div class="row align-items-center">
                                             <div class="col-auto">
                                                 <div class="stats-icon blue">
-                                                    <i class="iconly-boldProfile"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <h6 class="text-muted font-semibold">Out Of Stock</h6>
-                                                <h6 class="font-extrabold mb-0">183</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="card h-100">
-                                    <div class="card-body px-3 py-4">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col">
-                                                <h6 class="text-muted font-semibold">Available Stock</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-sm-6 col-lg-3">
-                                <div class="card h-100">
-                                    <div class="card-body px-3 py-4">
-                                        <div class="row align-items-center">
-                                            <div class="col-auto">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                                                    <!-- Replace with "Upcoming Promotion" icon -->
+                                                    <i class="iconly-boldDiscount"></i>
                                                 </div>
                                             </div>
                                             <div class="col">
                                                 <h6 class="text-muted font-semibold">Upcoming Promotion</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalPromotions }}</h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
 
                         <!-- Sales Information Card -->
                         <div class="row">

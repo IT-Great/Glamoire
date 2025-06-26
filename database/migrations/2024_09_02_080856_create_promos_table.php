@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('promo_name');
             $table->string('type');
-            $table->string('discount')->nullable();            
+            $table->bigInteger('discount')->nullable();         
             $table->string('date_range')->nullable(); 
             $table->unsignedBigInteger('category_product_id')->nullable();
             $table->foreign('category_product_id')->references('id')->on('category_products')->cascadeOnDelete()->cascadeOnUpdate();

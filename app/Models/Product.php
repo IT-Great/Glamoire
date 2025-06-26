@@ -39,19 +39,6 @@ class Product extends Model
             ->withPivot('discounted_price', 'discount_product_voucher_item', 'discount_type');
     }
 
-    public function promoTiers()
-    {
-        return $this->hasManyThrough(
-            PromoTier::class,  // Model tujuan
-            Promo::class,      // Model perantara
-            'product_id',      // Foreign key di tabel promos
-            'promo_id',        // Foreign key di tabel promo_tiers
-            'id',              // Local key di tabel products
-            'id'               // Local key di tabel promos
-        );
-    }
-    
-
     public function productVariations()
     {
         return $this->hasMany(ProductVariations::class);
@@ -70,7 +57,7 @@ class Product extends Model
     public function hasActivePromoByType($promoType)
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where('type', $promoType)
             ->where(function ($query) use ($currentDate) {
@@ -80,11 +67,10 @@ class Product extends Model
             ->exists();
     }
 
-
     public function getActivePromoByType($promoType)
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where('type', $promoType)
             ->where(function ($query) use ($currentDate) {
@@ -114,7 +100,7 @@ class Product extends Model
     public function getActivePromo()
     {
         $currentDate = now()->format('Y-m-d');
-        
+
         return $this->promos()
             ->where(function ($query) use ($currentDate) {
                 $query->whereRaw("SUBSTRING_INDEX(date_range, ' - ', 1) <= ?", [$currentDate])
@@ -131,5 +117,21 @@ class Product extends Model
         }
 
         return $activePromo->pivot->discounted_price ?? $this->regular_price;
+    }
+
+    public function stocks()
+    {
+        return $this->hasMany(ProductStocks::class);
+    }
+
+    public function isInitialStock()
+    {
+        return $this->stocks()->count() === 0;
+    }
+
+    public function getTotalStockAttribute()
+    {
+        // Total stok langsung mengacu pada stock_quantity
+        return $this->stock_quantity;
     }
 }

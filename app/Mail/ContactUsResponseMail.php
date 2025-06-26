@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 
 class ContactUsResponseMail extends Mailable
 {
@@ -16,11 +17,12 @@ class ContactUsResponseMail extends Mailable
     public $contact;
     public $response;
 
-    public function __construct($contact, $response)
+    public function __construct($contact)  // Ubah constructor untuk hanya menerima $contact
     {
         $this->contact = $contact;
-        $this->response = $response;
+        $this->response = $contact->response;  // Ambil response dari contact object
     }
+
 
     public function envelope(): Envelope
     {
@@ -29,14 +31,35 @@ class ContactUsResponseMail extends Mailable
         );
     }
 
-    public function content(): Content
+    public function build()
     {
-        return new Content(
-            view: 'admin.contactus.contact-response', // Pastikan path view ini benar
-            with: [
-                'contact' => $this->contact,
-                'response' => $this->response
-            ]
-        );
+        return $this->from('no-reply@yourdomain.com', config('app.name'))
+            ->replyTo('no-reply@yourdomain.com', 'Do Not Reply')
+            ->subject('Response to Your Question')
+            ->view('admin.contactus.contact-response')
+            ->with([
+                'whatsappLink' => 'https://wa.me/62xxxxxxxx', // Ganti dengan nomor WhatsApp admin
+                'contactUsLink' => url('/contact')
+            ]);
+
+        $mail = $this->subject('Response to Your Question')
+            ->view('admin.contactus.contact-response');
+
+        // Periksa apakah file ada sebelum melampirkan
+        if ($this->contact->response_image && file_exists(storage_path('app/public/' . $this->contact->response_image))) {
+            $mail->attach(storage_path('app/public/' . $this->contact->response_image), [
+                'as' => 'response_image.jpg', // Nama file di email
+                'mime' => 'image/jpeg', // MIME type untuk gambar
+            ]);
+        }
+
+        if ($this->contact->response_video && file_exists(storage_path('app/public/' . $this->contact->response_video))) {
+            $mail->attach(storage_path('app/public/' . $this->contact->response_video), [
+                'as' => 'response_video.mp4', // Nama file di email
+                'mime' => 'video/mp4', // MIME type untuk video
+            ]);
+        }
+
+        return $mail;
     }
 }

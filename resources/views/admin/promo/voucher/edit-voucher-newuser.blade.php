@@ -365,6 +365,12 @@
                                         </div>
 
                                         <div class="col-12 d-flex justify-content-end">
+                                            <a href="{{ route('index-promo-voucher') }}"
+                                                class="btn btn-secondary btn-sm me-3"
+                                                style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                                <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                            </a>
+
                                             <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
                                                 Voucher</button>
                                             <button type="submit" class="btn btn-sm btn-primary me-1">Submit
@@ -554,14 +560,12 @@
     </script>
 
     <script type="text/javascript">
-        $(function() {
-            $('#daterange').daterangepicker({
-                locale: {
-                    format: 'YYYY-MM-DD'
-                },
-                startDate: moment().startOf('day'), // Default start date
-                endDate: moment().endOf('day') // Default end date
-            });
+        $('#daterange').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            startDate: '{{ $promo->start_date ?? now()->format('YYYY-MM-DD') }}',
+            endDate: '{{ $promo->end_date ?? now()->format('YYYY-MM-DD') }}'
         });
     </script>
 

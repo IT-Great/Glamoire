@@ -137,7 +137,7 @@
                             </nav>
                         </div>
                     </div>
-                </div>            
+                </div>
 
                 <!-- Main Tabs -->
                 <div class="border-bottom mb-4">
@@ -146,12 +146,6 @@
                             <a href="{{ route('index-admin-order') }}"
                                 class="nav-link {{ request()->get('status') === null ? 'active text-primary' : 'text-secondary' }}">
                                 Semua
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'unpaid']) }}"
-                                class="nav-link {{ request()->get('status') === 'unpaid' ? 'active text-primary' : 'text-secondary' }}">
-                                Belum Bayar
                             </a>
                         </li>
                         <li class="nav-item">
@@ -167,7 +161,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('index-admin-order', ['status' => 'completed']) }}"
+                            <a href="{{ route('index-admin-order-complete-sent', ['status' => 'completed']) }}"
                                 class="nav-link {{ request()->get('status') === 'completed' ? 'active text-primary' : 'text-secondary' }}">
                                 Selesai
                             </a>
@@ -193,76 +187,7 @@
                         aria-label="Close"></button>
                 </div>
 
-
-                <!-- Status Filters -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="row align-items-center mb-4">
-                            <div class="text-secondary mb-2">Status Pesanan</div>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="btn btn-outline-primary btn-sm rounded-pill">
-                                    Perlu diproses (28)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Telah diproses (18)
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm rounded-pill">
-                                    Tertunda (17)
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Search and Filters -->
-                        <form action="{{ route('index-admin-order') }}" method="GET" class="mb-4">
-                            <div class="row g-3">
-                                <div class="col-12 col-lg-6">
-                                    <div class="input-group">
-                                        <select name="search_type" class="form-select" style="max-width: 150px;">
-                                            <option value="order_number">No. Pesanan</option>
-                                            <option value="product">Produk</option>
-                                            <option value="customer">Pelanggan</option>
-                                        </select>
-                                        <input type="text" name="search" value="{{ request()->get('search') }}"
-                                            class="form-control" placeholder="Masukkan no. pesanan">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-6">
-                                    <div class="d-flex gap-2 flex-wrap">
-                                        <select name="shipping_method" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Jasa Kirim</option>
-                                        </select>
-                                        <select name="action" class="form-select" style="max-width: 180px;">
-                                            <option value="">Semua Tindakan</option>
-                                            <option value="process">Proses</option>
-                                            <option value="cancel">Batalkan</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-primary">
-                                            Terapkan
-                                        </button>
-                                        <a href="{{ route('index-admin-order') }}"
-                                            class="btn btn-outline-secondary">Reset</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Order Count and Actions -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="h5 mb-0">28 Pesanan</div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-down-up me-1"></i> Urutkan
-                        </button>
-                        <button class="btn btn-primary btn-sm">
-                            <i class="bi bi-send me-1"></i> Pengiriman Massal
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Orders Table -->         
-
+                <!-- Orders Table -->
                 <div class="card order-table">
                     <div class="card-header bg-white">
                         <h4>Order List</h4>
@@ -274,8 +199,6 @@
                                     <th style="min-width: 300px">Order Details</th>
                                     <th style="min-width: 120px">Total Amount</th>
                                     <th>Status</th>
-                                    <th style="min-width: 130px">Pickup Date</th>
-                                    <th style="min-width: 150px">Shipping</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -291,35 +214,42 @@
                                                     </div>
                                                     <div class="text-secondary small">
                                                         <i class="bi bi-receipt me-1"></i>
-                                                        {{ $order->invoice->no_invoice }} 
+                                                        Invoice : {{ $order->invoice->no_invoice }}
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="product-details">
-                                                @foreach ($order->groupedOrderItems as $item)
-                                                    <div class="d-flex gap-3 mb-3">
-                                                        <img src="{{ Storage::url($item['product']->main_image) }}"
-                                                            alt="{{ $item['product']->product_name }}"
-                                                            onclick="openImageInNewTab('{{ Storage::url($item['product']->main_image) }}')"
-                                                            loading="lazy">
-                                                        <div class="product-info">
-                                                            <div class="product-name">
-                                                                {{ $item['product']->product_name }}</div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-box me-1"></i>
-                                                                Qty: {{ $item['total_quantity'] }}
+                                                @if (isset($order->groupedOrderItems) && count($order->groupedOrderItems) > 0)
+                                                    @foreach ($order->groupedOrderItems as $item)
+                                                        @if (isset($item['product']))
+                                                            <div class="d-flex gap-3 mb-3">
+                                                                <img src="{{ Storage::url($item['product']->main_image) }}"
+                                                                    alt="{{ $item['product']->product_name }}"
+                                                                    onclick="openImageInNewTab('{{ Storage::url($item['product']->main_image) }}')"
+                                                                    loading="lazy">
+                                                                <div class="product-info">
+                                                                    <div class="product-name">
+                                                                        {{ Str::limit($item['product']->product_name, 40, '...') }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-box me-1"></i>
+                                                                        Qty: {{ $item['total_quantity'] }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-upc me-1"></i>
+                                                                        {{ $item['product']->product_code }}
+                                                                    </div>
+                                                                    <div class="product-meta">
+                                                                        <i class="bi bi-tag me-1"></i>
+                                                                        {{ $item['product']->categoryProduct->name ?? 'Uncategorized' }}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-upc me-1"></i>
-                                                                {{ $item['product']->product_code }}
-                                                            </div>
-                                                            <div class="product-meta">
-                                                                <i class="bi bi-tag me-1"></i>
-                                                                {{ $item['product']->categoryProduct->name }}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
+                                                        @endif
+                                                    @endforeach
+                                                @else
+                                                    <div class="text-muted">No products found</div>
+                                                @endif
                                             </div>
                                         </td>
                                         <td>
@@ -331,47 +261,38 @@
                                             </div>
                                         </td>
                                         <td>
-                                            @if ($order->status == 1)
+                                            @if ($order->status == 'pending')
+                                                <span class="badge bg-warning d-inline-flex align-items-center">
+                                                    <i class="bi bi-hourglass-split me-1"></i>Pending
+                                                </span>
+                                            @elseif($order->status == 'processing')
+                                                <span class="badge bg-primary d-inline-flex align-items-center">
+                                                    <i class="bi bi-box me-1"></i>Processing
+                                                </span>
+                                            @elseif($order->status == 'delivery')
+                                                <span class="badge bg-info d-inline-flex align-items-center">
+                                                    <i class="bi bi-truck me-1"></i>Delivery
+                                                </span>
+                                            @elseif($order->status == 'completed')
                                                 <span class="badge bg-success"><i
-                                                        class="bi bi-check-circle me-1"></i>Success</span>
-                                            @elseif($order->status == 2)
-                                                <span class="badge bg-primary"><i
-                                                        class="bi bi-truck me-1"></i>Delivered</span>
-                                            @elseif($order->status == 3)
+                                                        class="bi bi-check-circle me-1"></i>Completed</span>
+                                            @elseif($order->status == 'cancelled')
                                                 <span class="badge bg-danger"><i
-                                                        class="bi bi-x-circle me-1"></i>Canceled</span>
+                                                        class="bi bi-x-circle me-1"></i>Cancelled</span>
+                                            @elseif($order->status == 'failed')
+                                                <span class="badge bg-dark"><i
+                                                        class="bi bi-slash-circle me-1"></i>Failed</span>
                                             @else
-                                                <span class="badge bg-warning"><i
-                                                        class="bi bi-clock me-1"></i>Pending</span>
+                                                <span class="badge bg-secondary"><i
+                                                        class="bi bi-question-circle me-1"></i>Unknown</span>
                                             @endif
                                         </td>
+
                                         <td>
-                                            @if ($order->pickup_date)
-                                                <div class="small">
-                                                    <i class="bi bi-calendar-event me-1"></i>
-                                                    {{ \Carbon\Carbon::parse($order->pickup_date)->format('d/m/Y') }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td class="shipping-details">
-                                            @if ($order->shipping)
-                                                <div class="fw-medium">{{ $order->shipping->method }}</div>
-                                                <div class="text-secondary small mt-1">
-                                                    <i class="bi bi-truck me-1"></i>{{ $order->shipping->service }}
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    <i class="bi bi-box-seam me-1"></i>{{ $order->shipping->type }}
-                                                </div>
-                                                <div class="text-secondary small">
-                                                    <i
-                                                        class="bi bi-qr-code me-1"></i>{{ $order->shipping->tracking_number }}
-                                                </div>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="/order-detail/{{ $order->id }}" class="action-link">
-                                                <i class="bi bi-arrow-clockwise me-1"></i>
-                                                Atur Ulang Pickup
+                                            <a href="/order-detail/{{ $order->id }}"
+                                                class="badge bg-primary d-inline-flex align-items-center">
+                                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                                Info Detail
                                             </a>
                                         </td>
                                     </tr>
@@ -380,7 +301,6 @@
                         </table>
                     </div>
                 </div>
-
             </div>
             <!-- Pagination Links -->
             <div class="d-flex justify-content-center mt-4">

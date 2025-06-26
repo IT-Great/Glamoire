@@ -24,10 +24,14 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscribeController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DokuPaymentController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
-
 use App\Http\Controllers\PrismalinkController;
+use App\Http\Controllers\StockExportImportController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\NotifyMe;
@@ -38,6 +42,9 @@ Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPa
 Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
 Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
+// Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
+// Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
+
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -89,21 +96,21 @@ Route::post('/notify-me', function (Request $request) {
     $email = User::where('id', $userId)->value('email');
 
     if ($userId) {
-        if($request->product_variant_id !== null) {
+        if ($request->product_variant_id !== null) {
             $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
                 ->where('product_variant_id', $request->product_variant_id)
                 ->where('email', $email)
                 ->exists();
-        }else{
+        } else {
             $checkIsAlreadyExists = NotifyMe::where('product_id', $request->product_id)
                 ->where('email', $email)
-                ->exists();    
+                ->exists();
         }
 
         if ($checkIsAlreadyExists) {
             return response()->json(['false' => true, 'message' => 'Email kamu sudah terdaftar']);
-        }else{
-            if($request->product_variant_id !== null){
+        } else {
+            if ($request->product_variant_id !== null) {
                 NotifyMe::create([
                     'user_id' => $userId,
                     'product_id' => $request->product_id,
@@ -111,8 +118,7 @@ Route::post('/notify-me', function (Request $request) {
                     'email' => $email,
                 ]);
                 return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
-            }
-            else{
+            } else {
                 NotifyMe::create([
                     'user_id' => $userId,
                     'product_id' => $request->product_id,
@@ -221,9 +227,12 @@ Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'update
 Route::post('/buy-again', [UserController::class, 'addToCartBuyNow'])->name('buy.again');
 
 
-Route::get('/help', function () {
-    return view('user.component.help');
-});
+// Route::get('/help', function () {
+//     return view('user.component.help');
+// });
+
+Route::get('/help', [FaqController::class, 'index']);
+
 
 Route::get('/promotion', [PromoController::class, 'index'])->name('promo.user');
 Route::get('/{name}-detail-promo', [PromoController::class, 'detailPromoUser'])->name('detail.promo.user');
@@ -304,19 +313,47 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // product
     Route::get('/product-admin', [ProductController::class, 'indexProductAdmin'])->name('index-product-admin');
-    Route::get('/create-product', [ProductController::class, 'createProductAdmin'])->name('create-product-admin');
+    Route::get('/product-admin-create', [ProductController::class, 'createProductAdmin'])->name('create-product-admin');
     Route::post('/store-product', [ProductController::class, 'storeProductAdmin'])->name('store-product-admin');
-    Route::get('/edit-product-admin/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
+    Route::get('/product-admin-edit/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
 
+    // STOCK PRODUCT 
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/outof-stock-product-admin', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
     Route::get('/low-stock-product-admin', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
 
+    Route::get('/check-stock-alerts', [ProductController::class, 'checkStockAlerts'])
+        ->name('check-stock-alerts');
+
+    // product update stock
+    Route::get('/get-stock-details/{id}', [ProductController::class, 'getStockDetails']);
     Route::put('/update-stock/{id}', [ProductController::class, 'updateStock'])->name('update-stock');
 
+    // product variant update stock
+    Route::get('/get-variant-stock-details/{variantId}', [ProductController::class, 'getVariantStockDetails']);
+
+    // import export stock
+    Route::get('/download-product-stock-template', [StockExportImportController::class, 'downloadProductStockTemplate'])
+        ->name('download.product.stock.template');
+    Route::get('/download-product-variant-stock-template', [StockExportImportController::class, 'downloadProductStockVariantTemplate'])
+        ->name('download.product.variant.stock.template');
+
+    // Stock Export Routes
+    Route::get('/export/product-stocks', [StockExportImportController::class, 'exportProductStocks'])
+        ->name('export.product.stocks');
+    Route::get('/export/product-variants', [StockExportImportController::class, 'exportProductVariants'])
+        ->name('export.product.variants');
+
+    // Stock Import Routes
+    Route::post('/import/product-stocks', [StockExportImportController::class, 'importProductStocks'])
+        ->name('import.product.stocks');
+    Route::post('/import/product-variants', [StockExportImportController::class, 'importProductStockVariants'])
+        ->name('import.product.variants');
+    // Route::post('/import/product-variants', [StockExportImportController::class
+
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
-    Route::get('/detail-product-admin/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
+    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
     Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
 
     // product-variant
@@ -329,61 +366,68 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // category product
     Route::get('/category-product', [CategoryController::class, 'indexCategoryProduct'])->name('index-category-product');
     Route::post('/create-category-product', [CategoryController::class, 'createCategoryProduct'])->name('create-category-product');
-    Route::delete('/category-product/{id}', [CategoryController::class, 'deleteCategoryProduct'])->name('delete-category-product');
+    Route::delete('/delete-category-product/{id}', [CategoryController::class, 'deleteCategoryProduct'])->name('delete-category-product');
 
     // order
     Route::get('/order-admin', [OrderController::class, 'indexOrder'])->name('index-admin-order');
     Route::get('/order-sent-admin', [OrderController::class, 'sentAdmin'])->name('index-admin-order-sent');
     Route::get('/order-need-sent-admin', [OrderController::class, 'needSentAdmin'])->name('index-admin-order-need-sent');
+    Route::get('/order-complete-sent-admin', [OrderController::class, 'completeOrder'])->name('index-admin-order-complete-sent');
     Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
+
+    Route::post('/admin/order/{id}/change-status', [OrderController::class, 'changeOrderStatus'])->name('change-order-status');
+    Route::post('/orders/{orderId}/complete', [OrderController::class, 'changeDeliveryStatusOrder'])->name('orders.complete');
+    Route::post('/orders/{orderId}/confirm-shipping', [OrderController::class, 'confirmShipping'])->name('orders.confirm-shipping');
+
+    // GENERATE LABEL RESI BUAT SENDIRI
+    Route::get('/orders/{id}/generate-shipping-label', [App\Http\Controllers\OrderController::class, 'generateShippingLabel'])->name('generate-shipping-label');
+    // Route for viewing an existing shipping label
+    Route::get('/orders/{id}/view-shipping-label', [App\Http\Controllers\OrderController::class, 'viewShippingLabel'])->name('view-shipping-label');
+    // Route for updating shipping status
+    Route::post('/orders/{id}/update-shipping-status', [App\Http\Controllers\OrderController::class, 'updateShippingStatus'])->name('update-shipping-status');
 
     // brand
     Route::get('/brand-admin', [BrandController::class, 'indexbrand'])->name('index-brand-admin');
-    Route::get('/create-brand', [BrandController::class, 'createBrand'])->name('create-brand-admin');
-    Route::post('/store-brand', [BrandController::class, 'storeBrand'])->name('store-brand-admin');
-    Route::get('/detail-brand/{id}', [BrandController::class, 'detailBrand'])->name('detail-brand-admin');
+    Route::get('/brand-admin-create', [BrandController::class, 'createBrand'])->name('create-brand-admin');
+    Route::post('/brand-admin-store', [BrandController::class, 'storeBrand'])->name('store-brand-admin');
+    Route::get('/brand-admin-detail/{id}', [BrandController::class, 'detailBrand'])->name('detail-brand-admin');
     Route::put('/update/brand/{id}', [BrandController::class, 'updateBrandAdmin'])->name('update-brand-admin');
+    Route::get('/brands/{id}', [BrandController::class, 'showBrand'])->name('show-brand-admin');
+
     Route::delete('/delete-brand/{id}', [BrandController::class, 'deleteBrand'])->name('delete-brand-admin');
     Route::get('/search-brands', [BrandController::class, 'searchBrands']);
 
     // ARTICLE
     Route::get('/article-admin', [ArticleController::class, 'indexArticleAdmin'])->name('index-article');
-    Route::get('/create-article-admin', [ArticleController::class, 'createArticle'])->name('create-article');
+    Route::get('/article-admin-create', [ArticleController::class, 'createArticle'])->name('create-article');
     Route::post('/create-article-admin', [ArticleController::class, 'storeArticle'])->name('store-article');
-    Route::get('/edit-article-admin', [ArticleController::class, 'editArticle'])->name('edit-article');
-    Route::post('/edit-article-admin', [ArticleController::class, 'updateArticle'])->name('update-article');
-    Route::get('/review-article-admin/{id}', [ArticleController::class, 'reviewArticle'])->name('review-article');
+    Route::get('/article-admin/{id}/edit', [ArticleController::class, 'editArticle'])->name('edit-article');
+    Route::put('/articles/{id}', [ArticleController::class, 'updateArticle'])->name('update-article');
+
+    Route::get('/article-admin-review/{id}', [ArticleController::class, 'reviewArticle'])->name('review-article');
     Route::delete('/article-admin/{id}', [ArticleController::class, 'deleteArticle'])->name('delete-article');
 
     // category article
-    Route::get('/category-article', [CategoryController::class, 'indexCategoryArticle'])->name('index-category-article');
+    Route::get('/article-admin-category', [CategoryController::class, 'indexCategoryArticle'])->name('index-category-article');
     Route::post('/create-category-article', [CategoryController::class, 'createCategoryArticle'])->name('create-category-article');
     Route::delete('/category-article/{id}', [CategoryController::class, 'deleteCategoryArticle'])->name('delete-category-article');
 
     // PROMO
     Route::get('/promo', [PromoController::class, 'indexPromo'])->name('index-promo');
     Route::get('/create-promo', [PromoController::class, 'createPromo'])->name('create-promo');
-    // Route::post('/promo/toggle-status/{id}', [PromoController::class, 'toggleStatus'])->name('promo.toggle-status');
     Route::post('promo/toggle-status/{id}', [PromoController::class, 'toggleStatus'])->name('promo.toggle-status');
-
-
-
 
     Route::post('/create-promo', [PromoController::class, 'storePromo'])->name('store-promo');
     Route::get('/edit-promo/{id}', [PromoController::class, 'editPromo'])->name('edit-promo');
     Route::put('/update-promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
-    // Route::put('update-promo-voucher/{id}', [PromoController::class, 'updatePromoVoucher'])->name('update-promo-voucher');
-
 
     // promo voucher toko
     Route::get('/create-promo-brand-voucher', [PromoController::class, 'createPromoBrandVoucher'])->name('create-promo-brand-voucher');
     Route::post('/create-promo-brand-voucher', [PromoController::class, 'storePromoBrandVoucher'])->name('store-promo-brand-voucher');
-    // Route::get('/create-promo-shop-voucher', [PromoController::class, 'createPromoShopVoucher'])->name('create-promo-shop-voucher');
-    // Route::post('/create-promo-shop-voucher', [PromoController::class, 'storePromoShopVoucher'])->name('store-promo-shop-voucher');
 
     // routes/web.php
-    // web.php atau routes file Anda
     Route::get('/get-products-by-brand/{brand}', [PromoController::class, 'getProductsByBrand'])->name('get.products.by.brand');
+    Route::get('/admin/promo/get-brand-products/{brandId}', [PromoController::class, 'getBrandProducts']);
 
     // promo voucher produk tertentu
     Route::get('/create-promo-product-voucher', [PromoController::class, 'createPromoProductVoucher'])->name('create-promo-product-voucher');
@@ -414,6 +458,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/promo-diskon', [PromoController::class, 'indexPromoDiskon'])->name('index-promo-diskon');
     Route::get('/create-promo-diskon', [PromoController::class, 'createPromoDiskon'])->name('create-promo-diskon');
     Route::post('/create-promo-diskon', [PromoController::class, 'storePromoDiskon'])->name('store-promo-diskon');
+    Route::get('/detail-diskon/{id}', [PromoController::class, 'detailDiskon'])->name('detail-diskon');
 
     // new user
     Route::get('/promo-new-user', [PromoController::class, 'indexPromoNewUser'])->name('index-promo-new-user');
@@ -422,14 +467,22 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::put('update-promo-voucher-newuser/{id}', [PromoController::class, 'updatePromoVoucherNewUser'])->name('update-promo-voucher-newuser');
 
     Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
-    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promoo');
+    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
 
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 
     // AFFILIATE
     Route::get('/affiliate-admin', [AffiliateController::class, 'indexAffiliateAdmin'])->name('index-affiliate-admin');
-    Route::get('/detail-affiliate-admin/{id}', [AffiliateController::class, 'detailAffiliateAdmin'])->name('detail-affiliate-admin');
+    Route::get('/affiliate-admin-detail/{id}', [AffiliateController::class, 'detailAffiliateAdmin'])->name('detail-affiliate-admin');
     Route::post('/admin/affiliate/{id}', [AffiliateController::class, 'sendResponseAffiliate'])->name('send-response-affiliate');
+    Route::delete('/delete-affiliate-admin/{id}', [AffiliateController::class, 'deleteAffiliate'])->name('delete-affiliate');
+
+
+    // faq
+    Route::get('/faq-admin', [FaqController::class, 'indexFaqAdmin'])->name('index-faq-admin');
+    Route::post('/faqs-create', [FaqController::class, 'store'])->name('faqs.store');
+    Route::get('/faqs/render-row/{faq}', [FaqController::class, 'renderRow']);
+    Route::delete('/faqs/{id}', [FaqController::class, 'delete'])->name('faqs.delete');
 
 
     Route::get('/chat-admin', function () {
@@ -438,7 +491,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // user detail
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
-    Route::get('/user-admin-detail', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
+    Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
 
     // shipping fee
     Route::get('/shipping-fee', function () {
@@ -449,33 +502,81 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         return view('admin.shippingfee.create');
     });
 
+
+    // contact us
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
-    Route::get('/contact-us-admin/{id}', [ContactusController::class, 'showContactusAdmin'])->name('show-contactus-admin');
-
-    // SEND EMAIL RESPONSE
-    Route::get('/admin/contacts/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin1');
+    Route::get('/contact-us-admin/{id}', [ContactusController::class, 'show'])->name('show-contactus-admin');
     Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
+    Route::delete('/delete-contact/{id}', [ContactusController::class, 'deleteResponse'])->name('delete-contact');
 
+    Route::get('/notifications/contact-us', [ContactusController::class, 'getUnreadQuestionsCount'])
+        ->name('unread-questions-count');
+
+    // subscribe
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
 });
 
+// ACCOUNTING
 Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
-    // ACCOUNTING
     // COA
     Route::get('/coa', [ChartofAccountController::class, 'indexChartofAccount'])->name('index-chartofaccount');
-    Route::get('/create-coa', [ChartofAccountController::class, 'createChartofAccount'])->name('create-chartofaccount');
+    Route::get('/coa-create', [ChartofAccountController::class, 'createChartofAccount'])->name('create-chartofaccount');
     Route::post('/create-coa', [ChartofAccountController::class, 'storeChartofAccount'])->name('store-chartofaccount');
-    Route::get('/edit-coa', [ChartofAccountController::class, 'editChartofAccount'])->name('edit-chartofaccount');
-    Route::post('/edit-coa', [ChartofAccountController::class, 'updateChartofAccount'])->name('update-chartofaccount');
+    Route::post('/create-categorycoa', [ChartofAccountController::class, 'storeCategoryCoa'])->name('store-categorycoa');
+    Route::get('/coa-edit/{id}', [ChartofAccountController::class, 'editChartofAccount'])->name('edit-chartofaccount');
+    Route::post('/coa-edit/{id}', [ChartofAccountController::class, 'updateChartofAccount'])->name('update-chartofaccount');
     Route::delete('/coa/{id}', [ChartofAccountController::class, 'deleteChartofAccount'])->name('delete-chartofaccount');
     Route::get('/category-coa', [ChartofAccountController::class, 'indexCategoryChartofAccount'])->name('index-category-chartofaccount');
 
     // INVOICE
     Route::get('/invoice', [InvoiceController::class, 'indexInvoice'])->name('index-invoice');
-    Route::get('/create-invoice', [InvoiceController::class, 'createInvoice'])->name('create-invoice');
-    Route::post('/create-invoice', [InvoiceController::class, 'storeInvoice'])->name('store-invoice');
-    Route::get('/edit-invoice', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
-    Route::post('/edit-invoice', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
-    Route::delete('/invoice/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
+    Route::get('/invoice-create', [InvoiceController::class, 'createInvoice'])->name('create-invoice');
+    Route::post('/invoice-create', [InvoiceController::class, 'storeInvoice'])->name('store-invoice');
+    // Invoice payment routes
+    Route::get('/invoice/{id}/process-payment', [InvoiceController::class, 'viewProcessPayment'])->name('view-process-payment');
+    Route::post('/invoices/process-payment', [InvoiceController::class, 'processPayment'])->name('process-invoice-payment');
+
+    Route::get('/invoices/{id}/payment-history', [InvoiceController::class, 'paymentHistory'])->name('invoice-payment-history');
+    Route::get('/invoices/{id}/details', [InvoiceController::class, 'getInvoiceDetails'])->name('get-invoice-details');
+
+
+    Route::get('/invoice/{id}/edit', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
+    Route::post('/invoice-edit', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
+    Route::delete('/invoice-suppliers/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
+
+
+    // SUPPLIER-INVOICE
+    Route::get('/invoice-supplier', [InvoiceController::class, 'indexSupplier'])->name('index-supplier');
+    Route::get('/invoice-create-supplier', [InvoiceController::class, 'createSupplier'])->name('create-supplier');
+    Route::post('/create-supplier', [InvoiceController::class, 'storeSupplier'])->name('store-supplier');
+    Route::get('/supplier-data/{id}', [InvoiceController::class, 'getSupplierDetails']);
+
+    Route::get('/invoice-supplier/{id}/edit', [InvoiceController::class, 'editSupplier'])->name('edit-supplier');
+    Route::post('/invoice-edit-supplier', [InvoiceController::class, 'updateSupplier'])->name('update-supplier');
+    Route::delete('/invoice-delete-suppliers/{id}', [InvoiceController::class, 'deleteSupplier'])->name('delete-supplier');
+
+
     // TRANSACTION
+    Route::get('/transaction', [TransactionController::class, 'indexTransaction'])->name('index-transaction');
+    Route::get('/transaction-create', [TransactionController::class, 'createTransaction'])->name('create-transaction');
+    Route::post('/transaction-transfer-create', [TransactionController::class, 'storeTransactionTransfer'])->name('store-transaction-transfer');
+    Route::post('/transaction-receive-create', [TransactionController::class, 'storeTransactionReceive'])->name('store-transaction-receive');
+
+    Route::get('/transaction-edit/{id}', [TransactionController::class, 'editTransaction'])->name('edit-transaction');
+    Route::put('/transaction-transfer-update/{id}', [TransactionController::class, 'updateTransactionTransfer'])->name('update-transaction-transfer');
+    Route::put('/transaction-receive-update/{id}', [TransactionController::class, 'updateTransactionReceive'])->name('update-transaction-receive');
+
+    Route::get('/transactions/{id}', [TransactionController::class, 'getTransaction'])->name('get-transaction');
+
+    Route::delete('/transaction/{id}', [TransactionController::class, 'deleteTransaction'])->name('delete-transaction');
+
+    // FINANCIAL
+    Route::get('/financial-income', [FinancialController::class, 'indexFinancialIncome'])->name('index-financial-income');
+    Route::get('/income/{id}', [FinancialController::class, 'showPayment']);
+
+    Route::get('/financial-expense', [FinancialController::class, 'indexFinancialExpense'])->name('index-financial-expense');
+    Route::get('/expense/{id}', [FinancialController::class, 'showExpense']);
+
+    // JOURNAL
+    Route::get('/journal', [JournalController::class, 'indexJournal'])->name('index-journal');
 });

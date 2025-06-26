@@ -741,8 +741,11 @@ class UserController extends Controller
         return view('admin.user.index', compact('users'));
     }
 
-    public function detailUserAdmin()
+
+    public function detailUserAdmin($id)
     {
-        return view('admin.user.detail');
+        $user = User::findOrFail($id);
+        return view('admin.user.detail', compact('user'));
+
     }
 }

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscribe || Admin Glamoire</title>
+    <title>Subscribe - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -35,7 +35,7 @@
                                     <li class="breadcrumb-item active" aria-current="page">All Subscribe</li>
                                 </ol>
                             </nav>
-                        </div>                       
+                        </div>
                     </div>
                 </div>
 
@@ -60,12 +60,11 @@
                                             <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d F Y') }}
                                             </td>
                                             <td>
-                                                <a href="/order-detail" class="btn btn-sm btn-warning">
+                                                <a href="/order-detail"
+                                                    class="badge bg-warning mb-2 d-inline-flex align-items-center">
                                                     <i class="bi bi-envelope-fill" style="margin-right: 3px"></i>Send
                                                 </a>
-                                                {{-- <button class="btn btn-sm btn-danger delete-category"
-                                                        data-id="{{ $item->id }}"> <i class="bi bi-trash"
-                                                            style="margin-right: 3px"></i>Delete</button> --}}
+
                                             </td>
                                         </tr>
                                     @endforeach
@@ -107,17 +106,8 @@
                 </div>
             </form>
 
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
+            @include('admin.layouts.footer')
+
         </div>
     </div>
 
