@@ -8,10 +8,17 @@ use App\Models\Role;
 use App\Models\Subscribe;
 use App\Models\Cart;
 use App\Models\Cart_item;
+use App\Models\OrderItem;
 use App\Models\Wishlist;
 use App\Models\Buynow;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\RatingAndReview;
+use App\Models\ProductVariations;
+use Illuminate\Support\Facades\Log;
 
+use Exception;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -21,25 +28,55 @@ class UserController extends Controller
     public function account($user)
     {
         try {
+            // dd(session()->all());
             $id      = session('id_user');
             $profile = User::with([
                 'shippingAddress' => function ($query) {
                     $query->orderBy('is_main', 'DESC'); // Mengurutkan shippingAddress berdasarkan is_main
                 },
                 'wishlist.product', 
-                'cart.cartItems'
-            ])->where('id', $id)->first();
+                'cart.cartItems',
+                'orders.items.product.brand',
+                'orders.invoice',
+                'orders.items.productVariant',
+                'orders.ratingAndReviews'
+            ])->where('id', $id)
+            ->with(['orders' => function ($query) {
+                $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
+            }])->first();
 
-            // $shippingAddress = Shipping_address::where('user_id', $id)
-            // $whistlist       = Whistlist::where('user_id', $id);
-            // $cart            = Cart::where('user_id', $id)
-            // ->with('cartItems');
-            // get();
 
-            // dd($shippingAddress);
+            $getWishlist = Wishlist::where('user_id', $id)->pluck('product_id');
+            $getProductWishlist  = Product::whereIn('id', $getWishlist)
+            ->with(['promos'  => function ($query) {
+                $query->select('promos.*', 'promo_products.discounted_price')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->wherePivot('discounted_price', '>', 0);
+                }])
+            ->get();
 
-            // dd($profile->wishlist);
-            return view('user.component.account')->with('profile', $profile);
+            foreach ($getProductWishlist as $prod) {
+                $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
+                                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                }
+                elseif($variationPrices->count() == 0){
+                    $prod->priceVariation = null;
+                } 
+                else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
+            
+            return view('user.component.account', [
+                'profile' => $profile,
+                'wishlists' => $getProductWishlist,
+            ]);
         } catch (Exception $err) {
             dd($err);
         }
@@ -89,59 +126,55 @@ class UserController extends Controller
 
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
                 if($checkCartUser){
-                    $checkCartItem = Cart_item::where('cart_id', $cartId)
-                    ->where('product_id', $request->product_id)->exists();
-                    // JIKA PRODUK SUDAH ADA DI CART USER
-                    if ($checkCartItem) {
-                        $cartItem  = Cart_item::where('cart_id', $cartId)
-                        ->where('product_id', $request->product_id)->first();
-                        $itemPrice = $cartItem->price; 
-                        $itemQuantity = $cartItem->quantity;
+                    $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->where('id', $request->product_id)->first();
 
-                        // Tingkatkan kuantitas item dengan 1
-                        $newQuantity = $itemQuantity + 1;
+                    $activePromo = $product->promos->first();
+                    $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
+                    
+                    $total = $price;
 
-                        // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
-                        $newPrice = $itemPrice * $newQuantity;
+                    Cart_item::create([
+                        'cart_id'    => $cartId,
+                        'product_id' => $request->product_id,
+                        'quantity'   =>  1,
+                        'is_choose'  => TRUE,
+                        'price'      => $price,
+                        'total'      => $total,
+                    ]);
 
-                        // Update kuantitas dan harga di database
-                        $cartItem->update([
-                            'quantity' => $newQuantity,
-                            'total'    => $newPrice,
-                        ]);
-                    }
-                    // JIKA PRODUK BELUM ADA DI CART USER
-                    else{
-                        $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                        $product = Product::where('id', $request->product_id)->first();
-                        $total = $product->regular_price;
-
-                        Cart_item::create([
-                            'cart_id'    => $cartId,
-                            'product_id' => $request->product_id,
-                            'quantity'   =>  1,
-                            'is_choose'  => TRUE,
-                            'price'      => $product->regular_price,
-                            'total'      => $total,
-                        ]);
-                    }
-
-                    // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART
                 } else {
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
                     
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
-                    $product = Product::where('id', $request->product_id)->first();
-                    $total = $product->regular_price;
+                    $product = Product::with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->where('id', $request->product_id)->first();
+
+                    $activePromo = $product->promos->first();
+                    $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
+                    
+                    $total = $price;
 
                     Cart_item::create([
                         'cart_id'    => $cart->id,
                         'product_id' => $request->product_id,
                         'quantity'   =>  1,
                         'is_choose'  => TRUE,
-                        'price'      => $product->regular_price,
+                        'price'      => $price,
                         'total'      => $total,
                     ]);
                     
@@ -155,6 +188,77 @@ class UserController extends Controller
             return response()->json(['success' => false, 'message' => $err]);
         }
     }
+
+   public function addToCartBuyNow(Request $request)
+    {
+        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+        $orderItems = OrderItem::where('order_id', $request->product_id)->get();
+        $productOutOfStock = [];
+
+        foreach ($orderItems as $products) {
+            // PRODUK BIASA
+            if ($products->product_variant_id == NULL) {
+                $checkStockProduct = Product::where('id', $products->product_id)->value('stock_quantity');
+                if ($checkStockProduct != 0) {
+                    $cartItem = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $products->product_id)
+                        ->exists();
+
+                    if (!$cartItem) {
+                        $price = Product::where('id', $products->product_id)->value('regular_price');
+                        Cart_item::create([
+                            'cart_id'    => $cartId,
+                            'product_id' => $products->product_id,
+                            'quantity'   => 1,
+                            'is_choose'  => TRUE,
+                            'price'      => $price,
+                            'total'      => $price,
+                        ]);
+                    }
+                } else {
+                    $productName = Product::where('id', $products->product_id)->value('product_name');
+                    $productOutOfStock[] = $productName;
+                }
+            }
+
+            // PRODUK VARIAN
+            else {
+                $checkStockProduct = ProductVariations::where('id', $products->product_variant_id)->value('variant_stock');
+                if ($checkStockProduct != 0) {
+                    $cartItem = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $products->product_variant_id)
+                        ->exists();
+
+                    if (!$cartItem) {
+                        $price = ProductVariations::where('id', $products->product_variant_id)->value('variant_price');
+                        
+                        Cart_item::create([
+                            'cart_id'           => $cartId,
+                            'product_id'        => $products->product_id,
+                            'product_variant_id'=> $products->product_variant_id,
+                            'quantity'          => 1,
+                            'is_choose'         => TRUE,
+                            'price'             => $price,
+                            'total'             => $price,
+                        ]);
+                    }
+                } else {
+                    $productName = Product::where('id', $products->product_id)->value('product_name');
+                    $varian = ProductVariations::where('id', $products->product_variant_id)->value('variant_value');
+                    $productOutOfStock[] = "$productName - $varian";
+                }
+            }
+        }
+
+        Log::info(['outStock' => $productOutOfStock]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cek Keranjang Belanjamu',
+            'outOfStock' => $productOutOfStock,
+        ]);
+    }
+
 
     public function addToChartWithQuantity(Request $request){
         try {
@@ -192,13 +296,16 @@ class UserController extends Controller
                     // JIKA PRODUK BELUM ADA DI CART USER
                     else{
                         $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                        $product = Product::where('id', $request->product_id)->first();
+                        $total = $product->regular_price;
+
                         Cart_item::create([
                             'cart_id'    => $cartId,
                             'product_id' => $request->product_id,
                             'quantity'   => $request->quantity ? $request->quantity : 1,
                             'is_choose'  => TRUE,
-                            'price'      => 10000,
-                            'total'      => 10000,
+                            'price'      => $product->regular_price,
+                            'total'      => $total,
                         ]);
                     }
 
@@ -207,16 +314,103 @@ class UserController extends Controller
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
-                    
+
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
 
                     Cart_item::create([
                         'cart_id'    => $cart->id,
                         'product_id' => $request->product_id,
                         'quantity'   => $request->quantity ? $request->quantity : 1,
                         'is_choose'  => TRUE,
-                        'price'      => 10000,
-                        'total'      => 10000,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
+                    ]);
+                    
+                }
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }
+            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+
+        } catch (Exception $err) {
+            return response()->json(['success' => false, 'message' => $err]);
+        }
+    }
+
+    public function addToChartWithQuantityVariant(Request $request){
+        try {
+            $userId = session('id_user');
+            
+            if (session('id_user')) {
+                $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
+                $cartId = Cart::where('user_id', session('id_user'))->value('id');
+
+                // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
+                if($checkCartUser){
+                    $checkCartItem = Cart_item::where('cart_id', $cartId)
+                    ->where('product_id', $request->product_id)
+                    ->where('product_variant_id', $request->product_variant_id)
+                    ->exists();
+
+                    // JIKA PRODUK SUDAH ADA DI CART USER
+                    if ($checkCartItem) {
+                        $cartItem  = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $request->product_id)->first();
+
+                        $itemPrice = $cartItem->price; 
+                        $itemQuantity = $cartItem->quantity;
+
+                        // Tingkatkan kuantitas item dengan 1
+                        $newQuantity = $itemQuantity + $request->quantity;
+    
+                        // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
+                        $newPrice = $itemPrice * $newQuantity;
+
+                        // Update kuantitas dan harga di database
+                        $cartItem->update([
+                            'quantity' => $newQuantity,
+                            'total'    => $newPrice, 
+                        ]);
+                    }
+                    // JIKA PRODUK BELUM ADA DI CART USER
+                    else{
+                        $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                        $product = ProductVariations::where('id', $request->product_variant_id)
+                        ->where('product_id', $request->product_id)
+                        ->first();
+
+                        $total = $product->variant_price;
+
+                        Cart_item::create([
+                            'cart_id'    => $cartId,
+                            'product_id' => $request->product_id,
+                            'product_variant_id' => $request->product_variant_id,
+                            'quantity'   => $request->quantity ? $request->quantity : 1,
+                            'is_choose'  => TRUE,
+                            'price'      => $product->variant_price,
+                            'total'      => $total,
+                        ]);
+                    }
+
+                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                }else{
+                    $cart = Cart::create([
+                        'user_id' => $userId,
+                    ]);
+
+                    $cartId = Cart::where('user_id', session('id_user'))->value('id');
+                    $product = Product::where('id', $request->product_id)->first();
+                    $total = $product->regular_price;
+
+                    Cart_item::create([
+                        'cart_id'    => $cart->id,
+                        'product_id' => $request->product_id,
+                        'quantity'   => $request->quantity ? $request->quantity : 1,
+                        'is_choose'  => TRUE,
+                        'price'      => $product->regular_price,
+                        'total'      => $total,
                     ]);
                     
                 }
@@ -236,11 +430,19 @@ class UserController extends Controller
             if (session('id_user')) {
                 $userId = session('id_user');
     
-                Wishlist::create([
-                    'user_id'    => $userId,
-                    'product_id' => $request->product_id,
-                ]);
-    
+                if($request->product_variant_id !== null){
+                    Wishlist::create([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                        'product_variant_id' => $request->product_variant_id,
+                    ]);
+                }
+                else{
+                    Wishlist::create([
+                        'user_id'    => $userId,
+                        'product_id' => $request->product_id,
+                    ]);
+                }
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Favoritmu']);
             }
             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
@@ -255,9 +457,16 @@ class UserController extends Controller
             if (session('id_user')) {
                 $userId = session('id_user');
     
-                Wishlist::where('product_id', $request->product_id)
-                ->where('user_id', $userId)
-                ->delete();
+                if($request->product_variant_id){
+                    Wishlist::where('product_id', $request->product_id)
+                    ->where('product_variant_id', $request->product_variant_id)
+                    ->where('user_id', $userId)
+                    ->delete();
+                } else {
+                    Wishlist::where('product_id', $request->product_id)
+                    ->where('user_id', $userId)
+                    ->delete();
+                }
     
                 return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Wishlist']);
             }
@@ -409,12 +618,19 @@ class UserController extends Controller
     public function subscribe(Request $request)
     {
         try {
-            Subscribe::create([
-                'email'      => $request->email,
-                'created_at' => now(),
-            ]);
+            $check = Subscribe::where('email', $request->email)->exists();
 
-            return response()->json(['success' => true, 'message' => 'Selamat Anda Berhasil Berlangganan']);
+            if (!$check) {
+                Subscribe::create([
+                    'email'      => $request->email,
+                    'created_at' => now(),
+                ]);
+                return response()->json(['success' => true, 'message' => 'Selamat Anda Berhasil Berlangganan']);
+            }
+            else {
+                return response()->json(['success' => false, 'message' => 'Email sudah terdaftar']);
+            }
+
         } catch (Exception $err) {
             dd($err);
         }
@@ -439,6 +655,84 @@ class UserController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function ratingAndReview(Request $request)
+    {
+        try {
+            $userId = session('id_user');
+
+            // dd($request);
+            // Loop through each product ID from the request
+            foreach ($request->ratingReviewProductId as $index => $productId) {
+                // Collect rating, description, and files from the request
+                $rating = $request->star[$index];
+                $description = $request->description[$index];
+                $productVariantId = $request->productVariantId[$index];
+                // dd($productVariantId);
+
+                // Initialize paths for images and video
+                $imagePaths = [];
+                $videoPath = null;
+
+                // dd($request->hasFile("upload.$productId"));
+                // Check if there are uploaded files for the current product ID
+                if ($request->file("upload.$productId")) {
+                    // Loop through each uploaded file for the current productId
+                    foreach ($request->file("upload.$productId") as $file) {
+                        // Check if the $file is a valid instance of UploadedFile
+                        if ($file instanceof \Illuminate\Http\UploadedFile) {
+                            // Get the MIME type of the file
+                            $mimeType = $file->getMimeType();
+                            $fileName = time() . '_' . $file->getClientOriginalName() . '_' . $userId . '_' . $productId;
+
+                            // Check if the file is an image
+                            if (strpos($mimeType, 'image/') === 0) {
+                                // Save image
+                                $imagePath = $file->storeAs('rating_review_images', $fileName, 'public');
+                                $imagePaths[] = $imagePath;
+                            }
+                            // Check if the file is a video
+                            elseif (strpos($mimeType, 'video/') === 0) {
+                                // Save video
+                                $videoPath = $file->storeAs('rating_review_videos', $fileName, 'public');
+                            }
+                        }
+                    }
+                }
+
+                // Save review and rating with images and video paths
+                RatingAndReview::create([
+                    'user_id' => $userId,
+                    'product_id' => $productId,
+                    'product_variant_id' => $productVariantId,
+                    'order_id' => $request->ratingReviewOrderId,
+                    'rating' => $rating,
+                    'description' => $description,
+                    'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
+                    'video' => $videoPath,
+                ]);
+
+                $product = Product::where('id', $productId)
+                    ->withCount('ratingAndReviews')   // Hitung jumlah total ulasan
+                    ->withAvg('ratingAndReviews', 'rating') // Hitung rata-rata rating
+                    ->first();
+
+                $averageRating = round($product->rating_and_reviews_avg_rating, 1);
+                
+                // Update rating dan total ulasan di tabel produk
+                Product::where('id', $productId)->update([
+                    'rating' => $averageRating,
+                ]);
+            }
+
+            session()->flash('rating_and_review_success');
+
+            return redirect()->back();
+        } catch (Exception $err) {
+            // Handle any exception and show error message
+            dd($err);
+        }
+    }
+
     // ADMIN PAGE
     public function indexUserAdmin()
     {
@@ -448,8 +742,10 @@ class UserController extends Controller
     }
 
 
-    public function detailUserAdmin()
+    public function detailUserAdmin($id)
     {
-        return view('admin.user.detail');
+        $user = User::findOrFail($id);
+        return view('admin.user.detail', compact('user'));
+
     }
 }

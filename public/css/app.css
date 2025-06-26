@@ -30,24 +30,167 @@
         "Liberation Mono", "Courier New", monospace;
 }
 
-.grid-container {
-    display: row;
-    row-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
-    padding: 5px;
+
+
+.dropdown-akun {
+    z-index: 9999;
+    position: relative; /* Pastikan elemen memiliki posisi untuk menerapkan z-index */
 }
-  
+
+.skeleton-loader {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Adjust as needed */
+}
+
+.skeleton-card {
+    background: #e0e0e0;
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+}
+
+@media (max-width: 2560px) {
+    .skeleton-card {
+        width: calc(25%); /* 4 items per row */
+    }
+    .image-rating-review {
+        max-width: 180px;
+        max-height: 180px;
+    }
+    .video-rating-review {
+        max-width: 180px;
+        max-height: 180px;
+    }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+@media (max-width: 1440px) {
+    .skeleton-card {
+        width: calc(20% - 7px); /* 4 items per row */
+    }
+    .image-rating-review {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    .video-rating-review {
+        max-width: 150px;
+        max-height: 150px;
+    }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+@media (max-width: 768px) {
+    .skeleton-card {
+        width: calc(30%); /* 4 items per row */
+    }
+    .skeleton-image {
+        height: 150px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+@media (max-width:428px) {
+    .skeleton-image {
+        height: 80px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+@media (max-width: 375px) {
+    .skeleton-card {
+        width: calc(30%); /* 3 items per row */
+    }
+    .image-rating-review {
+        max-width: 80px;
+        max-height: 80px;
+    }
+    .video-rating-review {
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+    .skeleton-image {
+        height: 50px;
+        background: #c0c0c0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+}
+
+.skeleton-text {
+    height: 10px;
+    background: #c0c0c0;
+    margin-bottom: 4px;
+    border-radius: 4px;
+}
+
+.skeleton-text.small {
+    width: 50%;
+}
+
+.skeleton-price {
+    height: 10px;
+    background: #c0c0c0;
+    width: 30%;
+    border-radius: 4px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+.no-spinner[type="number"] {
+    -moz-appearance: textfield;
+}
 
 .hover-red:hover {
     color: red;
 }
 
-.grid-container, .grid-container-shop {
+.hover-primary:hover {
+    color: #183018;
+}
+
+.promo-image {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.promo-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.grid-container,
+.grid-container-shop {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-gap: 5px;
+    grid-gap: 10px;
     padding: 5px;
 }
+
 
 .custom-scroll {
     scrollbar-width: thin; /* Membuat scrollbar lebih tipis */
@@ -68,12 +211,24 @@
     border-radius: 0; /* Tidak ada lengkungan */
 }
 
-  
+.border-top-dashed {
+    border-top: 1px dashed #183018;
+}
+.border-bottom-dashed {
+    border-bottom: 1px dashed #183018;
+}
 
 .grid-container-category {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-gap: 25px;
+    grid-gap: 5px;
+    padding: 5px;
+}
+
+.grid-container-category-mobile {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 5px;
     padding: 5px;
 }
 
@@ -85,12 +240,10 @@
 }
 
 .active > .categories {
-    border-top:#183018;
-    border-bottom:#183018;
-    background-color:#183018;
-    color:#ffffff;
-    text-color:#ffffff;
-    font-color:#ffffff;
+    border-top: #183018;
+    border-bottom: #183018;
+    background-color: #183018;
+    color: #ffffff;
 }
 
 .aclonica-regular {
@@ -102,7 +255,7 @@
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
-  }
+}
 
 @media (max-width: 1200px) {
     legend {
@@ -149,9 +302,16 @@
     height: 100%;
 }
 
+@media (max-width: 1024px) {
+    .grid-container-shop {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        padding: 5px;
+    }
+}
+
 @media (max-width: 768px) {
-    .swiper-button-next,
-    .swiper-button-prev,
     .payment-method {
         display: none;
     }
@@ -161,30 +321,46 @@
         grid-gap: 5px;
         padding: 5px;
     }
-
     .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 5px;
+        grid-gap: 10px;
         padding: 5px;
+    }
+
+    .swiper-next,
+    .swiper-prev,
+    .swiper-button-next,
+    .swiper-button-prev {
+        background-color: #183018; /* Ubah warna latar belakang */
+        color: white; /* Ubah warna teks */
+        border-radius: 30%; /* Buat menjadi lingkaran */
+        width: 20px; /* Lebar tombol */
+        height: 20px; /* Tinggi tombol */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next,
 .swiper-button-prev {
     background-color: #183018; /* Ubah warna latar belakang */
     color: white; /* Ubah warna teks */
     border-radius: 50%; /* Buat menjadi lingkaran */
-    width: 35px; /* Lebar tombol */
-    height: 35px; /* Tinggi tombol */
+    height: 22px; /* Tinggi tombol */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-    background-color: #183018; /* Ubah warna latar saat dihover */
+    background-color: black; /* Ubah warna latar saat dihover */
 }
 
+.swiper-next,
+.swiper-prev,
 .swiper-button-next:after,
 .swiper-button-prev:after {
     font-size: 10px; /* Ubah ukuran ikon */
@@ -209,30 +385,29 @@
     transform-origin: 0 0; /* Ensures scaling happens from top-left corner */
 }
 
-
 /* SCROLLBAR */
 /* Membuat desain minimalis untuk scrollbar */
 .minimal-scrollbar::-webkit-scrollbar {
-width: 4px; /* Lebar scrollbar */
+    width: 4px; /* Lebar scrollbar */
 }
 
 .minimal-scrollbar::-webkit-scrollbar-track {
-background: transparent; /* Background transparan atau warna sesuai */
+    background: transparent; /* Background transparan atau warna sesuai */
 }
 
 .minimal-scrollbar::-webkit-scrollbar-thumb {
-background-color: rgba(0, 0, 0, 0.3); /* Warna thumb scroll yang halus */
-border-radius: 10px; /* Radius agar bulat */
+    background-color: rgba(0, 0, 0, 0.3); /* Warna thumb scroll yang halus */
+    border-radius: 10px; /* Radius agar bulat */
 }
 
 .minimal-scrollbar::-webkit-scrollbar-thumb:hover {
-background-color: rgba(0, 0, 0, 0.5); /* Warna thumb scroll saat hover */
+    background-color: rgba(0, 0, 0, 0.5); /* Warna thumb scroll saat hover */
 }
 
 /* Untuk Firefox */
 .minimal-scrollbar {
-scrollbar-width: thin;
-scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 /* END SCROLLBAR */
 
@@ -260,9 +435,9 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     margin-right: auto;
     margin-left: auto;
 }
-  
-  /* Bottom Navbar untuk mobile */
-  .bottom-navbar {
+
+/* Bottom Navbar untuk mobile */
+.bottom-navbar {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -270,36 +445,34 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     background-color: #183018;
     z-index: 1000;
     border-top: 1px solid #ccc;
-  }
-  
-  .bottom-navbar a {
+}
+
+.bottom-navbar a {
     color: #ffffff;
     text-decoration: none;
-  }
-  
-  .bottom-navbar svg {
+}
+
+.bottom-navbar svg {
     fill: #ffffff;
-  }
-  
-  .bottom-navbar a:hover {
+}
+
+.bottom-navbar a:hover {
     color: #8dbf4f;
-  }
-  
-  @media (min-width: 992px) {
+}
+
+@media (min-width: 992px) {
     /* Sembunyikan bottom navbar di layar lebih besar */
     .bottom-navbar {
-      display: none;
+        display: none;
     }
-  }
-  
-  
+}
+
 @media (min-width: 768px) {
     /* Hide bottom navbar for larger screens */
     .bottom-navbar {
         display: none;
     }
 }
-  
 
 .tabbable .nav-tabs {
     overflow-x: auto;
@@ -313,8 +486,7 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
 }
 
 .custom-shadow {
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15); /* Bayangan seragam di semua sisi */
-    border-radius: 4px; /* Sesuaikan sudut membulat sesuai kebutuhan */
+    box-shadow: 0px 0px 3px rgba(0, 0, 0, 0.15); /* Bayangan seragam di semua sisi */
 }
 
 .image-container {
@@ -341,7 +513,7 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     cursor: zoom-in; /* Menunjukkan cursor berubah menjadi zoom-in */
 }
 
-.track{
+.track {
     position: relative;
     background-color: #ddd;
     height: 7px;
@@ -349,48 +521,48 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     display: -ms-flexbox;
     display: flex;
     margin-bottom: 60px;
-    margin-top: 30px
+    margin-top: 30px;
 }
-.track .step{
+.track .step {
     -webkit-box-flex: 1;
     -ms-flex-positive: 1;
     flex-grow: 1;
     width: 25%;
     margin-top: -18px;
     text-align: center;
-    position: relative
+    position: relative;
 }
-.track .step.active:before{
-    background: #FF5722
+.track .step.active:before {
+    background: #ff5722;
 }
-.track .step::before{
+.track .step::before {
     height: 7px;
     position: absolute;
     content: "";
     width: 100%;
     left: 0;
-    top: 18px
+    top: 18px;
 }
-.track .step.active .icon{
+.track .step.active .icon {
     background: #ee5435;
-    color: #fff
+    color: #fff;
 }
-.track .icon{
+.track .icon {
     display: inline-block;
     width: 40px;
     height: 40px;
     line-height: 40px;
     position: relative;
     border-radius: 100%;
-    background: #ddd
+    background: #ddd;
 }
-.track .step.active .text{
+.track .step.active .text {
     font-weight: 400;
-    color: #000
+    color: #000;
 }
-.track .text{
+.track .text {
     display: block;
-    margin-top: 7px
+    margin-top: 7px;
 }
 
 /* Akun dropdown on hover */
@@ -404,9 +576,384 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     left: auto; /* Prevents it from overflowing to the left */
 }
 
+.product-image-container {
+    width: 100%;  /* Atur tinggi sesuai kebutuhan */
+    overflow: hidden; 
+}
+
+.product-image {
+    width: 100%;
+    height: 100%; /* Buat gambar menyesuaikan tinggi kontainer */
+    object-fit: cover; /* Memastikan gambar mengisi seluruh kontainer */
+    display: block;
+}
+
+
+
+/* Darken the product image when stock is 0 */
+.dark-overlay {
+    filter: brightness(40%); /* Reduces brightness to make the image darker */
+}
+
+/* Sold out overlay */
+.sold-out-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the sold out image covers the main image */
+    opacity: 1; /* Optional: makes the overlay slightly transparent */
+}
+
+.small-swal {
+    max-width: 300px; /* Adjust width as needed */
+    font-size: 12px; /* Adjust font size if needed */
+    padding: 8px; /* Adjust padding */
+}
+
+/* Default for desktop */
+
+/* Tablet styles (768px to 1024px) */
+@media (max-width: 2560px) {
+    .product-item {
+        min-height: 420px;
+        max-height: 420px;
+    }
+    .product-item-except {
+        min-height: 425px;
+        max-height: 425px;
+    }
+    .product-item-promo {
+        min-height: 491px;
+        max-height: 491px;
+    }
+    .product-item-detail {
+        min-height: 420px;
+        max-height: 420px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .product-item {
+        min-height: 370px;
+        max-height: 370px;
+    }
+    .product-item-except {
+        min-height: 335px;
+        max-height: 335px;
+    }
+    .product-item-promo {
+        min-height: 379px;
+        max-height: 379px;
+    }
+    .product-item-detail {
+        min-height: 371px;
+        max-height: 371px;
+    }
+
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .product-item {
+        min-height: 270px;
+        max-height: 270px;
+    }
+    .product-item-except {
+        min-height: 285px;
+        max-height: 285px;
+    }
+    .product-item-promo {
+        min-height: 278px;
+        max-height: 278px;
+    }
+    .product-item-detail {
+        min-height: 266px;
+        max-height: 266px;
+    }
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 10px;
+        padding: 5px;
+    }
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+}
+
+/* IPAD */
+@media (max-width: 820px) {
+    .product-item {
+        min-height: 325px;
+        max-height: 325px;
+    }
+    .product-item-except {
+        min-height: 280px;
+        max-height: 280px;
+    }
+    .product-item-promo {
+        min-height: 243px;
+        max-height: 243px;
+    }
+    .product-item-detail {
+        min-height: 330px;
+        max-height: 330px;
+    }
+}
+
+/* Mobile styles (up to 768px) */
+@media (max-width: 768px) {
+    .product-item {
+        min-height: 267px;
+        max-height: 267px;
+    }
+    .product-item-except {
+        min-height: 255px;
+        max-height: 255px;
+    }
+    .product-item-promo {
+        min-height: 262px;
+        max-height: 262px;
+    }
+    .product-item-detail {
+        min-height: 268px;
+        max-height: 268px;
+    }
+}
+
+/* Mobile small screens (up to 480px) */
+@media (max-width: 480px) {
+    .product-item {
+        min-height: 248px;
+        max-height: 248px;
+    }
+    .product-item-except {
+        min-height: 253px;
+        max-height: 253px;
+    }
+    .product-item-promo {
+        min-height: 260px;
+        max-height: 260px;
+    }
+    .product-item-wishlist {
+        min-height: 280px;
+        max-height: 280px;
+    }
+    .product-item-detail {
+        min-height: 250px;
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 440px) {
+    .product-item {
+        min-height: 237px;
+        max-height: 237px;
+    }
+    .product-item-except {
+        min-height: 240px;
+        max-height: 240px;
+    }
+    .product-item-promo {
+        min-height: 248px;
+        max-height: 248px;
+    }
+    .product-item-wishlist {
+        min-height: 280px;
+        max-height: 280px;
+    }
+    .product-item-detail {
+        min-height: 237px;
+        max-height: 237px;
+    }
+}
+
+@media (max-width: 425px) {
+    .product-item {
+        min-height: 232px;
+        max-height: 232px;
+    }
+    .product-item-except {
+        min-height: 235px;
+        max-height: 235px;
+    }
+    .product-item-promo {
+        min-height: 243px;
+        max-height: 243px;
+    }
+    .product-item-wishlist {
+        min-height: 280px;
+        max-height: 280px;
+    }
+
+    .product-item-detail {
+        min-height: 230px;
+        max-height: 230px;
+    }
+}
+
+@media (max-width: 375px) {
+    .product-item {
+        min-height: 215px;
+        max-height: 215px;
+    }
+    .product-item-except {
+        min-height: 220px;
+        max-height: 220px;
+    }
+    .product-item-promo {
+        min-height: 222px;
+        max-height: 222px;
+    }
+    .product-item-wishlist {
+        min-height: 270px;
+        max-height: 270px;
+    }
+
+    .product-item-detail {
+        min-height: 215px;
+        max-height: 215px;
+    }
+    
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-order {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 320px) {
+    .product-item {
+        min-height: 245px;
+        max-height: 245px;
+    }
+    .product-item-except {
+        min-height: 200px;
+        max-height: 200px;
+    }
+    .product-item-promo {
+        min-height: 198px;
+        max-height: 198px;
+    }
+    .product-item-wishlist {
+        min-height: 260px;
+        max-height: 260px;
+    }
+    .product-item-brand {
+        min-height: 220px;
+        max-height: 220px;
+    }
+
+    .product-item-detail {
+        min-height: 195px;
+        max-height: 195px;
+    }
+
+    .grid-container-promo {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+    .grid-container-promo-promos {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-product-promo {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+
+    .grid-container-order {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        padding: 5px;
+    }
+}
+
+/* Default: Hide Mobile View and Show Desktop View */
+.mobile-only {
+    display: none;
+}
+
+.desktop-only {
+    display: block;
+}
+
+/* Mobile View (width <= 768px) */
+@media (max-width: 425px) {
+    .mobile-only {
+        display: block;
+    }
+    .desktop-only {
+        display: none;
+    }
+}
+
+
+.truncate-ellipsis {
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Limits text to 1 line */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Dropdown Shop on hover */
 .dropdown-shop.dropdown:hover .dropdown-menu {
-    display:block;
+    display: block;
 }
 
 .dropdown-menu.shop-right {
@@ -427,13 +974,9 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     left: 50%;
     transform: translate(-50%, -50%);
     font-size: 40px;
-    opacity: 0;
+    opacity: 1;
     transition: opacity 0.3s ease;
     pointer-events: none; /* Supaya ikon tidak bisa diklik */
-}
-
-.video-thumbnail-wrapper:hover .fa-play {
-    opacity: 1;
 }
 
 .video-thumbnail-wrapper img {
@@ -441,8 +984,6 @@ scrollbar-color: rgba(0, 0, 0, 0.3) transparent;
     width: 100%;
     height: auto;
 }
-
-
 
 *,
 *::before,
@@ -1214,7 +1755,6 @@ pre code {
     flex: 0 0 16.66667%;
     max-width: 16.66667%;
 }
-
 
 .col-4 {
     flex: 0 0 33.33333%;
@@ -2323,12 +2863,13 @@ pre code {
     .table-responsive-sm > .table-bordered {
         border: 0;
     }
-    .grid-container, .grid-container-shop {
+    .grid-container,
+    .grid-container-shop {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-gap: 5px;
         padding: 5px;
-      }
+    }
 }
 
 @media (max-width: 767.98px) {
@@ -10365,6 +10906,16 @@ a.text-dark:focus {
     list-style-type: none;
 }
 
+/* .back-to-top {
+    position: fixed;
+    display: none;
+    border-radius: 50%;
+    right: 30px;
+    bottom: 48px;
+    z-index: 11;
+    animation: action 1s infinite alternate;
+} */
+
 .back-to-top {
     position: fixed;
     display: none;
@@ -10372,7 +10923,7 @@ a.text-dark:focus {
     right: 30px;
     bottom: 48px;
     z-index: 11;
-    /* animation: action 1s infinite alternate; */
+    animation: action 1s infinite alternate;
 }
 
 @keyframes action {
@@ -10382,4 +10933,4 @@ a.text-dark:focus {
     100% {
         transform: translateY(-15px);
     }
-
+}

@@ -4,59 +4,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
+    <title>Promo - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 
     <style>
-        .upload__img-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        body {
+            font-family: 'Inter', sans-serif;
         }
 
-        .upload__img-box-single,
-        .upload__img-box-multiple {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
+        .page-header {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 2rem 0;
+            color: white;
+            margin-bottom: 2rem;
         }
 
-        .img-bg-single,
-        .img-bg {
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: #435ebe;
+        }
+
+        .breadcrumb-item a {
+            color: #435ebe;
+            text-decoration: none;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: white;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+        }
+
+        .detail-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .stats-card {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stats-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .stats-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .promo-banner {
             width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.75rem;
         }
 
-        .upload__img-close {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 50%;
-            padding: 2px;
-            cursor: pointer;
+        .product-table img {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        .product-table td {
+            vertical-align: middle;
+        }
+
+        .product-name {
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .discount-badge {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
         }
     </style>
-
 
 </head>
 
@@ -70,158 +137,158 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h3>Detail Product</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/product-admin"
-                                            style="text-decoration: none;">Product</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Product</li>
+                                    <li class="breadcrumb-item"><a href="/promo">Promo</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Detail Promo</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
                 </div>
 
-                <!-- Basic Horizontal form layout section start -->
-                <section id="multiple-column-form">
-                    <div class="row match-height">
-                        <div class="col-12">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8">
                             <div class="card">
-                                <div class="card-content">
-                                    <div class="card-body">
-                                        <form class="form form-vertical"
-                                            action="{{ route('update-product-admin', $promo->id) }}" method="POST"
-                                            enctype="multipart/form-data">
-                                            @csrf
-                                            @method('PUT') <!-- Metode PUT untuk update -->
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Promo Name</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name"
-                                                                    value="{{ $promo->promo_name }}"
-                                                                    name="promo_name">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                <div class="card-header">
+                                    <h5 class="mb-0">Promo Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-tag me-1"></i> Promo Name
+                                                </div>
+                                                <div class="detail-value">{{ $promo->promo_name }}</div>
+                                            </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-code">Promo Code </label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-code"
-                                                                    value="{{ $promo->promo_code }}"
-                                                                    name="promo_code">
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-upc"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="mb-3">
-                                                            <label for="first-name-icon">Description <span
-                                                                    style="color: red">*</span></label>
-                                                            <div class="position-relative">
-                                                                <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description"
-                                                                    id="description" cols="30" rows="10">{{ $promo->description }}</textarea>
-                                                            </div>
-                                                            @if ($errors->has('description'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('description') }}</p>
-                                                            @endif
-                                                        </div>
-                                                                                                                                                                
-                                                        <!-- Regular Price -->
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="regular-price">Sale Price</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" step="0.01"
-                                                                    class="form-control" id="regular-price"
-                                                                    name="regular_price"
-                                                                    value="Rp. {{ number_format($promo->sale_price, 0, ',', '.') }}"
-                                                                    required>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-credit-card-2-front"></i>
-                                                                </div>
-                                                            </div>
-                                                            @error('regular_price')
-                                                                <span class="text-danger">{{ $message }}</span>
-                                                            @enderror
-                                                        </div>
-                                                    </div>
-
-                                                    <!-- Kolom Kanan -->
-                                                    <div class="col-md-6 col-sm-12">
-                                                        <!-- Main Image Upload with Drag and Drop -->
-                                                        <label for="main-image" class="mb-3">Product
-                                                            Thumbnail</label>
-                                                        <div class="image-upload-wrap" id="single-image-upload-wrap"
-                                                            style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
-                                                            <input type="file" name="main_image"
-                                                                class="file-upload-input"
-                                                                onchange="readURLSingle(this);" accept="image/*"
-                                                                style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
-                                                            <div class="drag-text"
-                                                                style="text-align: center; color: #888;">
-                                                                <p>Drag and drop a file or select to add Image</p>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="file-upload-content"
-                                                            id="single-file-upload-content"
-                                                            style="display: flex; flex-wrap: wrap;">
-                                                            @if (!empty($promo->image))
-                                                                <div class="upload__img-wrap">
-                                                                    <div class="upload__img-box-single">
-                                                                        <div class="img-bg-single"
-                                                                            style="background-image: url('{{ asset($promo->image) }}');"
-                                                                            onclick="openImageInNewTab('{{ asset($promo->image) }}')">
-                                                                        </div>
-                                                                        <div class="upload__img-close"
-                                                                            onclick="removeImage('main_image')">
-                                                                            <i
-                                                                                class="bi bi-x-circle-fill text-danger"></i>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-                                                        @error('main_image')
-                                                            <span class="text-danger">{{ $message }}</span>
-                                                        @enderror
-
-                                                       
-                                                    </div>
-
-                                                    <!-- Tombol Submit -->
-                                                    <div class="col-12 d-flex justify-content-end mt-4">
-                                                        <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1 mb-1"
-                                                            style="border-radius: 8px;">Update</button>
-                                                    </div>
-
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-calendar me-1"></i> Promo Period
+                                                </div>
+                                                <div class="mb-1">
+                                                    <i class="bi bi-calendar-event me-2"></i>
+                                                    @if ($promo->start_date)
+                                                        {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d F Y') }}
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <i class="bi bi-calendar-event-fill me-2"></i>
+                                                    @if ($promo->end_date)
+                                                        {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d F Y') }}
+                                                    @endif
                                                 </div>
                                             </div>
-                                        </form>
-                                        <!-- End Formulir -->
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="detail-group">
+                                                <div class="detail-label">
+                                                    <i class="fas fa-percent me-1"></i> Discount
+                                                </div>
+                                                <div class="detail-value">
+                                                    <span class="discount-badge">
+                                                        @if ($promo->discount_type === 'nominal')
+                                                            Rp {{ number_format($promo->discount, 0, ',', '.') }}
+                                                        @else
+                                                            {{ $promo->discount }}%
+                                                        @endif
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Products in Promo</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table product-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Product</th>
+                                                    <th>Stock</th>
+                                                    <th>Limit Stock</th>
+                                                    <th>Regular Price</th>
+                                                    <th>Discounted Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($promo->products as $product)
+                                                    <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="{{ Storage::url($product->main_image) }}"
+                                                                    alt="Product" class="me-3"
+                                                                    onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                                <span
+                                                                    class="product-name">{{ Str::limit($product->product_name, 20, '...') }}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td>{{ $product->stock_quantity }}</td>
+                                                        <td>
+                                                            @if ($product->pivot->limit_stock)
+                                                                <span class="badge bg-info">
+                                                                    {{ $product->pivot->limit_stock }}
+                                                                </span>
+                                                            @else
+                                                                <span class="badge bg-secondary">
+                                                                    Unlimited
+                                                                </span>
+                                                            @endif
+                                                        </td>
+                                                        <td>Rp.
+                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                        </td>
+                                                        <td>
+                                                            <span class="text-danger">
+                                                                Rp.
+                                                                @if ($promo->discount_type === 'nominal')
+                                                                    {{ number_format($product->regular_price - $promo->discount, 0, ',', '.') }}
+                                                                @else
+                                                                    {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
+                                                                @endif
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Promo Banner</h5>
+                                </div>
+                                <div class="card-body">
+                                    @if ($promo->image)
+                                        <img src="{{ Storage::url($promo->image) }}" alt="Promo Banner"
+                                            class="promo-banner mb-4"
+                                            onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
+                                    @else
+                                        <p>No banner uploaded</p>
+                                    @endif
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </section>
+                </div>
             </div>
 
             @include('admin.layouts.footer')
-
         </div>
+
     </div>
 
     <script>
@@ -417,15 +484,10 @@
 
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/vendors/choices.js/choices.min.js') }}"></script>
-
-    <!-- toastify -->
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
-
 </body>
 
 </html>

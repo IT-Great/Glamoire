@@ -3,37 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\CategoryArticle;
 use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
-    // // CATEGORY PRODUCT
-    // public function indexCategoryProduct()
-    // {
-    //     $categoryProduct = CategoryProduct::all(); // Mengambil semua data kategori
-    //     return view('admin.category.index', compact('categoryProduct'));
-    // }
-
     public function indexCategoryProduct()
     {
-        $categoryProduct = CategoryProduct::withCount('products')->get(); // Mengambil semua kategori dengan hitung produk
-        return view('admin.category.index', compact('categoryProduct'));
+        // Mengambil kategori yang tidak memiliki parent_id dan mengurutkannya berdasarkan created_at
+        $categories = CategoryProduct::with('children.children')
+            ->whereNull('parent_id')
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan kolom created_at terbaru
+            ->get();
+
+        return view('admin.category.index', compact('categories'));
     }
+
 
 
     public function createCategoryProduct(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                // 'parent_id' => 'required|exists:category_products,id' // Memastikan parent_id ada dan valid
+            ]);
 
-        $category = CategoryProduct::create([
-            'name' => $request->name
-        ]);
+            $subcategory = CategoryProduct::create([
+                'name' => $request->name,
+                'parent_id' => $request->parent_id // Ini akan menjadi subcategory karena memiliki parent_id
+            ]);
 
-        return response()->json(['success' => true, 'category' => $category]);
+            return response()->json([
+                'success' => true,
+                'data' => $subcategory
+            ]);
+        } catch (\Exception $e) {
+            // Log error jika terjadi exception
+            Log::error('Error creating category product: ' . $e->getMessage(), [
+                'request' => $request->all(),
+                'exception' => $e
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while creating the category product. Please try again.'
+            ], 500); // Mengembalikan status error 500
+        }
     }
 
     public function deleteCategoryProduct($id)
@@ -51,8 +70,11 @@ class CategoryController extends Controller
     // CATEGORY ARTICLE
     public function indexCategoryArticle()
     {
-        $categoryArticle = CategoryArticle::all(); // Mengambil semua data kategori
-        return view('admin.article.category.index', compact('categoryArticle'));
+        $categoryArticle = CategoryArticle::with(['articles'])->get(); // Eager load
+        $articles = Article::count(); // Jumlah artikel
+        $categories = $categoryArticle->count(); // Hitung jumlah kategori saja
+
+        return view('admin.article.category.index', compact('categoryArticle', 'articles', 'categories'));
     }
 
     public function createCategoryArticle(Request $request)

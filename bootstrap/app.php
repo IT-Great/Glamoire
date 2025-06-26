@@ -18,8 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         // $middleware->append(Authenticate::class); // Gunakan nama middleware yang benar
         // $middleware->append(Role::class); // Menambahkan middleware authenticate
         $middleware->alias([
-            'role' => \App\Http\Middleware\Role::class,
-            ''
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            'role' => \App\Http\Middleware\Role::class, 
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

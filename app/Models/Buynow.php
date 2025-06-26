@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Buynow extends Model
 {
     use HasFactory;
-
-    protected $table ='buy_nows';
+    protected $table = 'buy_nows';  // Tambahkan baris ini
 
     protected $fillable = [
         'id',
@@ -32,4 +31,8 @@ class Buynow extends Model
     {
         return $this->belongsTo(Product::class, 'product_id');
     }
+    public function productVariant()
+    {
+        return $this->belongsTo(ProductVariations::class, 'product_variant_id'); 
+    }   
 }

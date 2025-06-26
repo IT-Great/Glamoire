@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Admin Glamoire</title>
+    <title>Login - Glamoire</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
@@ -20,9 +20,9 @@
                 <h4>Glamoire</h4>
             </div>
             <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Enter your username and password to access the dashboard page.</p>
+            <p class="auth-subtitle mb-5">Masukkan Username dan Password untuk masuk ke halaman Dashboard</p>
 
-            <form action="{{ route('login') }}" method="POST">
+            <form action="{{ route('login-admin') }}" method="POST">
                 @csrf
                 <div class="form-group position-relative has-icon-left mb-4">
                     <input type="text" name="name"

@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\Shipping_address;
 use App\Models\User;
 use App\Models\VoucherNewUser;
+use App\Models\Cart;
 use Exception;
 
 use Illuminate\Auth\Events\Registered;
@@ -76,47 +77,72 @@ class AuthController extends Controller
                 'updated_at' => now(),
             ]);
 
+            Cart::create([
+                'user_id' => $user['id'],
+            ]);
+            
             event(new Registered($user));
-
             $userLogin = User::where('email', $user->email)->first();
-    
+
+
+
+            // CHECK UNTUK VOUCHER 
             if ($userLogin) {
-                // Email ditemukan, sekarang cek apakah password cocok
-                
-                // Increment: hitung jumlah voucher yang sudah ada dan tambah 1
-                $increment = VoucherNewUser::count() + 1;
+                $checkVoucherNewUser = VoucherNewUser::where('email', $user->email)->exists();
 
-                // Ambil 4 karakter pertama dari ID user
-                $idFragment = substr($userLogin->id, 0, 4);
+                if($checkVoucherNewUser){
+                    Auth::login($userLogin);
+                    session()->put([
+                        'id_user' => $user['id'],
+                        'username' => $user['fullname'],
+                    ]);
 
-                // Buat kode voucher sesuai format "increment-4hurufID"
-                $codeUser = "{$increment}-{$idFragment}";
+                    $voucherNewUser = VoucherNewUser::where('email', $request->email)->first();
+                    $voucherNewUser->update([
+                        'user_id' => $userLogin->id,
+                    ]);
+    
+                    return response()->json([
+                        'success' => true, 
+                        'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi'
+                    ]);
+                }else{
+                    $increment = VoucherNewUser::count() + 1;
+    
+                    // Ambil 4 karakter pertama dari ID user
+                    $idFragment = substr($userLogin->id, 0, 4);
+    
+                    // Buat kode voucher sesuai format "increment-4hurufID"
+                    $codeUser = "{$increment}-{$idFragment}";
+    
+                    VoucherNewUser::create([
+                        'code' => $codeUser,
+                        'user_id' => $userLogin->id,
+                        'is_use' => 0,
+                        'email' => $user->email,
+                    ]);
+    
+                    Auth::login($userLogin);
+    
+                    $data = [
+                        'code' => $codeUser,
+                        'fullname' => $userLogin->fullname,
+                    ];
+                    $email_target = $userLogin->email;
+                    
+                    Mail::to($email_target)->send(new sendMailCodeNewUser($data));
+    
+                    session()->put([
+                        'id_user' => $user['id'],
+                        'username' => $user['fullname'],
+                    ]);
+    
+                    return response()->json([
+                        'success' => true, 
+                        'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
+                    ]);
+                }
 
-                VoucherNewUser::create([
-                    'code' => $codeUser,
-                    'user_id' => $userLogin->id,
-                    'is_use' => 0,
-                ]);
-
-                Auth::login($userLogin);
-
-                $data = [
-                    'code' => $codeUser,
-                    'fullname' => $userLogin->fullname,
-                ];
-                $email_target = $userLogin->email;
-                Mail::to($email_target)->send(new sendMailCodeNewUser($data));
-                
-                session()->put([
-                    'id_user' => $user['id'],
-                    'username' => $user['fullname'],
-                ]);
-
-                return response()->json([
-                    'success' => true, 
-                    'message' => 'Registrasi Berhasil, Silakan cek email Anda untuk verifikasi & Jangan lupa periksa voucher kamu'
-                ]);
-               
             } else {
                 return response()->json(['error' => true, 'message' => 'Oops Email Gagal Didaftarkan']);
             }

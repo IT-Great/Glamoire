@@ -4,8 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
+use App\Models\Cart;
+use App\Models\Cart_item;
+use App\Models\Wishlist;
+use App\Models\Promo;
+use App\Models\Product;
+
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class BrandController extends Controller
 {
@@ -50,36 +59,32 @@ class BrandController extends Controller
         // Generate unique brand code based on the brand name
         $brandCode = $this->generateBrandCode($request->name);
 
-        // if ($request->hasFile('brand_logo')) {
-        //     $image = $request->file('brand_logo');
-        //     $imageName = time() . '.' . $image->getClientOriginalExtension();
-        //     $image->move(public_path('uploads/brand_logos'), $imageName);
-        //     $imagePath = 'uploads/brand_logos/' . $imageName;
-        // }
-
+        $imagePath = null;
         if ($request->hasFile('brand_logo')) {
             $image = $request->file('brand_logo');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            // Simpan file ke storage/app/public/brand_logos
             $imagePath = $image->storeAs('brand_logos', $imageName, 'public');
-
-            // Simpan informasi file di database (opsional)
-            // Brand::create([...]);
         }
 
-
-        Brand::create([
+        $brand = Brand::create([
             'name' => $request->name,
             'description' => $request->description,
             'brand_logo' => $imagePath,
-            'brand_code' => $brandCode, // Menyimpan kode merek
-
+            'brand_code' => $brandCode,
         ]);
 
-        // return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully.');
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'data' => $brand, // Return brand data including the new ID
+                'message' => 'Brand has been added successfully!',
+            ]);
+        }
+
+        // Fallback for non-AJAX requests (if needed)
         return redirect()->route('index-brand-admin')->with('success', 'Brand created successfully!');
     }
-
 
     private function generateBrandCode($brandName)
     {
@@ -105,6 +110,7 @@ class BrandController extends Controller
     }
 
 
+
     public function detailBrand($id)
     {
         $brand = Brand::find($id);
@@ -113,9 +119,8 @@ class BrandController extends Controller
             return redirect()->route('index-brand-admin')->with('error', 'Brand not found');
         }
 
-        return view('admin.brand.detail', compact('brand'));
+        return view('admin.brand.edit', compact('brand'));
     }
-
 
     public function updateBrandAdmin(Request $request, $id)
     {
@@ -134,20 +139,34 @@ class BrandController extends Controller
         $brand->description = $validatedData['description'];
 
         if ($request->hasFile('brand_logo')) {
-            // Remove old image if exists
-            if ($brand->brand_logo && file_exists(public_path($brand->brand_logo))) {
-                unlink(public_path($brand->brand_logo));
+            // Hapus gambar lama jika ada
+            if ($brand->brand_logo && Storage::disk('public')->exists($brand->brand_logo)) {
+                Storage::disk('public')->delete($brand->brand_logo);
             }
 
+            // Upload gambar baru ke storage/app/public/brand_logos
             $image = $request->file('brand_logo');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/brand_logos'), $imageName);
-            $brand->brand_logo = 'uploads/brand_logos/' . $imageName;
+            $imagePath = $image->store('brand_logos', 'public'); // menyimpan ke disk 'public'
+            $brand->brand_logo = $imagePath; // simpan path-nya seperti 'brand_logos/nama.jpg'
         }
+
 
         $brand->save();
 
         return redirect()->route('index-brand-admin')->with('success', 'Brand updated successfully');
+    }
+
+    public function showBrand($id)
+    {
+        $brand = Brand::findOrFail($id);
+
+        // If the brand logo is a path, convert it to a full URL
+        if ($brand->brand_logo) {
+            // Assuming the logo is stored in the public storage
+            $brand->brand_logo = asset('storage/' . $brand->brand_logo);
+        }
+
+        return response()->json($brand);
     }
 
 
@@ -162,9 +181,9 @@ class BrandController extends Controller
             ]);
         }
 
-        // Hapus gambar utama dari folder
-        if (!empty($brand->brand_logo) && file_exists(public_path($brand->brand_logo))) {
-            unlink(public_path($brand->brand_logo));
+        // Hapus logo brand dari folder storage
+        if (!empty($brand->brand_logo) && Storage::disk('public')->exists($brand->brand_logo)) {
+            Storage::disk('public')->delete($brand->brand_logo);
         }
 
         // Hapus produk dari database
@@ -177,14 +196,204 @@ class BrandController extends Controller
     }
 
     // AKSES USER 
-    public function brands($name){
-        $brand = Brand::where('name', $name)
-        ->with(['products'])
-        ->get();
-        
-        // dd($brand);
-        return view('user.component.brand', [
-            'brands' => $brand
-        ]);
+    public function brands($name)
+    {
+        $userId = session('id_user');
+
+        if ($userId) {
+            $cartId = Cart::where('user_id', $userId)->value('id');
+            $cartItems = Cart_item::where('cart_id', $cartId)->get();
+            $wishlists = Wishlist::where('user_id', $userId)->get();
+
+            $brands = Brand::where('name', $name)
+                ->with(['products' => function ($query) {
+                    // Load promos for products, but allow products without promos to be included
+                    $query->with(['promos' => function ($promoQuery) {
+                        $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->where('promo_products.discounted_price', '>', 0);
+                    }]);
+                }])
+                ->get();
+
+            $idBrand = Brand::where('name', $name)->value('id');
+
+            $brandVouchers = Promo::where('type', '=', 'brand voucher')
+                ->where('brand_id', $idBrand)
+                ->whereColumn('total_used', '<', 'usage_quota')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                ->get();
+
+            $newestProducts = Product::where('brand_id', $idBrand)
+                ->with(['promos' => function ($promoQuery) {
+                    $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($newestProducts as $newproduct) {
+                $variationPrices = $newproduct->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $newproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
+                    $newproduct->priceVariation = null;
+                } else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $newproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
+
+            $topProducts = Product::where('brand_id', $idBrand)
+                ->with(['promos' => function ($promoQuery) {
+                    $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('sale', 'desc') // Order products by sale within the products relation
+                ->get();
+
+            foreach ($topProducts as $topproduct) {
+                $variationPrices = $topproduct->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $topproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
+                    $topproduct->priceVariation = null;
+                } else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $topproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
+
+            $allbrand = Brand::where('name', $name)
+                ->with(['products' => function ($query) {
+                    // Load promos for products, but allow products without promos to be included   
+                    $query->with(['promos' => function ($promoQuery) {
+                        $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                            ->wherePivot('discounted_price', '>', 0)
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                    }]);
+                }])
+                ->first();
+
+            // dd($brand);
+            return view('user.component.brand', [
+                'countBrand' => count($allbrand->products),
+                'brands'    => $brands,
+                'newest'    => $newestProducts,
+                'top'       => $topProducts,
+                'cartItems' => $cartItems,
+                'wishlists' => $wishlists,
+                'brandVouchers' => $brandVouchers,
+            ]);
+        } else {
+            $brands = Brand::where('name', $name)
+                ->with(['products' => function ($query) {
+                    // Load promos for products, but allow products without promos to be included
+                    $query->with(['promos' => function ($promoQuery) {
+                        $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->where('promo_products.discounted_price', '>', 0);
+                    }]);
+                }])
+                ->get();
+
+            $idBrand = Brand::where('name', $name)->value('id');
+
+            $brandVouchers = Promo::where('type', '=', 'brand voucher')
+                ->where('brand_id', $idBrand)
+                ->whereColumn('total_used', '<', 'usage_quota')
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                ->get();
+
+            $newestProducts = Product::where('brand_id', $idBrand)
+                ->with(['promos' => function ($promoQuery) {
+                    $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            foreach ($newestProducts as $newproduct) {
+                $variationPrices = $newproduct->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $newproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
+                    $newproduct->priceVariation = null;
+                } else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $newproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
+
+            $topProducts = Product::where('brand_id', $idBrand)
+                ->with(['promos' => function ($promoQuery) {
+                    $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('sale', 'desc') // Order products by sale within the products relation
+                ->get();
+
+            foreach ($topProducts as $topproduct) {
+                $variationPrices = $topproduct->productVariations->pluck('variant_price')->unique()->sort();
+
+                if ($variationPrices->count() > 1) {
+                    // Jika ada lebih dari satu harga unik, buat rentang harga
+                    $topproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
+                    $topproduct->priceVariation = null;
+                } else {
+                    // Jika semua harga variasi sama, cukup tampilkan satu harga
+                    $topproduct->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                }
+            }
+
+            $allbrand = Brand::where('name', $name)
+                ->with(['products' => function ($query) {
+                    // Load promos for products, but allow products without promos to be included   
+                    $query->with(['promos' => function ($promoQuery) {
+                        $promoQuery->select('promos.*', 'promo_products.discounted_price')
+                            ->wherePivot('discounted_price', '>', 0)
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                    }]);
+                }])
+                ->first();
+
+            $allbrand = Brand::where('name', $name)
+                ->with(['products'])
+                ->first();
+
+            // dd($brands);
+            return view('user.component.brand', [
+                'countBrand' => count($allbrand->products),
+                'brands' => $brands,
+                'newest' => $newestProducts,
+                'top'    => $topProducts,
+                'brandVouchers' => $brandVouchers,
+            ]);
+        }
     }
 }

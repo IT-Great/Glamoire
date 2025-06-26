@@ -26,12 +26,24 @@
             position: "center",
             background: "#183018",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 3500,
             timerProgressBar: true,
+            customClass: {
+                popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
             },
+        });
+    });
+
+    $(document).ready(function () {
+        const tooltipTriggerList = [].slice.call(
+            document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        );
+        const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });
 
@@ -43,9 +55,15 @@
             $(".back-to-top").fadeOut("slow");
         }
     });
-
     $(".back-to-top").click(function () {
-        $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo");
+        $("html, body").animate(
+            { scrollTop: 0 },
+            500,
+            "easeInOutExpo",
+            function () {
+                $(".back-to-top").fadeOut("slow");
+            }
+        );
         return false;
     });
 })(jQuery);

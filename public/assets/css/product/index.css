@@ -1,0 +1,36 @@
+.product-item-container {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    /* Allows items to wrap on smaller screens */
+}
+
+.product-item-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    object-fit: cover;
+    margin-right: 15px;
+}
+
+@media (max-width: 768px) {
+    .product-item-container {
+        flex-direction: column;
+        /* Stack items vertically on smaller screens */
+        align-items: flex-start;
+    }
+
+    .product-item-container img {
+        margin-bottom: 10px;
+        width: 80px;
+        height: 80px;
+        /* Reduce image size on smaller screens */
+    }
+}
+
+.action-buttons a {
+    display: block;
+    /* Set to block so each link appears on a new line */
+    margin-bottom: 5px;
+    /* Add some space between the buttons */
+}

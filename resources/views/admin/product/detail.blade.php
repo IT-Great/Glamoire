@@ -4,262 +4,614 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Mazer Admin Dashboard</title>
-
+    <title>Product - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/detailproduct.css') }}">
-
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.svg') }}" type="image/x-icon">
 
     <style>
-        .upload__img-wrap {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: #435ebe;
         }
 
-        .upload__img-box-single,
-        .upload__video-box {
-            position: relative;
-            border-radius: 8px;
+        .breadcrumb-item a {
+            color: #435ebe;
+            text-decoration: none;
+        }
+
+        .main-image-container {
+            aspect-ratio: 4/3;
             overflow: hidden;
-            cursor: pointer;
+            border-radius: 0.375rem;
         }
 
-        .upload__img-box-single {
-            width: 100%;
-            max-width: 457px;
-            height: auto;
-            aspect-ratio: 457 / 444;
-            /* Maintain aspect ratio */
-        }
-
-        .upload__img-box-multiple {
-            position: relative;
-            width: 100%;
-            max-width: 180px;
-            height: auto;
-            aspect-ratio: 1;
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .upload__video-box {
-            width: 100%;
-            max-width: 457px;
-            height: auto;
-            aspect-ratio: 16 / 9;
-            /* Maintain aspect ratio for video */
-        }
-
-        .img-bg-single,
-        .img-bg,
-        .video-bg {
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-        }
-
-        .video-bg {
+        .main-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Make sure the video covers the container */
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
 
-        .upload__img-close,
-        .upload__video-close {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(255, 255, 255, 0.7);
+        .main-image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .gallery-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-thumbnail:hover {
+            transform: scale(1.1);
+        }
+
+        .detail-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 500;
+        }
+
+        .stats-card {
+            background: #f9fafb;
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        .discount-badge {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .product-table img {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+
+        .product-table td {
+            vertical-align: middle;
+        }
+
+        .variant-thumbnail {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .color-swatch {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            padding: 2px;
-            cursor: pointer;
+            border: 2px solid #dee2e6;
+            vertical-align: middle;
+            margin-left: 0.5rem;
         }
 
-
-        /* new */
-        body {
-            background-color: #f4f7fa;
-        }
-
-        .product-card {
-            background-color: #ffffff;
-            border-radius: 15px;
+        .product-video-container {
+            max-width: 640px;
+            margin: 0 auto;
+            border-radius: 0.5rem;
+            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-video-container .ratio {
+            padding-top: 56.25%;
+            position: relative;
+        }
+
+        .product-video-container .ratio video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .flatpickr-calendar {
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .flatpickr-day.selected {
+            background: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        /* Styling container Select2 */
+        .select2-container--default .select2-selection--single {
+            height: 38px !important;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+        }
+
+        /* Styling rendered text */
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 36px !important;
+            padding-left: 12px;
+            padding-right: 30px;
+        }
+
+        /* Styling arrow position */
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 36px !important;
+            right: 6px;
+        }
+
+        /* Tambahkan styling untuk dropdown options */
+        .select-lg-dropdown .select2-results__option {
+            padding: 6px 12px;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f9fafb;
+            --dark-color: #111827;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
             overflow: hidden;
         }
 
-        .product-image-container {
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Stats Card Styling */
+        .stats-card {
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
             position: relative;
             overflow: hidden;
-            border-radius: 15px 15px 0 0;
+            z-index: 1;
         }
 
-        .product-image {
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            height: 400px;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-card-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .stats-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        /* Product Card Styling */
+        .product-card {
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Table Styling */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table> :not(:first-child) {
+            border-top: none;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: rgba(243, 246, 249, 0.6);
+            border-color: var(--border-color);
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .table>tbody>tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table>tbody>tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Product Image */
+        .product-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             object-fit: cover;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
         }
 
         .product-image:hover {
-            transform: scale(1.05);
-        }
-
-        .gallery-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px 0;
-        }
-
-        .gallery-image {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .gallery-image:hover {
             transform: scale(1.1);
         }
 
-        .product-info {
-            padding: 20px;
+        /* Product Details */
+        .product-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
         }
 
-        .product-title {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 15px;
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
         }
 
         .product-meta {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
 
-        .meta-item {
-            background-color: #f0f4f8;
-            padding: 8px 15px;
+        /* Message Preview */
+        .message-preview {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Stock Badge */
+        .stock-badge {
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
-
-        .description-card,
-        .variants-card {
-            background-color: #ffffff;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .variant-type {
-            font-size: 1.2rem;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-top: 20px;
-            margin-bottom: 15px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .variants-wrap {
+        /* Action Buttons */
+        .action-buttons {
             display: flex;
-            flex-wrap: wrap;
-            margin: 0 -10px;
+            gap: 0.5rem;
         }
 
-        .variant-item {
-            width: 195px;
-            padding: 0 10px;
-            margin-bottom: 12px;
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge.bg-info {
+            background-color: var(--info-color) !important;
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* Search and Filter Container */
+        .search-filter-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-wrapper {
             position: relative;
         }
 
-        .variant-image-container {
-            position: relative;
-            padding-bottom: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .variant-image {
+        .search-icon {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
         }
 
-        .variant-value {
-            margin-top: 5px;
-            text-align: center;
+        .search-input {
+            border-radius: 10px;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            width: 100%;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .filter-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.95rem;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        /* Quick Action Button */
+        .quick-action-btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .table td {
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .product-details {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+
+            .d-flex.align-items-center.gap-3 {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+
+            .action-buttons .badge {
+                display: block;
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--secondary-color) !important;
+            color: white !important;
+            border: none;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
-
-
-        /* update */
-
-        /* Variant Image Hover Effect */
-        .variant-image-container {
-            position: relative;
-            padding-bottom: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .variant-image {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-            /* Smooth transition on hover */
-        }
-
-        .variant-image:hover {
-            transform: scale(1.1);
-            /* Slight zoom on hover */
-        }
-
-        .variant-value {
-            margin-top: 5px;
+        /* Empty state */
+        .empty-state {
+            padding: 3rem;
             text-align: center;
-            font-size: 0.9rem;
         }
 
-        /* For consistency, you can keep the gallery image hover effect unchanged */
-        .gallery-image:hover {
-            transform: scale(1.1);
-            /* Slight zoom on hover */
+        .empty-state-icon {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            opacity: 0.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
         }
     </style>
-
 
 </head>
 
@@ -268,350 +620,176 @@
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
 
-        {{-- <div id="main">
+        <div id="main">
             <div class="page-heading">
                 <div class="page-title">
                     <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>Detail Product</h3>
+                        <div class="col-12 mb-2">
+                            <div class="page-title">
+                                <h3 class="mb-2">Detail Produk</h3>
+                                <p>Lihat informasi lengkap mengenai produk yang dipilih pada halaman ini.</p>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+
+                        <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/product-admin"
-                                            style="text-decoration: none;">Product</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Product</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-box-seam me-1"></i> Produk
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Detail Produk</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
                 </div>
 
-                <!-- Basic Horizontal form layout section start -->
-                <section id="multiple-column-form">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-content">
-                                        <div class="card-body">
-                                            <div class="form-body">
-                                                <div class="row">
-                                                    <!-- Kolom Kiri -->
-                                                    <div class="col-md-6 col-12">
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-name">Product Name</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-name"
-                                                                    value="{{ $product->product_name }}"
-                                                                    name="product_name" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bag"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                <div class="row">
+                    <!-- Left Column - Images -->
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Product Images</h5>
+                            </div>
+                            <div class="card-body">
+                                @if (!empty($product->main_image))
+                                    <div class="main-image-container mb-3">
+                                        <img src="{{ Storage::url($product->main_image) }}"
+                                            alt="{{ $product->product_name }}"
+                                            onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                    </div>
+                                @endif
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-code">Product Code</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-code"
-                                                                    value="{{ $product->product_code }}"
-                                                                    name="product_code" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-upc"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    @if (!empty($product->images) && is_array($product->images))
+                                        @foreach ($product->images as $image)
+                                            <img src="{{ Storage::url($image) }}" alt="Gallery image"
+                                                class="gallery-thumbnail"
+                                                onclick="openImageInNewTab('{{ Storage::url($image) }}')">
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
 
-                                                        <div class="mb-3">
-                                                            <label for="first-name-icon">Description</label>
-                                                            <div class="position-relative">
-                                                                <textarea class="form-control" name="description" id="description" cols="30" rows="20" disabled>{{ $product->description }}</textarea>
-                                                            </div>
-                                                        </div>
+                        @if (!empty($product->video))
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Product Video</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="product-video-container">
+                                        <div class="ratio">
+                                            <video controls>
+                                                <source src="{{ Storage::url($product->video) }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="category-product">Category Product</label>
-                                                            <div class="position-relative">
-                                                                <select class="form-control" id="category-product"
-                                                                    name="category_product_id" disabled>
-                                                                    <option value="">Select Category</option>
-                                                                    @foreach ($categories as $category)
-                                                                        <option value="{{ $category->id }}"
-                                                                            {{ $product->categoryProduct && $product->categoryProduct->id == $category->id ? 'selected' : '' }}>
-                                                                            {{ $category->name }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-bookmark"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                    <!-- Right Column - Product Info -->
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Product Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-box me-2"></i>Product Name
+                                            </div>
+                                            <div class="detail-value">{{ $product->product_name }}</div>
+                                        </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="brand-name">Brand</label>
-                                                            <div class="position-relative">
-                                                                <select class="form-control" id="brand-name"
-                                                                    name="brand_id" disabled>
-                                                                    <option value="">Select Brand</option>
-                                                                    @foreach ($brands as $brand)
-                                                                        <option value="{{ $brand->id }}"
-                                                                            {{ $product->brand && $product->brand->id == $brand->id ? 'selected' : '' }}>
-                                                                            {{ $brand->name }}
-                                                                        </option>
-                                                                    @endforeach
-                                                                </select>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-file-earmark-medical"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-upc me-2"></i>Product Code
+                                            </div>
+                                            <div class="detail-value">{{ $product->product_code }}</div>
+                                        </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="stock-quantity">Stock Quantity</label>
-                                                            <div class="position-relative">
-                                                                <input type="number" class="form-control"
-                                                                    id="stock-quantity" name="stock_quantity"
-                                                                    value="{{ old('stock_quantity', $product->stock_quantity) }}"
-                                                                    disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-cart"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-tag me-2"></i>Category
+                                            </div>
+                                            <div class="detail-value">
+                                                {{ $product->categoryProduct ? $product->categoryProduct->name : 'N/A' }}
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="product-unit">Product Unit</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="product-unit" value="{{ $product->unit }}"
-                                                                    name="product_unit" disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-upc"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-building me-2"></i>Brand
+                                            </div>
+                                            <div class="detail-value">
+                                                {{ $product->brand ? $product->brand->name : 'N/A' }}</div>
+                                        </div>
 
-                                                        <div class="form-group has-icon-left">
-                                                            <label for="regular-price">Regular Price</label>
-                                                            <div class="position-relative">
-                                                                <input type="text" class="form-control"
-                                                                    id="regular-price" name="regular_price"
-                                                                    value="Rp. {{ number_format($product->regular_price, 0, ',', '.') }}"
-                                                                    disabled>
-                                                                <div class="form-control-icon">
-                                                                    <i class="bi bi-credit-card-2-front"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-box me-2"></i>Stock
+                                            </div>
+                                            <div class="detail-value">{{ $product->stock_quantity }}
+                                                {{ $product->unit }}</div>
+                                        </div>
 
-                                                        <div class="form-group mb-3">
-                                                            <label for="product-color">Product Color</label>
-                                                            <div class="position-relative">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-currency-dollar me-2"></i>Price
+                                            </div>
+                                            <div class="detail-value">
+                                                <span class="discount-badge">
+                                                    Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="detail-group">
+                                            <div class="detail-label">Product Details</div>
+                                            <div class="stats-card">
+                                                <div class="row g-3">
+                                                    @if ($product->color || $product->color_text)
+                                                        <div class="col-md-4">
+                                                            <div class="detail-label">Color</div>
+                                                            <div class="detail-value">
                                                                 @if ($product->color_text)
-                                                                    <!-- Input teks untuk color_text -->
-                                                                    <input type="text" class="form-control"
-                                                                        id="product-color-text" name="color_text"
-                                                                        value="{{ $product->color_text }}" disabled>
-                                                                @elseif ($product->color)
-                                                                    <!-- Input warna untuk color -->
-                                                                    <input type="color" class="form-control"
-                                                                        id="product-color" name="color"
-                                                                        value="{{ $product->color }}" disabled>
+                                                                    {{ $product->color_text }}
+                                                                @else
+                                                                    <span class="color-swatch"
+                                                                        style="background-color: {{ $product->color }};"></span>
                                                                 @endif
                                                             </div>
                                                         </div>
-
-                                                        <label for="">Weight Product</label>
-                                                        <div class="input-group mb-3">
-                                                            <input type="text" class="form-control"
-                                                                placeholder="Berat Produk" name="weight_product"
-                                                                value="{{ $product->weight_product }}" disabled>
-                                                            <span class="input-group-text"
-                                                                id="basic-addon2">gram</span>
-                                                        </div>
-
-                                                        <label for="">Dimension</label>
-                                                        <div class="row mb-3">
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        name="length"
-                                                                        value="Length : {{ old('length', $product->dimensions['length'] ?? '') }}"
-                                                                        disabled>
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon1">cm</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        name="width"
-                                                                        value="Width : {{ old('width', $product->dimensions['width'] ?? '') }}"
-                                                                        disabled>
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon2">cm</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control"
-                                                                        name="height"
-                                                                        value="Height : {{ old('height', $product->dimensions['height'] ?? '') }}"
-                                                                        disabled>
-                                                                    <span class="input-group-text"
-                                                                        id="basic-addon3">cm</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
+                                                    @endif
+                                                    <div class="col-md-4">
+                                                        <div class="detail-label">Weight</div>
+                                                        <div class="detail-value">{{ $product->weight_product }}
+                                                            gram</div>
                                                     </div>
-
-                                                    <!-- Kolom Kanan -->
-                                                    <div class="col-md-6 col-12">
-                                                        <!-- Main Image Upload with Drag and Drop -->
-                                                        <label for="main-image" class="mb-3">Product
-                                                            Thumbnail</label>
-                                                        <div class="file-upload-content mb-4"
-                                                            id="single-file-upload-content">
-                                                            @if (!empty($product->main_image))
-                                                                <div class="upload__img-wrap">
-                                                                    <div class="upload__img-box-single">
-                                                                        <div class="img-bg-single"
-                                                                            style="background-image: url('{{ asset($product->main_image) }}');"
-                                                                            onclick="openImageInNewTab('{{ asset($product->main_image) }}')">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-
-                                                        <!-- Gallery -->
-                                                        <label for="product-gallery" class="mb-3 mt-4">Product
-                                                            Gallery</label>
-                                                        <div class="file-upload-content upload__img-wrap"
-                                                            id="file-upload-content">
-                                                            @if (!empty($product->images) && is_array($product->images))
-                                                                @foreach ($product->images as $image)
-                                                                    <div class="upload__img-box-multiple">
-                                                                        <div class="img-bg"
-                                                                            style="background-image: url('{{ asset($image) }}');"
-                                                                            onclick="openImageInNewTab('{{ asset($image) }}')">
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            @endif
-                                                        </div>
-
-                                                        <label for="video-upload" class="mb-3 mt-4">Product
-                                                            Video</label>
-                                                        <div class="file-upload-content mb-4"
-                                                            id="video-file-upload-content">
-                                                            @if (!empty($product->video))
-                                                                <div class="upload__video-box">
-                                                                    <video class="video-bg" controls>
-                                                                        <source src="{{ asset($product->video) }}"
-                                                                            type="video/mp4">
-                                                                        Your browser does not support the video tag.
-                                                                    </video>
-
-                                                                </div>
-                                                            @endif
+                                                    <div class="col-md-4">
+                                                        <div class="detail-label">Dimensions</div>
+                                                        <div class="detail-value">
+                                                            {{ $product->dimensions['length'] ?? 'N/A' }} x
+                                                            {{ $product->dimensions['width'] ?? 'N/A' }} x
+                                                            {{ $product->dimensions['height'] ?? 'N/A' }} cm
                                                         </div>
                                                     </div>
-
-                                                    <div class="col-md-6 col-12">
-                                                        <!-- Main Image Upload with Drag and Drop -->
-                                                        <label for="main-image" class="mb-3">Product
-                                                            Thumbnail</label>
-                                                        <div class="file-upload-content mb-4"
-                                                            id="single-file-upload-content">
-                                                            @if (!empty($product->main_image))
-                                                                <div class="upload__img-wrap">
-                                                                    <div class="upload__img-box-single">
-                                                                        <div class="img-bg-single"
-                                                                            style="background-image: url('{{ Storage::url($product->main_image) }}');"
-                                                                            onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-
-                                                        <!-- Gallery -->
-                                                        <label for="product-gallery" class="mb-3 mt-4">Product
-                                                            Gallery</label>
-                                                        <div class="file-upload-content upload__img-wrap"
-                                                            id="file-upload-content">
-                                                            @if (!empty($product->images) && is_array($product->images))
-                                                                @foreach ($product->images as $image)
-                                                                    <div class="upload__img-box-multiple">
-                                                                        <div class="img-bg"
-                                                                            style="background-image: url('{{ Storage::url($image) }}');"
-                                                                            onclick="openImageInNewTab('{{ Storage::url($image) }}')">
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            @endif
-                                                        </div>
-
-                                                        <!-- Video -->
-                                                        <label for="video-upload" class="mb-3 mt-4">Product
-                                                            Video</label>
-                                                        <div class="file-upload-content mb-4"
-                                                            id="video-file-upload-content">
-                                                            @if (!empty($product->video))
-                                                                <div class="upload__video-box">
-                                                                    <video class="video-bg" controls>
-                                                                        <source
-                                                                            src="{{ Storage::url($product->video) }}"
-                                                                            type="video/mp4">
-                                                                        Your browser does not support the video tag.
-                                                                    </video>
-                                                                </div>
-                                                            @endif
-                                                        </div>
-
-                                                        <div class="mt-4">
-                                                            <h4>Product Variants</h4>
-                                                            @if ($product->productVariations->isNotEmpty())
-                                                                @php
-                                                                    $groupedVariants = $product->productVariations->groupBy(
-                                                                        'variant_type',
-                                                                    );
-                                                                @endphp
-                                                                @foreach ($groupedVariants as $variantType => $variants)
-                                                                    <div class="mb-3">
-                                                                        <h5>{{ ucfirst($variantType) }}</h5>
-                                                                        <div class="row">
-                                                                            @foreach ($variants as $variant)
-                                                                                <div class="col-md-4 mb-2">
-                                                                                    <div class="card">
-                                                                                        <div class="card-body">
-                                                                                            <p>{{ $variant->variant_value }}
-                                                                                            </p>
-                                                                                            @if ($variant->use_variant_image && $variant->variant_image)
-                                                                                                <img src="{{ Storage::url($variant->variant_image) }}"
-                                                                                                    alt="{{ $variant->variant_value }}"
-                                                                                                    class="img-fluid"
-                                                                                                    onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
-                                                                                            @endif
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-                                                                            @endforeach
-                                                                        </div>
-                                                                    </div>
-                                                                @endforeach
-                                                            @else
-                                                                <p>No variants available for this product.</p>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -619,151 +797,79 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </section>
 
-            </div>
-
-            <footer>
-                <div class="footer clearfix mb-0 text-muted">
-                    <div class="float-start">
-                        <p>2021 &copy; Mazer</p>
-                    </div>
-                    <div class="float-end">
-                        <p>Crafted with <span class="text-danger"><i class="bi bi-heart"></i></span> by <a
-                                href="http://ahmadsaugi.com">A. Saugi</a></p>
-                    </div>
-                </div>
-            </footer>
-        </div> --}}
-        <div id="main">
-            <div class="container mt-4">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <h3>Detail Product</h3>
-                        </div>
-                        <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/product-admin"
-                                            style="text-decoration: none;">Product</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Product</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="product-card">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <div class="product-image-container">
-                                @if (!empty($product->main_image))
-                                    <img src="{{ Storage::url($product->main_image) }}"
-                                        alt="{{ $product->product_name }}" class="product-image"
-                                        onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                @endif
-                            </div>
-                            <div class="gallery-container">
-                                @if (!empty($product->images) && is_array($product->images))
-                                    @foreach ($product->images as $image)
-                                        <img src="{{ Storage::url($image) }}" alt="Gallery image" class="gallery-image"
-                                            onclick="openImageInNewTab('{{ Storage::url($image) }}')">
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="product-info">
-                                <h4>{{ $product->product_name }}</h4>
-                                <div class="product-meta">
-                                    <span class="meta-item"><i class="bi bi-upc"></i>
-                                        {{ $product->product_code }}</span>
-                                    <span class="meta-item"><i class="bi bi-tag"></i>
-                                        {{ $product->categoryProduct ? $product->categoryProduct->name : 'N/A' }}</span>
-                                    <span class="meta-item"><i class="bi bi-building"></i>
-                                        {{ $product->brand ? $product->brand->name : 'N/A' }}</span>
-                                    <span class="meta-item"><i class="bi bi-box"></i> {{ $product->stock_quantity }}
-                                        {{ $product->unit }}</span>
-                                    <span class="meta-item"><i class="bi bi-currency-dollar"></i> Rp.
-                                        {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                        @if ($product->productVariations->isNotEmpty())
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Product Variants</h5>
                                 </div>
-                                @if ($product->color || $product->color_text)
-                                    <p>
-                                        <strong>Color:</strong>
-                                        @if ($product->color_text)
-                                            {{ $product->color_text }}
-                                        @else
-                                            <span class="color-swatch"
-                                                style="background-color: {{ $product->color }};"></span>
-                                        @endif
-                                    </p>
-                                @endif
-                                <p><strong>Weight:</strong> {{ $product->weight_product }} gram</p>
-                                <p><strong>Dimensions:</strong>
-                                    {{ $product->dimensions['length'] ?? 'N/A' }} x
-                                    {{ $product->dimensions['width'] ?? 'N/A' }} x
-                                    {{ $product->dimensions['height'] ?? 'N/A' }} cm
-                                </p>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table product-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Value</th>
+                                                    <th>SKU</th>
+                                                    <th>Stock</th>
+                                                    <th>Price</th>
+                                                    <th>Expired</th>
+                                                    <th>Weight</th>
+                                                    <th>Image</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($product->productVariations as $variant)
+                                                    <tr>
+                                                        <td>{{ ucfirst($variant->variant_type) }}</td>
+                                                        <td>{{ $variant->variant_value }}</td>
+                                                        <td>{{ $variant->sku }}</td>
+                                                        <td>{{ $variant->variant_stock }}</td>
+                                                        <td>{{ $variant->variant_price }}</td>
+                                                        <td>{{ \Carbon\Carbon::parse($variant->variant_expired)->format('d M Y') }}
+                                                        </td>
+                                                        <td>{{ $variant->weight_variant }}</td>
+                                                        <td>
+                                                            @if ($variant->use_variant_image && $variant->variant_image)
+                                                                <img src="{{ Storage::url($variant->variant_image) }}"
+                                                                    alt="{{ $variant->variant_value }}"
+                                                                    class="variant-thumbnail"
+                                                                    onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
+                                                            @else
+                                                                <span class="text-muted">No image</span>
+                                                            @endif
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
-                                <!-- Product Variants Section Moved Here -->
-                                @if ($product->productVariations->isNotEmpty())
-                                    <h4>Product Variants</h4>
-                                    @php
-                                        $groupedVariants = $product->productVariations->groupBy('variant_type');
-                                    @endphp
-                                    @foreach ($groupedVariants as $variantType => $variants)
-                                        <h4 class="variant-type">{{ ucfirst($variantType) }}</h4>
-                                        <div class="variants-wrap">
-                                            @foreach ($variants as $variant)
-                                                <div class="variant-item">
-                                                    <div class="variant-image-container">
-                                                        @if ($variant->use_variant_image && $variant->variant_image)
-                                                            <img src="{{ Storage::url($variant->variant_image) }}"
-                                                                alt="{{ $variant->variant_value }}"
-                                                                class="variant-image"
-                                                                onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
-                                                        @else
-                                                            <div class="variant-image"
-                                                                style="background-color: #f8f8f8;"></div>
-                                                        @endif
-                                                    </div>
-                                                    <div class="variant-value">{{ $variant->variant_value }}</div>
-                                                    <div class="variant-value">{{ $variant->sku }}</div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endforeach
-                                @endif
-
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Additional Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="detail-group">
+                                    <div class="detail-label">Description</div>
+                                    <div class="detail-value">{{ $product->description }}</div>
+                                </div>
+                                <div class="detail-group mb-0">
+                                    <div class="detail-label">Additional Information</div>
+                                    <div class="detail-value">{{ $product->information_product }}</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="description-card">
-                    <h4>Product Description</h4>
-                    <p>{{ $product->description }}</p>
-                </div>
-
-
-                @if (!empty($product->video))
-                    <div class="description-card">
-                        <h4>Product Video</h4>
-                        <video controls class="w-100 rounded">
-                            <source src="{{ Storage::url($product->video) }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                @endif
             </div>
             @include('admin.layouts.footer')
-
         </div>
-    </div>
 
+    </div>
 
     <script>
         // Fungsi untuk membuka gambar di tab baru
@@ -771,18 +877,12 @@
             window.open(url, '_blank');
         }
     </script>
-
     <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/vendors/choices.js/choices.min.js') }}"></script>
-
-    <!-- toastify -->
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
-
 </body>
 
 </html>

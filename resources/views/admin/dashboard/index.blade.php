@@ -4,20 +4,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard || Admin Glamoire</title>
+    <title>Dashboard - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+
+    <style>
+        .card {
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .font-semibold {
+            font-weight: 600;
+        }
+
+        .font-extrabold {
+            font-weight: 800;
+        }
+
+        .select2-container {
+            width: 100% !important;
+        }
+
+        @media (max-width: 767.98px) {
+            .card-header .d-flex {
+                flex-direction: column;
+            }
+
+            .card-header .d-flex>div {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -43,72 +83,78 @@
             </div>
             <div class="page-content">
                 <section class="row">
-                    <div class="col-12 col-lg-9">
-                        <div class="row">
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon purple">
-                                                    <i class="iconly-boldShow"></i>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">New Order</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
+                    <div class="col-12">
+                        <!-- Stats Cards Row 1 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
                                                 <div class="stats-icon blue">
-                                                    <i class="iconly-boldProfile"></i>
+                                                    <!-- Replace with "New Order" icon -->
+                                                    <i class="bi bi-check-circle fs-3"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">Out Of Stock</h6>
-                                                <h6 class="font-extrabold mb-0">183</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Order Baru</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalPendingOrders }}</h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon orange">
+                                                    <!-- Replace with "Shipment Needs Processing" icon -->
+                                                    <i class="iconly-boldSend"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">Available Stock</h6>
-                                                <h6 class="font-extrabold mb-0">112</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Pengiriman Perlu Diproses</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalProcessingOrders }}</h6>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card">
-                                    <div class="card-body px-3 py-4-5">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                <div class="stats-icon red">
-                                                    <i class="iconly-boldBookmark"></i>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon green">
+                                                    <!-- Replace with "Processed Shipments" icon -->
+                                                    <i class="bi bi-box fs-3"></i>
                                                 </div>
                                             </div>
-                                            <div class="col-md-8">
-                                                <h6 class="text-muted font-semibold">canceled by the buyer.</h6>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Pengiriman Sedang Diproses</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalDeliveryOrders }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon red">
+                                                    <!-- Replace with "Canceled by Buyer" icon -->
+                                                    <i class="bi bi-x-circle fs-3"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Canceled by Buyer</h6>
                                                 <h6 class="font-extrabold mb-0">112</h6>
                                             </div>
                                         </div>
@@ -117,25 +163,108 @@
                             </div>
                         </div>
 
+                        <!-- Stats Cards Row 2 -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon red">
+                                                    <!-- Replace with "Out Of Stock" icon -->
+                                                    <i class="iconly-boldDanger"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Stok Habis</h6>
+                                                <h6 class="font-extrabold mb-0">
+                                                    {{ $products->where('stock_quantity', '=', 0)->count() }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon purple">
+                                                    <i class="iconly-boldWallet"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Stok Rendah</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalLowStock }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon teal">
+                                                    <!-- Replace with "Available Stock" icon -->
+                                                    <i class="iconly-boldBag"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Stok Tersedia</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalProducts }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <div class="card h-100">
+                                    <div class="card-body px-3 py-4">
+                                        <div class="row align-items-center">
+                                            <div class="col-auto">
+                                                <div class="stats-icon blue">
+                                                    <!-- Replace with "Upcoming Promotion" icon -->
+                                                    <i class="iconly-boldDiscount"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <h6 class="text-muted font-semibold">Upcoming Promotion</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $totalPromotions }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Sales Information Card -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
                                         <h4>Sales Information</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <!-- Input untuk memilih range tanggal -->
+                                        <div class="row g-3">
+                                            <div class="col-12 col-md-6">
                                                 <input type="text" id="filter-date-range" class="form-control"
                                                     placeholder="Select Date Range">
                                             </div>
-                                            <div class="col-md-6">
-                                                <!-- Filter untuk memilih Brand -->
+                                            <div class="col-12 col-md-6">
                                                 <select id="filter-brand" class="form-select select2">
                                                     <option value="">Select Brand</option>
                                                     @foreach ($brands as $brand)
-                                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                                        <option value="{{ $brand->id }}">{{ $brand->name }}
+                                                        </option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                            <div class="col-12">
+                                                <button id="export-csv" class="btn btn-primary">Export to CSV</button>
                                             </div>
                                         </div>
                                     </div>
@@ -146,171 +275,151 @@
                             </div>
                         </div>
 
+                        <!-- Add this section after your Weekly Income Chart section -->
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h4>Sales Ranking</h4>
-                                            <p>best-selling product across all brands</p>
-                                        </div>
-                                        <div class="d-flex">
-                                            <div class="me-4">
-                                                <!-- Input untuk memilih range tanggal -->
-                                                <input type="text" id="filter-date-range" class="form-control"
-                                                    placeholder="Select Date Range">
+                                    <div class="card-header">
+                                        <h4>Performa Paket Diskon</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <!-- Kriteria Utama -->
+                                        <div class="row g-3 mb-2">
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Penjualan</h6>
+                                                            <h6 class="font-extrabold mb-0">Rp 77.200</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="me-4">
-                                                    <!-- Filter untuk memilih Brand -->
-                                                    <button type="button"
-                                                        class="btn btn-sm btn-primary">Export</button>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Pesanan</h6>
+                                                            <h6 class="font-extrabold mb-0">3</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Produk Terjual</h6>
+                                                            <h6 class="font-extrabold mb-0">6</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Total Pembeli</h6>
+                                                            <h6 class="font-extrabold mb-0">2</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-sm-6 col-lg">
+                                                <div class="card">
+                                                    <div class="card-body px-3 py-4">
+                                                        <div class="d-flex flex-column">
+                                                            <h6 class="text-muted font-semibold">Jumlah Paket Diskon
+                                                                Dipesan</h6>
+                                                            <h6 class="font-extrabold mb-0">3</h6>
+                                                            <small class="text-muted d-flex align-items-center">
+                                                                vs Kemarin pada 00:00-9:00
+                                                                <span class="ms-2 text-success">0.00%</span>
+                                                            </small>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="card-body">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>No.</th>
-                                                    <th>Product</th>
-                                                    <th>quantity of items sold</th>
-                                                    <th>quantity available</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($products as $product)
-                                                    <tr>
-                                                        <td>{{ $loop->iteration }}</td>
-                                                        <td>
-                                                            <img src="{{ Storage::url($product->main_image) }}"
-                                                                loading="lazy" class="lazyload" alt="Product Image"
-                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
-                                                            {{ $product->product_name }}
-                                                        </td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                        <!-- Grafik Setiap Kriteria -->
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h5>Grafik Setiap Kriteria</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="discountPerformanceChart" style="height: 300px;"></canvas>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-
-
-
+                        <!-- Sales Ranking Card -->
                         <div class="row">
-                            <div class="col-12 col-xl-4">
+                            <div class="col-12">
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Profile Visit</h4>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="d-flex align-items-center">
-                                                    <svg class="bi text-primary" width="32" height="32"
-                                                        fill="blue" style="width:10px">
-                                                        <use
-                                                            xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                                    </svg>
-                                                    <h5 class="mb-0 ms-3">Europe</h5>
-                                                </div>
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                            <div>
+                                                <h4 class="mb-1">Sales Ranking</h4>
+                                                <p class="mb-0">Best-selling product across all brands</p>
                                             </div>
-                                            <div class="col-6">
-                                                <h5 class="mb-0">862</h5>
-                                            </div>
-                                            <div class="col-12">
-                                                <div id="chart-europe"></div>
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <input type="text" id="filter-date-range" class="form-control"
+                                                    placeholder="Select Date Range">
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="d-flex align-items-center">
-                                                    <svg class="bi text-success" width="32" height="32"
-                                                        fill="blue" style="width:10px">
-                                                        <use
-                                                            xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                                    </svg>
-                                                    <h5 class="mb-0 ms-3">America</h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <h5 class="mb-0">375</h5>
-                                            </div>
-                                            <div class="col-12">
-                                                <div id="chart-america"></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="d-flex align-items-center">
-                                                    <svg class="bi text-danger" width="32" height="32"
-                                                        fill="blue" style="width:10px">
-                                                        <use
-                                                            xlink:href="assets/vendors/bootstrap-icons/bootstrap-icons.svg#circle-fill" />
-                                                    </svg>
-                                                    <h5 class="mb-0 ms-3">Indonesia</h5>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <h5 class="mb-0">1025</h5>
-                                            </div>
-                                            <div class="col-12">
-                                                <div id="chart-indonesia"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-xl-8">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h4>Latest Comments</h4>
                                     </div>
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                            <table class="table table-hover table-lg">
+                                            <table class="table table-striped">
                                                 <thead>
                                                     <tr>
-                                                        <th>Name</th>
-                                                        <th>Comment</th>
+                                                        <th>No.</th>
+                                                        <th>Product</th>
+                                                        <th>Quantity Sold</th>
+                                                        <th>Quantity Available</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td class="col-3">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-md">
-                                                                    <img src="assets/images/faces/5.jpg">
+                                                    @foreach ($products as $product)
+                                                        <tr>
+                                                            <td>{{ $loop->iteration }}</td>
+                                                            <td>
+                                                                <div class="d-flex align-items-center">
+                                                                    <img src="{{ Storage::url($product->main_image) }}"
+                                                                        loading="lazy" class="lazyload me-2"
+                                                                        alt="Product Image"
+                                                                        style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                                                                    <span>{{ $product->product_name }}</span>
                                                                 </div>
-                                                                <p class="font-bold ms-3 mb-0">Si Cantik</p>
-                                                            </div>
-                                                        </td>
-                                                        <td class="col-auto">
-                                                            <p class=" mb-0">Congratulations on your graduation!</p>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="col-3">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="avatar avatar-md">
-                                                                    <img src="assets/images/faces/2.jpg">
-                                                                </div>
-                                                                <p class="font-bold ms-3 mb-0">Si Ganteng</p>
-                                                            </div>
-                                                        </td>
-                                                        <td class="col-auto">
-                                                            <p class=" mb-0">Wow amazing design! Can you make another
-                                                                tutorial for
-                                                                this design?</p>
-                                                        </td>
-                                                    </tr>
+                                                            </td>
+                                                            <td>{{ $product->stock_quantity }}</td>
+                                                            <td>{{ $product->stock_quantity }}</td>
+                                                        </tr>
+                                                    @endforeach
                                                 </tbody>
                                             </table>
                                         </div>
@@ -318,56 +427,20 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-12 col-lg-3">                       
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Recent Messages</h4>
-                            </div>
-                            <div class="card-content pb-4">
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/4.jpg">
+                        <!-- Weekly Income Chart -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4>Pemasukan Mingguan</h4>
                                     </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">Hank Schrader</h5>
-                                        <h6 class="text-muted mb-0">@johnducky</h6>
+                                    <div class="card-body">
+                                        <div id="weeklyIncomeChart"></div>
                                     </div>
-                                </div>
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/5.jpg">
-                                    </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">Dean Winchester</h5>
-                                        <h6 class="text-muted mb-0">@imdean</h6>
-                                    </div>
-                                </div>
-                                <div class="recent-message d-flex px-4 py-3">
-                                    <div class="avatar avatar-lg">
-                                        <img src="assets/images/faces/1.jpg">
-                                    </div>
-                                    <div class="name ms-4">
-                                        <h5 class="mb-1">John Dodol</h5>
-                                        <h6 class="text-muted mb-0">@dodoljohn</h6>
-                                    </div>
-                                </div>
-                                <div class="px-4">
-                                    <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Start
-                                        Conversation</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>Visitors Profile</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="chart-visitors-profile"></div>
-                            </div>
-                        </div>
-                       
                     </div>
                 </section>
             </div>
@@ -378,103 +451,71 @@
     </div>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
-
     <script src="assets/vendors/apexcharts/apexcharts.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
-
     <script src="assets/js/main.js"></script>
-    {{-- script awal untuk sales information --}}
-    {{-- <script>
-        // Inisialisasi chart menggunakan ApexCharts
-        let salesChart;
-
-        // Function untuk memuat data berdasarkan tanggal dan tipe data
-        function loadSalesData(startDate, endDate, type) {
-            // Kamu bisa ganti ini dengan data yang kamu dapatkan dari backend
-            let allData = {
-                sales: [40, 55, 60, 70, 80, 90, 100],
-                returns: [10, 15, 20, 25, 30, 35, 40]
-            };
-
-            let categories = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-
-            let filteredData = [];
-
-            // Filter data sesuai tipe
-            if (type === 'sales') {
-                filteredData = allData.sales;
-            } else if (type === 'returns') {
-                filteredData = allData.returns;
-            } else {
-                filteredData = allData.sales.map((value, index) => value + allData.returns[index]);
-            }
-
-            // Update atau render chart
-            if (salesChart) {
-                salesChart.updateOptions({
-                    series: [{
-                        name: 'Amount',
-                        data: filteredData
-                    }],
-                    xaxis: {
-                        categories: categories
-                    }
-                });
-            } else {
-                var options = {
-                    chart: {
-                        type: 'line',
-                        height: 350
-                    },
-                    series: [{
-                        name: 'Amount',
-                        data: filteredData
-                    }],
-                    xaxis: {
-                        categories: categories
-                    }
-                };
-
-                salesChart = new ApexCharts(document.querySelector("#chart-sales-information"), options);
-                salesChart.render();
-            }
-        }
-
-        // Inisialisasi Date Range Picker
-        $(function() {
-            $('#filter-date-range').daterangepicker({
-                opens: 'left',
-                locale: {
-                    format: 'YYYY-MM-DD'
-                }
-            }, function(start, end, label) {
-                let type = $('#filter-type').val();
-                loadSalesData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'), type);
-            });
-        });
-
-        // Event listener untuk tipe data
-        document.getElementById('filter-type').addEventListener('change', function() {
-            let dates = $('#filter-date-range').data('daterangepicker');
-            let startDate = dates.startDate.format('YYYY-MM-DD');
-            let endDate = dates.endDate.format('YYYY-MM-DD');
-            let type = this.value;
-
-            loadSalesData(startDate, endDate, type);
-        });
-
-        // Load initial chart data
-        let initialStart = moment().subtract(6, 'days').format('YYYY-MM-DD');
-        let initialEnd = moment().format('YYYY-MM-DD');
-        loadSalesData(initialStart, initialEnd, 'all');
-    </script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dummy data for the chart
+            const dates = ['01/11', '02/11', '03/11', '04/11', '05/11', '06/11', '07/11',
+                '08/11', '09/11', '10/11', '11/11', '12/11', '13/11', '14/11'
+            ];
+
+            const salesData = [65000, 55000, 72000, 58000, 52000, 62000, 48000,
+                58000, 63000, 60000, 55000, 65000, 70000, 52000
+            ];
+
+            const buyersData = [15, 16, 15, 17, 14, 13, 16, 18, 17, 18, 15, 14, 19, 16];
+
+            const ctx = document.getElementById('discountPerformanceChart').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                            label: 'Sale',
+                            data: salesData,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1,
+                            fill: false
+                        },
+                        {
+                            label: 'Buyers',
+                            data: buyersData,
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+
+    {{-- script sales information untuk bagian 7 hari terakhir --}}
+    {{-- <script>
         // inisialisasi select2
         $(document).ready(function() {
             $('.select2').select2({
@@ -555,42 +596,44 @@
         let initialStart = moment().subtract(6, 'days').format('YYYY-MM-DD');
         let initialEnd = moment().format('YYYY-MM-DD');
         loadSalesData(initialStart, initialEnd, ''); // Muat data awal
-    </script>
+    </script> --}}
 
-    {{-- <script>
+    <script>
+        // inisialisasi select2
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: 'Select Brand', // Placeholder untuk select
+                allowClear: true // Mengizinkan opsi untuk dibersihkan
+            });
+        });
+
         // Inisialisasi chart menggunakan ApexCharts
         let salesChart;
 
-        // Function untuk memuat data berdasarkan tanggal dan tipe data
-        function loadSalesData(startDate, endDate, type) {
-            // Kamu bisa ganti ini dengan data yang kamu dapatkan dari backend
-            let allData = {
-                sales: [40, 55, 60, 70, 80, 90, 100],
-                returns: [10, 15, 20, 25, 30, 35, 40]
-            };
+        // Dummy data for the last 3 months
+        // Dummy data for the last 3 months
+        const dummyCategories = [
+            moment().subtract(3, 'months').format('MMMM YYYY'), // Misalnya: "September 2024"
+            moment().subtract(2, 'months').format('MMMM YYYY'),
+            moment().subtract(1, 'months').format('MMMM YYYY'),
+            moment().format('MMMM YYYY'),
+        ];
 
-            let categories = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-            let filteredData = [];
 
-            // Filter data sesuai tipe
-            if (type === 'sales') {
-                filteredData = allData.sales;
-            } else if (type === 'returns') {
-                filteredData = allData.returns;
-            } else {
-                filteredData = allData.sales.map((value, index) => value + allData.returns[index]);
-            }
+        const dummySalesData = [100, 150, 200, 250]; // Dummy sales data for each month
 
-            // Update atau render chart
+        // Function to load dummy data
+        function loadDummySalesData() {
+            // Render chart
             if (salesChart) {
                 salesChart.updateOptions({
                     series: [{
                         name: 'Amount',
-                        data: filteredData
+                        data: dummySalesData
                     }],
                     xaxis: {
-                        categories: categories
+                        categories: dummyCategories
                     }
                 });
             } else {
@@ -601,10 +644,10 @@
                     },
                     series: [{
                         name: 'Amount',
-                        data: filteredData
+                        data: dummySalesData
                     }],
                     xaxis: {
-                        categories: categories
+                        categories: dummyCategories
                     }
                 };
 
@@ -613,57 +656,177 @@
             }
         }
 
+        function exportToCSV() {
+            let dates = $('#filter-date-range').data('daterangepicker');
+            let startDate = dates.startDate.format('YYYY-MM-DD');
+            let endDate = dates.endDate.format('YYYY-MM-DD');
+            let brandId = $('#filter-brand').val();
+
+            // In a real scenario, you would fetch this data from your backend
+            // For this example, we'll use dummy data
+            let csvContent = [
+                ['No. Pesanan', 'Status Pesanan', 'Status Pembatalan/ Pengembalian', 'No. Resi', 'Opsi Pengiriman',
+                    'Antar ke counter/ pick-up', 'Pesanan Harus Dikirimkan Sebelum (Menghindari keterlambatan)',
+                    'Waktu Pengiriman Diatur', 'Waktu Pesanan Dibuat', 'Waktu Pembayaran Dilakukan',
+                    'Metode Pembayaran', 'SKU Induk', 'Nama Produk', 'Nomor Referensi SKU', 'Nama Variasi',
+                    'Harga Awal', 'Harga Setelah Diskon', 'Jumlah', 'Returned quantity', 'Total Harga Produk',
+                    'Total Diskon', 'Diskon Dari Penjual', 'Diskon Dari Shopee', 'Berat Produk',
+                    'Jumlah Produk di Pesan', 'Total Berat', 'Voucher Ditanggung Penjual', 'Cashback Koin',
+                    'Voucher Ditanggung Shopee', 'Paket Diskon', 'Paket Diskon (Diskon dari Shopee)',
+                    'Paket Diskon (Diskon dari Penjual)', 'Potongan Koin Shopee', 'Diskon Kartu Kredit',
+                    'Ongkos Kirim Dibayar oleh Pembeli', 'Estimasi Potongan Biaya Pengiriman',
+                    'Ongkos Kirim Pengembalian Barang', 'Total Pembayaran', 'Perkiraan Ongkos Kirim',
+                    'Catatan dari Pembeli', 'Catatan', 'Username (Pembeli)', 'Nama Penerima', 'No. Telepon',
+                    'Alamat Pengiriman', 'Kota/Kabupaten', 'Provinsi', 'Waktu Pesanan Selesai'
+                ],
+                ['1', 'Selesai', '', 'JP6969696969', 'J&T Express', 'Antar ke counter', '2023-05-15 23:59',
+                    '2023-05-14 10:00', '2023-05-13 14:30', '2023-05-13 14:35', 'Transfer Bank', 'PROD001',
+                    'T-Shirt Katun', 'SKU001', 'Putih-M', '100000', '90000', '1', '0', '90000', '10000',
+                    '5000', '5000', '0.3', '1', '0.3', '5000', '1000', '5000', '0', '0', '0', '2000', '0',
+                    '15000', '0', '0', '105000', '15000', 'Tolong bungkus rapi', '', 'john_doe',
+                    'John Doe', '081234567890', 'Jl. Contoh No. 123', 'Jakarta Selatan', 'DKI Jakarta',
+                    '2023-05-16 15:30'
+                ],
+                ['2', 'Dikirim', '', 'JP7070707070', 'J&T Express', 'Antar ke counter', '2023-05-16 23:59',
+                    '2023-05-15 11:00', '2023-05-14 09:45', '2023-05-14 09:50', 'Transfer Bank', 'PROD002',
+                    'Celana Jeans', 'SKU002', 'Biru-32', '250000', '225000', '1', '0', '225000', '25000',
+                    '20000', '5000', '0.7', '1', '0.7', '0', '0', '0', '0', '0', '0', '0', '0',
+                    '15000', '0', '0', '240000', '15000', '', '', 'jane_smith',
+                    'Jane Smith', '087654321098', 'Jl. Sample No. 456', 'Surabaya', 'Jawa Timur',
+                    '2023-05-17 14:45'
+                ],
+                // ... add more rows as needed
+            ];
+
+
+            // Convert array to CSV string
+            let csv = csvContent.map(row => row.join(',')).join('\n');
+
+            // Create a Blob with the CSV content
+            let blob = new Blob([csv], {
+                type: 'text/csv;charset=utf-8;'
+            });
+            let url = URL.createObjectURL(blob);
+
+            // Create a link to download the CSV file
+            let link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", "sales_data.csv");
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Add event listener for export button
+        document.getElementById('export-csv').addEventListener('click', exportToCSV);
+
+
+
         // Inisialisasi Date Range Picker
         $(function() {
             $('#filter-date-range').daterangepicker({
                 opens: 'left',
+                startDate: moment().subtract(3, 'months').startOf('month'), // Set tanggal awal 3 bulan lalu
+                endDate: moment().endOf('month'), // Set tanggal akhir akhir bulan ini
                 locale: {
                     format: 'YYYY-MM-DD'
                 }
-            }, function(start, end, label) {
-                let type = $('#filter-type').val();
-                loadSalesData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'), type);
+            }, function(start, end) {
+                // Placeholder for future functionality (filtering data based on date range)
+                console.log('Date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format(
+                    'YYYY-MM-DD'));
+                // Call to load sales data can be here if needed in future
             });
         });
 
-        // Event listener untuk tipe data
-        document.getElementById('filter-type').addEventListener('change', function() {
+        // Event listener for brand filter
+        document.getElementById('filter-brand').addEventListener('change', function() {
             let dates = $('#filter-date-range').data('daterangepicker');
             let startDate = dates.startDate.format('YYYY-MM-DD');
             let endDate = dates.endDate.format('YYYY-MM-DD');
-            let type = this.value;
+            let brandId = this.value;
 
-            loadSalesData(startDate, endDate, type);
+            loadSalesData(startDate, endDate, brandId);
         });
 
-        // Load initial chart data
-        let initialStart = moment().subtract(6, 'days').format('YYYY-MM-DD');
-        let initialEnd = moment().format('YYYY-MM-DD');
-        loadSalesData(initialStart, initialEnd, 'all');
 
+        // Load initial dummy data for the last 3 months
+        loadDummySalesData(); // Muat data awal
+    </script>
 
+    {{-- script penjualan 1 minggu --}}
 
-        // Function untuk memuat data berdasarkan brand
-        function loadSalesDataByBrand(brandId) {
+    <script>
+        var options = {
+            series: [{
+                name: 'Pemasukan',
+                data: [500000, 300000, 700000, 400000, 600000, 450000, 800000] // Data dummy pemasukan per hari
+            }],
+            chart: {
+                height: 350,
+                type: 'bar', // Kamu bisa ganti tipe chart menjadi 'line' atau yang lain
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: false,
+                    columnWidth: '55%',
+                    endingShape: 'rounded'
+                },
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                show: true,
+                width: 2,
+                colors: ['transparent']
+            },
+            xaxis: {
+                categories: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'], // Hari dalam seminggu
+            },
+            yaxis: {
+                title: {
+                    text: 'Pemasukan (Rp)'
+                }
+            },
+            fill: {
+                opacity: 1
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return "Rp " + val.toLocaleString(); // Format Rupiah
+                    }
+                }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#weeklyIncomeChart"), options);
+        chart.render();
+    </script>
+
+    {{-- setup backend data dinamis --}}
+    {{-- <script>
+        function loadSalesData(startDate, endDate, brandId) {
             $.ajax({
-                url: '/dashboard/get-sales-data', // Ganti dengan route yang sesuai
+                url: '/your-route-to-get-sales-data', // Ubah dengan route yang sesuai
                 method: 'GET',
                 data: {
+                    start_date: startDate,
+                    end_date: endDate,
                     brand_id: brandId
                 },
                 success: function(response) {
-                    let categories = response.categories; // Kategori untuk x-axis (misal: tanggal)
-                    let data = response.data; // Data yang sesuai dengan brand
-
-                    // Update chart atau render chart baru
+                    // Render chart with dynamic data
                     if (salesChart) {
                         salesChart.updateOptions({
                             series: [{
-                                name: 'Sales Amount',
-                                data: data
+                                name: 'Amount',
+                                data: response.data // Data dari response
                             }],
                             xaxis: {
-                                categories: categories
+                                categories: response.categories // Kategori dari response
                             }
                         });
                     } else {
@@ -673,11 +836,11 @@
                                 height: 350
                             },
                             series: [{
-                                name: 'Sales Amount',
-                                data: data
+                                name: 'Amount',
+                                data: response.data // Data dari response
                             }],
                             xaxis: {
-                                categories: categories
+                                categories: response.categories // Kategori dari response
                             }
                         };
 
@@ -685,140 +848,50 @@
                             options);
                         salesChart.render();
                     }
-                }
-            });
-        }
-
-        // Event listener untuk filter brand
-        document.getElementById('filter-brand').addEventListener('change', function() {
-            let brandId = this.value;
-            loadSalesDataByBrand(brandId);
-        });
-    </script> --}}
-
-    {{-- <script>
-        // Inisialisasi chart menggunakan ApexCharts
-        let salesChart;
-
-        // Function untuk memuat data berdasarkan tanggal, brand, dan tipe data
-        function loadSalesData(startDate, endDate, brandId, type) {
-            $.ajax({
-                url: '/dashboard/get-sales-data', // Ganti dengan route yang sesuai
-                method: 'GET',
-                data: {
-                    start_date: startDate,
-                    end_date: endDate,
-                    brand_id: brandId,
-                    type: type // Bisa sales atau returns
                 },
-                success: function(response) {
-                    let categories = response.categories; // Kategori untuk x-axis (misal: tanggal)
-                    let data = response.data; // Data yang sesuai dengan filter
-
-                    // Update chart atau render chart baru
-                    if (salesChart) {
-                        salesChart.updateOptions({
-                            series: [{
-                                name: 'Sales Amount',
-                                data: data
-                            }],
-                            xaxis: {
-                                categories: categories
-                            }
-                        });
-                    } else {
-                        var options = {
-                            chart: {
-                                type: 'line',
-                                height: 350
-                            },
-                            series: [{
-                                name: 'Sales Amount',
-                                data: data
-                            }],
-                            xaxis: {
-                                categories: categories
-                            }
-                        };
-
-                        salesChart = new ApexCharts(document.querySelector("#chart-sales-information"),
-                        options);
-                        salesChart.render();
-                    }
+                error: function(xhr) {
+                    console.error(xhr);
+                    // Tambahkan penanganan error sesuai kebutuhan
                 }
             });
         }
 
-        // Inisialisasi Date Range Picker
-        $(function() {
+
+        $(document).ready(function() {
+            // Initialize select2 for brand selection
+            $('.select2').select2({
+                placeholder: 'Select Brand',
+                allowClear: true
+            });
+
+            // Load initial chart data for the last 3 months
+            let initialStart = moment().subtract(3, 'months').startOf('month').format('YYYY-MM-DD');
+            let initialEnd = moment().endOf('month').format('YYYY-MM-DD');
+            loadSalesData(initialStart, initialEnd, ''); // Load initial data
+
+            // Date Range Picker Initialization
             $('#filter-date-range').daterangepicker({
                 opens: 'left',
+                startDate: moment().subtract(3, 'months').startOf('month'),
+                endDate: moment().endOf('month'),
                 locale: {
                     format: 'YYYY-MM-DD'
                 }
-            }, function(start, end, label) {
-                let brandId = $('#filter-brand').val(); // Dapatkan brand yang dipilih
-                let type = $('#filter-type').val(); // Dapatkan tipe data (sales/returns)
-                loadSalesData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'), brandId, type);
+            }, function(start, end) {
+                let brandId = $('#filter-brand').val();
+                loadSalesData(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'), brandId);
+            });
+
+            // Event listener for brand filter
+            document.getElementById('filter-brand').addEventListener('change', function() {
+                let dates = $('#filter-date-range').data('daterangepicker');
+                let startDate = dates.startDate.format('YYYY-MM-DD');
+                let endDate = dates.endDate.format('YYYY-MM-DD');
+                let brandId = this.value;
+
+                loadSalesData(startDate, endDate, brandId);
             });
         });
-
-        // Event listener untuk filter brand
-        document.getElementById('filter-brand').addEventListener('change', function() {
-            let dates = $('#filter-date-range').data('daterangepicker');
-            let startDate = dates.startDate.format('YYYY-MM-DD');
-            let endDate = dates.endDate.format('YYYY-MM-DD');
-            let brandId = this.value; // Brand yang dipilih
-            let type = $('#filter-type').val(); // Tipe data (sales/returns)
-
-            loadSalesData(startDate, endDate, brandId, type);
-        });
-
-        // Event listener untuk tipe data
-        document.getElementById('filter-type').addEventListener('change', function() {
-            let dates = $('#filter-date-range').data('daterangepicker');
-            let startDate = dates.startDate.format('YYYY-MM-DD');
-            let endDate = dates.endDate.format('YYYY-MM-DD');
-            let brandId = $('#filter-brand').val(); // Brand yang dipilih
-            let type = this.value; // Tipe data (sales/returns)
-
-            loadSalesData(startDate, endDate, brandId, type);
-        });
-
-        // Load initial chart data (7 hari terakhir dan semua brand secara otomatis)
-        let initialStart = moment().subtract(6, 'days').format('YYYY-MM-DD');
-        let initialEnd = moment().format('YYYY-MM-DD');
-        loadSalesData(initialStart, initialEnd, '', 'all');
-    </script> --}}
-
-
-    {{-- setup backend --}}
-    {{-- <script>
-        function loadSalesData(startDate, endDate, type) {
-            $.ajax({
-                url: '/get-sales-data',
-                method: 'GET',
-                data: {
-                    start_date: startDate,
-                    end_date: endDate,
-                    type: type
-                },
-                success: function(response) {
-                    let categories = response.categories; // Label untuk x-axis (misal: tanggal)
-                    let filteredData = response.data; // Data yang ditampilkan (sales, returns, atau keduanya)
-
-                    salesChart.updateOptions({
-                        series: [{
-                            name: 'Amount',
-                            data: filteredData
-                        }],
-                        xaxis: {
-                            categories: categories
-                        }
-                    });
-                }
-            });
-        }
     </script> --}}
 </body>
 

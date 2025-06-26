@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class JournalController extends Controller
+{
+    public function indexJournal()
+    {
+        return view('accounting.journal.index');
+    }
+}
