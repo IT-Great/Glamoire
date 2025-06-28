@@ -553,6 +553,7 @@
                 $('.loading-container').hide(); // Show the spinner
             },
             error: function(xhr) {
+                console.log(xhr);
                 spinner.hide();
                 button.prop('disabled', false);
                 $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();
