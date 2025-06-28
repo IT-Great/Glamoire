@@ -168,7 +168,7 @@
                                     @if ($product->sale != 0)
                                     <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
                                     @endif
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->sale }}</p>
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
                                 <div class="align-items-center flex gap-2">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -205,7 +205,7 @@
                                     @if ($product->sale != 0)
                                     <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
                                     @endif
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->sale }}</p>
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
                                 <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
