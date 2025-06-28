@@ -553,7 +553,21 @@
                 $('.loading-container').hide(); // Show the spinner
             },
             error: function(xhr) {
-                console.log(xhr);
+                console.error("Status: " + status);               // contoh: "error"
+                console.error("HTTP Status: " + xhr.status);      // contoh: 500
+                console.error("Status Text: " + xhr.statusText);  // contoh: "Internal Server Error"
+                console.error("Error: " + error);                 // isi dari parameter error
+
+                // Log isi responseText untuk lihat pesan dari Laravel (bisa berupa HTML, JSON, atau script dump)
+                console.error("Response Text: ", xhr.responseText);
+
+                // Jika server kirim JSON error, bisa coba parse:
+                try {
+                    var json = JSON.parse(xhr.responseText);
+                    console.error("JSON Error: ", json);
+                } catch (e) {
+                    console.warn("Response is not JSON");
+                }
                 spinner.hide();
                 button.prop('disabled', false);
                 $("#validationVoucher").text("Terjadi kesalahan. Silakan coba lagi.").show();

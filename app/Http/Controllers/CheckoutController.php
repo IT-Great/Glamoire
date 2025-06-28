@@ -1430,8 +1430,9 @@ class CheckoutController extends Controller
 
             }
         } catch (Exception $err) {
-            dd($err);
-        }
+        Log::error($err);
+        return response()->json(['error' => $err->getMessage()], 500); 
+        }       
     }
 
     // BUYNOW
