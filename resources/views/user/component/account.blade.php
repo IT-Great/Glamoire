@@ -439,17 +439,17 @@
                                             <span
                                                 class=" 
                                                 @if ($order->status == 'completed') text-success
-                                                @elseif($order->status == 'waiting confirm') text-secondary
-                                                @elseif($order->status == 'pending') text-info
-                                                @elseif($order->status == 'proccessing') text-warning @endif
+                                                @elseif($order->status == 'pending') text-dark
+                                                @elseif($order->status == 'processing') text-dark
+                                                @elseif($order->status == 'delivery') text-info @endif
                                                 d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                 {{ $order->status == 'completed'
                                                     ? 'Selesai'
-                                                    : ($order->status == 'waiting confirm'
+                                                    : ($order->status == 'pending'
                                                         ? 'Menunggu Konfirmasi'
-                                                        : ($order->status == 'pending'
+                                                        : ($order->status == 'processing'
                                                             ? 'Sedang Diproses'
-                                                            : ($order->status == 'proccessing'
+                                                            : ($order->status == 'delivery'
                                                                 ? 'Dalam Pengiriman'
                                                                 : 'Unknown'))) }}
                                             </span>
