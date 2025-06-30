@@ -55,7 +55,7 @@ class Order extends Model
 
     public function ratingAndReviews()
     {
-        return $this->hasMany(ratingAndReview::class);
+        return $this->hasMany(RatingAndReview::class);
     }
 
     // new update
