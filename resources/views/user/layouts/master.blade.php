@@ -1202,9 +1202,12 @@
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
+          customClass: {
+            popup: "small-swal", // Add custom class
+          },
           didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
           },
         });
 
@@ -1231,9 +1234,12 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
@@ -1259,6 +1265,9 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
@@ -1287,9 +1296,12 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
@@ -1315,9 +1327,12 @@
             showConfirmButton: false,
             timer: 4500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
