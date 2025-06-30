@@ -806,7 +806,7 @@
         // Ensure the quantity is a valid number and greater than 0
         if (!isNaN(newQuantity) && newQuantity > 0) {
             if(newQuantity > maxQuantity) {
-                $(this).val(maxQuantity-2); // Reset to max quantity if exceeded
+                $(this).val(maxQuantity); // Reset to max quantity if exceeded
             } else {
                 $(this).val(newQuantity); // Set the new valid quantity
             }
