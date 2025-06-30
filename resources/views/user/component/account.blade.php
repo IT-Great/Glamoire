@@ -55,7 +55,7 @@
                         <form class="row" id="profileForm" method="POST" action="{{ route('edit.account') }}">
                             @csrf
                             @method('PUT')
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="name"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama
                                     Lengkap</label>
@@ -65,7 +65,7 @@
                                     value="{{ $profile->fullname ? $profile->fullname : '' }}"
                                     {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="handphone"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
                                 <div class="input-group">
@@ -79,16 +79,20 @@
                                         {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="email"
-                                    class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Email</label>
-                                <input type="email"
+                                    class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Email</lab el>
+                                {{-- <input type="email"
                                     class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
                                     id="inputEmail" placeholder="Enter your email"
                                     value="{{ $profile->email ? $profile->email : '' }}" name="email"
-                                    {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
+                                    {{ $profile->email_verified_at == null ? 'disabled' : '' }}> --}}
+                                <div class="bg-gray-100 text-gray-800 rounded-md px-4 py-2 text-sm lg:text-base">
+                                    {{ $profile->email ?? '-' }}
+                                </div>
                             </div>
-                            <div class="col-12">
+
+                            <div class="col-12 mb-3">
                                 <label for="Gender"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jenis
                                     Kelamin</label>
@@ -899,7 +903,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -907,7 +911,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -915,7 +919,7 @@
                                                                             Diambil Kurir</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-truck"></i>
                                                                         </span>
                                                                         <span
@@ -1189,7 +1193,7 @@
                                                         </i>
                                                     </div>
                                                     <div class="grid name-price hover:cursor-pointer">
-                                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
+                                                        <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
                                                             <a href="/{{ $wp->product_code }}_product" 
                                                             class="text-decoration-none truncate-ellipsis" 
                                                             data-bs-toggle="tooltip" 
@@ -1920,6 +1924,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -1928,6 +1935,37 @@
             Toast.fire({
                 icon: "success",
                 text: "Berhasil menambahkan alamat pengiriman baru",
+                title: "Berhasil",
+                willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+            });
+        </script>
+    @endif
+    
+    @if (session('after_update_address'))
+        <script>
+            var Toast = Swal.mixin({
+                toast: true,
+                position: "center",
+                background: "#183018",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
+            Toast.fire({
+                icon: "success",
+                text: "Berhasil mengubah alamat pengiriman",
                 title: "Berhasil",
                 willOpen: () => {
                     const title = document.querySelector('.swal2-title');
@@ -1948,6 +1986,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -1976,6 +2017,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;

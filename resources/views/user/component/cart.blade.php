@@ -131,7 +131,7 @@
                                                                 <input type="number"
                                                                     id="product-quantity-{{ $product->product_variant_id }}"
                                                                     value="{{ $product->quantity }}"
-                                                                    name="total_product_variant"
+                                                                    name=""
                                                                     class="text-xs form-control bg-secondary text-center no-spinner"
                                                                     min="1"
                                                                     max="{{ $product->productVariant->variant_stock }}"
@@ -144,7 +144,7 @@
                                                     </div>
                                                 </div>
                                                 @endif
-                                            </div>
+                                            </total_product_variantdiv>
                                         </div>
                                     </div>
                                 </div>
@@ -540,12 +540,19 @@
             $(document).on('input', '[name="total_product"]', function() {
                 var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
                 var newQuantity = parseInt($(this).val());
+                var maxQuantity = parseInt($(this).attr('max')); // Get max quantity from input attribute
 
                 // Ensure the quantity is a valid number and greater than 0
                 if (!isNaN(newQuantity) && newQuantity > 0) {
-                    updateProductQuantity(productId, newQuantity);
+                    if(newQuantity > maxQuantity) {
+                        $(this).val(maxQuantity); // Reset to max quantity if exceeded
+                        updateProductQuantity(productId, $(this).val(maxQuantity));
+                    } else {
+                        $(this).val(newQuantity); // Set the new valid quantity
+                        updateProductQuantity(productId, $(this).val(newQuantity));
+                    }
                 } else {
-                    alert("Quantity must be a valid number greater than 0");
+                    // alert("Quantity must be a valid number greater than 0");
                     $(this).val(1); // Reset to 1 if the input is invalid
                     updateProductQuantity(productId, 1);
                 }
@@ -602,7 +609,7 @@
             if (!isNaN(newQuantity) && newQuantity > 0) {
                 updateProductQuantityVariant(productId, newQuantity);
             } else {
-                alert("Quantity must be a valid number greater than 0");
+                // alert("Quantity must be a valid number greater than 0");
                 $(this).val(1); // Reset to 1 if the input is invalid
                 updateProductQuantityVariant(productId, 1);
             }

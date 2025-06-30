@@ -184,6 +184,7 @@
                                             min="1"
                                             max="{{ $product->stock_quantity }}"
                                             data-unify="Quantity"
+                                            name="quantityProduct"
                                             oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                         >
                                         <div class="input-group-btn">
@@ -221,6 +222,7 @@
                                         min="1"
                                         max="{{ $product->stock_quantity }}"
                                         data-unify="Quantity"
+                                        name="quantityProduct"
                                         oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                     >
                                     <div class="input-group-btn">
@@ -794,6 +796,24 @@
         var fullscreenModalElement = document.getElementById('fullscreenModal');
         var modal = new bootstrap.Modal(fullscreenModalElement); // Recreate the modal
         modal.hide(); // Close the modal
+    });
+
+    $(document).on('input', '[name="quantityProduct"]', function() {
+        var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
+        var newQuantity = parseInt($(this).val());
+        var maxQuantity = {{ $product->stock_quantity }}; // Get max quantity from the product data
+
+        // Ensure the quantity is a valid number and greater than 0
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            if(newQuantity > maxQuantity) {
+                $(this).val(maxQuantity-2); // Reset to max quantity if exceeded
+            } else {
+                $(this).val(newQuantity); // Set the new valid quantity
+            }
+            $(this).value(maxQuantity);
+        } else {
+            $(this).val(1); // Reset to 1 if the input is invalid
+        }
     });
 
 
