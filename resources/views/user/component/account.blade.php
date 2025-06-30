@@ -584,6 +584,8 @@
                                             </div>
                                         </div>
 
+
+
                                     </div>
                                 </div>
                                 <!-- END DONE -->
@@ -614,7 +616,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -622,7 +624,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -630,7 +632,7 @@
                                                                             Diambil Kurir</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{$order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-truck"></i>
                                                                         </span>
                                                                         <span
