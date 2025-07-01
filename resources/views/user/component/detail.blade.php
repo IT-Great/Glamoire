@@ -825,7 +825,7 @@
     }
 
     var swiperDetailProduct = new Swiper(".mySwiperDetail", {
-        slidesPerView: 1,
+        slidesPerView: 5,
         spaceBetween: 15,
         cssMode: true,
         navigation: {
@@ -847,22 +847,22 @@
           },
           // Tablet
           768: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
           },
           425: {
-            slidesPerView: 2, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           375: {
-            slidesPerView: 2, // Untuk layar dengan lebar 768px atau lebih besar
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
             spaceBetween: 5, // Menyusun jarak antar slide
             navigation: false,
           },
           // Mobile
           320: {
-            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
             spaceBetween: 5,  // Menyusun jarak antar slide
             navigation: false,
           },
