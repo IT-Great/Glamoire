@@ -420,6 +420,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/create-promo', [PromoController::class, 'storePromo'])->name('store-promo');
     Route::get('/edit-promo/{id}', [PromoController::class, 'editPromo'])->name('edit-promo');
     Route::put('/update-promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
+    Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
 
     // promo voucher toko
     Route::get('/create-promo-brand-voucher', [PromoController::class, 'createPromoBrandVoucher'])->name('create-promo-brand-voucher');
@@ -465,9 +466,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/create-promo-new-user', [PromoController::class, 'createPromoNewUser'])->name('create-promo-voucher-new-user');
     Route::post('/create-promo-new-user', [PromoController::class, 'storePromoNewUser'])->name('store-promo-new-user');
     Route::put('update-promo-voucher-newuser/{id}', [PromoController::class, 'updatePromoVoucherNewUser'])->name('update-promo-voucher-newuser');
-
-    Route::get('/detail-promo/{id}', [PromoController::class, 'detailPromo'])->name('detail-promo');
-    Route::put('/update/promo/{id}', [PromoController::class, 'updatePromo'])->name('update-promo');
 
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 

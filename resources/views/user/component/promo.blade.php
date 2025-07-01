@@ -1,8 +1,22 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2 mb-8">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2 mb-8">
   <div class="container-fluid p-0 grid gap-2" style="min-height:55vh;">
+
+    @if(count($promos) === 0 && count($voucherGlamoire) === 0 && count($brandVouchers) === 0 && count($productVouchers) === 0 && count($promoBundlings) === 0)
+      <div class="container-fluid px-0 px-md-3">
+        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
+          <div class="d-flex gap-1 px-3 px-md-0">
+            <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Tidak ada promo yang tersedia saat ini.</p>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center;">
+        <img src="images/about-1.png" class="img-fluid" style="width:50%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+      </div>
+    @endif
+
     @if (count($promos) !== 0)
       <div class="mx-0 mx-md-3 px-0  border-bottom border-dark">
         <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] bg-[#183018] text-white w-fit py-1 pl-1 pr-3" style="border-top-right-radius: 50px; border-bottom-right-radius: 50px;">

@@ -572,7 +572,8 @@ class ProductController extends Controller
                 ];
 
                 Mail::to($email_target)->send(new sendMailNotifyMe($data));
-                NotifyMe::where('email', $email_target)->update([
+                NotifyMe::where('product_id', $id)
+                    ->where('email', $email_target)->update([
                     'status' => 1,
                     'send_at' => now(),
                 ]);

@@ -2,7 +2,7 @@
   <div class="container-fluid text-dark">
     <div class="row" style="background-color: #183018">
       <div class="col">
-        <div class="py-2 flex items-center justify-between w-full md:px-20 lg:px-24 xl:px-48 2xl:px-96">
+        <div class="py-2 flex items-center justify-between w-full md:px-20 lg:px-24 xl:px-24 2xl:px-48">
           <img class="w-1/3" style="max-width:250px;" src="images/l-1.png" alt="Image">
           <p class="text-white text-[10px] md:text-[12px] lg:text-[20px] xl:text-[26px]">
             The First Plant-Based Beauty Store in Indonesia
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div class="row md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 md:pt-5 lg:pt-5 xl:pt-5">
+    <div class="row md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-2 md:pt-5 lg:pt-5 xl:pt-5">
       <div class="col col-lg-10 col-md-6 col-md-12 pr-3 pr-xl-5">
         <p class="text-dark text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] mb-2 md:mb-3 lg:mb-3 xl:mb-3">
           Kami berkomitmen untuk menyediakan produk kosmetik nabati berkualitas tinggi. Misi kami adalah memastikan bahwa keindahan tidak mengorbankan lingkungan. Temukan keindahan alam bersama Glamoire.
@@ -53,7 +53,7 @@
       </div>
     </div>
   
-    <div class="row md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2">
+    <div class="row md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-2">
       <div class="col">
         <p class="border-top border-dark mb-md-0 text-center text-md-left text-dark text-[10px]  md:text-[10px] lg:text-[12px] xl:text-[14px]">
         &copy;

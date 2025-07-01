@@ -8,11 +8,14 @@ use App\Models\Role;
 use App\Models\Subscribe;
 use App\Models\Cart;
 use App\Models\Cart_item;
+use App\Models\OrderItem;
 use App\Models\Wishlist;
 use App\Models\Buynow;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\RatingAndReview;
 use App\Models\ProductVariations;
+use Illuminate\Support\Facades\Log;
 
 use Exception;
 use Carbon\Carbon;
@@ -186,35 +189,76 @@ class UserController extends Controller
         }
     }
 
-    public function addToCartBuyNow(Request $request){
+   public function addToCartBuyNow(Request $request)
+    {
         $cartId = Cart::where('user_id', session('id_user'))->value('id');
-        foreach ($request->product_id as $productId) {
-            $checkStockProduct = Product::where('id', $productId)->value('stock_quantity');
+        $orderItems = OrderItem::where('order_id', $request->product_id)->get();
+        $productOutOfStock = [];
 
-            if ($checkStockProduct !== 0) {
-                $cartItem = Cart_item::where('cart_id', $cartId)
-                ->where('product_id', $productId)
-                ->exists(); 
-    
-                if(!$cartItem){
-                    $price = Product::where('id', $productId)->value('regular_price');
-                    
-                    Cart_item::create([
-                        'cart_id'    => $cartId,
-                        'product_id' => $productId,
-                        'quantity'   =>  1,
-                        'is_choose'  => TRUE,
-                        'price'      => $price,
-                        'total'      => $price,
-                    ]);
+        foreach ($orderItems as $products) {
+            // PRODUK BIASA
+            if ($products->product_variant_id == NULL) {
+                $checkStockProduct = Product::where('id', $products->product_id)->value('stock_quantity');
+                if ($checkStockProduct != 0) {
+                    $cartItem = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $products->product_id)
+                        ->exists();
+
+                    if (!$cartItem) {
+                        $price = Product::where('id', $products->product_id)->value('regular_price');
+                        Cart_item::create([
+                            'cart_id'    => $cartId,
+                            'product_id' => $products->product_id,
+                            'quantity'   => 1,
+                            'is_choose'  => TRUE,
+                            'price'      => $price,
+                            'total'      => $price,
+                        ]);
+                    }
+                } else {
+                    $productName = Product::where('id', $products->product_id)->value('product_name');
+                    $productOutOfStock[] = $productName;
                 }
             }
-            else{
-                
+
+            // PRODUK VARIAN
+            else {
+                $checkStockProduct = ProductVariations::where('id', $products->product_variant_id)->value('variant_stock');
+                if ($checkStockProduct != 0) {
+                    $cartItem = Cart_item::where('cart_id', $cartId)
+                        ->where('product_id', $products->product_variant_id)
+                        ->exists();
+
+                    if (!$cartItem) {
+                        $price = ProductVariations::where('id', $products->product_variant_id)->value('variant_price');
+                        
+                        Cart_item::create([
+                            'cart_id'           => $cartId,
+                            'product_id'        => $products->product_id,
+                            'product_variant_id'=> $products->product_variant_id,
+                            'quantity'          => 1,
+                            'is_choose'         => TRUE,
+                            'price'             => $price,
+                            'total'             => $price,
+                        ]);
+                    }
+                } else {
+                    $productName = Product::where('id', $products->product_id)->value('product_name');
+                    $varian = ProductVariations::where('id', $products->product_variant_id)->value('variant_value');
+                    $productOutOfStock[] = "$productName - $varian";
+                }
             }
         }
-        return response()->json(['success' => true, 'message' => 'Cek Keranjang Belanjamu']);
+
+        Log::info(['outStock' => $productOutOfStock]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Cek Keranjang Belanjamu',
+            'outOfStock' => $productOutOfStock,
+        ]);
     }
+
 
     public function addToChartWithQuantity(Request $request){
         try {

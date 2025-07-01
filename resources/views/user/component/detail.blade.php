@@ -1,7 +1,7 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
     <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
             <div class="d-flex gap-1 pl-2">
@@ -148,7 +148,7 @@
                             title="Beritahu Saya Jika Stok Sudah Ada" 
                             type="button" 
                             id="notify-me-{{$product->id}}"
-                            onclick="notifyMe({{$product->id}})">
+                            onclick="notifyMe({{$product->id}}, null)">
                             Beritahu Saya
                         </span>
                     </div>
@@ -164,11 +164,11 @@
                             </button>
                         @else
                             <div class="grid">
-                                <div>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stock : {{ $product->stock_quantity }}</p>
+                                <div class="d-flex">
                                     @if ($product->sale != 0)
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Sale : {{ $product->sale }}</p>
+                                    <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
                                     @endif
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
                                 <div class="align-items-center flex gap-2">
                                     <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
@@ -184,6 +184,7 @@
                                             min="1"
                                             max="{{ $product->stock_quantity }}"
                                             data-unify="Quantity"
+                                            name="quantityProduct"
                                             oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                         >
                                         <div class="input-group-btn">
@@ -201,9 +202,12 @@
                         @endif
                     @else
                         <div class="grid">
-                            <div>
-                                <p class="text-black text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Stok : {{ $product->stock_quantity }}</p>
-                            </div>
+                            <div class="d-flex">
+                                    @if ($product->sale != 0)
+                                    <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
+                                    @endif
+                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
+                                </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
                                 <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
                                     <div class="input-group-btn">
@@ -218,6 +222,7 @@
                                         min="1"
                                         max="{{ $product->stock_quantity }}"
                                         data-unify="Quantity"
+                                        name="quantityProduct"
                                         oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
                                     >
                                     <div class="input-group-btn">
@@ -262,11 +267,11 @@
                         <div class="tab-content">
                             <div class="tab-pane fade show active p-1" id="deskripsi">
                                 <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Deskripsi Produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->description }}</p>
+                                {!! $product->description !!}
                             </div>
                             <div class="tab-pane fade p-1" id="informasi">
                                 <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Informasi terkait produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{{ $product->information_product }}</p>
+                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{!! $product->information_product !!}</p>
                             </div>
                             <div class="tab-pane fade p-1" id="ulasan">
                                 <div class="row">
@@ -320,15 +325,15 @@
                 @if ($product->stock_quantity == 0)
                     <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
                         <div class="container-fluid d-flex gap-2 py-1">
-                            <span class="text-danger py-2 text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">Stok kosong</span>
+                            <span class="text-danger py-2 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
                             <span
-                                class="text-light py-2 rounded-sm ml-auto text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]" 
+                                class="text-light py-2 rounded-sm ml-auto text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 title="Beritahu Saya Jika Stok Sudah Ada" 
                                 type="button" 
                                 id="notify-me-{{$product->id}}"
-                                onclick="notifyMe({{$product->id}})">
+                                onclick="notifyMe({{$product->id}}, null)">
                                 Beritahu Saya
                             </span>
                         </div>
@@ -791,6 +796,24 @@
         var fullscreenModalElement = document.getElementById('fullscreenModal');
         var modal = new bootstrap.Modal(fullscreenModalElement); // Recreate the modal
         modal.hide(); // Close the modal
+    });
+
+    $(document).on('input', '[name="quantityProduct"]', function() {
+        var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
+        var newQuantity = parseInt($(this).val());
+        var maxQuantity = {{ $product->stock_quantity }}; // Get max quantity from the product data
+
+        // Ensure the quantity is a valid number and greater than 0
+        if (!isNaN(newQuantity) && newQuantity > 0) {
+            if(newQuantity > maxQuantity) {
+                $(this).val(maxQuantity); // Reset to max quantity if exceeded
+            } else {
+                $(this).val(newQuantity); // Set the new valid quantity
+            }
+            $(this).value(maxQuantity);
+        } else {
+            $(this).val(1); // Reset to 1 if the input is invalid
+        }
     });
 
 

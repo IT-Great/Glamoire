@@ -6,7 +6,7 @@
         $wishlist = $profile->wishlist;
     @endphp
 
-    <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
         <div class="container-fluid px-0 px-md-3">
             <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
                 <div class="d-flex gap-2 pl-2">
@@ -55,7 +55,7 @@
                         <form class="row" id="profileForm" method="POST" action="{{ route('edit.account') }}">
                             @csrf
                             @method('PUT')
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="name"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama
                                     Lengkap</label>
@@ -65,7 +65,7 @@
                                     value="{{ $profile->fullname ? $profile->fullname : '' }}"
                                     {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="handphone"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
                                 <div class="input-group">
@@ -79,16 +79,20 @@
                                         {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 mb-3">
                                 <label for="email"
-                                    class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Email</label>
-                                <input type="email"
+                                    class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Email</lab el>
+                                {{-- <input type="email"
                                     class="form-control text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
                                     id="inputEmail" placeholder="Enter your email"
                                     value="{{ $profile->email ? $profile->email : '' }}" name="email"
-                                    {{ $profile->email_verified_at == null ? 'disabled' : '' }}>
+                                    {{ $profile->email_verified_at == null ? 'disabled' : '' }}> --}}
+                                <div class="bg-gray-100 text-gray-800 rounded-md px-4 py-2 text-sm lg:text-base">
+                                    {{ $profile->email ?? '-' }}
+                                </div>
                             </div>
-                            <div class="col-12">
+
+                            <div class="col-12 mb-3">
                                 <label for="Gender"
                                     class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jenis
                                     Kelamin</label>
@@ -460,167 +464,156 @@
                                                 <span
                                                     class=" 
                                                 @if ($order->status == 'completed') text-success
-                                                @elseif($order->status == 'waiting confirm') text-secondary
-                                                @elseif($order->status == 'pending') text-info
-                                                @elseif($order->status == 'proccessing') text-warning @endif
+                                                @elseif($order->status == 'pending') text-dark
+                                                @elseif($order->status == 'processing') text-dark
+                                                @elseif($order->status == 'delivery') text-info @endif
                                                 d-flex align-items-center justify-content-center text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                    {{ $order->status == 'completed'
-                                                        ? 'Selesai'
-                                                        : ($order->status == 'waiting confirm'
-                                                            ? 'Menunggu Konfirmasi'
-                                                            : ($order->status == 'pending'
-                                                                ? 'Sedang Diproses'
-                                                                : ($order->status == 'proccessing'
-                                                                    ? 'Dalam Pengiriman'
-                                                                    : 'Unknown'))) }}
-                                                </span>
-                                            </div>
+                                                {{ $order->status == 'completed'
+                                                    ? 'Selesai'
+                                                    : ($order->status == 'pending'
+                                                        ? 'Menunggu Konfirmasi'
+                                                        : ($order->status == 'processing'
+                                                            ? 'Sedang Diproses'
+                                                            : ($order->status == 'delivery'
+                                                                ? 'Dalam Pengiriman'
+                                                                : 'Unknown'))) }}
+                                            </span>
+                                        </div>
 
-                                            {{-- SELAIN MOBILE --}}
-                                            <div class="desktop-only">
-                                                @foreach ($order->items as $item)
-                                                    <div class="flex">
-                                                        @if ($item->product_variant_id !== null)
-                                                            @php
-                                                                dd($item->product);
-                                                            @endphp
-                                                            <div class="flex hover:cursor-pointer hover:text-italic"
-                                                                onclick="detailProduct('{{ $item->product->product_code }}')">
-
-                                                                <div class="col-2 col-md-1 p-0 m-0">
-                                                                    <img class="border border-[#183018] rounded-sm"
-                                                                        src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                        alt="{{ $item->product->product_name }}">
-                                                                </div>
-                                                                <div class="col-7 col-md-8 px-2 px-md-3">
-                                                                    <p
-                                                                        class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
-                                                                        {{ $item->product->brand->name }}</p>
-                                                                    <p
-                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                        {{ $item->product->product_name }}</p>
-                                                                    <p
-                                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                        Varian {{ $item->productVariant->variant_value }}
-                                                                    </p>
-                                                                    <p
-                                                                        class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                        {{ $item->quantity }} x
-                                                                        Rp{{ number_format($item->price, 0, ',', '.') }}
-                                                                    </p>
-                                                                </div>
-                                                                <div
-                                                                    class="col-1 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                                                                    <p
-                                                                        class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                        Total Belanja</p>
-                                                                    <p
-                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                        Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                    </p>
-                                                                </div>
+                                        {{-- SELAIN MOBILE --}}
+                                        <div class="desktop-only">
+                                            @foreach ($order->items as $item)
+                                                <div class="flex">
+                                                    @if ($item->product_variant_id !== NULL)
+                                                        <div class="flex hover:cursor-pointer hover:text-italic"
+                                                            onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku}}')">
+                                                            <div class="col-2 col-md-1 p-0 m-0">
+                                                                <img class="border border-[#183018] rounded-sm"
+                                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
+                                                                    alt="">
                                                             </div>
-                                                        @else
-                                                            <div class="flex hover:cursor-pointer hover:text-italic"
-                                                                onclick="detailProduct('{{ $item->product->product_code }}')">
-                                                                <div class="col-2 col-md-1 p-0 m-0">
-                                                                    <img class="border border-[#183018] rounded-sm"
-                                                                        src="{{ Storage::url($item->product->main_image) }}"
-                                                                        alt="{{ $item->product->product_name }}">
-                                                                </div>
-                                                                <div class="col-7 col-md-8 px-1 px-md-3">
-                                                                    <p
-                                                                        class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
-                                                                        {{ $item->product->brand->name }}</p>
-                                                                    <p
-                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                        {{ $item->product->product_name }}</p>
-                                                                    @if ($item->is_tier !== null)
-                                                                        <p
-                                                                            class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                            Beli {{ $item->quantity }} jadi
-                                                                            Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                        </p>
-                                                                    @else
-                                                                        <p
-                                                                            class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                            {{ $item->quantity }} x
-                                                                            Rp{{ number_format($item->price, 0, ',', '.') }}
-                                                                        </p>
-                                                                    @endif
-                                                                </div>
-                                                                <div
-                                                                    class="col-1 col-md-3 flex-column align-items-start justify-content-center border-left">
-                                                                    <p
-                                                                        class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                        Total Belanja</p>
-                                                                    <p
-                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                        Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                    </p>
-                                                                </div>
+                                                            <div class="col-7 col-md-8 px-2 px-md-3">
+                                                                <p
+                                                                    class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->brand->name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->product_name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                    Varian {{ $item->productVariant->variant_value }}</p>
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
                                                             </div>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                            {{-- END SELAIN MOBILE --}}
-
-                                            {{-- GUNAKAN CONTAINER INI KETKA DETEKSI MOBILE --}}
-                                            <div class="mobile-only">
-                                                <div
-                                                    class="grid-container-order px-0 hover:cursor-pointer hover:text-italic">
-                                                    @foreach ($order->items as $item)
-                                                        <img class="border border-[#183018] rounded-sm"
-                                                            src="{{ Storage::url($item->product->main_image) }}"
-                                                            alt="{{ $item->product->product_name }}">
-                                                    @endforeach
-                                                </div>
-                                                <div class="flex items-center justify-start">
-                                                    <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
-                                                    <p class="ml-1 text-black text-[10px]">
-                                                        Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
-                                                    </p>
-                                                </div>
-
-                                            </div>
-                                            {{-- END KHUSUS MOBILE --}}
-
-
-
-                                            <div class="d-flex justify-content-end input-group-btn mt-2">
-                                                <div class="col-12 d-flex p-0 justify-content-end gap-2">
-                                                    <div class="d-flex align-items-center justify-content-center">
-                                                        <a class="hover:cursor-pointer text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] text-red-700"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#transaction-detail-{{ $order->invoice->no_invoice }}">
-                                                            Lihat Detail Transaksi
-                                                        </a>
-                                                    </div>
-                                                    @if ($order->status == 'completed')
-                                                        @if (count($order->ratingAndReviews) == 0)
-                                                            <button type="submit"
-                                                                class="btn border rounded-sm w-fit text-[#183018] text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#form-rating-review-{{ $order->id }}"
-                                                                style="background-color: #ffffff">
-                                                                Rating & Review
-                                                            </button>
-                                                        @else
-                                                        @endif
-                                                        <button type="button"
-                                                            class="btn border rounded-sm w-fit text-white text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
-                                                            style="background-color: #183018"
-                                                            data-product-ids="{{ implode(',', $order->items->pluck('product.id')->toArray()) }}">
-                                                            Beli Lagi
-                                                        </button>
+                                                            <div class="col-1 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                                                                <p
+                                                                    class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                    Total Belanja</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="flex hover:cursor-pointer hover:text-italic"
+                                                            onclick="detailProduct('{{ $item->product->product_code }}')">
+                                                            <div class="col-2 col-md-1 p-0 m-0">
+                                                                <img class="border border-[#183018] rounded-sm"
+                                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                                    alt="">
+                                                            </div>
+                                                            <div class="col-7 col-md-8 px-1 px-md-3">
+                                                                <p
+                                                                    class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->brand->name }}</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    {{ $item->product->product_name }}</p>
+                                                                @if ($item->is_tier !== null)
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                                @else
+                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                    {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                                @endif
+                                                            </div>
+                                                            <div class="col-1 col-md-3 flex-column align-items-start justify-content-center border-left">
+                                                                <p
+                                                                    class="text-black font-semibold text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                    Total Belanja</p>
+                                                                <p
+                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </div>
-                                            </div>
-
+                                            @endforeach
                                         </div>
+                                        {{-- END SELAIN MOBILE --}}
+                                    
+                                        {{-- GUNAKAN CONTAINER INI KETKA DETEKSI MOBILE--}}
+                                        <div class="mobile-only">
+                                            <div class="grid-container-order px-0 hover:cursor-pointer hover:text-italic">
+                                            @foreach ($order->items as $item)
+                                                <img class="border border-[#183018] rounded-sm"
+                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                    alt="">
+                                            @endforeach 
+                                            </div>   
+                                            <div class="flex items-center justify-start">
+                                                <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
+                                                <p class="ml-1 text-black text-[10px]">
+                                                    Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
+                                                </p>
+                                            </div>
+                                            
+                                        </div>    
+                                        {{-- END KHUSUS MOBILE --}}
+
+                                        <div class="d-flex justify-content-end input-group-btn mt-2">
+                                            <div class="col-12 d-flex p-0 justify-content-end gap-2">
+                                                <div class="d-flex align-items-center justify-content-center">
+                                                    <a class="hover:cursor-pointer text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] text-red-700"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#transaction-detail-{{ $order->invoice->no_invoice }}">
+                                                        Lihat Detail Transaksi
+                                                    </a>
+                                                </div>
+                                                @if ($order->status == 'completed')
+                                                    @if (count($order->ratingAndReviews) == 0)
+                                                        <button type="submit"
+                                                            class="btn border rounded-sm w-fit text-[#183018] text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#form-rating-review-{{ $order->id }}"
+                                                            style="background-color: #ffffff">
+                                                            Rating & Review
+                                                        </button>
+                                                    @else
+                                                    @endif
+                                                    <button type="button"
+                                                        class="btn border rounded-sm w-fit text-white text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] hover-shadow-md"
+                                                        style="background-color: #183018"
+                                                        data-product-ids="{{$order->id}}
+                                                        
+                                                        {{-- @if ($item->product_variant_id !== NULL)
+                                                        {{ implode(',', $order->items->pluck('product.id')->toArray()) }}
+                                                        @else
+                                                        {{ implode(',', $order->items->pluck('product.id')->toArray()) }}
+                                                        @endif --}}
+                                                        "
+                                                        >
+                                                        Beli Lagi
+                                                    </button>
+                                                @endif
+                                            </div>
+                                        </div>
+
+
+
                                     </div>
-                                    <!-- END DONE -->
+                                </div>
+                                <!-- END DONE -->
 
                                     <!-- DETAIL TRANSAKSI -->
                                     <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}"
@@ -638,56 +631,52 @@
                                                         data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
 
-                                                <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-                                                    <div class="row gap-2 gap-lg-0">
-                                                        <div class="col-12 col-lg-5 pl-lg-0 d-lg-none d-block">
-                                                            <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
-                                                                style="top: 0.1rem;">
-                                                                <div class="col-12 p-0 border-bottom">
-                                                                    <p
-                                                                        class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
-                                                                        Riwayat Pengiriman</p>
-                                                                    <div class="track">
-                                                                        <div
-                                                                            class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-check"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Dikonfirmasi</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-user"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Diambil Kurir</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-truck"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam
-                                                                                Pengiriman</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-box"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Selesai</span>
-                                                                        </div>
+                                            <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                                                <div class="row gap-2 gap-lg-0">
+                                                    <div class="col-12 col-lg-5 pl-lg-0 d-lg-none d-block">
+                                                        <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
+                                                            style="top: 0.1rem;">
+                                                            <div class="col-12 p-0 border-bottom">
+                                                                <p
+                                                                    class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
+                                                                    Riwayat Pengiriman</p>
+                                                                <div class="track">
+                                                                    <div
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-check"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Dikonfirmasi</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-user"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Diambil Kurir</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{$order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-truck"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam
+                                                                            Pengiriman</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{ $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-box"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Selesai</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
 
                                                         <div class="col-12 col-lg-7">
                                                             <div class="grid p-3 custom-shadow rounded-sm">
@@ -944,56 +933,52 @@
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
-                                                            <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
-                                                                style="top: 0.1rem;">
-                                                                <div class="col-12 p-0 border-bottom">
-                                                                    <p
-                                                                        class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
-                                                                        Riwayat Pengiriman</p>
-                                                                    <div class="track">
-                                                                        <div
-                                                                            class="step {{ $order->status == 'pending' || $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-check"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Dikonfirmasi</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-user"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Diambil Kurir</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'proccessing' || $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-truck"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam
-                                                                                Pengiriman</span>
-                                                                        </div>
-                                                                        <div
-                                                                            class="step {{ $order->status == 'completed' ? 'active' : '' }}">
-                                                                            <span class="icon"> <i
-                                                                                    class="fa fa-box"></i>
-                                                                            </span>
-                                                                            <span
-                                                                                class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
-                                                                                Selesai</span>
-                                                                        </div>
+                                                    <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
+                                                        <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
+                                                            style="top: 0.1rem;">
+                                                            <div class="col-12 p-0 border-bottom">
+                                                                <p
+                                                                    class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
+                                                                    Riwayat Pengiriman</p>
+                                                                <div class="track">
+                                                                    <div
+                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-check"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Dikonfirmasi</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-user"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Diambil Kurir</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-truck"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Dalam
+                                                                            Pengiriman</span>
+                                                                    </div>
+                                                                    <div
+                                                                        class="step {{ $order->status == 'completed' ? 'active' : '' }}">
+                                                                        <span class="icon"> <i class="fa fa-box"></i>
+                                                                        </span>
+                                                                        <span
+                                                                            class="text text-[10px] md:text-[12px] lg:text-[9px] xl:text-[10px]">Pesanan
+                                                                            Selesai</span>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
                                             </div>
                                         </div>
@@ -1094,24 +1079,23 @@
                                                                                                 produk yang
                                                                                                 Anda terima</p>
 
-                                                                                            <!-- UPLOAD IMAGE -->
-                                                                                            <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}"
-                                                                                                class="media-preview flex gap-1">
-                                                                                                <!-- Previews will be inserted here -->
-                                                                                            </div>
-                                                                                            <div>
-                                                                                                <label
-                                                                                                    class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
-                                                                                                    for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload
-                                                                                                    Gambar</label>
-                                                                                                <input type="file"
-                                                                                                    name="upload[{{ $item->product->id }}][]"
-                                                                                                    multiple
-                                                                                                    accept="image/*,video/*"
-                                                                                                    class="form-control d-none"
-                                                                                                    onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}')"
-                                                                                                    id="customFile-{{ $order->id }}-{{ $item->product->product_name }}">
-                                                                                            </div>
+                                                                                        <!-- UPLOAD IMAGE -->
+                                                                                        <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}"
+                                                                                            class="media-preview flex gap-1">
+                                                                                            <!-- Previews will be inserted here -->
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <label
+                                                                                                class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
+                                                                                                for="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">Upload Gambar</label>
+                                                                                            <input type="file"
+                                                                                                name="upload[{{ $item->product->id }}][]"
+                                                                                                multiple
+                                                                                                accept="image/*,video/*"
+                                                                                                class="form-control d-none"
+                                                                                                onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}')"
+                                                                                                id="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">
+                                                                                        </div>
 
                                                                                             <!-- BUTTON SUBMIT -->
                                                                                         </div>
@@ -1262,12 +1246,12 @@
                                                         </i>
                                                     </div>
                                                     <div class="grid name-price hover:cursor-pointer">
-                                                        <p
-                                                            class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[10px] xl:text-[14px] overflow-hidden">
-                                                            <a href="/{{ $wp->product_code }}_product"
-                                                                class="text-decoration-none truncate-ellipsis"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                title="{{ $wp->product_name }}">
+                                                        <p class="text-decoration-none text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
+                                                            <a href="/{{ $wp->product_code }}_product" 
+                                                            class="text-decoration-none truncate-ellipsis" 
+                                                            data-bs-toggle="tooltip" 
+                                                            data-bs-placement="top" 
+                                                            title="{{ $wp->product_name }}">
                                                                 {{ $wp->product_name }}
                                                             </a>
                                                         </p>
@@ -2008,6 +1992,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -2016,6 +2003,37 @@
             Toast.fire({
                 icon: "success",
                 text: "Berhasil menambahkan alamat pengiriman baru",
+                title: "Berhasil",
+                willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                }
+            });
+        </script>
+    @endif
+    
+    @if (session('after_update_address'))
+        <script>
+            var Toast = Swal.mixin({
+                toast: true,
+                position: "center",
+                background: "#183018",
+                showConfirmButton: false,
+                timer: 1500,
+                timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
+            Toast.fire({
+                icon: "success",
+                text: "Berhasil mengubah alamat pengiriman",
                 title: "Berhasil",
                 willOpen: () => {
                     const title = document.querySelector('.swal2-title');
@@ -2036,6 +2054,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -2064,6 +2085,9 @@
                 showConfirmButton: false,
                 timer: 1500,
                 timerProgressBar: true,
+                customClass: {
+                    popup: "small-swal", // Add custom class
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
@@ -2121,7 +2145,7 @@
                 position: "center",
                 background: "#183018",
                 showConfirmButton: false,
-                timer: 2500,
+                timer: 3500,
                 timerProgressBar: true,
                 customClass: {
                     popup: "small-swal", // Add custom class
@@ -2368,8 +2392,7 @@
             .getElementById("address_district")
             .addEventListener("change", function() {
                 const districtName = this.options[this.selectedIndex].text; // Get the name
-                document.getElementById("address_district_name").value =
-                    districtName; // Save name in hidden input
+                document.getElementById("address_district_name").value = districtName; // Save name in hidden input
             });
         // END API WILAYAH REGISTER
     </script>
@@ -2387,11 +2410,12 @@
 
                 // Store the clicked star for this product
                 clickedStars[productId] = clickedStar;
-                console.log({
-                    'clickedStar': clickedStar,
-                    'orderId': orderId,
-                    'productId': productId,
-                });
+                // console.log({
+                //     'clickedStar': clickedStar,
+                //     'orderId': orderId,
+                //     'productId': productId,
+                //     'variantId' : variantId,
+                // });
 
                 $(`#star-product-${productId}-${orderId}`).val(clickedStar);
 
@@ -2464,34 +2488,49 @@
                             _token: '{{ csrf_token() }}' // Sertakan CSRF token jika perlu
                         },
                         success: function(response) {
-                            Toast.fire({
-                                icon: "success",
-                                text: response.message,
-                                title: "Berhasil",
-                                willOpen: () => {
-                                    const title = document.querySelector(
-                                        '.swal2-title');
-                                    const content = document.querySelector(
-                                        '.swal2-html-container');
-                                    if (title) title.style.color =
-                                        '#ffffff'; // Ubah warna judul
-                                    if (content) content.style.color =
-                                        '#ffffff'; // Ubah warna konten
-                                }
-                            }).then(function() {
-                                window.location.href =
-                                    "/cart"; // Redirect ke halaman utama atau halaman lain
-                            });
+                            if (response.outOfStock.length > 0) {
+                                const productList = response.outOfStock.join(", ");
+                                Toast.fire({
+                                    icon: "error",
+                                    text: "Stok habis untuk : " + productList,
+                                    title: "Oops",
+                                    showConfirmButton: false,
+                                    timer: 4500,
+                                    timerProgressBar: true,
+                                    willOpen: () => {
+                                        const title = document.querySelector('.swal2-title');
+                                        const content = document.querySelector('.swal2-html-container');
+                                        if (title) title.style.color = '#ffffff';
+                                        if (content) content.style.color = '#ffffff';
+                                    }
+                                }).then(function() {
+                                    // window.location.href = "/cart"; 
+                                });
+                            }
+                            else{
+                                Toast.fire({
+                                    icon: "success",
+                                    text: response.message,
+                                    title: "Berhasil",
+                                    willOpen: () => {
+                                        const title = document.querySelector('.swal2-title');
+                                        const content = document.querySelector('.swal2-html-container');
+                                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                                    }
+                                }).then(function() {
+                                    window.location.href = "/cart"; 
+                                });
+                            }
                         },
                         error: function(error) {
                             console.log(error); // Cek struktur objek error
                             let errorMessage =
-                                "Terjadi kesalahan, silakan coba lagi."; // Pesan default
+                            "Terjadi kesalahan, silakan coba lagi."; // Pesan default
 
                             // Cek apakah error memiliki pesan spesifik
                             if (error.response && error.response.data) {
-                                errorMessage = error.response.data.message || error
-                                    .response.data.error || error.message;
+                                errorMessage = error.response.data.message || error.response.data.error || error.message;
                             } else if (error.message) {
                                 errorMessage = error.message;
                             }
@@ -2501,14 +2540,10 @@
                                 text: errorMessage,
                                 title: "Oops...",
                                 willOpen: () => {
-                                    const title = document.querySelector(
-                                        '.swal2-title');
-                                    const content = document.querySelector(
-                                        '.swal2-html-container');
-                                    if (title) title.style.color =
-                                        '#ffffff'; // Ubah warna judul
-                                    if (content) content.style.color =
-                                        '#ffffff'; // Ubah warna konten
+                                    const title = document.querySelector('.swal2-title');
+                                    const content = document.querySelector('.swal2-html-container');
+                                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
                                 }
                             });
                         }
@@ -2519,6 +2554,11 @@
 
         function detailProduct(productCode) {
             window.location.href = productCode + "_product";
+        }
+
+        function detailProductVariant(productCode, variantCode) {
+            // console.log(variantCode);
+            window.location.href = productCode + "_product?varian=" + variantCode;
         }
     </script>
 

@@ -1094,13 +1094,14 @@
 
     <!-- NOITFY ME -->
     <script>
-      function notifyMe(produkId) {
+      function notifyMe(produkId, productVariantId) {
         $.ajax({
             url: "{{ route('notify.me') }}", // Route register di Laravel
             type: "POST",
             data: {
                 _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
                 product_id: produkId,
+                product_variant_id: productVariantId
             },
             success: function (response) {
               if (response.success) {
@@ -1201,9 +1202,12 @@
           showConfirmButton: false,
           timer: 1500,
           timerProgressBar: true,
+          customClass: {
+            popup: "small-swal", // Add custom class
+          },
           didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
           },
         });
 
@@ -1230,9 +1234,12 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
@@ -1258,6 +1265,9 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
                 toast.onmouseenter = Swal.stopTimer;
                 toast.onmouseleave = Swal.resumeTimer;
@@ -1286,9 +1296,12 @@
             showConfirmButton: false,
             timer: 1500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
@@ -1314,14 +1327,17 @@
             showConfirmButton: false,
             timer: 4500,
             timerProgressBar: true,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
             didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
             },
         });
         Toast.fire({
           icon: "success",
-          text: "Silahkan cek kode promomu di emailmu",
+          text: "Silahkan cek kode promo di emailmu",
           title: "Selamat",
           willOpen: () => {
             const title = document.querySelector('.swal2-title');
