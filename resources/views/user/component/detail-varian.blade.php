@@ -218,6 +218,7 @@
                                             class="form-control bg-secondary text-center px-2  no-spinner" 
                                             id="total-detail-product-quantity" 
                                             data-unify="Quantity"
+
                                         >
                                         <div class="input-group-btn">
                                             <button class="btn btn-plus">
@@ -612,6 +613,8 @@
                 warningMessage.classList.remove("d-none");
                 warningMessage.classList.add("d-flex");
                 input.value = maxQuantity; // Set ke nilai maksimum
+            } else {
+                $(this).val(1); // Reset to 1 if the input is invalid
             }
         });
 
@@ -624,7 +627,7 @@
                 warningMessage.classList.remove("d-flex");
                 input.value = value - 1;
             } else {
-                alert("Nilai tidak bisa kurang dari 1");
+                // alert("Nilai tidak bisa kurang dari 1");
             }
         });
 

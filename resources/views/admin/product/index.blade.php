@@ -686,13 +686,11 @@
                                                     data-id="{{ $item->id }}">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
-                                                @if ($item->stock_quantity < 10)
-                                                    <a href="javascript:void(0);"
-                                                        class="badge bg-primary notify-product d-inline-flex align-items-center"
-                                                        data-id="{{ $item->id }}">
-                                                        <i class="bi bi-bell"></i> Notify
-                                                    </a>
-                                                @endif
+                                                <a href="javascript:void(0);"
+                                                    class="badge bg-primary notify-product d-inline-flex align-items-center"
+                                                    data-id="{{ $item->id }}">
+                                                    <i class="bi bi-bell"></i> Notify
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>

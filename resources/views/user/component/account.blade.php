@@ -146,8 +146,7 @@
                                             data-bs-toggle="modal" data-bs-target="#form-address">
                                             <i
                                                 class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
-                                            <p
-                                                class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">
+                                            <p class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">
                                                 Tambahkan Alamat</p>
                                         </button>
                                     </div>
@@ -168,27 +167,19 @@
                                                         class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
                                                 </div>
 
-                                                <p
-                                                    class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white">
+                                                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-white">
                                                     {{ $sa->recipient_name }}</p>
-                                                <p
-                                                    class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
+                                                <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
                                                     {{ $sa->handphone }}</p>
-                                                <p
-                                                    class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
+                                                <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
                                                     {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
-                                                <p
-                                                    class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
+                                                <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
                                                     {{ $sa->address }}</p>
                                                 @if ($sa->benchmark)
-                                                    <p
-                                                        class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
-                                                        ({{ $sa->benchmark }})
-                                                    </p>
+                                                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
+                                                        ({{ $sa->benchmark }})</p>
                                                 @else
-                                                    <p
-                                                        class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
-                                                        (Patokan
+                                                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">(Patokan
                                                         Belum Ditambahkan)</p>
                                                 @endif
 
@@ -213,22 +204,19 @@
                                                         {{ $sa->label }}</p>
                                                 </div>
 
-                                                <p
-                                                    class="text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-black">
+                                                <p class="text-[9px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-black">
                                                     {{ $sa->recipient_name }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->handphone }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                    {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }} (61258)
-                                                </p>
+                                                    {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }} (61258)</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->address }}</p>
                                                 @if ($sa->benchmark)
                                                     <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                         ({{ $sa->benchmark }})</p>
                                                 @else
-                                                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                        (Patokan
+                                                    <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">(Patokan
                                                         Belum Ditambahkan)</p>
                                                 @endif
 
@@ -255,8 +243,8 @@
 
 
                                                     <!-- <button data-id="{{ $sa->id }}" name="deleteAddress" type="submit" class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="background-color: #ffffff">
-                                            <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
-                                        </button> -->
+                                <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
+                            </button> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -270,12 +258,10 @@
                                                     <h1
                                                         class="modal-title text-white text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
                                                         Ubah Data Alamatmu</h1>
-                                                    <button type="button" class="btn-close" style="filter: invert(1);"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
 
-                                                <div class="modal-body overflow-y-auto custom-scroll"
-                                                    style="max-height:100vh;">
+                                                <div class="modal-body overflow-y-auto custom-scroll" style="max-height:100vh;">
                                                     <form id="editShippingAddressForm{{ $sa->id }}" method="POST"
                                                         action="{{ route('edit.shipping.address') }}">
                                                         @csrf
@@ -298,8 +284,7 @@
                                                                     Penerima</label>
                                                                 <input type="text"
                                                                     class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    placeholder="Masukkan Nama Penerima"
-                                                                    name="recipient_name"
+                                                                    placeholder="Masukkan Nama Penerima" name="recipient_name"
                                                                     value="{{ $sa->recipient_name }}">
                                                             </div>
                                                             <div class="col-12 p-0">
@@ -330,7 +315,7 @@
                                                                         Pilih Provinsi</option>
                                                                 </select>
                                                                 <input type="hidden" name="province_name"
-                                                                    id="change_province_name_{{ $sa->id }}">
+                                                                    id="change_province_name_{{$sa->id}}">
                                                             </div>
 
                                                             <div class="col-12 p-0">
@@ -346,7 +331,7 @@
                                                                         Pilih Kabupaten/Kota</option>
                                                                 </select>
                                                                 <input type="hidden" name="regency_name"
-                                                                    id="change_regency_name_{{ $sa->id }}">
+                                                                    id="change_regency_name_{{$sa->id}}">
                                                             </div>
 
                                                             <div class="col-12 p-0">
@@ -362,7 +347,7 @@
                                                                         Pilih Kecamatan</option>
                                                                 </select>
                                                                 <input type="hidden" name="district_name"
-                                                                    id="change_district_name_{{ $sa->id }}">
+                                                                    id="change_district_name_{{$sa->id}}">
                                                             </div>
 
                                                             <!-- ALAMAT -->
@@ -402,22 +387,17 @@
                     @else
                         <div style="min-height:10vh;">
                             <div class="flex align-items-center justify-content-center">
-                                <img src="images/about-2.png" class="img-fluid"
-                                    style="width:30%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                                <img src="images/about-2.png" class="img-fluid" style="width:30%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                             </div>
-                            <div class="d-flex flex-column align-items-center justify-content-center text-center"
-                                style="height: 100%;">
-                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Alamat
-                                    pengirimanmu masih kosong nih</p>
+                            <div class="d-flex flex-column align-items-center justify-content-center text-center" style="height: 100%;">
+                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Alamat pengirimanmu masih kosong nih</p>
                                 <button type="button"
                                     class="btn border btn-light w-auto d-flex align-items-center rounded-sm mb-2"
                                     data-bs-toggle="modal" data-bs-target="#form-address">
-                                    <i
-                                        class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
-                                    <p class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">
-                                        Tambahkan Alamat</p>
+                                    <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]"></i>
+                                    <p class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Tambahkan Alamat</p>
                                 </button>
-                            </div>
+                            </div>                            
                         </div>
                     @endif
                 </div>
@@ -426,43 +406,42 @@
                 <!-- MY ORDER -->
                 <div class="tab-pane fade p-0 m-0" id="my-order" style="min-height:80vh;">
                     <!-- <nav class="tabbable">
-                                    <div class="nav nav-tabs border-secondary mb-2 text-center">
-                                        <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#all">All</a>
-                                        <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#waiting">Waiting</a>
-                                        <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#proses">Proses</a>
-                                        <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#send">Send</a>
-                                        <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#done">Done</a>
-                                    </div>
-                                    </nav> -->
+                        <div class="nav nav-tabs border-secondary mb-2 text-center">
+                            <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#all">All</a>
+                            <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#waiting">Waiting</a>
+                            <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#proses">Proses</a>
+                            <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#send">Send</a>
+                            <a class="nav-item nav-link text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]" data-toggle="tab" href="#done">Done</a>
+                        </div>
+                        </nav> -->
 
                     <div class="tab-pane p-0 m-0" id="all">
                         <!-- CARD -->
                         @if (count($profile->orders) !== 0)
-                            <div class="grid gap-2 p-0 m-0">
-                                @foreach ($profile->orders as $order)
-                                    <!-- DONE -->
-                                    <div class="col-12 p-0 m-0">
-                                        <div class="p-2 p-md-3 custom-shadow">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <svg class="d-none d-md-block align-items-center justify-content-center"
-                                                    xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                                                    viewBox="0 0 448 512">
-                                                    <path
-                                                        d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z" />
-                                                </svg>
-                                                <p
-                                                    class="font-semibold text-black mb-0 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px] mx-2 d-none d-md-block">
-                                                    Belanja</p>
-                                                <p
-                                                    class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
-                                                    {{ \Carbon\Carbon::parse($order->date)->translatedFormat('d F Y') }}
-                                                </p>
-                                                <p
-                                                    class="text-danger mb-0 mx-2 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
-                                                    {{ $order->invoice->no_invoice }}
-                                                </p>
-                                                <span
-                                                    class=" 
+                        <div class="grid gap-2 p-0 m-0">
+                            @foreach ($profile->orders as $order)
+                                <!-- DONE -->
+                                <div class="col-12 p-0 m-0">
+                                    <div class="p-2 p-md-3 custom-shadow">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <svg class="d-none d-md-block align-items-center justify-content-center"
+                                                xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                viewBox="0 0 448 512">
+                                                <path
+                                                    d="M160 112c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 416c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48C336 50.1 285.9 0 224 0S112 50.1 112 112l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z" />
+                                            </svg>
+                                            <p
+                                                class="font-semibold text-black mb-0 text-[9px] md:text-[10px] lg:text-[13px] xl:text-[15px] mx-2 d-none d-md-block">
+                                                Belanja</p>
+                                            <p
+                                                class="text-black mb-0 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
+                                                {{ \Carbon\Carbon::parse($order->created_at)->translatedFormat('d F Y') }}</p>
+                                            <p
+                                                class="text-danger mb-0 mx-2 text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px]">
+                                                {{ $order->invoice->no_invoice }}
+                                            </p>
+                                            <span
+                                                class=" 
                                                 @if ($order->status == 'completed') text-success
                                                 @elseif($order->status == 'pending') text-dark
                                                 @elseif($order->status == 'processing') text-dark
@@ -615,21 +594,20 @@
                                 </div>
                                 <!-- END DONE -->
 
-                                    <!-- DETAIL TRANSAKSI -->
-                                    <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}"
-                                        tabindex="-1"
-                                        aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}"
-                                        aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+                                <!-- DETAIL TRANSAKSI -->
+                                <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}"
+                                    tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content overflow-y-auto" style="max-height:90vh;">
 
-                                                <div class="modal-header">
-                                                    <h1
-                                                        class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
-                                                        Detail Transaksi</h1>
-                                                    <button type="button" class="btn-close" style="color:#FFFFFF;"
-                                                        data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
+                                            <div class="modal-header">
+                                                <h1
+                                                    class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
+                                                    Detail Transaksi</h1>
+                                                <button type="button" class="btn-close" style="color:#FFFFFF;"
+                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
 
                                             <div class="modal-body overflow-y-auto" style="max-height:100vh;">
                                                 <div class="row gap-2 gap-lg-0">
@@ -678,260 +656,243 @@
                                                         </div>
                                                     </div>
 
-                                                        <div class="col-12 col-lg-7">
-                                                            <div class="grid p-3 custom-shadow rounded-sm">
-                                                                <div class="col-12 p-0 pb-2 border-bottom">
-                                                                    <div class="d-flex">
+                                                    <div class="col-12 col-lg-7">
+                                                        <div class="grid p-3 custom-shadow rounded-sm">
+                                                            <div class="col-12 p-0 pb-2 border-bottom">
+                                                                <div class="d-flex">
+                                                                    <p
+                                                                        class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                        No. Invoice</p>
+                                                                    <a class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-danger hover:cursor-pointer hover:text-decoration-underlined"
+                                                                        onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">
+                                                                        {{ $order->invoice->no_invoice }}</a>
+                                                                </div>
+                                                                <div class="d-flex">
+                                                                    <p
+                                                                        class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                        Tanggal Pembelian</p>
+                                                                    <p
+                                                                        class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">
+                                                                        {{ $order->created_at->format('d F Y, H:i') }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 p-0 border-bottom">
+                                                                <p
+                                                                    class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">
+                                                                    Detail Produk</p>
+
+                                                                @foreach ($order->items as $item)
+                                                                    @if ($item->product_variant_id !== null)
+                                                                        <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                                                                            <div class="col-2 col-md-2 p-0 m-0">
+                                                                                <img class="border"
+                                                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
+                                                                                    alt="">
+                                                                            </div>
+                                                                            <div class="col-6 col-md-7">
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->brand->name }}</p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->product_name }}</p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Varian {{ $item->productVariant->variant_value }}</p>
+                                                                                <p
+                                                                                    class="text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->quantity }} x
+                                                                                    Rp{{ number_format($item->price, 0, ',', '.') }}
+                                                                                </p>
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                                                                                <p
+                                                                                    class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Total Harga</p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    @else
+                                                                        <div class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
+                                                                            <div class="col-2 col-md-2 p-0 m-0">
+                                                                                <img class="border"
+                                                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                                                    alt="">
+                                                                            </div>
+                                                                            <div class="col-6 col-md-7">
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->brand->name }}</p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->product_name }}</p>
+                                                                                @if ($item->is_tier !== null)
+                                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                                    Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                                                @else
+                                                                                <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                                    {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                                                @endif
+                                                                            </div>
+                                                                            <div
+                                                                                class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
+                                                                                <p
+                                                                                    class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Total Harga</p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Rp{{ number_format($item->subtotal, 0, ',', '.') }}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                    @endif
+                                                                @endforeach
+
+                                                            </div>
+
+                                                            <!-- INFO PENGIRIMAN -->
+                                                            <div class="col-12 p-0 border-bottom">
+                                                                <p
+                                                                    class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">
+                                                                    Info Pengiriman</p>
+                                                                <div class="d-flex mb-1 mb-md-2">
+                                                                    <p
+                                                                        class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        Kurir</p>
+                                                                    <p
+                                                                        class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        :</p>
+                                                                    @if ($order->status == 'proccessing' || $order->status == 'completed')
                                                                         <p
-                                                                            class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                            No. Invoice</p>
-                                                                        <a class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto text-danger hover:cursor-pointer hover:text-decoration-underlined"
-                                                                            onclick="invoice('{{ str_replace('/', '', $order->invoice->no_invoice) }}')">
-                                                                            {{ $order->invoice->no_invoice }}</a>
-                                                                    </div>
-                                                                    <div class="d-flex">
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            JNE</p>
+                                                                    @else
                                                                         <p
-                                                                            class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                            Tanggal Pembelian</p>
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            -</p>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="d-flex mb-1 mb-md-2">
+                                                                    <p
+                                                                        class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        No.Resi</p>
+                                                                    <p
+                                                                        class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        :</p>
+                                                                    @if ($order->status == 'proccessing' || $order->status == 'completed')
                                                                         <p
-                                                                            class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] ml-auto">
-                                                                            {{ $order->created_at->format('d F Y, H:i') }}
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            082723615</p>
+                                                                    @else
+                                                                        <p
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            -</p>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="d-flex mb-1 mb-md-2">
+                                                                    <p
+                                                                        class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        Alamat</p>
+                                                                    <p
+                                                                        class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        :</p>
+                                                                    <div class="grid gap-1">
+                                                                        <p
+                                                                            class="font-semibold text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            {{ $order->shippingAddress->label }}</p>
+                                                                        <p
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            Penerima :
+                                                                            {{ $order->shippingAddress->recipient_name }}
+                                                                        </p>
+                                                                        <p
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            {{ $order->shippingAddress->handhphone }}</p>
+                                                                        <p
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            {{ $order->shippingAddress->address }}
+                                                                            @if ($order->shippingAddress->benchmark !== null)
+                                                                                ({{ $order->shippingAddress->benchmark }})
+                                                                            @endif
+                                                                        </p>
+                                                                        <p
+                                                                            class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                            {{ ucwords(strtolower($order->shippingAddress->province)) }},
+                                                                            {{ ucwords(strtolower($order->shippingAddress->regency)) }},
+                                                                            {{ ucwords(strtolower($order->shippingAddress->district)) }}
                                                                         </p>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-12 p-0 border-bottom">
-                                                                    <p
-                                                                        class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">
-                                                                        Detail Produk</p>
+                                                            </div>
+                                                            <!--  -->
 
-                                                                    @foreach ($order->items as $item)
-                                                                        @if ($item->product_variant_id !== null)
-                                                                            <div
-                                                                                class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                                                                                <div class="col-2 col-md-2 p-0 m-0">
-                                                                                    <img class="border"
-                                                                                        src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                                        alt="{{ $item->product->product_name }}">
-                                                                                </div>
-                                                                                <div class="col-6 col-md-7">
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->brand->name }}
-                                                                                    </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->product_name }}
-                                                                                    </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Varian
-                                                                                        {{ $item->productVariant->variant_value }}
-                                                                                    </p>
-                                                                                    <p
-                                                                                        class="text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->quantity }} x
-                                                                                        Rp{{ number_format($item->price, 0, ',', '.') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div
-                                                                                    class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                                                                                    <p
-                                                                                        class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Total Harga</p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        @else
-                                                                            <div
-                                                                                class="d-flex mb-2 md:mb-4 lg:md-4 xl:md-4">
-                                                                                <div class="col-2 col-md-2 p-0 m-0">
-                                                                                    <img class="border"
-                                                                                        src="{{ Storage::url($item->product->main_image) }}"
-                                                                                        alt="{{ $item->product->product_name }}">
-                                                                                </div>
-                                                                                <div class="col-6 col-md-7">
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->brand->name }}
-                                                                                    </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->product_name }}
-                                                                                    </p>
-                                                                                    @if ($item->is_tier !== null)
-                                                                                        <p
-                                                                                            class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                                            Beli {{ $item->quantity }}
-                                                                                            jadi
-                                                                                            Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                                        </p>
-                                                                                    @else
-                                                                                        <p
-                                                                                            class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                                                            {{ $item->quantity }} x
-                                                                                            Rp{{ number_format($item->price, 0, ',', '.') }}
-                                                                                        </p>
-                                                                                    @endif
-                                                                                </div>
-                                                                                <div
-                                                                                    class="col-4 col-md-3 d-flex flex-column align-items-start justify-content-center border-left">
-                                                                                    <p
-                                                                                        class="text-black font-semibold text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Total Harga</p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Rp{{ number_format($item->subtotal, 0, ',', '.') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        @endif
-                                                                    @endforeach
-
-                                                                </div>
-
-                                                                <!-- INFO PENGIRIMAN -->
-                                                                <div class="col-12 p-0 border-bottom">
-                                                                    <p
-                                                                        class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] mb-2 mb-md-3 pt-2 pt-md-3">
-                                                                        Info Pengiriman</p>
-                                                                    <div class="d-flex mb-1 mb-md-2">
-                                                                        <p
-                                                                            class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            Kurir</p>
-                                                                        <p
-                                                                            class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            :</p>
-                                                                        @if ($order->status == 'proccessing' || $order->status == 'completed')
+                                                            <!-- RINCIAN PEMBAYARAN -->
+                                                            <div class="col-12 p-0">
+                                                                <p
+                                                                    class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] pt-2 pt-md-3">
+                                                                    Rincian Pembayaran</p>
+                                                                <div class="p-3 bg-light grid gap-2 gap-md-3">
+                                                                    <div class="grid">
+                                                                        <div class="d-flex">
                                                                             <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                JNE</p>
-                                                                        @else
+                                                                                class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                Total Harga ({{ $order->total_item }}
+                                                                                Barang)</p>
                                                                             <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                -</p>
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="d-flex mb-1 mb-md-2">
-                                                                        <p
-                                                                            class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            No.Resi</p>
-                                                                        <p
-                                                                            class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            :</p>
-                                                                        @if ($order->status == 'proccessing' || $order->status == 'completed')
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                082723615</p>
-                                                                        @else
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                -</p>
-                                                                        @endif
-                                                                    </div>
-                                                                    <div class="d-flex mb-1 mb-md-2">
-                                                                        <p
-                                                                            class="col-2 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            Alamat</p>
-                                                                        <p
-                                                                            class="col-1 text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            :</p>
-                                                                        <div class="grid gap-1">
-                                                                            <p
-                                                                                class="font-semibold text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                {{ $order->shippingAddress->label }}</p>
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                Penerima :
-                                                                                {{ $order->shippingAddress->recipient_name }}
-                                                                            </p>
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                {{ $order->shippingAddress->handhphone }}
-                                                                            </p>
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                {{ $order->shippingAddress->address }}
-                                                                                @if ($order->shippingAddress->benchmark !== null)
-                                                                                    ({{ $order->shippingAddress->benchmark }})
-                                                                                @endif
-                                                                            </p>
-                                                                            <p
-                                                                                class="text-[9px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                {{ ucwords(strtolower($order->shippingAddress->province)) }},
-                                                                                {{ ucwords(strtolower($order->shippingAddress->regency)) }},
-                                                                                {{ ucwords(strtolower($order->shippingAddress->district)) }}
+                                                                                class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
+                                                                                Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
                                                                             </p>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                                <!--  -->
-
-                                                                <!-- RINCIAN PEMBAYARAN -->
-                                                                <div class="col-12 p-0">
-                                                                    <p
-                                                                        class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] pt-2 pt-md-3">
-                                                                        Rincian Pembayaran</p>
-                                                                    <div class="p-3 bg-light grid gap-2 gap-md-3">
-                                                                        <div class="grid">
+                                                                        @if ($order->voucher_promo !== null)
                                                                             <div class="d-flex">
                                                                                 <p
                                                                                     class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                    Total Harga ({{ $order->total_item }}
-                                                                                    Barang)</p>
+                                                                                    Total Diskon</p>
                                                                                 <p
                                                                                     class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
-                                                                                    Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
+                                                                                    -Rp{{ number_format($order->discount_amount, 0, ',', '.') }}
                                                                                 </p>
                                                                             </div>
-                                                                            @if ($order->voucher_promo !== null)
-                                                                                <div class="d-flex">
-                                                                                    <p
-                                                                                        class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Total Diskon</p>
-                                                                                    <p
-                                                                                        class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
-                                                                                        -Rp{{ number_format($order->discount_amount, 0, ',', '.') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                            @endif
-                                                                            @if ($order->voucher_ongkir !== null)
-                                                                                <div class="d-flex">
-                                                                                    <p
-                                                                                        class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Diskon Ongkir</p>
-                                                                                    <p
-                                                                                        class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
-                                                                                        -Rp{{ number_format($order->discount_ongkir, 0, ',', '.') }}
-                                                                                    </p>
-                                                                                </div>
-                                                                            @endif
+                                                                        @endif
+                                                                        @if ($order->voucher_ongkir !== null)
                                                                             <div class="d-flex">
                                                                                 <p
                                                                                     class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                    Total Ongkos Kirim</p>
+                                                                                    Diskon Ongkir</p>
                                                                                 <p
                                                                                     class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
-                                                                                    Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}
+                                                                                    -Rp{{ number_format($order->discount_ongkir, 0, ',', '.') }}
                                                                                 </p>
                                                                             </div>
-                                                                        </div>
-                                                                        <div
-                                                                            class="d-flex py-2 border-bottom border-top align-items-center">
+                                                                        @endif
+                                                                        <div class="d-flex">
                                                                             <p
-                                                                                class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                                                Total Belanja</p>
+                                                                                class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                Total Ongkos Kirim</p>
                                                                             <p
-                                                                                class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto">
-                                                                                Rp{{ number_format($order->total_amount, 0, ',', '.') }}
+                                                                                class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px] ml-auto">
+                                                                                Rp{{ number_format($order->shipping_cost, 0, ',', '.') }}
                                                                             </p>
                                                                         </div>
+                                                                    </div>
+                                                                    <div
+                                                                        class="d-flex py-2 border-bottom border-top align-items-center">
+                                                                        <p
+                                                                            class="text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                                            Total Belanja</p>
+                                                                        <p
+                                                                            class="text-black font-semibold text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto">
+                                                                            Rp{{ number_format($order->total_amount, 0, ',', '.') }}
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
 
                                                     <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
                                                         <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
@@ -980,104 +941,91 @@
                                                 </div>
                                             </div>
 
-                                            </div>
                                         </div>
                                     </div>
-                                    <!-- END DETAIL TRANSAKSI -->
+                                </div>
+                                <!-- END DETAIL TRANSAKSI -->
 
-                                    @if ($order->status == 'completed')
-                                        <!-- RATING & REVIEW -->
-                                        <div class="modal fade" id="form-rating-review-{{ $order->id }}"
-                                            tabindex="-1" aria-labelledby="form-rating-review-{{ $order->id }}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content overflow-y-auto custom-scroll"
-                                                    style="max-height:90vh;">
-                                                    <div class="modal-header pb-0 border-none">
-                                                        <h1 class="modal-title text-[#183018]">Ulasan Produk</h1>
-                                                        <button type="button" class="btn-close" style="color:#183018;"
-                                                            data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
+                                @if ($order->status == 'completed')
+                                    <!-- RATING & REVIEW -->
+                                    <div class="modal fade" id="form-rating-review-{{ $order->id }}" tabindex="-1"
+                                        aria-labelledby="form-rating-review-{{ $order->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content overflow-y-auto custom-scroll"
+                                                style="max-height:90vh;">
+                                                <div class="modal-header pb-0 border-none">
+                                                    <h1 class="modal-title text-[#183018]">Ulasan Produk</h1>
+                                                    <button type="button" class="btn-close" style="color:#183018;" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
 
-                                                    <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-                                                        <div>
-                                                            <form action="{{ route('rating.and.review') }}"
-                                                                method="POST"
-                                                                id="review-and-rating-form-{{ $order->id }}-{{ $item->product->id }}"
-                                                                multiple accept="image/*,video/*"
-                                                                enctype="multipart/form-data" class="grid gap-2">
-                                                                @csrf
-                                                                @foreach ($order->items as $item)
-                                                                    <input type="number" name="ratingReviewOrderId"
-                                                                        value="{{ $order->id }}" hidden>
-                                                                    <input type="number" name="ratingReviewProductId[]"
-                                                                        id="productId-{{ $order->id }}-{{ $item->product->id }}"
-                                                                        value="{{ $item->product->id }}" hidden>
-                                                                    <input type="number"
-                                                                        name="productVariantId[{{ $item->product->id }}]"
-                                                                        id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product->product_variant_id }}"
-                                                                        value="{{ $item->product->product_variant_id }}"
-                                                                        hidden>
+                                                <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                                                    <div>
+                                                        <form action="{{ route('rating.and.review') }}" method="POST"
+                                                            id="review-and-rating-form-{{ $order->id }}-{{ $item->product->id }}"
+                                                            multiple accept="image/*,video/*"
+                                                            enctype="multipart/form-data"
+                                                            class="grid gap-2">
+                                                            @csrf
+                                                            @foreach ($order->items as $index => $item)
+                                                                <div class="grid p-0 border border-secondary custom-shadow">
+                                                                    @if ($item->product_variant_id !== null)
+                                                                        <input type="number" name="ratingReviewOrderId"
+                                                                            value="{{ $order->id }}" hidden>
+                                                                        <input type="number" name="ratingReviewProductId[]"
+                                                                            id="productId-{{ $order->id }}-{{ $item->product->id }}-{{$item->product_variant_id}}"
+                                                                            value="{{ $item->product->id }}" hidden>
+                                                                        <input type="number" name="productVariantId[]"
+                                                                            id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product_variant_id }}"
+                                                                            value="{{ $item->product_variant_id }}" hidden>
 
-
-                                                                    <div
-                                                                        class="grid p-0 border border-secondary custom-shadow">
-                                                                        @if ($item->product_variant_id !== null)
-                                                                            <div class="d-flex mb-1">
-                                                                                <div class="col-2 col-md-2 p-0 m-0">
-                                                                                    <img class="border"
-                                                                                        src="{{ Storage::url($item->productVariant->variant_image) }}"
-                                                                                        alt="{{ $item->product->product_name }}">
-                                                                                </div>
-                                                                                <div class="col-10">
-                                                                                    <p
-                                                                                        class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->brand->name }}
+                                                                        <div class="d-flex mb-1">
+                                                                            <div class="col-2 col-md-2 p-0 m-0">
+                                                                                <img class="border"
+                                                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
+                                                                                    alt="{{ $item->product->product_name }}">
+                                                                            </div>
+                                                                            <div class="col-10">
+                                                                                <p class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->brand->name }}
+                                                                                </p>
+                                                                                <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->product_name }}
+                                                                                </p>
+                                                                                <p
+                                                                                    class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                                                    Varian {{ $item->productVariant->variant_value }}</p>
+                                                                                <div>
+                                                                                    <p class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
+                                                                                        Berikan ulasan untuk produk ini
                                                                                     </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->product_name }}
-                                                                                    </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                                                                        Varian
-                                                                                        {{ $item->productVariant->variant_value }}
-                                                                                    </p>
-                                                                                    <div>
+                                                                                    <div class="grid gap-1">
+                                                                                        <!-- RATING -->
+                                                                                        <div
+                                                                                            class="d-flex align-items-center p-0">
+                                                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                                                <i class="fas fa-star"
+                                                                                                    id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}-{{ $item->product_variant_id }}"
+                                                                                                    style="width:20px;height:20px;">
+                                                                                                </i>
+                                                                                            @endfor
+                                                                                            <input type="number"
+                                                                                                name="star[{{ $index }}]"
+                                                                                                id="star-product-{{ $item->product->id }}-{{ $order->id }}-{{ $item->product_variant_id }}"
+                                                                                                value="" hidden required>
+                                                                                        </div>
+
+                                                                                        <!-- REVIEW -->
+                                                                                        <div class="col-12 p-0">
+                                                                                            <textarea name="description[{{ $index }}]"
+                                                                                                class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
+                                                                                                name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
+                                                                                                required></textarea>
+                                                                                        </div>
+
                                                                                         <p
-                                                                                            class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
-                                                                                            Berikan ulasan untuk produk ini
-                                                                                        </p>
-                                                                                        <div class="grid gap-1">
-                                                                                            <!-- RATING -->
-                                                                                            <div
-                                                                                                class="d-flex align-items-center p-0">
-                                                                                                @for ($i = 1; $i <= 5; $i++)
-                                                                                                    <i class="fas fa-star"
-                                                                                                        id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}"
-                                                                                                        style="width:20px;height:20px;">
-                                                                                                    </i>
-                                                                                                @endfor
-                                                                                                <input type="number"
-                                                                                                    name="star[{{ $item->product->id }}]"
-                                                                                                    id="star-product-{{ $item->product->id }}-{{ $order->id }}"
-                                                                                                    value="" hidden
-                                                                                                    required>
-                                                                                            </div>
-
-                                                                                            <!-- REVIEW -->
-                                                                                            <div class="col-12 p-0">
-                                                                                                <textarea name="description[{{ $item->product->id }}]"
-                                                                                                    class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
-                                                                                                    name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
-                                                                                                    required></textarea>
-                                                                                            </div>
-
-                                                                                            <p
-                                                                                                class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                                Bagikan foto-foto dari
-                                                                                                produk yang
-                                                                                                Anda terima</p>
+                                                                                            class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                            Bagikan foto-foto dari produk yang
+                                                                                            Anda terima</p>
 
                                                                                         <!-- UPLOAD IMAGE -->
                                                                                         <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}"
@@ -1097,137 +1045,137 @@
                                                                                                 id="customFile-{{ $order->id }}-{{ $item->product->product_name }}-{{$item->product_variant_id}}">
                                                                                         </div>
 
-                                                                                            <!-- BUTTON SUBMIT -->
-                                                                                        </div>
+                                                                                        <!-- BUTTON SUBMIT -->
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        @else
-                                                                            <div class="d-flex mb-1">
-                                                                                <div class="col-2 col-md-2 p-0 m-0">
-                                                                                    <img class="border"
-                                                                                        src="{{ Storage::url($item->product->main_image) }}"
-                                                                                        alt="{{ $item->product->product_name }}">
-                                                                                </div>
-                                                                                <div class="col-10">
-                                                                                    <p
-                                                                                        class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->brand->name }}
+                                                                        </div>
+                                                                    @else
+                                                                        <input type="number" name="ratingReviewOrderId"
+                                                                            value="{{ $order->id }}" hidden>
+                                                                        <input type="number" name="ratingReviewProductId[]"
+                                                                            id="productId-{{ $order->id }}-{{ $item->product->id }}"
+                                                                            value="{{ $item->product->id }}" hidden>
+                                                                        <input type="number" name="productVariantId[]"
+                                                                            id="productVariantId-{{ $order->id }}-{{ $item->product->id }}-{{ $item->product_variant_id }}"
+                                                                            value="0" hidden>
+                                                                        <div class="d-flex mb-1">
+                                                                            <div class="col-2 col-md-2 p-0 m-0">
+                                                                                <img class="border"
+                                                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                                                    alt="{{ $item->product->product_name }}">
+                                                                            </div>
+                                                                            <div class="col-10">
+                                                                                <p class="font-semibold text-black mb-0 text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->brand->name }}
+                                                                                </p>
+                                                                                <p class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                    {{ $item->product->product_name }}
+                                                                                </p>
+                                                                                <div>
+                                                                                    <p class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
+                                                                                        Berikan ulasan untuk produk ini
                                                                                     </p>
-                                                                                    <p
-                                                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                        {{ $item->product->product_name }}
-                                                                                    </p>
-                                                                                    <div>
+                                                                                    <div class="grid gap-1">
+                                                                                        <!-- RATING -->
+                                                                                        <div
+                                                                                            class="d-flex align-items-center p-0">
+                                                                                            @for ($i = 1; $i <= 5; $i++)
+                                                                                                <i class="fas fa-star"
+                                                                                                    id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}"
+                                                                                                    style="width:20px;height:20px;">
+                                                                                                </i>
+                                                                                            @endfor
+                                                                                            <input type="number"
+                                                                                                name="star[{{ $index }}]"
+                                                                                                id="star-product-{{ $item->product->id }}-{{ $order->id }}"
+                                                                                                value="" hidden required>
+                                                                                        </div>
+
+                                                                                        <!-- REVIEW -->
+                                                                                        <div class="col-12 p-0">
+                                                                                            <textarea name="description[{{ $index }}]"
+                                                                                                class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
+                                                                                                name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
+                                                                                                required></textarea>
+                                                                                        </div>
+
                                                                                         <p
-                                                                                            class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px] mb-1">
-                                                                                            Berikan ulasan untuk produk ini
-                                                                                        </p>
-                                                                                        <div class="grid gap-1">
-                                                                                            <!-- RATING -->
-                                                                                            <div
-                                                                                                class="d-flex align-items-center p-0">
-                                                                                                @for ($i = 1; $i <= 5; $i++)
-                                                                                                    <i class="fas fa-star"
-                                                                                                        id="star-{{ $i }}-{{ $item->product->id }}-{{ $order->id }}"
-                                                                                                        style="width:20px;height:20px;">
-                                                                                                    </i>
-                                                                                                @endfor
-                                                                                                <input type="number"
-                                                                                                    name="star[{{ $item->product->id }}]"
-                                                                                                    id="star-product-{{ $item->product->id }}-{{ $order->id }}"
-                                                                                                    value="" hidden
-                                                                                                    required>
-                                                                                            </div>
+                                                                                            class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                                            Bagikan foto-foto dari produk yang
+                                                                                            Anda terima</p>
 
-                                                                                            <!-- REVIEW -->
-                                                                                            <div class="col-12 p-0">
-                                                                                                <textarea name="description[{{ $item->product->id }}]"
-                                                                                                    class="form-control rounded-lg border border-[#183018] text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
-                                                                                                    name="address" rows="3" autocomplete="off" placeholder="Ceritakan Pengalamanmu Tentang Produk ini"
-                                                                                                    required></textarea>
-                                                                                            </div>
-
-                                                                                            <p
-                                                                                                class="text-[12px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                                                Bagikan foto-foto dari
-                                                                                                produk yang
-                                                                                                Anda terima</p>
-
-                                                                                            <!-- UPLOAD IMAGE -->
-                                                                                            <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}"
-                                                                                                class="media-preview flex gap-1">
-                                                                                                <!-- Previews will be inserted here -->
-                                                                                            </div>
-                                                                                            <div>
-                                                                                                <label
-                                                                                                    class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
-                                                                                                    for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload
-                                                                                                    Gambar</label>
-                                                                                                <input type="file"
-                                                                                                    name="upload[{{ $item->product->id }}][]"
-                                                                                                    multiple
-                                                                                                    accept="image/*,video/*"
-                                                                                                    class="form-control d-none"
-                                                                                                    onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}')"
-                                                                                                    id="customFile-{{ $order->id }}-{{ $item->product->product_name }}">
-                                                                                            </div>
-
-                                                                                            <!-- BUTTON SUBMIT -->
+                                                                                        <!-- UPLOAD IMAGE -->
+                                                                                        <div id="mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}"
+                                                                                            class="media-preview flex gap-1">
+                                                                                            <!-- Previews will be inserted here -->
                                                                                         </div>
+                                                                                        <div>
+                                                                                            <label
+                                                                                                class="form-label btn btn-primary w-max-[50px] text-white text-xs hover:cursor-pointer rounded-sm"
+                                                                                                for="customFile-{{ $order->id }}-{{ $item->product->product_name }}">Upload Gambar</label>
+                                                                                            <input type="file"
+                                                                                                name="upload[{{ $item->product->id }}][]"
+                                                                                                multiple
+                                                                                                accept="image/*,video/*"
+                                                                                                class="form-control d-none"
+                                                                                                onchange="displaySelectedMedia(event, 'mediaPreview-{{ $order->id }}-{{ $item->product->product_name }}')"
+                                                                                                id="customFile-{{ $order->id }}-{{ $item->product->product_name }}">
+                                                                                        </div>
+
+                                                                                        <!-- BUTTON SUBMIT -->
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        @endif
-                                                                    </div>
-                                                                @endforeach
-                                                                <div class="col-12 p-0">
-                                                                    <button
-                                                                        class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
-                                                                        type="submit"
-                                                                        style="background-color: #183018">Kirim Ulasan
-                                                                    </button>
+                                                                        </div>
+                                                                    @endif
                                                                 </div>
-                                                            </form>
-                                                        </div>
+                                                            @endforeach
+                                                            <div class="col-12 p-0">
+                                                                <button
+                                                                    class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]"
+                                                                    type="submit"
+                                                                    style="background-color: #183018">Kirim Ulasan
+                                                                </button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- END RATING & REVIEW -->
-                                    @endif
-                                @endforeach
-                            </div>
+                                    </div>
+                                    <!-- END RATING & REVIEW -->
+                                @endif
+                            @endforeach
+                        </div>
                         @else
                             <div style="min-height:10vh;">
                                 <div class="flex align-items-center justify-content-center">
-                                    <img src="images/cart-empty.png" class="img-fluid"
-                                        style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                                    <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                                 </div>
                                 <div class="grid align-items-center justify-content-center">
-                                    <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kamu
-                                        belum melakukan transaksi apapun</p>
-                                    <button
-                                        class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]"
-                                        onclick="location.href='/shop'">Belanja Sekarang</button>
+                                    <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kamu belum melakukan transaksi apapun</p>
+                                    <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]" onclick="location.href='/shop'" >Belanja Sekarang</button>
                                 </div>
                             </div>
                         @endif
-
+                       
                         <!-- CARD -->
                     </div>
                 </div>
                 <!-- END MY ORDER -->
 
                 <!-- WHISHLIST -->
-                <div class="tab-pane fade" id="my-wishlist" style="min-height:80vh;">
+                <div class="tab-pane fade" id="my-wishlist"  style="min-height:80vh;">
                     @if (count($wishlists) !== 0)
                         <div class="col-12">
                             <div class="row">
                                 @foreach ($wishlists as $wp)
                                     <div class="col-lg-3 col-md-4 col-6 p-1">
-                                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-xl h-fit">
-                                            <a href="/{{ $wp->product_code }}_product" class="text-decoration-none">
+                                        <div
+                                            class="bg-white rounded-lg shadow-sm overflow-hidden border border-xl h-fit">
+                                            <a href="/{{ $wp->product_code }}_product"
+                                                class="text-decoration-none">
                                                 <div class="position-relative overflow-hidden bg-transparent p-0">
                                                     <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
                                                         src="{{ Storage::url($wp->main_image) }}"
@@ -1235,14 +1183,13 @@
                                                 </div>
                                                 <div class="grid text-left p-1 p-md-2">
                                                     <div class="flex gap-1">
-                                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"
-                                                            style="color:orange;"></i>
-                                                        <p
-                                                            class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">
-                                                            {{ $wp->rating }}</p>
-                                                        <i title="Hapus dari wishlist"
-                                                            class="fas fa-heart ml-auto text-decoration-none text-danger text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-light"
-                                                            onclick="event.stopPropagation();  removeFromWishlist('{{ $wp->id }}');">
+                                                        <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
+                                                        <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $wp->rating }}</p>
+                                                        <i 
+                                                            title="Hapus dari wishlist"
+                                                            class="fas fa-heart ml-auto text-decoration-none text-danger text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-light" 
+                                                            onclick="event.stopPropagation();  removeFromWishlist('{{$wp->id}}');"
+                                                            >
                                                         </i>
                                                     </div>
                                                     <div class="grid name-price hover:cursor-pointer">
@@ -1257,37 +1204,28 @@
                                                         </p>
 
                                                         <div class="flex justify-content-start gap-1">
-                                                            <p
-                                                                class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                            <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                                                 @php
                                                                     $activePromo = $wp->promos->first();
-                                                                    $discountedPrice = $activePromo
-                                                                        ? $activePromo->pivot->discounted_price
-                                                                        : null;
+                                                                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                                                 @endphp
 
                                                                 @if ($wp->priceVariation !== null)
-                                                                    <p
-                                                                        class="text-decoration-none text-[#183018] text-[9px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                                    <p class="text-decoration-none text-[#183018] text-[9px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                                                         {{ $wp->priceVariation }}
                                                                     </p>
                                                                 @else
                                                                     @if ($discountedPrice && $discountedPrice < $wp->regular_price)
-                                                                        <p
-                                                                            class="flex justify-content-center text-align-center text-decoration-none text-muted text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                                            <del>
-                                                                                Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
-                                                                            </del>
-                                                                        </p>
-                                                                        <p
-                                                                            class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                            Rp{{ number_format($discountedPrice, 0, ',', '.') }}
-                                                                        </p>
+                                                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                        <del>
+                                                                        Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
+                                                                        </del>
+                                                                    </p>
+                                                                    <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                                                     @else
-                                                                        <p
-                                                                            class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                            Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
-                                                                        </p>
+                                                                    <p class="text-decoration-none text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                        Rp{{ number_format($wp->regular_price, 0, ',', '.') }}
+                                                                    </p>
                                                                     @endif
                                                                 @endif
                                                             </p>
@@ -1299,19 +1237,15 @@
                                     </div>
                                 @endforeach
                             </div>
-                        </div>
+                        </div>    
                     @else
                         <div style="min-height:10vh;">
                             <div class="flex align-items-center justify-content-center">
-                                <img src="images/cart-empty.png" class="img-fluid"
-                                    style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                                <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
                             </div>
                             <div class="grid align-items-center justify-content-center">
-                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Belum ada
-                                    produk yang ditambahkan</p>
-                                <button
-                                    class="btn btn-success rounded-sm w-ful text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]"
-                                    onclick="location.href='/shop'">Cari Produk Pilihanmu</button>
+                                <p class="text-danger text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Belum ada produk yang ditambahkan</p>
+                                <button class="btn btn-success rounded-sm w-ful text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]" onclick="location.href='/shop'">Cari Produk Pilihanmu</button>
                             </div>
                         </div>
                     @endif
@@ -1394,10 +1328,8 @@
             <div class="modal-content overflow-y-auto" style="max-height:90vh;">
                 <div class="modal-header bg-[#183018]">
                     <div class="flex gap-3 justify-content-center align-items-center">
-                        <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X
-                        </h1>
-                        <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                            Tambahkan Alamat Baru</h1>
+                        <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
+                        <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Tambahkan Alamat Baru</h1>
                     </div>
                     {{-- <h1 class="modal-title text-[#183018] text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]"
                         id="exampleModalLabel">Tambahkan Alamat Baru</h1>
@@ -1847,7 +1779,7 @@
                             icon: "success",
                         }).then(function() {
                             window.location.href =
-                                "/"; // Redirect ke halaman utama atau halaman lain
+                            "/"; // Redirect ke halaman utama atau halaman lain
                         });
                     } else {
                         let errors = response.errors;
@@ -1893,7 +1825,7 @@
                             const content = document.querySelector('.swal2-html-container');
                             if (title) title.style.color = '#ffffff'; // Ubah warna judul
                             if (content) content.style.color =
-                                '#ffffff'; // Ubah warna konten
+                            '#ffffff'; // Ubah warna konten
                         }
                     }).then(function() {
                         location.reload(); // Redirect ke halaman utama atau halaman lain
@@ -1909,7 +1841,7 @@
                             const content = document.querySelector('.swal2-html-container');
                             if (title) title.style.color = '#ffffff'; // Ubah warna judul
                             if (content) content.style.color =
-                                '#ffffff'; // Ubah warna konten
+                            '#ffffff'; // Ubah warna konten
                         }
                     });
                 }
@@ -1941,9 +1873,9 @@
                                 const content = document.querySelector(
                                     '.swal2-html-container');
                                 if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
+                                '#ffffff'; // Ubah warna judul
                                 if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
+                                '#ffffff'; // Ubah warna konten
                             }
                         }).then(function() {
                             location.reload(); // Redirect ke halaman utama atau halaman lain
@@ -1958,9 +1890,9 @@
                                 const content = document.querySelector(
                                     '.swal2-html-container');
                                 if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
+                                '#ffffff'; // Ubah warna judul
                                 if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
+                                '#ffffff'; // Ubah warna konten
                             }
                         });
                     }
@@ -1975,7 +1907,7 @@
                             const content = document.querySelector('.swal2-html-container');
                             if (title) title.style.color = '#ffffff'; // Ubah warna judul
                             if (content) content.style.color =
-                                '#ffffff'; // Ubah warna konten
+                            '#ffffff'; // Ubah warna konten
                         }
                     });
                 }
@@ -2178,8 +2110,8 @@
                 text: "Sedang mengirim link verifikasi ke emailmu ...",
                 allowOutsideClick: false,
                 didOpen: () => {
-                    Toast.showLoading();
-                    const content = document.querySelector('.swal2-html-container');
+                Toast.showLoading();
+                const content = document.querySelector('.swal2-html-container');
                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
                 }
             });
@@ -2203,9 +2135,9 @@
                                 const content = document.querySelector(
                                     '.swal2-html-container');
                                 if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
+                                '#ffffff'; // Ubah warna judul
                                 if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
+                                '#ffffff'; // Ubah warna konten
                             }
                         });
                     } else {
@@ -2225,9 +2157,9 @@
                                 const content = document.querySelector(
                                     '.swal2-html-container');
                                 if (title) title.style.color =
-                                    '#ffffff'; // Ubah warna judul
+                                '#ffffff'; // Ubah warna judul
                                 if (content) content.style.color =
-                                    '#ffffff'; // Ubah warna konten
+                                '#ffffff'; // Ubah warna konten
                             }
                         });
                     }
@@ -2244,7 +2176,7 @@
                             const content = document.querySelector('.swal2-html-container');
                             if (title) title.style.color = '#ffffff'; // Ubah warna judul
                             if (content) content.style.color =
-                                '#ffffff'; // Ubah warna konten
+                            '#ffffff'; // Ubah warna konten
                         }
                     });
                 },
@@ -2407,6 +2339,7 @@
                 const clickedStar = parseInt(starId[1]); // Get the star number
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Store the clicked star for this product
                 clickedStars[productId] = clickedStar;
@@ -2417,16 +2350,30 @@
                 //     'variantId' : variantId,
                 // });
 
-                $(`#star-product-${productId}-${orderId}`).val(clickedStar);
-
-                // Change star color for the clicked product
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    let valueStar = document.getElementById
-                    if (i <= clickedStar) {
-                        currentStar.style.color = 'orange';
-                    } else {
-                        currentStar.style.color = '';
+                if(variantId == null){
+                    $(`#star-product-${productId}-${orderId}`).val(clickedStar);
+    
+                    // Change star color for the clicked product
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= clickedStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
+                    }
+                }
+                else{
+                    $(`#star-product-${productId}-${orderId}-${variantId}`).val(clickedStar);
+    
+                    // Change star color for the clicked product
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= clickedStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
                     }
                 }
             });
@@ -2437,14 +2384,27 @@
                 const hoverStar = parseInt(starId[1]); // Get the star number
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Change star color while hovering
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    if (i <= hoverStar) {
-                        currentStar.style.color = 'orange';
-                    } else {
-                        currentStar.style.color = '';
+                if(variantId == null){
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= hoverStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
+                    }
+                }
+                else{
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= hoverStar) {
+                            currentStar.style.color = 'orange';
+                        } else {
+                            currentStar.style.color = '';
+                        }
                     }
                 }
             });
@@ -2454,16 +2414,29 @@
                 const starId = this.id.split('-');
                 const productId = starId[2]; // Get the product ID
                 const orderId = starId[3];
+                const variantId = starId[4] ?? null;
 
                 // Get the last clicked star for this product
                 const lastClicked = clickedStars[productId] || 0; // Default to 0 if none clicked
 
-                for (let i = 1; i <= 5; i++) {
-                    const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
-                    if (i <= lastClicked) {
-                        currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
-                    } else {
-                        currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                if(variantId == null){
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}`);
+                        if (i <= lastClicked) {
+                            currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
+                        } else {
+                            currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                        }
+                    }
+                }
+                else{
+                    for (let i = 1; i <= 5; i++) {
+                        const currentStar = document.getElementById(`star-${i}-${productId}-${orderId}-${variantId}`);
+                        if (i <= lastClicked) {
+                            currentStar.style.color = 'orange'; // Maintain color for previously clicked stars
+                        } else {
+                            currentStar.style.color = ''; // Reset color for stars that weren't clicked
+                        }
                     }
                 }
             });
@@ -2525,8 +2498,7 @@
                         },
                         error: function(error) {
                             console.log(error); // Cek struktur objek error
-                            let errorMessage =
-                            "Terjadi kesalahan, silakan coba lagi."; // Pesan default
+                            let errorMessage = "Terjadi kesalahan, silakan coba lagi."; // Pesan default
 
                             // Cek apakah error memiliki pesan spesifik
                             if (error.response && error.response.data) {
