@@ -320,8 +320,8 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // STOCK PRODUCT 
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
-    Route::get('/outof-stock-product-admin', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
-    Route::get('/low-stock-product-admin', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
+    Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
+    Route::get('/stock-product-admin-low', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
 
     Route::get('/check-stock-alerts', [ProductController::class, 'checkStockAlerts'])
         ->name('check-stock-alerts');

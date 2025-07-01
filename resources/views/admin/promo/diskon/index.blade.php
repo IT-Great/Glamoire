@@ -210,7 +210,7 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Discount Management</h3>
+                            <h3>Diskon</h3>
                             <p class="text-subtitle text-muted">Kelola semua data diskon Anda dengan efektif</p>
                         </div>
                     </div>
@@ -326,14 +326,16 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ url('detail-diskon/' . $item->id) }}"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="bi bi-eye"></i> View
-                                                </a>
-                                                <button class="btn btn-sm btn-danger delete-promo"
-                                                    data-id="{{ $item->id }}">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </button>
+                                                <div class="action-buttons">
+                                                    <a href="{{ url('detail-diskon/' . $item->id) }}"
+                                                        class="btn btn-sm btn-info">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    <button class="btn btn-sm btn-danger delete-promo"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach

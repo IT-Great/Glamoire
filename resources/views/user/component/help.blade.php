@@ -22,10 +22,13 @@
       </div>
     </nav>
 
-    <div class="tab-content">
-      <div class="tab-pane active" id="akun">
-        <div class="container mt-2 mt-md-5">
-          <div class="faq-title text-center text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">Hal yang sering ditanyakan terkait akun</div>
+            <div class="tab-content">
+                @foreach ($categories as $index => $category)
+                    <div class="tab-pane {{ $index === 0 ? 'active' : '' }}" id="{{ Str::slug($category) }}">
+                        <div class="container mt-5">
+                            <div class="faq-title text-center text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">
+                                Hal yang sering ditanyakan terkait {{ strtolower($category) }}
+                            </div>
 
                             <div class="row">
                                 <div class="col-md-12">

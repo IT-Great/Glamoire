@@ -40,11 +40,9 @@
             --border-color: #e5e7eb;
         }
 
-        .action-buttons a {
-            display: block;
-            /* Set to block so each link appears on a new line */
-            margin-bottom: 5px;
-            /* Add some space between the buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
         }
 
         /* Stats Card Styling */
@@ -115,28 +113,52 @@
             margin-bottom: 0;
         }
 
-        .promo-nav {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+       .promo-nav {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
         .promo-nav-item {
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: #6c757d;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            color: #4a4a4a;
             text-decoration: none;
             transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid transparent;
+        }
+
+        .promo-nav-item i {
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
         }
 
         .promo-nav-item.active {
-            background: #435ebe;
-            color: white;
+            background-color: var(--primary-color);
+            /* Make sure --primary-color is defined */
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .promo-nav-item.active i {
+            transform: scale(1.2);
+            color: #fff;
         }
 
         .promo-nav-item:hover:not(.active) {
-            background: #e9ecef;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #212529;
         }
 
         .promo-card {
@@ -208,8 +230,8 @@
                 <div class="page-title">
                     <div class="row">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3>Promo Management</h3>
-                            <p class="text-subtitle text-muted">Kelola semua data promosi Anda dalam satu tempat.
+                            <h3>Promo</h3>
+                            <p class="text-subtitle text-muted">Kelola semua data promosi Anda pada halaman ini.
                             </p>
                         </div>
                     </div>
@@ -343,18 +365,21 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <a href="{{ url('detail-promo/' . $item->id) }}"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="bi bi-eye"></i> View
-                                                </a>
-                                                <a href="{{ url('edit-promo/' . $item->id) }}"
-                                                    class="badge bg-warning">
-                                                    <i class="bi bi-pencil"></i> Edit
-                                                </a>
-                                                <a href="javascript:void(0);" class="badge bg-danger delete-promo"
-                                                    data-id="{{ $item->id }}">
-                                                    <i class="bi bi-trash"></i> Delete
-                                                </a>
+                                                <div class="action-buttons">
+                                                    <a href="{{ url('detail-promo/' . $item->id) }}"
+                                                        class="btn btn-sm btn-info d-inline-flex align-items-center">
+                                                        <i class="bi bi-eye"></i> View
+                                                    </a>
+                                                    <a href="{{ url('edit-promo/' . $item->id) }}"
+                                                        class="badge bg-warning d-inline-flex align-items-center">
+                                                        <i class="bi bi-pencil"></i> Edit
+                                                    </a>
+                                                    <a href="javascript:void(0);"
+                                                        class="badge bg-danger delete-promo d-inline-flex align-items-center"
+                                                        data-id="{{ $item->id }}">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </a>
+                                                </div>
                                             </td>
 
                                         </tr>

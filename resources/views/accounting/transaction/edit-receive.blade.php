@@ -1888,34 +1888,33 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title" style="margin-bottom: 25px;">
+                 <div class="page-title" style="margin-bottom: 25px;">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h2 class="mb-3">Update Transaksi </h2>
+                            <h2 class="mb-3">Update Transaksi</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
-                                            class="d-flex align-items-center"><i
-                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
-                                    <li class="breadcrumb-item"><a href="{{ route('index-transaction') }}"
-                                            class="d-flex align-items-center"><i
-                                                class="bi bi-credit-card me-2"></i>Transaksi</a></li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-grid-fill me-2"></i>Dashboard
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-transaction') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-credit-card me-2"></i>Transaksi
+                                        </a>
+                                    </li>
                                     <li class="breadcrumb-item active" aria-current="page">Edit Transaksi Transfer</li>
                                 </ol>
                             </nav>
+
+                             <p class="text-subtitle text-muted mt-2">
+                                Edit data transaksi dan lihat riwayat pembayaran secara lengkap.
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Navigation Tabs -->
-                <div class="finance-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                    <a href="{{ route('create-transaction', ['type' => 'transfer']) }}" class="finance-nav-item">
-                        <i class="bi bi-arrow-left-right me-2"></i>Transfer
-                    </a>
-                    <a href="{{ route('create-transaction', ['type' => 'receive']) }}" class="finance-nav-item active">
-                        <i class="bi bi-download me-2"></i>Receive
-                    </a>
-                </div>
 
                 <!-- Basic form layout section start -->
                 <section id="multiple-column-form" class="section">
@@ -1928,9 +1927,9 @@
                                             <div>
                                                 <h4 class=" d-flex align-items-center">
                                                     <i class="bi bi-pencil-square me-2"></i>
-                                                    Buat Transaksi Baru
+                                                    Update Transaksi
                                                 </h4>
-                                                <p class="text-muted">Isi formulir di bawah ini untuk
+                                                <p class="text-muted">Perbarui formulir di bawah ini untuk
                                                     melakukan update data</p>
                                             </div>
                                         </div>
@@ -1943,7 +1942,7 @@
                                             @method('PUT')
                                             <input type="hidden" name="type" value="{{ $type }}">
 
-                                            <div class="form-body"> 
+                                            <div class="form-body">
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-4">
@@ -2104,12 +2103,13 @@
                                                     </div>
 
                                                     <div class="col-12 d-flex justify-content-end mt-3">
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-light-secondary me-2">
+                                                        <a href="{{ route('index-transaction') }}" type="button"
+                                                            class="btn btn-sm btn-light-secondary me-2 d-flex align-items-center">
                                                             <i class="bi bi-arrow-left-circle me-1"></i>
                                                             Kembali
-                                                        </button>
-                                                        <button type="submit" class="btn btn-sm btn-primary">
+                                                        </a>
+                                                        <button type="submit"
+                                                            class="btn btn-sm btn-primary d-flex align-items-center">
                                                             <i class="bi bi-check-circle me-1"></i>
                                                             Submit Transaction
                                                         </button>

@@ -518,8 +518,8 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
                             <h3 class="d-flex align-items-center gap-2 mb-1">
-                                Manajemen Keuangan
-                                <span class="badge bg-success text-uppercase">Income</span>
+                                Finance
+                                <span class="badge bg-success text-uppercase">Pemasukan</span>
                             </h3>
                             <p class="text-muted mb-2">
                                 Halaman ini menampilkan semua transaksi <strong>pemasukan (income)</strong> yang
@@ -594,8 +594,6 @@
                         </div>
                     </div>
                 </div>
-
-
 
                 <!-- Navigation Tabs -->
                 <div class="finance-nav">

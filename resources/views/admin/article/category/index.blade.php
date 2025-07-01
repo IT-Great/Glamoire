@@ -471,8 +471,8 @@
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">Manajemen Artikel</h3>
-                                <p>Kelola semua kategori artikel dan konten Anda dari satu dasbor</p>
+                                <h3 class="mb-2">Kategori Artikel</h3>
+                                <p>Kelola semua kategori artikel dan konten anda pada halaman ini</p>
                             </div>
                         </div>
                     </div>
@@ -497,7 +497,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-question-circle-fill"></i>
                             </div>
-                            <div class="stats-title">Total Article</div>
+                            <div class="stats-title">Total Artikel</div>
                             <h3 class="stats-number">{{ $articles }}</h3>
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
@@ -531,7 +531,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Category Article</h4>
+                                    <h4>List Category Artikel</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('index-article') }}" type="button"

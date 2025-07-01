@@ -469,7 +469,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">User Management</h3>
+                            <h3 class="mb-2">User</h3>
                             <p>Daftar semua pengguna dalam sistem, termasuk informasi peran, status, dan aktivitas
                                 terakhir.
                             </p>

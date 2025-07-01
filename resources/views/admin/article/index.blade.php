@@ -471,8 +471,8 @@
                     <div class="row mb-2">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">Article Management</h3>
-                                <p>Kelola semua artikel dan konten Anda dari satu dasbor</p>
+                                <h3 class="mb-2">Artikel</h3>
+                                <p>Kelola semua artikel dan konten anda pada halaman ini</p>
                             </div>
                         </div>
                     </div>
@@ -481,8 +481,8 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}">Article</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Article</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}">Artikel</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Artikel</li>
                                 </ol>
                             </nav>
                         </div>
@@ -496,7 +496,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-question-circle-fill"></i>
                             </div>
-                            <div class="stats-title">Total Article</div>
+                            <div class="stats-title">Total Artikel</div>
                             <h3 class="stats-number">{{ count($articles) }}</h3>
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
@@ -530,7 +530,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Article</h4>
+                                    <h4>List Artikel</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('index-category-article') }}" type="button"

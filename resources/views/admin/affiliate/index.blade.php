@@ -470,7 +470,7 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">Affiliate Management</h3>
+                                <h3 class="mb-2">Affiliate</h3>
                                 <p>Tinjau dan tanggapi semua pengajuan kerja sama</p>
                             </div>
                         </div>

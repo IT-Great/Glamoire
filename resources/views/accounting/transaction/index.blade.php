@@ -407,7 +407,7 @@
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6">
                             <h3 class="d-flex align-items-center gap-2 mb-1">
-                                Manajemen Transaksi
+                                Transaksi
                             </h3>
                             <p class="text-muted mb-2">
                                 Halaman ini menampilkan semua data <strong>transaksi</strong> yang tercatat dalam
@@ -634,7 +634,7 @@
                                                     <i class="bi bi-arrow-left-right me-2"></i>From/To
                                                 </h6>
                                                 <div class="d-flex align-items-center mb-3">
-                                                    
+
                                                     <div class="flex-grow-1">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <div>
@@ -654,7 +654,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="d-flex align-items-center">
-                                                   
+
                                                     <div class="flex-grow-1">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <div>
@@ -730,13 +730,16 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary d-flex align-items-center" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-secondary d-flex align-items-center"
+                                    data-bs-dismiss="modal">
                                     <i class="bi bi-x-circle me-2"></i>Close
                                 </button>
-                                <a href="#" id="editTransaction" class="btn btn-warning d-flex align-items-center">
+                                <a href="#" id="editTransaction"
+                                    class="btn btn-warning d-flex align-items-center">
                                     <i class="bi bi-pencil me-2"></i>Edit
                                 </a>
-                                <button type="button" id="printTransaction" class="btn btn-primary d-flex align-items-center">
+                                <button type="button" id="printTransaction"
+                                    class="btn btn-primary d-flex align-items-center">
                                     <i class="bi bi-printer me-2"></i>Print
                                 </button>
                             </div>

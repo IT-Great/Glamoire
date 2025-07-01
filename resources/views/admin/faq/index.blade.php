@@ -472,7 +472,7 @@
                     <div class="row mb-4">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">FAQ Management</h3>
+                                <h3 class="mb-2">FAQ </h3>
                                 <p>Buat dan atur faq untuk mempermudah pengguna memahami penggunaan aplikasi</p>
                             </div>
                         </div>
@@ -635,7 +635,6 @@
                                                 Silakan masukkan nama kategori yang unik dan deskriptif.
                                             </small>
                                         </div>
-
 
                                         <div class="mb-3">
                                             <label for="question" class="form-label fw-medium">Question <span
