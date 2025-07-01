@@ -6,7 +6,7 @@
         $wishlist = $profile->wishlist;
     @endphp
 
-    <div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
         <div class="container-fluid px-0 px-md-3">
             <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
                 <div class="d-flex gap-2 pl-2">

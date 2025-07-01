@@ -1,7 +1,7 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 pt-2 py-2">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-2 py-2">
   <div class="container-fluid"> 
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
       <div class="d-flex gap-2 pl-2">

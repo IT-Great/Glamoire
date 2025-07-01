@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="container-fluid md:px-20 lg:px-24 xl:px-48 2xl:px-96 h-[40vh] md:h-[50vh] lg:h-[80vh] xl:h-[100vh] d-flex justify-content-center align-items-center" style="background-image: url('images/bg.png');background-size: cover; background-position: center;">
+<div class="container-fluid md:px-20 lg:px-24 xl:px-24 2xl:px-48 h-[40vh] md:h-[50vh] lg:h-[80vh] xl:h-[100vh] d-flex justify-content-center align-items-center" style="background-image: url('images/bg.png');background-size: cover; background-position: center;">
   
   <div class="p-1 p-md-3 p-lg-4 p-xl-4">
     <div class="mb-2 mb-md-4 mb-lg-6 mb-xl-8">
@@ -47,7 +47,7 @@
 
 </div>
 
-<div class="container-fluid my-2 my-md-4 grid gap-2 gap-md-4 md:px-20 lg:px-24 xl:px-48 2xl:px-96">
+<div class="container-fluid my-2 my-md-4 grid gap-2 gap-md-4 md:px-20 lg:px-24 xl:px-24 2xl:px-48">
   <div class="grid md:flex">
     <div class="col-8 col-md-6 p-0">
       <div class="d-flex justify-content-center align-items-center">

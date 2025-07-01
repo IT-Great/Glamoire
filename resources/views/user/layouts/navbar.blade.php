@@ -1,4 +1,4 @@
-<div class="py-2 md:px-20 lg:px-24 xl:px-48 2xl:px-96 position-sticky" style="top:-0.1rem;background-color: #183018;z-index: 9;">
+<div class="py-2 md:px-20 lg:px-24 xl:px-24 2xl:px-48 position-sticky" style="top:-0.1rem;background-color: #183018;z-index: 9;">
   <div class="container-fluid">
     <div class="d-flex w-full align-items-center">
       <!-- IMAGE -->
