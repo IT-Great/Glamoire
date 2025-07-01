@@ -6,7 +6,7 @@
     $wishlist = session('id_user') && $data['wishlist'] !== null ? $data['wishlist'] : [];
 @endphp
 
-<div class="md:px-20 lg:px-24 xl:px-48 2xl:px-96 py-2">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
     <!-- PROMO FIRST USER -->
     @if (session('id_user'))
         @if ($data['promoModal'] !== null)
