@@ -550,14 +550,14 @@
                 if (!isNaN(newQuantity) && newQuantity > 0) {
                     if(newQuantity > maxQuantity) {
                         $(this).val(maxQuantity); // Reset to max quantity if exceeded
-                        // updateProductQuantity(productId, $(this).val(maxQuantity));
+                        updateProductQuantity(productId, maxQuantity);
                     } else {
                         $(this).val(newQuantity); // Set the new valid quantity
-                        // updateProductQuantity(productId, $(this).val(newQuantity));
+                        updateProductQuantity(productId, newQuantity);
                     }
                 } else {
                     $(this).val(1); // Reset to 1 if the input is invalid
-                    // updateProductQuantity(productId, 1);
+                    updateProductQuantity(productId, 1);
                 }
             });
 
@@ -927,8 +927,4 @@
             });
         </script>
     @endif
-
-
-
-
 @endsection
