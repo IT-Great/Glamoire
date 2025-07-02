@@ -11,7 +11,7 @@
     @if (session('id_user'))
         @if ($data['promoModal'] !== null)
             <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-xl">
+                <div class="modal-dialog modal-xl  modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body p-0">
                             <!-- Close button at the top right corner -->
