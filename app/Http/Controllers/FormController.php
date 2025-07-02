@@ -98,8 +98,12 @@ class FormController extends Controller
 
             Question::create($dataToSave);
 
-
-            return view('user.component.contact');
+            // return view('user.component.contact');
+             return response()->json([
+                'success' => true,
+                'message' => 'Pertanyaan Anda Sudah Kami Terima. 
+                Tunggu Balasan Email Dari Kami Yaa'
+            ]);
         } catch (\Exception $err) {
             Log::error('Error saving question:', ['error' => $err->getMessage()]);
             return response()->json([
