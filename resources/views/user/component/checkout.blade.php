@@ -274,7 +274,11 @@
                     @else
                         <div class="flex">
                             <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
+                                @if ($product->productVariant->variant_image == null)
+                                    <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
+                                @else
                                 <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="gambar produk" class="rounded-sm border">
+                                @endif
                             </div>
                             <div class="col p-0">
                                 <div class="flex col-12 gap-1 gap-md-2 pl-1 pl-md-3">

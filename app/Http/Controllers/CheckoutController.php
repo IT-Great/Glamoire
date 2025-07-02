@@ -198,28 +198,26 @@ class CheckoutController extends Controller
                 $voucherDisabled = false; // Default awal
                 // dd($cartItems);
                 foreach ($cartItems as $prod) {
-                    $activePromo = $prod->product->promos->first(); // Mengambil promo pertama yang aktif
+                    $activePromo = $prod->product->promos->first();
                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                    $promoTiers = $activePromo == "" ? null : $activePromo->all_discount_tiers ;
+                    $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
+                    
+                    if($promoTiers == ""){
+                        $promoTiers = null;
+                    }
                     
                     $di = [
                         "discountedPrice" => $discountedPrice,
                         "promoTier"       => $promoTiers,
                     ];
 
-                    // dd($di);
-
                     if ($discountedPrice !== null || $promoTiers !== null) {
                         $voucherDisabled = true;
-                        // dd($promoTiers);
-                        break; // Hentikan iterasi jika kondisi terpenuhi
+                        break; 
                     }
                 }
 
                 // dd($voucherDisabled);
-
-                // dd($promoTiers);
-            
 
                 $totalItem = $cartItems->count();
                 $totalWeight = $cartItems->sum(function ($cartItem) {
@@ -237,9 +235,6 @@ class CheckoutController extends Controller
                 $totalPrice = $cartItems->sum('total');
                 // END PRODUK ITEM
 
-
-
-                // dd($cartItems);
                 // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
                 $provinceId = null;
                 $provinces = Province::get();
@@ -316,14 +311,29 @@ class CheckoutController extends Controller
 
                 // dd($cityId);
 
+                // $responseShipping = Http::withHeaders([
+                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                // ])->post('https://api.rajaongkir.com/starter/cost', [
+                //     'origin' => 114,
+                //     'destination' => $cityId,
+                //     'weight' => $totalWeight,
+                //     'courier' => 'jne',
+                // ]);
+
+                
                 $responseShipping = Http::withHeaders([
-                    'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                ])->post('https://api.rajaongkir.com/starter/cost', [
-                    'origin' => 114,
-                    'destination' => $cityId,
-                    'weight' => $totalWeight,
-                    'courier' => 'jne',
+                    'x-api-key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                ])->get('https://api-sandbox.collaborator.komerce.id/tariff/api/v1/calculate?', [
+                    'shipper_destination_id' => 31597,
+                    'receiver_destination_id' => 368,
+                    'weight' => 490,
+                    'item_value' => 50000,
+                    'cod' => 'no'
                 ]);
+                
+
+                Log::info('tes :' ,[$responseShipping->status(), $responseShipping->body()]);
+
 
                 $sfee = [];
                 if ($responseShipping->successful()) {
@@ -407,6 +417,8 @@ class CheckoutController extends Controller
                         $productIds->intersect($data['productVoucherIds'])->isEmpty();
                 });
 
+                // dd($unusableVouchers);
+                // dd($groupedVouchers);
                 return view('user.component.checkout', [
                     'groupedVouchers' => $groupedVouchers,
                 ])->with('data', $data);
