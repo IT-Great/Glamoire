@@ -34,7 +34,10 @@ use App\Http\Controllers\PopupController;
 use App\Http\Controllers\PrismalinkController;
 use App\Http\Controllers\StockExportImportController;
 use App\Http\Controllers\TransactionController;
+
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Events\Verified;
 
 use App\Models\NotifyMe;
 use App\Models\User;
@@ -72,15 +75,37 @@ Route::get('/email-verify', function () {
 
 
 // Memproses link verifikasi
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill(); // Verifikasi email
+// Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//     $request->fulfill(); // Verifikasi email
 
-    // Login otomatis setelah verifikasi
-    Auth::login($request->user());
+//     // Login otomatis setelah verifikasi
+//     Auth::login($request->user());
+//     session()->flash('success_verification_email');
+
+//     return redirect('/'); // Redirect ke halaman home setelah verifikasi
+// })->middleware(['signed'])->name('verification.verify');
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) {
+    $user = User::find($id);
+
+    if (! $user) {
+        abort(404);
+    }
+
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        abort(403); // hash tidak cocok
+    }
+
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+        event(new Verified($user));
+    }
+
     session()->flash('success_verification_email');
+    Auth::login($user); // Optional: login otomatis setelah verifikasi
+    return redirect('/');
+})->name('verification.verify');
 
-    return redirect('/'); // Redirect ke halaman home setelah verifikasi
-})->middleware(['signed'])->name('verification.verify');
 
 // Mengirim ulang email verifikasi
 Route::post('/email/verification-notification', function (Request $request) {

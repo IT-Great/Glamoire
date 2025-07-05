@@ -30,6 +30,13 @@ use Illuminate\Support\Facades\Mail;
 
 class ProductController extends Controller
 {
+    private $url;
+
+    public function __construct()
+    {
+        $this->url = env('APP_URL');
+    }
+
     public function index()
     {
         try {
@@ -568,7 +575,7 @@ class ProductController extends Controller
                 $data = [
                     'fullname'     => $fullName,
                     'product_name' => $product->product_name,
-                    'product_link' => url("http://127.0.0.1:8000/{$product->product_code}_product")
+                    'product_link' => url("{$this->url}/{$product->product_code}_product")
                 ];
 
                 Mail::to($email_target)->send(new sendMailNotifyMe($data));

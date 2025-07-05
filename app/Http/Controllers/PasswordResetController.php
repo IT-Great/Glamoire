@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Exception;
 
 class PasswordResetController extends Controller
 {
@@ -35,6 +36,7 @@ class PasswordResetController extends Controller
         // Token baru
         $token = Str::random(60);
 
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
         // Menyimpan token ke dalam tabel password_reset_tokens
         DB::table('password_reset_tokens')->insert([
             'email' => $request->email,

@@ -13,13 +13,13 @@
         <div class="list-inline-item dropdown">
           <a class="p-1 text-white text-decoration-none text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px] hover:bg-neutral-700" onclick="window.location.href='/shop'" role="button" data-bs-toggle="dropdown" aria-expanded="false">Belanja</a>
           <ul class="dropdown-menu bg-transparent border-none">
-            <div class="flex container mt-2 custom-shadow p-0 bg-white" style="min-height: 60vh; min-width: 77vw;">
+            <div class="flex container mt-2 custom-shadow p-0 bg-white border-dark rounded-md" style="min-height: 60vh; min-width: 77vw;">
               
-              <div class="col-2 w-fit px-0 min-h-[77vh] overflow-y-auto custom-scroll max-h-[75vh]">
+              <div class="col-2 w-fit px-0 min-h-[77vh] overflow-y-auto custom-scroll max-h-[75vh] border-right border-secondary">
                 <nav class="tabbable border-none">
-                  <div class="nav grid nav-tabs border-none mb-2 mb-md-4 w-full" id="nav-tab" role="tablist">
+                  <div class="nav grid nav-tabs border-none mb-2 mb-md-4 w-full border-bottom" id="nav-tab" role="tablist">
                     @foreach ($categories as $index => $category)
-                      <a class="text-decoration-none nav-item flex py-3 gap-1 align-items-center {{ $index == 0 ? 'active' : '' }} categories text-md px-3 text-[#183018] active:font-bold"
+                      <a class="text-decoration-none nav-item flex py-3 gap-1 align-items-center {{ $index == 0 ? 'active' : '' }} categories text-md px-3 text-[#183018] active:font-bold hover:cursor-pointer hover:bg-neutral-100"
                         id="tab-{{ $category->id }}" role="tab" data-bs-toggle="tab" href="#kategori-{{ $category->id }}" aria-controls="kategori-{{ $category->id }}" aria-selected="{{ $index == 0 ? 'true' : 'false' }}">
                         {{ strtoupper($category->name) }}
                       </a>
@@ -48,7 +48,7 @@
                           <div class="grid-container-category">
                             @foreach ($subCategoriesInCategory as $subCategory)
                               <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="text-sm text-[#183018] poppins-regular">
-                                {{ $subCategory->name }}
+                                - {{ $subCategory->name }}
                               </a>
                             @endforeach
                           </div>

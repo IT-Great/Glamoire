@@ -144,7 +144,7 @@
 
     <!-- Modal Forgot Password -->
     <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
-      <div class="modal-dialog">
+      <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background-color: #183018">
           <div class="modal-header border-none">
             <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -677,8 +677,19 @@
         Swal.fire({
           text: "Akun Anda Sedang Kami Proses ...",
           allowOutsideClick: false,
+          showConfirmButton: false,
+          toast: true,
+          position: "center",
+          background: "#183018",
+          customClass: {
+            popup: "small-swal", // Add custom class
+          },
           didOpen: () => {
             Swal.showLoading();
+            const title = document.querySelector('.swal2-title');
+            const content = document.querySelector('.swal2-html-container');
+            if (title) title.style.color = '#ffffff'; // Ubah warna judul
+            if (content) content.style.color = '#ffffff'; // Ubah warna konten
           }
         });
 
@@ -952,12 +963,23 @@
           let email = $("#forgot_password_email").val();
 
           Swal.fire({
-              title: "Sedang mengirim token verifikasi ke emailmu",
-              text: "Mohon tunggu sebentar ...",
-              allowOutsideClick: false,
-              didOpen: () => {
-                  Swal.showLoading();
-              }
+            toast: true,
+            position: "center",
+            background: "#183018",
+            title: "Sedang mengirim token verifikasi ke emailmu",
+            text: "Mohon tunggu sebentar ...",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            customClass: {
+              popup: "small-swal", // Add custom class
+            },
+            didOpen: () => {
+              Swal.showLoading();
+              const title = document.querySelector('.swal2-title');
+              const content = document.querySelector('.swal2-html-container');
+              if (title) title.style.color = '#ffffff'; // Ubah warna judul
+              if (content) content.style.color = '#ffffff'; // Ubah warna konten
+            }
           });
 
           $.ajax({

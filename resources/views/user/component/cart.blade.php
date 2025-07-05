@@ -58,7 +58,11 @@
                                         <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{$product->product_variant_id}}" data-type="variant"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
                                         @else
                                         @endif
+                                        @if ($product->productVariant->variant_image == NULL)
+                                        <img src="{{ Storage::url($product->product->main_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        @else
                                         <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        @endif
                                     </div>
                                     <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
                                         @if ($product->productVariant->variant_stock == 0)
@@ -131,7 +135,7 @@
                                                                 <input type="number"
                                                                     id="product-quantity-{{ $product->product_variant_id }}"
                                                                     value="{{ $product->quantity }}"
-                                                                    name=""
+                                                                    name="total_product_variant"
                                                                     class="text-xs form-control bg-secondary text-center no-spinner"
                                                                     min="1"
                                                                     max="{{ $product->productVariant->variant_stock }}"
@@ -144,7 +148,7 @@
                                                     </div>
                                                 </div>
                                                 @endif
-                                            </total_product_variantdiv>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -546,13 +550,12 @@
                 if (!isNaN(newQuantity) && newQuantity > 0) {
                     if(newQuantity > maxQuantity) {
                         $(this).val(maxQuantity); // Reset to max quantity if exceeded
-                        updateProductQuantity(productId, $(this).val(maxQuantity));
+                        updateProductQuantity(productId, maxQuantity);
                     } else {
                         $(this).val(newQuantity); // Set the new valid quantity
-                        updateProductQuantity(productId, $(this).val(newQuantity));
+                        updateProductQuantity(productId, newQuantity);
                     }
                 } else {
-                    // alert("Quantity must be a valid number greater than 0");
                     $(this).val(1); // Reset to 1 if the input is invalid
                     updateProductQuantity(productId, 1);
                 }
@@ -604,10 +607,17 @@
         $(document).on('input', '[name="total_product_variant"]', function() {
             var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
             var newQuantity = parseInt($(this).val());
+            var maxQuantity = parseInt($(this).attr('max')); 
 
             // Ensure the quantity is a valid number and greater than 0
             if (!isNaN(newQuantity) && newQuantity > 0) {
-                updateProductQuantityVariant(productId, newQuantity);
+                if(newQuantity > maxQuantity) {
+                    $(this).val(maxQuantity); // Reset to max quantity if exceeded
+                    updateProductQuantityVariant(productId, maxQuantity);
+                } else {
+                    $(this).val(newQuantity); // Set the new valid quantity
+                    updateProductQuantityVariant(productId, newQuantity);
+                }
             } else {
                 // alert("Quantity must be a valid number greater than 0");
                 $(this).val(1); // Reset to 1 if the input is invalid
@@ -917,8 +927,4 @@
             });
         </script>
     @endif
-
-
-
-
 @endsection

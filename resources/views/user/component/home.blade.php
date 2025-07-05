@@ -11,7 +11,7 @@
     @if (session('id_user'))
         @if ($data['promoModal'] !== null)
             <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-xl">
+                <div class="modal-dialog modal-xl  modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body p-0">
                             <!-- Close button at the top right corner -->
@@ -27,7 +27,7 @@
         @endif
     @else
     <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body p-0">
                     <!-- Close button at the top right corner -->
@@ -36,11 +36,11 @@
                     <div class="container-fluid p-0 m-0">
                         <img src="images/modal.png" alt="Gambar Subscribe" class="img-fluid w-auto h-100">
                         <div class="d-flex gap-2">
-                            <div class="py-2 grid md:flex col-12 align-items-center justify-content-center" style="background-color: #475136">
-                                <div class="col-12 col-md-6 p-0 p-md-2 mb-2 mb-md-0">
+                            <div class="py-2 flex col-12 align-items-center justify-content-center" style="background-color: #475136">
+                                <div class="col-6 p-0 p-md-2 mb-2 mb-md-0">
                                     <p class="text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Dapatkan Kode Voucher Gratis Khusus Pengguna Baru</p>
                                 </div>  
-                                <div class="col-12 col-md-6 m-0 p-0">
+                                <div class="col-6 m-0 p-0">
                                     <form class="grid gap-1 gap-md-2" id="voucher-form">
                                         @csrf
                                         <div class="relative flex items-center">
@@ -456,11 +456,11 @@
     <!-- LANGGANAN INFORMASI/SUBSCRIBE -->
     <div class="container-fluid my-2 my-md-4 my-lg-6 my-xl-8 px-0 px-md-3">
         <div class="d-flex gap-2">
-            <div class="py-2 py-md-1 grid md:flex col-12 align-items-center justify-content-center rounded-sm" style="background-color: #475136">
-                <div class="col-12 col-md-8 mb-2 mb-md-0 p-0 p-md-2">
+            <div class="py-2 py-md-1 flex col-12 align-items-center justify-content-center rounded-sm" style="background-color: #475136">
+                <div class="col-6 col-md-8 mb-2 mb-md-0 p-0 p-md-2">
                     <p class="text-white text-[10px] md:text-[12px] lg:text-[14px] xl:text-[18px]">Langganan Untuk Mendapatkan Informasi Terbaru Dari Kami</p>
                 </div>  
-                <div class="col-12 col-md-4 p-0 p-md-2">
+                <div class="col-6 col-md-4 p-0 p-md-2">
                     <form class="grid gap-1 gap-md-2 m-0" id="subscribe-form">
                         @csrf
                         <div class="relative flex items-center">
