@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Glamoire</title>
+    <title>Produk - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -517,7 +517,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-envelope-fill"></i>
                             </div>
-                            <div class="stats-title">Total Products</div>
+                            <div class="stats-title">Total Produk</div>
                             <h3 class="stats-number">{{ $products->total() }}</h3>
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
@@ -534,7 +534,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-check-circle-fill"></i>
                             </div>
-                            <div class="stats-title">In Stock</div>
+                            <div class="stats-title">Stok Tersedia</div>
                             <h3 class="stats-number">{{ $products->where('stock_quantity', '>', 0)->count() }}</h3>
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
@@ -551,7 +551,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-exclamation-circle-fill"></i>
                             </div>
-                            <div class="stats-title">Low Stock</div>
+                            <div class="stats-title">Stok Rendah</div>
                             <h3 class="stats-number">
                                 {{ $products->where('stock_quantity', '<=', 15)->where('stock_quantity', '>', 0)->count() }}
                             </h3>
@@ -570,7 +570,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-x-circle-fill"></i>
                             </div>
-                            <div class="stats-title">Out Of Stock</div>
+                            <div class="stats-title">Stok Habis</div>
                             <h3 class="stats-number">{{ $products->where('stock_quantity', '=', 0)->count() }}</h3>
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
@@ -587,10 +587,8 @@
                     <div class="card-header bg-white">
                         <div class="row">
                             <div class="col-12 col-md-6">
-                                <h4 class="mb-2 d-flex align-items-center"><i class="bi bi-box-seam me-2"></i>Product
-                                    Inventory
-                                </h4>
-
+                                <h4 class="mb-2 d-flex align-items-center"><i class="bi bi-box-seam me-2"></i>List
+                                    Produk</h4>
                             </div>
                             <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                 <a href="{{ route('create-product-admin') }}" class="btn btn-sm btn-primary">
@@ -604,11 +602,11 @@
                         <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Product Details</th>
-                                    <th>Stock</th>
-                                    <th>Stock Status</th>
-                                    <th>Price</th>
-                                    <th>Actions</th>
+                                    <th>Detail Produk</th>
+                                    <th>Stok</th>
+                                    <th>Status Stok</th>
+                                    <th>Harga</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
