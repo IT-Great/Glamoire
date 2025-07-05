@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AboutusController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PopupController;
 use App\Http\Controllers\PrismalinkController;
 use App\Http\Controllers\StockExportImportController;
 use App\Http\Controllers\TransactionController;
@@ -301,8 +303,11 @@ Route::get('/login-admin', [AuthenticateController::class, 'indexlogin'])->name(
 Route::post('/login-admin', [AuthenticateController::class, 'login'])->name('login-admin');
 Route::post('/logout', [AuthenticateController::class, 'logout'])->name('logout');
 
+// FORGOT PASSWORD
 Route::get('/forgot-password', [AuthenticateController::class, 'forgotPassword'])->name('index-forgotpassword');
-
+Route::post('/send-reset-link', [AuthenticateController::class, 'sendResetLink'])->name('send.reset.link');
+Route::get('/reset-password/{token}', [AuthenticateController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [AuthenticateController::class, 'resetPassword'])->name('reset.password');
 
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
@@ -373,6 +378,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/order-sent-admin', [OrderController::class, 'sentAdmin'])->name('index-admin-order-sent');
     Route::get('/order-need-sent-admin', [OrderController::class, 'needSentAdmin'])->name('index-admin-order-need-sent');
     Route::get('/order-complete-sent-admin', [OrderController::class, 'completeOrder'])->name('index-admin-order-complete-sent');
+    Route::get('/order-returned-admin', [OrderController::class, 'returnedOrder'])->name('index-admin-order-returned');
     Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
 
     Route::post('/admin/order/{id}/change-status', [OrderController::class, 'changeOrderStatus'])->name('change-order-status');
@@ -490,6 +496,21 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // user detail
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
     Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
+
+    // TENTANG KAMI
+    Route::get('/aboutus-admin', [AboutusController::class, 'indexAboutusAdmin'])->name('index-aboutus-admin');
+    Route::get('/aboutus-create-admin', [AboutusController::class, 'createAboutusAdmin'])->name('create-aboutus-admin');
+    Route::post('/aboutus-create-admin', [AboutusController::class, 'storeAboutusAdmin'])->name('store-aboutus-admin');
+    Route::get('/aboutus-edit-admin/{id}', [AboutusController::class, 'editAboutusAdmin'])->name('edit-aboutus-admin');
+    Route::put('/aboutus-update-admin/{id}', [AboutusController::class, 'updateAboutusAdmin'])->name('update-aboutus-admin');
+
+    // POP UP
+    Route::get('/popup-admin', [PopupController::class, 'indexPopupAdmin'])->name('index-popup-admin');
+    Route::get('/popup/{id}', [PopupController::class, 'show'])->name('popup.show');
+    Route::post('/popup-create-admin', [PopupController::class, 'storePopupAdmin'])->name('store-popup-admin');
+    Route::post('/popup/{id}/toggle', [PopupController::class, 'toggle'])->name('popup.toggle');
+    Route::delete('/popup/{id}', [PopupController::class, 'destroy'])->name('popup.destroy');
+
 
     // shipping fee
     Route::get('/shipping-fee', function () {

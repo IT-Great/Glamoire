@@ -24,29 +24,27 @@
 
             <form action="{{ route('login-admin') }}" method="POST">
                 @csrf
-                <div class="form-group position-relative has-icon-left mb-4">
+                <div class="form-group position-relative mb-4">
+                    <label for="name">Username</label>
                     <input type="text" name="name"
-                        class="form-control form-control-xl @error('name') is-invalid @enderror" placeholder="Username"
-                        required value="{{ old('name') }}">
-                    <div class="form-control-icon">
-                        <i class="bi bi-person"></i>
-                    </div>
+                        class="form-control form-control-xl @error('name') is-invalid @enderror mt-2" id="name"
+                        placeholder="Masukkan username Anda" required value="{{ old('name') }}">
+
                     @error('name')
-                        <div class="invalid-feedback" style="display: block; position: absolute; bottom: -20px;">
+                        <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                     @enderror
                 </div>
 
-                <div class="form-group position-relative has-icon-left mb-4">
+                <div class="form-group position-relative mb-4">
+                    <label for="password">Password</label>
                     <input type="password" name="password"
-                        class="form-control form-control-xl @error('password') is-invalid @enderror"
+                        class="form-control form-control-xl @error('password') is-invalid @enderror mt-2" id="password"
                         placeholder="Password" required>
-                    <div class="form-control-icon">
-                        <i class="bi bi-shield-lock"></i>
-                    </div>
+
                     @error('password')
-                        <div class="invalid-feedback" style="display: block; position: absolute; bottom: -20px;">
+                        <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                     @enderror
@@ -55,10 +53,11 @@
                 <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
             </form>
 
-            <div class="text-center mt-5 text-lg fs-4">               
+            <div class="text-center mt-5 text-lg fs-4">
                 <p><a class="font-bold" href="/forgot-password">Forgot password?</a></p>
             </div>
         </div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
