@@ -41,6 +41,7 @@ use Illuminate\Auth\Events\Verified;
 
 use App\Models\NotifyMe;
 use App\Models\User;
+use App\Models\AboutUs;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
@@ -220,7 +221,8 @@ Route::get('/contact', function () {
 });
 
 Route::get('/about', function () {
-    return view('user.component.about');
+    $data = AboutUs::first();
+    return view('user.component.about')->with('data', $data);
 });
 
 // DETAIL PRODUK
@@ -331,8 +333,8 @@ Route::post('/logout', [AuthenticateController::class, 'logout'])->name('logout'
 // FORGOT PASSWORD
 Route::get('/forgot-password', [AuthenticateController::class, 'forgotPassword'])->name('index-forgotpassword');
 Route::post('/send-reset-link', [AuthenticateController::class, 'sendResetLink'])->name('send.reset.link');
-Route::get('/reset-password/{token}', [AuthenticateController::class, 'showResetForm'])->name('password.reset');
-Route::post('/reset-password', [AuthenticateController::class, 'resetPassword'])->name('reset.password');
+Route::get('/reset-password/{token}', [AuthenticateController::class, 'showResetForm'])->name('password.reset.admin');
+Route::post('/reset-password', [AuthenticateController::class, 'resetPassword'])->name('reset.password.admin');
 
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');

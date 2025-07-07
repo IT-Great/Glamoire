@@ -2,8 +2,8 @@
   <div class="container-fluid text-dark">
     <div class="row" style="background-color: #183018">
       <div class="col">
-        <div class="py-2 flex items-center justify-between w-full md:px-20 lg:px-24 xl:px-24 2xl:px-48">
-          <img class="w-1/3" style="max-width:250px;" src="images/l-1.png" alt="Image">
+        <div class="py-4 flex items-center justify-between w-full md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+          <img class="w-1/3" style="max-width:250px;" src="images/new-logo.png" alt="Image">
           <p class="text-white text-[10px] md:text-[12px] lg:text-[20px] xl:text-[26px]">
             The First Plant-Based Beauty Store in Indonesia
           </p>
