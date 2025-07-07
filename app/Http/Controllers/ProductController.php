@@ -16,6 +16,8 @@ use App\Models\Cart_item;
 use App\Models\Promo;
 use App\Models\NotifyMe;
 use App\Models\ProductStocks;
+use App\Models\Popup;
+
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -128,6 +130,9 @@ class ProductController extends Controller
                 return view('user.component.home')->with('data', $data);
             } else {
                 $product = Product::with(['productVariations'])->get();
+                $popupVoucherNewUser = Popup::where('is_active', true)
+                ->where('name', 'LIKE', '%pengguna baru%')
+                ->first();
 
                 foreach ($product as $product) {
                     $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
@@ -205,6 +210,7 @@ class ProductController extends Controller
                     'new'     => $new,
                     'product' => $product,
                     'promos'  => $promos,
+                    'popup'   => $popupVoucherNewUser,
                 ];
 
                 // dd(count($data['wishlist']));
@@ -217,7 +223,7 @@ class ProductController extends Controller
 
 
         } catch (Exception $err) {
-            dd($err);
+           return view('eror-403'); 
         }
     }
 

@@ -5,9 +5,9 @@
     <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
             <div class="d-flex gap-1 pl-3">
-                <a href="/" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Keranjang</a>
+                <a href="/" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Beranda</a>
+                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
+                <a href="#" class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Keranjang</a>
             </div>
         </div>
     </div>
@@ -70,8 +70,8 @@
                                             Stok Habis
                                         </p>
                                         @endif
-                                        <p class="hover:cursor-pointer text-[8px] text-black md:text-[10px] lg:text-[10px] xl:text-[12px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
-                                        <a class="w-fit bg-[#183018] text-white p-1 rounded-sm text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px] text-center">
+                                        <p class="text-dark hover:cursor-pointer text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
+                                        <a class="w-fit text-decoration-none bg-[#183018] text-white p-1 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-center">
                                             {{ $product->productVariant->variant_value }}
                                         </a>
                                         
@@ -83,7 +83,7 @@
                                                 <div class="flex gap-1">
 
                                                     <p
-                                                        class="text-decoration-none  text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
+                                                        class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
                                                         Rp{{ number_format($product->productVariant->variant_price, 0, ',', '.') }}
                                                     </p>
 
@@ -92,7 +92,7 @@
                                                 <div class="flex gap-1">
 
                                                     <p
-                                                        class="text-decoration-none  text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
+                                                        class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
                                                         {!! $product->all_discount_tiers !!}
                                                     </p>
 
@@ -112,7 +112,7 @@
 
                                                         @if ($product->productVariant->variant_stock == 0)
                                                             <button
-                                                                class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm"
+                                                                class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-xl"
                                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                                 title="Beritahu Saya Jika Stok Sudah Ada" type="button"
                                                                 id="notify-me-{{ $product->productVariant->id }}"
@@ -120,7 +120,7 @@
                                                                 Beritahu Saya
                                                             </button>
                                                         @else
-                                                            <div class="input-group quantity-detail-produk-variant rounded-sm shadow-sm"
+                                                            <div class="input-group quantity-detail-produk-variant rounded-xl shadow-sm"
                                                                 style="width: 120px;">
                                                                 <div class="input-group-btn">
                                                                     <button class="btn btn-minus-variant"
@@ -170,7 +170,7 @@
                                             Stok Habis
                                         </p>
                                         @endif
-                                        <p class="hover:cursor-pointer text-[8px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
+                                        <p class="hover:cursor-pointer text-[12px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
                                         @php
                                             $activePromo = $product->product->promos->first(); // Mengambil promo pertama yang aktif
                                             $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
@@ -181,14 +181,14 @@
                                     
                                         <div class="flex gap-1">
                                             @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">
                                                 <del>
                                                 Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
                                                 </del>
                                             </p>
-                                            <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            <p class="text-decoration-none text-[#183018] text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
                                             @else
-                                            <p class="text-decoration-none  text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
+                                            <p class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
                                                 Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
                                             </p>
                                             @endif
@@ -272,12 +272,12 @@
                 <div class="position-sticky" style="top: 4rem">
                     <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
                         <div class="d-flex py-2">
-                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Total Harga</p>
-                            <p id="totalPrice" class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+                            <p class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Total Harga</p>
+                            <p id="totalPrice" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
                         </div>
                         <div class="border-top border-[#183018] pt-2 mr-2">
                                 <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
-                                    Beli
+                                    Beli Sekarang
                                 </button>
                             </a>
                         </div>
@@ -301,12 +301,12 @@
 
     <div class="d-lg-none bg-[#183018] fixed-bottom px-0 d-flex justify-content-end align-items-center gap-2" style="width: 100%; box-sizing: border-box;">
         <div class="grid py-2 text-end" style="flex: 1;">
-            <p class="text-white text-[12px]">Total</p>
-            <p id="totalPriceMobile" class="text-[12px] ml-auto text-white">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+            <p class="text-white text-[14px]">Total</p>
+            <p id="totalPriceMobile" class="text-[14px] ml-auto text-white font-semibold">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
         </div>
         <div class="pr-2">
-            <button class="btn btn-light w-fit h-fit font-semibold rounded-sm text-[#183018] text-[12px]" type="submit" id="paynowmobile" onclick="checkout()" disabled>
-                Beli
+            <button class="btn btn-light w-fit h-fit font-semibold rounded-xl text-[#183018] text-[22px]" type="submit" id="paynowmobile" onclick="checkout()" disabled>
+                Beli Sekarang
             </button>
         </div>
     </div>

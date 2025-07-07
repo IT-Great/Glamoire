@@ -3,13 +3,13 @@
 @section('content')
 <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
     <div class="container-fluid px-0 px-md-3">
-        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
+        <div class="shadow-sm border border-black rounded-xl py-2 py-md-3 my-2 my-md-3">
             <div class="d-flex gap-1 pl-2">
-                <a href="/" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Beranda</a>
-                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="/shop" class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Belanja</a>
-                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $product->product_name }}</a>
+                <a href="/" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Beranda</a>
+                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
+                <a href="/shop" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Belanja</a>
+                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
+                <a href="#" class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ $product->product_name }}</a>
             </div>
         </div>
     </div>
@@ -24,8 +24,8 @@
                         <div class="swiper-wrapper">
                             @if (!empty($product->main_image))
                                 <div class="swiper-slide">
-                                    <div class="image-container border border-b-zinc-700 rounded-sm">
-                                        <img class="zoomable-image main-display" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
+                                    <div class="image-container border shadow-sm border border-black rounded-xl">
+                                        <img class="zoomable-image main-display shadow-sm border border-black rounded-xl" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
                                     </div>
                                 </div>
                             @endif
@@ -33,8 +33,8 @@
                             @if (!empty($product->images))
                                 @foreach ($product->images as $image)
                                     <div class="swiper-slide">
-                                        <div class="image-container border border-b-zinc-700 rounded-sm">
-                                            <img class="zoomable-image main-display" src="{{ Storage::url($image) }}" alt="product Image" />
+                                        <div class="image-container border shadow-sm border border-black rounded-xl">
+                                            <img class="zoomable-image main-display shadow-sm border border-black rounded-xl" src="{{ Storage::url($image) }}" alt="product Image" />
                                         </div>
                                     </div>
                                 @endforeach
@@ -42,7 +42,7 @@
 
                             @if (!empty($product->video))
                                 <div class="swiper-slide" style="max-height: 150px;">
-                                    <video class="zoomable-video main-display border-b-zinc-700 rounded-sm" id="mainVideo" controls controlsList="nodownload noplaybackrate h-fit">
+                                    <video class="zoomable-video main-display shadow-sm border border-black rounded-xl" id="mainVideo" controls controlsList="nodownload noplaybackrate h-fit">
                                         <source src="{{ Storage::url($product->video) }}" type="video/mp4">
                                     </video>
                                 </div>
@@ -53,28 +53,28 @@
                     <div class="swiper mySwiperProduct p-0">
                         <div class="swiper-wrapper">
                             @if (!empty($product->main_image))
-                                <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="main_image">
-                                    <a data-src="{{ Storage::url($product->main_image) }}" data-type="image">
-                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" />
+                                <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="main_image">
+                                    <a data-src="{{ Storage::url($product->main_image) }}" data-type="image" class="shadow-sm k rounded-xl">
+                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" class="shadow-sm border border-black rounded-xl" />
                                     </a>
                                 </div>
                             @endif
 
                             @if (!empty($product->images))
                                 @foreach ($product->images as $image)
-                                    <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="main_image">
-                                        <a data-src="{{ Storage::url($image) }}" data-type="image">
-                                            <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}" />
+                                    <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="main_image">
+                                        <a data-src="{{ Storage::url($image) }}" data-type="image" class="shadow-sm  rounded-xl">
+                                            <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}" class="shadow-sm border border-black rounded-xl" />
                                         </a>
                                     </div>
                                 @endforeach
                             @endif
 
                             @if (!empty($product->video))
-                                <div class="swiper-slide example-product hover:cursor-pointer border-b-zinc-700 rounded-sm" id="videoproduk">
+                                <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="videoproduk">
                                     <a data-src="{{ Storage::url($product->video) }}" data-type="video">
                                         <div class="video-thumbnail-wrapper">
-                                            <img src="{{ Storage::url($product->main_image) }}" alt="Video Thumbnail" />
+                                            <img src="{{ Storage::url($product->main_image) }}" alt="Video Thumbnail" class="shadow-sm  rounded-xl"/>
                                             <i class="fas fa-play" style="color: #183018;"></i>
                                         </div>
                                     </a>
@@ -92,31 +92,41 @@
             <div class="grid col-lg-8 pl-lg-0 h-fit gap-1">
                 <div class="grid gap-1">
                     <div class="d-flex gap-1">
-                        <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">{{$product->brand->name}}</a> 
+                        <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">{{$product->brand->name}}</a> 
                         @if (session('id_user'))
                             @php
                                 $inWishlist = collect($wishlists)->contains('product_id', $product->id);
                             @endphp
                             <i 
-                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
                                 onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" 
                                 title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
                             </i>
                         @else
                             <i 
-                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
+                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
                                 onclick="{{ 'addToWishlist(' . $product->id . ')' }}" title="Tambah ke Favorit">
                             </i>
                         @endif
                     </div>
-                    <p class="text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] text-black">{{ $product->product_name }}</p>
+                    <p class="text-[20px] md:text-[22px] lg:text-[24px] xl:text-[24px] text-black font-semibold">{{ $product->product_name }}</p>
                 </div>
 
-                <div class="d-flex gap-1">
-                    <i class="text-decoration-none fas fa-star text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                    <p class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between">{{ $product->rating }}</p>
-                    <p class="text-decoration-none text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between">({{ $product->rating_and_reviews_count }} Ulasan)</p>
+                <div class="d-flex items-center gap-3 flex-wrap text-sm xl:text-base text-[#183018]">
+                    @if ($product->sale != 0)
+                        <div class="flex items-center gap-1">
+                            <i class="fas fa-shopping-cart" style="color: red;"></i>
+                            <span class="text-xs">Terjual {{ $product->sale }}</span>
+                        </div>
+                    @endif
+
+                    <div class="flex items-center gap-1">
+                        <i class="fas fa-star text" style="color: orange;"></i>
+                        <span class="text-xs">{{ $product->rating }}</span>
+                        <span class="text-gray-500 text-xs">({{ $product->rating_and_reviews_count }} Ulasan)</span>
+                    </div>
                 </div>
+
 
                 <div>
                 @php
@@ -125,14 +135,14 @@
                 @endphp
                 
                 @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                    <span class="text-muted text-decoration-line-through font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
+                    <span class="text-muted text-decoration-line-through font-semi-bold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                     </span>
-                    <span class="text-[#183018] font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
+                    <span class="text-[#183018] font-semi-bold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
                         Rp{{ number_format($discountedPrice, 0, ',', '.') }}
                     </span>
                 @else
-                    <span class="font-weight-semi-bold text-black text-[18px] md:text-[18px] lg:text-[20px] xl:text-[24px]">
+                    <span class="font-bold text-dark text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                     </span>
                 @endif
@@ -142,7 +152,7 @@
                     <div class="d-lg-flex d-none d-lg-block">
                         <span class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
                         <span
-                            class="text-danger rounded-sm ml-auto text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
+                            class="text-danger rounded-xl ml-auto text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
                             data-bs-toggle="tooltip" 
                             data-bs-placement="top" 
                             title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -159,19 +169,16 @@
                         @endphp
 
                         @if ($inCart)
-                            <button onclick="cart()" class="d-none d-lg-block rounded-sm w-full bg-[#183018] hover:bg-neutral-900 text-white py-1 p-0 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] flex align-items-center justify-content-center">
+                            <button onclick="cart()" class="d-none d-lg-block rounded-xl w-full bg-[#183018] hover:bg-neutral-900 text-white py-1 p-0 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] flex align-items-center justify-content-center">
                                 Cek Keranjangmu
                             </button>
                         @else
                             <div class="grid">
                                 <div class="d-flex">
-                                    @if ($product->sale != 0)
-                                    <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
-                                    @endif
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
+                                    <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between mr-1 text-dark font-semibold">Stok : {{ $product->stock_quantity }}</p>
                                 </div>
                                 <div class="align-items-center flex gap-2">
-                                    <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
+                                    <div class="input-group quantity-detail-produk rounded-xl shadow-sm" style="width: 120px;">
                                         <div class="input-group-btn">
                                             <button class="btn btn-minus">
                                                 <i class="fa fa-minus"></i>
@@ -194,8 +201,8 @@
                                         </div>
                                     </div>
                                     
-                                    <a onclick="addCartWithQuantity({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                    <a onclick="buyNow({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                    <a onclick="addCartWithQuantity({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 hover:bg-gray-100 rounded-xl shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                    <a onclick="buyNow({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 text-decoration-none rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                                 </div>
                                 <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                             </div>
@@ -203,13 +210,10 @@
                     @else
                         <div class="grid">
                             <div class="d-flex">
-                                    @if ($product->sale != 0)
-                                    <p class="text-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-2">Terjual {{ $product->sale }}</p>
-                                    @endif
-                                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
-                                </div>
+                                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
+                            </div>
                             <div class="align-items-center gap-2 d-none d-lg-flex">
-                                <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
+                                <div class="input-group quantity-detail-produk rounded-xl shadow-sm" style="width: 120px;">
                                     <div class="input-group-btn">
                                         <button class="btn btn-minus">
                                             <i class="fa fa-minus"></i>
@@ -232,8 +236,8 @@
                                     </div>
                                 </div>
                                 
-                                <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-sm shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-xl shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
+                                <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                             </div>
                             <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                         </div>
@@ -260,52 +264,59 @@
                 <div class="row">
                     <div class="col tabbable mt-1 mt-md-2 border-bottom mx-3 mx-0 px-0">
                         <div class="nav nav-tabs justify-content-start border-secondary mb-2">
-                            <a class="nav-item nav-link active text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
-                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
-                            <a class="nav-item nav-link text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" data-bs-toggle="tab" href="#ulasan">Ulasan ({{ $product->rating_and_reviews_count }})</a>
+                            <a class="nav-item nav-link active text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
+                            <a class="nav-item nav-link text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
+                            <a class="nav-item nav-link text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#ulasan">Ulasan ({{ $product->rating_and_reviews_count }})</a>
                         </div>
                         <div class="tab-content">
                             <div class="tab-pane fade show active p-1" id="deskripsi">
-                                <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Deskripsi Produk</h4>
-                                {!! $product->description !!}
+                                <h4 class="mb-1 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">Deskripsi Produk</h4>
+                                <div>{!! $product->description !!}</div>
                             </div>
                             <div class="tab-pane fade p-1" id="informasi">
-                                <h4 class="mb-1 text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Informasi terkait produk</h4>
-                                <p class="text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] text-black">{!! $product->information_product !!}</p>
+                                <h4 class="mb-1 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">Informasi terkait produk</h4>
+                                <div>{!! $product->information_product !!}</div>
                             </div>
                             <div class="tab-pane fade p-1" id="ulasan">
                                 <div class="row">
                                     <div class="col-12 overflow-y-auto custom-scroll" style="max-height:60vh;">
-                                        <h4 class="mb-2 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
+                                        <h4 class="mb-3 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
                                         @foreach ($product->ratingAndReviews as $ratingAndReviews)
-                                            <div class="comment mb-4">
-                                                <div class="media-body grid border border-[#183018] rounded-sm shadow-md p-2">
+                                            <div class="comment mb-1">
+                                                <div class="media-body grid border border-[#183018] rounded-xl shadow-md p-2">
                                                     <div class="col-12 p-0">
                                                         <div class="grid">
-                                                            <div class="flex w-full">
-                                                                <div class="grid">
-                                                                    <h6 class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[16px]">{{ $ratingAndReviews->user->fullname }}<small> - <i>{{ \Carbon\Carbon::parse($ratingAndReviews->created_at)->format('d F Y') }}</i></small></h6>
-                                                                    <div class="mr-2">
-                                                                        <small class="fas fa-star text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="color:orange;"></small>
-                                                                        <small class="text-[12px] md:text-[10px] lg:text-[12x] xl:text-[14px] text-black">{{ $ratingAndReviews->rating }}</small>
+                                                            <div class="flex items-start gap-3">
+                                                                {{-- Nama + Tanggal + Rating --}}
+                                                                <div class="flex flex-col w-full">
+                                                                    <div class="flex justify-between items-center">
+                                                                        <h6 class="text-xs lg:text-base font-semibold text-[#183018]">
+                                                                            🧖‍♀️{{ $ratingAndReviews->user->fullname }}
+                                                                        </h6>
+                                                                        <span class="text-xs text-gray-500">
+                                                                            {{ \Carbon\Carbon::parse($ratingAndReviews->created_at)->format('d F Y') }}
+                                                                        </span>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="w-full">
-                                                                <p class="text-[12px] text-black md:text-[10px] lg:text-[12px] xl:text-[14px]">{{ $ratingAndReviews->description }}</p>
+                                                            <div>
+                                                                @for ($star = 1; $star <= 5; $star++)
+                                                                    <small class="fas fa-star" style="color:orange;"></small>
+                                                                @endfor
                                                             </div>
-                                                            <div class="d-flex">
+                                                            <div class="text-[12px] text-black md:text-[10px] lg:text-[12px] xl:text-[14px] text-black leading-relaxed">
+                                                                {{ $ratingAndReviews->description }}
+                                                            </div>
+                                                            <div class="d-flex mt-1">
                                                                 @if ($ratingAndReviews->video !== null)
-                                                                <video class="zoomable-video video-rating-review" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
-                                                                    <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
-                                                                </video>
-                                                                    {{-- <div class="col-3 pr-1 pl-0">
-                                                                    </div> --}}
+                                                                    <video class="zoomable-video video-rating-review hover:cursor-pointer" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
+                                                                        <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
+                                                                    </video>
                                                                 @endif
                                                                 @if ($ratingAndReviews->images !== null)
                                                                     @foreach (json_decode($ratingAndReviews->images, true) as $index => $image)
                                                                         {{-- <div class="col-4 pr-1 pl-0"> --}}
-                                                                            <img class="image-rating-review" src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
+                                                                            <img class="image-rating-review hover:cursor-pointer rounded-xl mr-2" src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
                                                                         {{-- </div> --}}
                                                                     @endforeach
                                                                 @endif
@@ -327,7 +338,7 @@
                         <div class="container-fluid d-flex gap-2 py-1">
                             <span class="text-danger py-2 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
                             <span
-                                class="text-light py-2 rounded-sm ml-auto text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
+                                class="text-light py-2 rounded-xl ml-auto text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
                                 data-bs-toggle="tooltip" 
                                 data-bs-placement="top" 
                                 title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -347,7 +358,7 @@
                         @if ($inCart)
                         <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
                             <div class="container-fluid d-flex gap-2 py-1">
-                                <a onclick="cart()" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                <a onclick="cart()" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
                                     Cek Keranjangmu
                                 </a>
                             </div>
@@ -355,10 +366,10 @@
                         @else
                             <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
                                 <div class="container-fluid d-flex gap-2 py-1">
-                                    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
                                         + Keranjang
                                     </a>
-                                    <a onclick="buyNow({{$product->id}})" class="btn hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+                                    <a onclick="buyNow({{$product->id}})" class="btn hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
                                         Beli Sekarang
                                     </a>
                                 </div>
@@ -367,10 +378,10 @@
                     @else
                         <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
                             <div class="container-fluid d-flex gap-2 py-1">
-                                <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-sm shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
+                                <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
                                     + Keranjang
                                 </a>
-                                <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-sm shadow-sm w-full text-[#183018] text-[12px]">
+                                <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
                                     Beli Sekarang
                                 </a>
                             </div>
@@ -405,7 +416,7 @@
                                     <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
                                             <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
+                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $yl->rating }}</p>
                                             @php
                                                 $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
                                             @endphp
@@ -415,7 +426,7 @@
                                                 >
                                             </i>
                                         </div>
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[11px] xl:text-[13px] overflow-hidden">
+                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
                                             <a href="/{{ $yl->product_code }}_product" 
                                             class="text-decoration-none truncate-ellipsis" 
                                             data-bs-toggle="tooltip" 
@@ -432,7 +443,7 @@
                                             @endphp
 
                                             @if ($yl->priceVariation !== null)
-                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
                                                     {{ $yl->priceVariation }}
                                                 </p>
                                             @else
@@ -452,7 +463,7 @@
                                         </div>
                                         
                                         {{-- @if ($yl->stock_quantity == 0)
-                                            <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            <a class="py-1 rounded-xl border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                                 data-bs-toggle="tooltip" 
                                                 data-bs-placement="top" 
                                                 title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -469,11 +480,11 @@
                                             @endphp
         
                                             @if($inCart)
-                                                <a href="/cart" class="py-1 rounded-sm border border-[#183018] hover:bg-neutral-900 shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
+                                                <a href="/cart" class="py-1 rounded-xl border border-[#183018] hover:bg-neutral-900 shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
                                                     Cek Keranjang
                                                 </a>
                                             @else
-                                                <a class="gap-1 py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center" onclick="event.stopPropagation();addToCart({{$yl->id}})">
+                                                <a class="gap-1 py-1 rounded-xl hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center" onclick="event.stopPropagation();addToCart({{$yl->id}})">
                                                     + <i class="fas fa-shopping-cart"></i> Keranjang
                                                 </a>
                                             @endif
@@ -519,22 +530,28 @@
                                                 $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                             @endphp
 
-                                            @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                <del>
-                                                    Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                </del>
+                                            @if ($yl->priceVariation !== null)
+                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
+                                                    {{ $yl->priceVariation }}
                                                 </p>
-                                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                @else
-                                                <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                </p>
+                                            @else
+                                                @if ($discountedPrice && $discountedPrice < $yl->regular_price)
+                                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                    <del>
+                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                    </del>
+                                                    </p>
+                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                                    @else
+                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
+                                                    </p>
+                                                @endif
                                             @endif
                                         </div>
                                         
                                         {{-- @if ($yl->stock_quantity == 0)
-                                            <a class="py-1 rounded-sm border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
+                                            <a class="py-1 rounded-xl border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
                                                 data-bs-toggle="tooltip" 
                                                 data-bs-placement="top" 
                                                 title="Beritahu Saya Jika Stok Sudah Ada" 
@@ -546,7 +563,7 @@
                                                 Stok Habis
                                             </a>
                                         @else
-                                            <a class="gap-1 py-1 rounded-sm hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$yl->id}})">
+                                            <a class="gap-1 py-1 rounded-xl hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$yl->id}})">
                                                 + <i class="fas fa-shopping-cart"></i> Keranjang
                                             </a>
                                         @endif --}}
@@ -563,17 +580,23 @@
 </div>
 
 <!-- Modal untuk gambar/video fullscreen -->
-<div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal fade " id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered rounded-xl">
     <div class="modal-content">
-      <div class="modal-body p-0">
+      <div class="modal-body">
         <!-- Konten gambar atau video akan diubah secara dinamis -->
-        <div id="modalContent"></div>
+        <button type="button" id="btn-close-fullscreen" class="position-absolute top-0 end-0" data-bs-dismiss="modal" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 72 72">
+          <path d="M36,12c13.255,0,24,10.745,24,24c0,13.255-10.745,24-24,24S12,49.255,12,36C12,22.745,22.745,12,36,12z M40.243,44.485	c1.171,1.171,3.071,1.172,4.243,0c1.172-1.172,1.171-3.071,0-4.243C44.253,40.01,42.063,37.82,40.243,36	c1.82-1.82,4.01-4.01,4.243-4.243c1.171-1.171,1.172-3.071,0-4.243c-1.171-1.171-3.071-1.171-4.243,0	C40.01,27.747,37.82,29.937,36,31.757c-1.82-1.82-4.01-4.01-4.243-4.243c-1.171-1.171-3.071-1.172-4.243,0	c-1.172,1.172-1.171,3.071,0,4.243c0.232,0.232,2.423,2.423,4.243,4.243c-1.82,1.82-4.01,4.01-4.243,4.243	c-1.171,1.171-1.171,3.071,0,4.243c1.172,1.172,3.071,1.171,4.243,0c0.232-0.232,2.423-2.423,4.243-4.243	C37.82,42.063,40.01,44.253,40.243,44.485z"></path>
+          </svg>
+        </button>
+        <div id="modalContent">
+        </div>
       </div>
-      <button type="button" id="btn-close-fullscreen" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
   </div>
 </div>
+
 
 
 <!-- UNTUK MENGATUR ZOOM IN GAMBAR PADA HALAMAN DETAIL PRODUK -->
@@ -781,7 +804,7 @@
         var modalContent = document.getElementById('modalContent');
 
         if (type === 'image') {
-            modalContent.innerHTML = '<img src="' + source + '" class="w-100 h-auto" style="object-fit: contain;">';
+            modalContent.innerHTML = '<img src="' + source + '" style="object-fit: contain;">';
         } else if (type === 'video') {
             modalContent.innerHTML = '<video class="w-100 h-auto" controls controlsList="nodownload noplaybackrate"><source src="' + source + '" type="video/mp4"></video>';
         }
@@ -818,63 +841,66 @@
 
 
 </script>
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
 <script>
     function cart(){
         window.location.href = "/cart";
     }
 
-    var swiperDetailProduct = new Swiper(".mySwiperDetail", {
-        slidesPerView: 5,
-        spaceBetween: 15,
-        cssMode: true,
-        navigation: {
-          nextEl: ".swiper-next",
-          prevEl: ".swiper-prev",
-        },
-        breakpoints: {
-          2560: {
-            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1440: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1024: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          // Tablet
-          768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-          },
-          425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          // Mobile
-          320: {
-            slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
-            spaceBetween: 5,  // Menyusun jarak antar slide
-            navigation: false,
-          },
-        },
-    });
-
     document.addEventListener('DOMContentLoaded', function () {
-        const thumbnailLinks = document.querySelectorAll('.swiper.mySwiperProduct .swiper-slide a');
-        const mainDisplay = document.querySelector('.swiper.mySwiperShow');
+        // Swiper product Lainnya
+        var swiperDetailProduct = new Swiper(".mySwiperDetail", {
+            slidesPerView: 5,
+            spaceBetween: 15,
+            cssMode: true,
+            navigation: {
+            nextEl: ".swiper-next",
+            prevEl: ".swiper-prev",
+            },
+            breakpoints: {
+            2560: {
+                slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 10, // Menyusun jarak antar slide
+            },
+            1440: {
+                slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 10, // Menyusun jarak antar slide
+            },
+            1024: {
+                slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 10, // Menyusun jarak antar slide
+            },
+            // Tablet
+            768: {
+                slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 5, // Menyusun jarak antar slide
+            },
+            425: {
+                slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 5, // Menyusun jarak antar slide
+                navigation: false,
+            },
+            375: {
+                slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                spaceBetween: 5, // Menyusun jarak antar slide
+                navigation: false,
+            },
+            // Mobile
+            320: {
+                slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
+                spaceBetween: 5,  // Menyusun jarak antar slide
+                navigation: false,
+            },
+            },
+        });
+
+        // Swiper untuk menampilkan gambar/video utama
+        const thumbnailLinks = document.querySelectorAll('.mySwiperProduct .swiper-slide a');
         const mySwiperProduct = new Swiper('.mySwiperProduct', {
-            slidesPerView: 'auto',
-            spaceBetween: 10,
+            slidesPerView: 5,
+            spaceBetween: 3,
+            loop: false,
+            watchSlidesProgress: true,
         });
 
         const mySwiperShow = new Swiper('.mySwiperShow', {
@@ -885,67 +911,32 @@
                 nextEl: '.swiper-button-next',
                 prevEl: '.swiper-button-prev',
             },
+            thumbs: {
+                swiper: mySwiperProduct,
+            },
         });
 
-        // Sync main display when thumbnail is clicked
-        thumbnailLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-
-                const src = this.getAttribute('data-src');
-                const type = this.getAttribute('data-type');
-
-                mainDisplay.innerHTML = '';  // Clear current display
-
-                if (type === 'image') {
-                    mainDisplay.innerHTML = `
-                        <div class="swiper-slide">
-                            <div class="image-container border-b-zinc-700 rounded-sm">
-                                <img class="zoomable-image" src="${src}" alt="product Image" />
-                            </div>
-                        </div>
-                    `;
-                } else if (type === 'video') {
-                    mainDisplay.innerHTML = `
-                        <div class="swiper-slide h-fit">
-                            <video class="zoomable-video h-fit border-b-zinc-700 rounded-sm" controls controlsList="nodownload noplaybackrate">
-                                <source src="${src}" type="video/mp4">
-                            </video>
-                        </div>
-                    `;
+        // Tambahkan highlight aktif manual jika perlu
+        mySwiperShow.on('slideChange', function () {
+            const activeIndex = mySwiperShow.realIndex;
+            thumbnailLinks.forEach((link, index) => {
+                const parentSlide = link.closest('.swiper-slide');
+                if (index === activeIndex) {
+                    parentSlide.classList.add('active-thumb');
+                } else {
+                    parentSlide.classList.remove('active-thumb');
                 }
             });
         });
 
-        // Sync mySwiperShow with mySwiperProduct when navigating slides
-        mySwiperProduct.on('slideChange', function () {
-            const activeIndex = mySwiperProduct.activeIndex;
-            const activeSlide = mySwiperProduct.slides[activeIndex];
-
-            const src = activeSlide.querySelector('a').getAttribute('data-src');
-            const type = activeSlide.querySelector('a').getAttribute('data-type');
-
-            // Update the main display when slide changes
-            mainDisplay.innerHTML = '';  // Clear current display
-
-            if (type === 'image') {
-                mainDisplay.innerHTML = `
-                    <div class="swiper-slide">
-                        <div class="image-container border-b-zinc-700 rounded-sm">
-                            <img class="zoomable-image" src="${src}" alt="product Image" />
-                        </div>
-                    </div>
-                `;
-            } else if (type === 'video') {
-                mainDisplay.innerHTML = `
-                    <div class="swiper-slide h-fit">
-                        <video class="zoomable-video h-fit border-b-zinc-700 rounded-sm" controls controlsList="nodownload noplaybackrate">
-                            <source src="${src}" type="video/mp4">
-                        </video>
-                    </div>
-                `;
-            }
+        // Klik thumbnail = geser slide utama
+        thumbnailLinks.forEach((link, index) => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                mySwiperShow.slideTo(index);
+            });
         });
+
     });
 
 

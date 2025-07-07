@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="{{asset('assets/vendors/summernote/summernote-lite.min.css')}}">
 
     <style>
         .flatpickr-calendar {
@@ -520,6 +521,10 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
         }
+         /* Summernote improvements */
+        .note-editor.note-frame {
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 
@@ -672,7 +677,7 @@
                                                             <label for="first-name-icon">Deskripsi Produk <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative mt-2">
-                                                                <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description"
+                                                                <textarea class="summernote form-control {{ $errors->has('description') ? 'is-invalid' : '' }}" name="description"
                                                                     id="description" cols="30" rows="10">{{ $product->description }}</textarea>
                                                             </div>
                                                             @if ($errors->has('description'))
@@ -690,7 +695,7 @@
                                                             <label for="first-name-icon">Informasi Produk <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative mt-2">
-                                                                <textarea class="form-control {{ $errors->has('information_product') ? 'is-invalid' : '' }}"
+                                                                <textarea class="summernote form-control {{ $errors->has('information_product') ? 'is-invalid' : '' }}"
                                                                     name="information_product" id="information_product" cols="30" rows="10">{{ $product->information_product }}</textarea>
                                                             </div>
                                                             @if ($errors->has('information_product'))
@@ -1221,6 +1226,13 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
+    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+    <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script><!-- summernote -->
+    <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js')}}"></script>
+    
     <script>
         // Pastikan Select2 dan dependencies lain sudah di-load sebelum script ini
         document.addEventListener('DOMContentLoaded', function() {
@@ -1834,11 +1846,30 @@
         });
     </script>
 
-    <script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
-    <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
-    <script src="{{ asset('assets/js/main.js') }}"></script>
+    
+
+    {{-- summernote --}}
+    <script>
+        $('.summernote').summernote({
+            tabsize: 2,
+            height: 200,
+        })
+        $("#hint").summernote({
+            height: 100,
+            toolbar: false,
+            placeholder: 'type with apple, orange, watermelon and lemon',
+            hint: {
+                words: ['apple', 'orange', 'watermelon', 'lemon'],
+                match: /\b(\w{1,})$/,
+                search: function(keyword, callback) {
+                    callback($.grep(this.words, function(item) {
+                        return item.indexOf(keyword) === 0;
+                    }));
+                }
+            }
+        });
+    </script>
+
 </body>
 
 </html>

@@ -4,7 +4,7 @@
       <!-- IMAGE -->
       <div class="col-lg-1 col-md-2 col-4 p-0 m-0">
         <a href="/">
-          <img src="images/l-1.png" class="img-fluid" alt="eCommerce HTML Template">
+          <img src="images/new-logo.png" class="img-fluid" alt="eCommerce HTML Template">
         </a>
       </div>
       <!--  -->
@@ -88,25 +88,31 @@
       
       <!-- SEARCH -->
       <div class="col-lg-6 col-md-9 d-none d-md-block">
-        <form method="GET" action="{{route('search.product')}}" id="search-product-form">
-          <div class="input-group">
-            <input class="form-control rounded-start text-[9px] md:text-[10px] lg:text-[11px] xl:text-[12px]" 
-              type="text" 
-              id="search-product" 
-              name="product_search" 
-              placeholder="Cari Produk">
+        <form method="GET" action="{{ route('search.product') }}" id="search-product-form">
+            <div class="input-group shadow-sm transition-all duration-300 focus-within:shadow-md rounded-xl">
+                <input 
+                    class="form-control rounded-xl text-gray-800 bg-white border border-gray-300 rounded-start-md py-2 px-3 text-[11px] xl:text-[12px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" 
+                    type="text" 
+                    id="search-product" 
+                    name="product_search" 
+                    placeholder="🔍 Cari Produk">
 
-              <span class="input-group-append">
-                <button class="btn bg-white border border-start-0 rounded-end" type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                <button 
+                    class="btn btn-outline-secondary border border-s-0 bg-dark text-white rounded-end-md px-3 hover:bg-dark/90 transition rounded-xl" 
+                    type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        width="16" height="16" viewBox="0 0 24 24" 
+                        fill="none" stroke="currentColor" 
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        class="feather feather-search">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-              </span>
-          </div>
+            </div>
         </form>
-      </div>
+    </div>
+
       <!--  -->
 
       <!-- ICON -->
@@ -155,25 +161,29 @@
   </div>
 
   <div class="container-fluid mt-2 mt-md-0 d-md-none">
-    <form method="GET" action="{{route('search.product')}}" id="search-product-form-mobile">
-      <div class="input-group">
-        <input class="form-control rounded-start text-[12px] md:text-[10px] lg:text-[11px] xl:text-[12px]" 
-          type="text" 
-          id="search-product-mobile" 
-          name="product_search" 
-          placeholder="Cari Produk"
-          autocomplete="off">
+   <form method="GET" action="{{ route('search.product') }}" id="search-product-form-mobile">
+            <div class="input-group shadow-sm transition-all duration-300 focus-within:shadow-md rounded-xl">
+                <input 
+                    class="form-control rounded-xl text-gray-800 bg-white border border-gray-300 rounded-start-md py-2 px-3 text-[11px] xl:text-[12px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" 
+                    type="text" 
+                    id="search-product" 
+                    name="product_search" 
+                    placeholder="🔍 Cari Produk">
 
-          <span class="input-group-append">
-            <button class="btn bg-white border border-start-0 rounded-end" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </button>
-          </span>
-      </div>
-    </form>
+                <button 
+                    class="btn btn-outline-secondary border border-s-0 bg-dark text-white rounded-end-md px-3 hover:bg-dark/90 transition rounded-xl" 
+                    type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        width="16" height="16" viewBox="0 0 24 24" 
+                        fill="none" stroke="currentColor" 
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        class="feather feather-search">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+        </form>
   </div>
 </div>
 
