@@ -855,11 +855,11 @@ s
                             <div class="card-body">
                                 <div class="detail-group">
                                     <div class="detail-label">Deskripsi</div>
-                                    <div class="detail-value">{{ $product->description }}</div>
+                                    <div class="detail-value">{!! $product->description !!}</div>
                                 </div>
                                 <div class="detail-group mb-0">
                                     <div class="detail-label">Informasi Tambahan</div>
-                                    <div class="detail-value">{{ $product->information_product }}</div>
+                                    <div class="detail-value">{!! $product->information_product !!}</div>
                                 </div>
                             </div>
                         </div>

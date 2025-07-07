@@ -208,7 +208,7 @@
                           @foreach ($products as $product)
                               <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                                 <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                    <div class="position-relative overflow-hidden bg-transparent p-0">
+                                    <div class="product-image-container">
                                         <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
                                     </div>
                                     <div class="grid text-left p-1 p-md-2">
@@ -308,7 +308,9 @@
                       <div class="grid-container-shop" style="min-height:48vh;">
                         @foreach ($products as $product)
                           <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-                            <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                            <div class="product-image-container">
+                              <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                            </div>
 
                             <div class="grid text-left p-1 p-md-2">
                                 <div class="flex gap-1">

@@ -26,42 +26,45 @@
             </div>
         @endif
     @else
-    <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body p-0">
-                    <!-- Close button at the top right corner -->
-                    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <!-- Fullscreen image -->
-                    <div class="container-fluid p-0 m-0">
-                        <img src="images/modal.png" alt="Gambar Subscribe" class="img-fluid w-auto h-100">
-                        <div class="d-flex gap-2">
-                            <div class="py-2 flex col-12 align-items-center justify-content-center" style="background-color: #475136">
-                                <div class="col-6 p-0 p-md-2 mb-2 mb-md-0">
-                                    <p class="text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Dapatkan Kode Voucher Gratis Khusus Pengguna Baru</p>
-                                </div>  
-                                <div class="col-6 m-0 p-0">
-                                    <form class="grid gap-1 gap-md-2" id="voucher-form">
-                                        @csrf
-                                        <div class="relative flex items-center">
-                                            <i class="fas fa-envelope text-gray-400 absolute left-3"></i> <!-- Ikon Email -->
-                                            <input type="email" class="form-control pl-10 pr-10 rounded-md text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" id="voucher_email" placeholder="Masukkan email" required>
-                                            <div class="spinner-border text-[#183018] absolute right-3" role="status" style="width:15px; height:15px;display:none;"> <!-- Spinner -->
-                                                <span class="visually-hidden"></span>
-                                            </div>
+        @if (($data['popup']) !== null)    
+            <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body p-0">
+                            <!-- Close button at the top right corner -->
+                            <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <!-- Fullscreen image -->
+                            <div class="container-fluid p-0 m-0">
+                                <img src="{{ Storage::url($data['popup']->image_popup) }}" alt="Gambar Subscribe" class="img-fluid w-auto h-100">
+                                <div class="d-flex gap-2">
+                                    <div class="py-2 flex col-12 align-items-center justify-content-center" style="background-color: #475136">
+                                        <div class="col-6 p-0 p-md-2 mb-2 mb-md-0">
+                                            <p class="text-white text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">{{ $data['popup']->description}}</p>
+                                        </div>  
+                                        <div class="col-6 m-0 p-0">
+                                            <form class="grid gap-1 gap-md-2" id="voucher-form">
+                                                @csrf
+                                                <div class="relative flex items-center">
+                                                    <i class="fas fa-envelope text-gray-400 absolute left-3"></i> <!-- Ikon Email -->
+                                                    <input type="email" class="form-control pl-10 pr-10 rounded-md text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" id="voucher_email" placeholder="Masukkan email" required>
+                                                    <div class="spinner-border text-[#183018] absolute right-3" role="status" style="width:15px; height:15px;display:none;"> <!-- Spinner -->
+                                                        <span class="visually-hidden"></span>
+                                                    </div>
+                                                </div>
+                                                <div id="validationEmailVoucher" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="display: none;">
+                                                </div>
+                                                <button class="py-2 w-full rounded-md text-white bg-[#183018] hover:bg-neutral-900 text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" type="submit" id="voucher-btn" disabled>Dapatkan Sekarang</button>
+                                            </form>
                                         </div>
-                                        <div id="validationEmailVoucher" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" style="display: none;">
-                                        </div>
-                                        <button class="py-2 w-full rounded-md text-white bg-[#183018] hover:bg-neutral-900 text-[10px] md:text-[9px] lg:text-[10px] xl:text-[11px]" type="submit" id="voucher-btn" disabled>Dapatkan Sekarang</button>
-                                    </form>
+                                    </div>  
                                 </div>
-                            </div>  
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        @else
+        @endif
     @endif
     <!-- END PROMO FIRST USER-->
 
