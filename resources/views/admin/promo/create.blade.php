@@ -25,6 +25,18 @@
             color: var(--text-primary);
         }
 
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
         .custom-dropdown-menu {
             padding: 8px;
             border-radius: 8px;
@@ -124,19 +136,20 @@
             <div class="page-heading">
                 <div class="page-title">
                     <h3 class="mb-2">Buat Promo Baru</h3>
-                      <p class="mb-3">
-                        Buat Pormo Sekarang Untuk Menarik Minat Pembeli
-                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
+                    <p class="mb-3">
+                        Buat Promo Sekarang Untuk Menarik Minat Pembeli
                     </p>
 
-                    <div class="row">
+                    <div class="row align-items-center mb-4">
                         <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo') }}">Promo
-                                        </a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Buat Promo
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-bookmark-star me-1"></i> Promo
+                                        </a>
                                     </li>
+                                    <li class="breadcrumb-item active">Buat Promo Event</li>
                                 </ol>
                             </nav>
                         </div>
@@ -449,13 +462,12 @@
                                 </table>
 
                                 <div class="col-12 d-flex justify-content-end">
-                                    <a href="{{ route('index-promo') }}" class="btn btn-secondary btn-sm me-3"
-                                        style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                    <a href="{{ route('index-promo') }}"
+                                        class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center me-2"
+                                        style="font-weight: bold; border-radius: 5px; min-width: 120px;">
                                         <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
                                     </a>
 
-                                    <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                        Promo</button>
                                     <button type="submit" class="btn btn-sm btn-primary me-1">Submit
                                         Promo</button>
                                 </div>

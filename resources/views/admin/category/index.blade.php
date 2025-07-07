@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Product - Glamoire</title>
+    <title>Kategori Produk - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -532,7 +532,7 @@
 
                         <div class="row">
                             <div class="col-12 col-md-6">
-                                <h4 class="mb-0 d-flex align-items-center"><i class="bi bi-collection-fill me-2"></i>Category List</h4>
+                                <h4 class="mb-0 d-flex align-items-center"><i class="bi bi-collection-fill me-2"></i>List Kategori</h4>
                             </div>
                             <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                 <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -547,9 +547,9 @@
                         <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Category Details</th>
-                                    <th>Total Products</th>
-                                    <th>Actions</th>
+                                    <th>Detail Kategori</th>
+                                    <th>Total Produk</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -623,9 +623,9 @@
                             <input type="hidden" name="type" id="categoryType" value="category">
                             <div class="modal-body">
                                 <div class="form-group">
-                                    <label for="categoryName">Category Name <span class="text-danger">*</span></label>
+                                    <label for="categoryName">Nama Kategori <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="categoryName" name="name"
-                                        placeholder="Masukan Nama Kategory" required>
+                                        placeholder="Masukan Nama Kategori" required>
                                     <small class="text-muted" style="font-size: 14px;">
                                         Silakan masukkan nama kategori yang unik dan deskriptif.
                                     </small>

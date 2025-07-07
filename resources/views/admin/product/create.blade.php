@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Glamoire</title>
+    <title>Produk - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -1003,12 +1003,12 @@
                                                                 <table class="table table-bordered variant-table mt-3">
                                                                     <thead class="table-light">
                                                                         <tr>
-                                                                            <th>Image</th>
-                                                                            <th>Type Variant</th>
-                                                                            <th>Price</th>
-                                                                            <th>Stock</th>
-                                                                            <th>Weight (grams)</th>
-                                                                            <th>Expired</th>
+                                                                            <th>Gambar</th>
+                                                                            <th>Tipe Variasi</th>
+                                                                            <th>Harga</th>
+                                                                            <th>Stok</th>
+                                                                            <th>Berat (grams)</th>
+                                                                            <th>Tanggal Kadaluarsa</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="variant-table-body">
@@ -1030,7 +1030,7 @@
                                                             class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
                                                             id="submitButton"
                                                             style="border-radius: 5px; font-weight: bold; min-width: 120px;">
-                                                            Submit Product
+                                                            Submit Produk
                                                         </button>
                                                     </div>
 

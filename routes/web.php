@@ -518,9 +518,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         return view('admin.chat.index');
     });
 
-    // user detail
+    // USER & KELOLA PASSWORD
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
     Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
+    Route::get('/user-admin-password', [UserController::class, 'passwordUserAdmin'])->name('password-user-admin');
+    Route::post('/user-admin-password/change', [UserController::class, 'changePasswordUserAdmin'])->name('change-password-user-admin');
 
     // TENTANG KAMI
     Route::get('/aboutus-admin', [AboutusController::class, 'indexAboutusAdmin'])->name('index-aboutus-admin');

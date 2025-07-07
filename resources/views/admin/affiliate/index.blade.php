@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affiliate - Glamoire</title>
+    <title>Mitra - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -465,139 +465,136 @@
 
         <div id="main">
             <div class="page-heading fade-in">
-                <div class="container-fluid">
-                    <!-- Judul Halaman -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="page-title">
-                                <h3 class="mb-2">Affiliate</h3>
-                                <p>Tinjau dan tanggapi semua pengajuan kerja sama</p>
-                            </div>
+                <!-- Judul Halaman -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Mitra</h3>
+                            <p>Tinjau dan tanggapi semua pengajuan kerja sama</p>
                         </div>
                     </div>
-
-                    <!-- Navigasi Breadcrumb -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('index-affiliate-admin') }}"
-                                            class="d-flex align-items-center">
-                                            <i class="bi bi-envelope me-1"></i>Affiliate
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Affiliate</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                    <!-- Kartu Statistik -->
-                    <div class="row mb-4 slide-in">
-                        {{-- Total Mitra --}}
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-primary">
-                                <div class="stats-icon">
-                                    <i class="bi bi-person-lines-fill"></i>
-                                </div>
-                                <div class="stats-title">Total Mitra</div>
-                                <h3 class="stats-number">{{ $partners->count() }}</h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-arrow-up-short me-1"></i>
-                                        +{{ $growth ?? rand(5, 15) }}% dari bulan lalu
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Belum Dihubungi via Email --}}
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-warning">
-                                <div class="stats-icon">
-                                    <i class="bi bi-envelope"></i>
-                                </div>
-                                <div class="stats-title">Belum Dihubungi</div>
-
-                                <h3 class="stats-number">{{ $partners->where('reached_email', false)->count() }}</h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-clock me-1"></i>
-                                        Menunggu follow-up
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Mitra Lengkap (file_company dan file_bpom terisi) --}}
-                        <div class="col-12 col-md-4">
-                            <div class="stats-card stats-card-success">
-                                <div class="stats-icon">
-                                    <i class="bi bi-file-earmark-check-fill"></i>
-                                </div>
-                                <div class="stats-title">Mitra Lengkap</div>
-                                <h3 class="stats-number">
-                                    {{ $partners->whereNotNull('file_company')->whereNotNull('file_bpom')->count() }}
-                                </h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-graph-up me-1"></i>
-                                        {{ $completeRate ?? '80' }}% dokumen lengkap
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <section class="section">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4>List Affiliate Data</h4>
-                            </div>
-                            <div class="card-body">
-                                <table class="table" id="table1">
-                                    <thead>
-                                        <tr>
-                                            <th>Full Name</th>
-                                            <th>Company Name</th>
-                                            <th>Email</th>
-                                            <th>Category Product</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($partners as $item)
-                                            <tr>
-                                                <td>{{ $item->fullname }}</td>
-                                                <td>{{ $item->company_name }}</td>
-                                                <td>{{ $item->email }}</td>
-                                                <td>{{ $item->category_product }}</td>
-                                                <td>
-                                                    <a href="{{ route('detail-affiliate-admin', ['id' => $item->id]) }}"
-                                                        class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                                                        <i class="bi bi-eye me-1"></i> View
-                                                    </a>
-
-                                                    <a href="javascript:void(0);"
-                                                        class="btn btn-sm btn-danger delete-affiliate d-inline-flex align-items-center"
-                                                        data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </section>
                 </div>
+
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-affiliate-admin') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-1"></i>Mitra
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Semua Mitra</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Kartu Statistik -->
+                <div class="row mb-4 slide-in">
+                    {{-- Total Mitra --}}
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-primary">
+                            <div class="stats-icon">
+                                <i class="bi bi-person-lines-fill"></i>
+                            </div>
+                            <div class="stats-title">Total Mitra</div>
+                            <h3 class="stats-number">{{ $partners->count() }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-arrow-up-short me-1"></i>
+                                    +{{ $growth ?? rand(5, 15) }}% dari bulan lalu
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Belum Dihubungi via Email --}}
+                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-warning">
+                            <div class="stats-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="stats-title">Belum Dihubungi</div>
+
+                            <h3 class="stats-number">{{ $partners->where('reached_email', false)->count() }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-clock me-1"></i>
+                                    Menunggu follow-up
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Mitra Lengkap (file_company dan file_bpom terisi) --}}
+                    <div class="col-12 col-md-4">
+                        <div class="stats-card stats-card-success">
+                            <div class="stats-icon">
+                                <i class="bi bi-file-earmark-check-fill"></i>
+                            </div>
+                            <div class="stats-title">Mitra Lengkap</div>
+                            <h3 class="stats-number">
+                                {{ $partners->whereNotNull('file_company')->whereNotNull('file_bpom')->count() }}
+                            </h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-graph-up me-1"></i>
+                                    {{ $completeRate ?? '80' }}% dokumen lengkap
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>List Data Mitra</h4>
+                        </div>
+                        <div class="card-body">
+                            <table class="table" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Nama Lengkap</th>
+                                        <th>Nama Perusahaan</th>
+                                        <th>Email</th>
+                                        <th>Kategori Produk</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($partners as $item)
+                                        <tr>
+                                            <td>{{ $item->fullname }}</td>
+                                            <td>{{ $item->company_name }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>{{ $item->category_product }}</td>
+                                            <td>
+                                                <a href="{{ route('detail-affiliate-admin', ['id' => $item->id]) }}"
+                                                    class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                                                    <i class="bi bi-eye me-1"></i> View
+                                                </a>
+
+                                                <a href="javascript:void(0);"
+                                                    class="btn btn-sm btn-danger delete-affiliate d-inline-flex align-items-center"
+                                                    data-id="{{ $item->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
                 @include('admin.layouts.footer')
             </div>
         </div>
     </div>
-    
+
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>

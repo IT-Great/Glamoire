@@ -254,22 +254,22 @@
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-promo') }}"
                         class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
-                        <i class="bi bi-grid-fill me-2"></i>All Promos
+                        <i class="bi bi-grid-fill me-2"></i>Promo
                     </a>
                     <a href="{{ route('index-promo-voucher') }}"
                         class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
-                        <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
+                        <i class="bi bi-receipt-cutoff me-2"></i>Voucher
                     </a>
                     <a href="{{ route('index-promo-diskon') }}"
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                        <i class="bi bi-percent me-2"></i>Discounts
+                        <i class="bi bi-percent me-2"></i>Diskon
                     </a>
                 </div>
 
                 <!-- Main Content -->
                 <div class="card discount-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">All Discount</h5>
+                        <h5 class="mb-0">Semua Diskon</h5>
                         <a href="{{ route('create-promo-diskon') }}"
                             class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
                             <i class="bi bi-plus"></i>Buat Diskon
@@ -280,11 +280,11 @@
                             <table class="table table-hover" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Discount Name</th>
-                                        <th>Period</th>
-                                        <th>Discount Details</th>
+                                        <th>Nama Diskon</th>
+                                        <th>Periode</th>
+                                        <th>Detail Diskon</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>

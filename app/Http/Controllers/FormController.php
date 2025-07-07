@@ -60,37 +60,33 @@ class FormController extends Controller
                 'fullname' => 'required|string|max:255',
                 'email' => 'required|email|max:255',
                 'question' => 'required|string',
-                'upload.*' => 'file|mimes:jpeg,png,jpg,mp4|max:5120', // Max 5MB per file
+                'response_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Max 2MB
+                'response_video' => 'nullable|file|mimes:mp4,mov,avi|max:5120', // Max 5MB
             ]);
 
-            $imagePaths = [];
+            $imagePath = null;
             $videoPath = null;
 
-            // dd($request->file('upload'));
-
-            if ($request->file('upload')) {
-                foreach ($request->file('upload') as $file) {
-                    if ($file instanceof \Illuminate\Http\UploadedFile) {
-                        $mimeType = $file->getMimeType();
-                        $fileName = time() . '_' . $file->getClientOriginalName();
-
-                        if (strpos($mimeType, 'image/') === 0) {
-                            $imagePath = $file->storeAs('contact_us_images', $fileName, 'public');
-                            $imagePaths[] = $imagePath;
-                        } elseif (strpos($mimeType, 'video/') === 0) {
-                            $videoPath = $file->storeAs('contact_us_videos', $fileName, 'public');
-                        }
-                    }
-                }
+            // Handle image upload
+            if ($request->hasFile('response_image')) {
+                $imageFile = $request->file('response_image');
+                $imageName = time() . '_' . $imageFile->getClientOriginalName();
+                $imagePath = $imageFile->storeAs('contact_us_images', $imageName, 'public');
             }
 
-            // dd($videoPath);
+            // Handle video upload
+            if ($request->hasFile('response_video')) {
+                $videoFile = $request->file('response_video');
+                $videoName = time() . '_' . $videoFile->getClientOriginalName();
+                $videoPath = $videoFile->storeAs('contact_us_videos', $videoName, 'public');
+            }
+
             $dataToSave = [
                 'fullname' => $request->fullname,
                 'email' => $request->email,
                 'question' => $request->question,
-                'images' => !empty($imagePaths) ? json_encode($imagePaths) : null,
-                'videos' => $videoPath,
+                'response_image' => $imagePath, // Simpan sebagai string, bukan JSON
+                'response_video' => $videoPath,
                 'created_at' => now(),
             ];
 
@@ -98,11 +94,9 @@ class FormController extends Controller
 
             Question::create($dataToSave);
 
-            // return view('user.component.contact');
-             return response()->json([
+            return response()->json([
                 'success' => true,
-                'message' => 'Pertanyaan Anda Sudah Kami Terima. 
-                Tunggu Balasan Email Dari Kami Yaa'
+                'message' => 'Pertanyaan Anda Sudah Kami Terima. Tunggu Balasan Email Dari Kami Yaa'
             ]);
         } catch (\Exception $err) {
             Log::error('Error saving question:', ['error' => $err->getMessage()]);
@@ -113,6 +107,7 @@ class FormController extends Controller
             ], 500);
         }
     }
+
 
 
     public function files(Request $request)

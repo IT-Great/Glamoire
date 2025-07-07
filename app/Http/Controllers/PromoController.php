@@ -587,16 +587,16 @@ class PromoController extends Controller
     // PROMO VOUCHER
     public function indexPromoVoucher()
     {
-        $promo = Promo::where('type', ['limited voucher', 'brand voucher', 'product voucher', 'shipping fee voucher', 'new user voucher'])
+        $promo = Promo::whereIn('type', ['limited voucher', 'brand voucher', 'product voucher', 'shipping fee voucher', 'new user voucher'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($item) {
-                // Set status berdasarkan end_date
                 $item->isActive = $item->end_date
                     ? \Carbon\Carbon::parse($item->end_date)->isFuture()
                     : false;
                 return $item;
             });
+
 
         $products = Product::all();
         $brands = Brand::all();
@@ -814,6 +814,96 @@ class PromoController extends Controller
         return view('admin.promo.voucher.create-voucher-product', compact('products'));
     }
 
+    // public function storePromoProductVoucher(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'promo_name' => 'required|string|max:255',
+    //             'date_range' => 'required|string|max:255',
+    //             'min_transaction' => 'required',
+    //             'usage_quota' => 'required',
+    //             'max_quantity_buyer' => 'required',
+    //             'promo_code' => 'required',
+    //             'discount' => 'required|numeric',
+    //             'global_discount_type' => 'required|in:nominal,percentage',
+    //             'product_ids' => 'required|array',
+    //             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    //             'limit_stock' => 'array',
+    //         ]);
+
+    //         // Simpan data diskon
+    //         $discount = $request->input('discount');
+    //         $discountType = $request->input('global_discount_type');
+
+    //         // Hapus format angka dengan titik dan koma jika ada, lalu konversi ke angka
+    //         $discount = str_replace(['.', ','], '', $discount); // Menghapus titik dan koma
+
+    //         // Hapus format rupiah dari min_transaction
+    //         $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
+
+    //         // Generate kode promo otomatis
+    //         $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
+    //         $promoCode = 'Glamo' . $randomCode;
+
+    //         // Simpan single image
+    //         $imagePath = null;
+    //         if ($request->hasFile('image')) {
+    //             $image = $request->file('image');
+    //             $imageName = time() . '_' . $image->getClientOriginalName();
+    //             $imagePath = $image->storeAs('promo', $imageName, 'public');
+    //         }
+
+    //         // Simpan data promo
+    //         $promo = Promo::create([
+    //             'promo_name' => $request->promo_name,
+    //             'date_range' => $request->date_range,
+    //             'min_transaction' => $minTransaction,
+    //             'promo_code' => $promoCode,
+    //             'usage_quota' => $request->usage_quota,
+    //             'max_quantity_buyer' => $request->max_quantity_buyer,
+    //             'discount' => $discount,
+    //             'discount_type' => $discountType,
+    //             'image' => $imagePath ?? null,
+    //             'type' => $request->type,
+    //         ]);
+
+    //         // Loop melalui produk terpilih untuk simpan diskon dan limit stock per produk
+    //         $productAttachData = [];
+    //         foreach ($request->product_ids as $productId) {
+    //             // Ambil diskon per produk
+    //             $discountProduct = $request->product_discount[$productId] ?? null;
+
+    //             // Hapus format titik dan koma dari input diskon
+    //             $discountProduct = str_replace(['.', ','], '', $discountProduct);
+
+    //             // Ambil tipe diskon (nominal atau percentage)
+    //             $discountType = $request->input('product_discount_type')[$productId] ?? $promo->discount_type;
+
+    //             // Ambil limit stock per produk
+    //             $limitStock = $request->limit_stock[$productId] ?? null;
+
+    //             // Tambah data untuk attach
+    //             $productAttachData[$productId] = [
+    //                 'discount_product_voucher_item' => $discountProduct ?: $promo->discount,
+    //                 'limit_stock' => $limitStock,
+    //                 'discount_type' => $discountType,
+    //                 'discounted_price' => $request->discounted_price[$productId] ?? null,
+    //             ];
+    //         }
+
+    //         // Attach produk dengan data tambahan
+    //         $promo->products()->attach($productAttachData);
+
+    //         // Redirect dengan pesan sukses
+    //         return redirect()->route('index-promo-voucher')->with('success', 'Promo Product Voucher created successfully!');
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         return redirect()->back()->withErrors($e->errors())->withInput();
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
+    //         return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
+    //     }
+    // }
+
     public function storePromoProductVoucher(Request $request)
     {
         try {
@@ -830,6 +920,42 @@ class PromoController extends Controller
                 'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
                 'limit_stock' => 'array',
             ]);
+
+            // Validasi produk yang dipilih memiliki stok
+            $selectedProducts = Product::whereIn('id', $request->product_ids)->get();
+
+            // Cek apakah ada produk yang stoknya kosong
+            $outOfStockProducts = $selectedProducts->where('stock_quantity', '<=', 0);
+            if ($outOfStockProducts->count() > 0) {
+                $productNames = $outOfStockProducts->pluck('product_name')->implode(', ');
+                return redirect()->back()
+                    ->withErrors(['product_ids' => "Produk berikut tidak dapat dipilih karena stok kosong: {$productNames}"])
+                    ->withInput();
+            }
+
+            // Cek apakah ada produk yang sudah memiliki promo aktif
+            $activePromoProducts = $selectedProducts->filter(function ($product) {
+                return $product->has_active_promo;
+            });
+
+            if ($activePromoProducts->count() > 0) {
+                $productNames = $activePromoProducts->pluck('product_name')->implode(', ');
+                return redirect()->back()
+                    ->withErrors(['product_ids' => "Produk berikut sudah memiliki promo aktif: {$productNames}"])
+                    ->withInput();
+            }
+
+            // Validasi limit stock tidak melebihi stok yang tersedia
+            foreach ($request->product_ids as $productId) {
+                $product = $selectedProducts->firstWhere('id', $productId);
+                $limitStock = $request->limit_stock[$productId] ?? null;
+
+                if ($limitStock && $limitStock > $product->stock_quantity) {
+                    return redirect()->back()
+                        ->withErrors(['limit_stock.' . $productId => "Limit stock tidak boleh melebihi stok yang tersedia ({$product->stock_quantity})"])
+                        ->withInput();
+                }
+            }
 
             // Simpan data diskon
             $discount = $request->input('discount');

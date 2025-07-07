@@ -21,8 +21,9 @@
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            /* background-color: #f8f9fa; */
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
         }
 
         .page-header {
@@ -30,6 +31,13 @@
             padding: 2rem 0;
             color: white;
             margin-bottom: 2rem;
+        }
+
+        .voucher-banner {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.75rem;
         }
 
         .breadcrumb-item+.breadcrumb-item::before {
@@ -52,23 +60,6 @@
             background: white;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             padding: 1.5rem;
-        }
-
-        .status-badge {
-            padding: 0.5rem 1.25rem;
-            border-radius: 2rem;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .status-active {
-            background-color: #10b981;
-            color: white;
-        }
-
-        .status-inactive {
-            background-color: #ef4444;
-            color: white;
         }
 
         .detail-group {
@@ -106,7 +97,7 @@
             color: #6b7280;
         }
 
-        .voucher-banner {
+        .promo-banner {
             width: 100%;
             height: 200px;
             object-fit: cover;
@@ -144,9 +135,16 @@
             font-weight: 500;
         }
 
-        .progress {
-            height: 0.75rem;
-            border-radius: 1rem;
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
         }
     </style>
 
@@ -160,14 +158,26 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
-                    <div class="row">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <div class="page-title">
+                                <h3>Detail Voucher</h3>
+                                <p class="text-subtitle text-muted">Lihat informasi lengkap mengenai voucher yang sedang
+                                    aktif atau sudah dibuat sebelumnya.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mb-4">
                         <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Voucher</a>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-voucher') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-tag me-1"></i> Voucher
+                                        </a>
                                     </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Voucher
-                                    </li>
+                                    <li class="breadcrumb-item active">Detail Voucher</li>
                                 </ol>
                             </nav>
                         </div>
@@ -175,173 +185,173 @@
                 </div>
 
                 <!-- Basic Horizontal form layout section start -->
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Voucher Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-tag me-1"></i> Voucher Name
-                                                </div>
-                                                <div class="detail-value">{{ $promo->promo_name }}</div>
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Voucher Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-tag me-1"></i> Voucher Name
                                             </div>
+                                            <div class="detail-value">{{ $promo->promo_name }}</div>
+                                        </div>
 
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-barcode me-1"></i> Voucher Code
-                                                </div>
-                                                <div class="detail-value">
-                                                    <span
-                                                        class="badge bg-light text-dark p-2">{{ $promo->promo_code }}</span>
-                                                </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-barcode me-1"></i> Voucher Code
                                             </div>
-
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-calendar me-1"></i> Validity Period
-                                                </div>
-                                                <div class="detail-value">
-                                                    {{ date('d M Y', strtotime($promo->start_date)) }} -
-                                                    {{ date('d M Y', strtotime($promo->end_date)) }}
-                                                </div>
+                                            <div class="detail-value">
+                                                <span
+                                                    class="badge bg-light text-dark p-2">{{ $promo->promo_code }}</span>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-percent me-1"></i> Discount
-                                                </div>
-                                                <div class="detail-value">
-                                                    @if ($promo->discount_type === 'percentage')
-                                                        <span class="discount-badge">{{ $promo->discount }}% OFF</span>
-                                                    @elseif ($promo->discount_type === 'nominal')
-                                                        <span class="discount-badge">Rp.
-                                                            {{ number_format($promo->discount, 0, ',', '.') }}</span>
-                                                    @else
-                                                        <span class="discount-badge">-</span>
-                                                    @endif
-                                                </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-calendar me-1"></i> Validity Period
                                             </div>
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-shopping-cart me-1"></i> Minimum Transaction
-                                                </div>
-                                                <div class="detail-value">
-                                                    Rp. {{ number_format($promo->min_transaction, 0, ',', '.') }}
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-user me-1"></i> Max Quantity Per Buyer
-                                                </div>
-                                                <div class="detail-value">{{ $promo->max_quantity_buyer }} items</div>
+                                            <div class="detail-value">
+                                                {{ date('d M Y', strtotime($promo->start_date)) }} -
+                                                {{ date('d M Y', strtotime($promo->end_date)) }}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Applied Products</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table product-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product</th>
-                                                    <th>Stock</th>
-                                                    <th>Regular Price</th>
-                                                    <th>Discount Per Product</th>
-                                                    <th>Discounted Price</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($promo->products as $product)
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <img src="{{ Storage::url($product->main_image) }}"
-                                                                    alt="Product" class="me-3"
-                                                                    onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-percent me-1"></i> Discount
+                                            </div>
+                                            <div class="detail-value">
+                                                @if ($promo->discount_type === 'percentage')
+                                                    <span class="discount-badge">{{ $promo->discount }}% OFF</span>
+                                                @elseif ($promo->discount_type === 'nominal')
+                                                    <span class="discount-badge">Rp.
+                                                        {{ number_format($promo->discount, 0, ',', '.') }}</span>
+                                                @else
+                                                    <span class="discount-badge">-</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-shopping-cart me-1"></i> Minimum Transaction
+                                            </div>
+                                            <div class="detail-value">
+                                                Rp. {{ number_format($promo->min_transaction, 0, ',', '.') }}
+                                            </div>
+                                        </div>
 
-                                                                <span
-                                                                    class="product-name">{{ Str::limit($product->product_name, 20, '...') }}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-
-                                                        <td>Rp.
-                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                        </td>
-
-                                                        <td>
-                                                            @if (isset($product->pivot->discount_product_voucher_item))
-                                                                @if ($product->pivot->discount_product_voucher_item >= 1 && $product->pivot->discount_product_voucher_item <= 100)
-                                                                    {{ number_format($product->pivot->discount_product_voucher_item, 0, ',', '.') }} %
-                                                                @elseif ($product->pivot->discount_product_voucher_item > 100)
-                                                                    Rp. {{ number_format($product->pivot->discount_product_voucher_item, 0, ',', '.') }}
-                                                                @else
-                                                                    -
-                                                                @endif
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </td>
-                                                        
-
-                                                        <td>
-                                                            <span class="text-danger">
-                                                                Rp.
-                                                                @if (isset($product->pivot->discount_product_voucher_item))
-                                                                    @if ($product->pivot->discount_product_voucher_item >= 1 && $product->pivot->discount_product_voucher_item <= 100)
-                                                                        {{-- Diskon dalam persentase --}}
-                                                                        {{ number_format($product->regular_price * (1 - $product->pivot->discount_product_voucher_item / 100), 0, ',', '.') }}
-                                                                    @elseif ($product->pivot->discount_product_voucher_item > 100)
-                                                                        {{-- Diskon dalam nominal --}}
-                                                                        {{ number_format(max(0, $product->regular_price - $product->pivot->discount_product_voucher_item), 0, ',', '.') }}
-                                                                    @else
-                                                                        {{-- Jika diskon 0 atau tidak valid --}}
-                                                                        {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                                    @endif
-                                                                @else
-                                                                    {{-- Menggunakan diskon promo umum --}}
-                                                                    @if ($promo->discount_type === 'nominal')
-                                                                        {{ number_format(max(0, $product->regular_price - $promo->discount), 0, ',', '.') }}
-                                                                    @else
-                                                                        {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
-                                                                    @endif
-                                                                @endif
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-user me-1"></i> Max Quantity Per Buyer
+                                            </div>
+                                            <div class="detail-value">{{ $promo->max_quantity_buyer }} items</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Promo Banner</h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Applied Products</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table product-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Stock</th>
+                                                <th>Regular Price</th>
+                                                <th>Discount Per Product</th>
+                                                <th>Discounted Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($promo->products as $product)
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                alt="Product" class="me-3"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+
+                                                            <span
+                                                                class="product-name">{{ Str::limit($product->product_name, 20, '...') }}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $product->stock_quantity }}</td>
+
+                                                    <td>Rp.
+                                                        {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+
+                                                    <td>
+                                                        @if (isset($product->pivot->discount_product_voucher_item))
+                                                            @if ($product->pivot->discount_product_voucher_item >= 1 && $product->pivot->discount_product_voucher_item <= 100)
+                                                                {{ number_format($product->pivot->discount_product_voucher_item, 0, ',', '.') }}
+                                                                %
+                                                            @elseif ($product->pivot->discount_product_voucher_item > 100)
+                                                                Rp.
+                                                                {{ number_format($product->pivot->discount_product_voucher_item, 0, ',', '.') }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </td>
+
+
+                                                    <td>
+                                                        <span class="text-danger">
+                                                            Rp.
+                                                            @if (isset($product->pivot->discount_product_voucher_item))
+                                                                @if ($product->pivot->discount_product_voucher_item >= 1 && $product->pivot->discount_product_voucher_item <= 100)
+                                                                    {{-- Diskon dalam persentase --}}
+                                                                    {{ number_format($product->regular_price * (1 - $product->pivot->discount_product_voucher_item / 100), 0, ',', '.') }}
+                                                                @elseif ($product->pivot->discount_product_voucher_item > 100)
+                                                                    {{-- Diskon dalam nominal --}}
+                                                                    {{ number_format(max(0, $product->regular_price - $product->pivot->discount_product_voucher_item), 0, ',', '.') }}
+                                                                @else
+                                                                    {{-- Jika diskon 0 atau tidak valid --}}
+                                                                    {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                                @endif
+                                                            @else
+                                                                {{-- Menggunakan diskon promo umum --}}
+                                                                @if ($promo->discount_type === 'nominal')
+                                                                    {{ number_format(max(0, $product->regular_price - $promo->discount), 0, ',', '.') }}
+                                                                @else
+                                                                    {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
+                                                                @endif
+                                                            @endif
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="card-body">
-                                    <img src="{{ Storage::url($promo->image) }}" alt="Voucher Banner"
-                                        class="voucher-banner mb-4"
-                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
-                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Promo Banner</h5>
+                            </div>
+                            <div class="card-body">
+                                <img src="{{ Storage::url($promo->image) }}" alt="Voucher Banner"
+                                    class="voucher-banner mb-4"
+                                    onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
                             </div>
                         </div>
                     </div>

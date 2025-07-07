@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Glamoire</title>
+    <title>Produk - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -651,7 +651,7 @@
                     <div class="col-lg-4">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Product Images</h5>
+                                <h5 class="mb-0">Tampilan Produk</h5>
                             </div>
                             <div class="card-body">
                                 @if (!empty($product->main_image))
@@ -677,7 +677,7 @@
                         @if (!empty($product->video))
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Product Video</h5>
+                                    <h5 class="mb-0">Video Produk</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="product-video-container">
@@ -697,28 +697,28 @@
                     <div class="col-lg-8">
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Product Information</h5>
+                                <h5 class="mb-0">Informasi Produk</h5>
                             </div>
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="detail-group">
                                             <div class="detail-label">
-                                                <i class="bi bi-box me-2"></i>Product Name
+                                                <i class="bi bi-box me-2"></i>Nama Produk
                                             </div>
                                             <div class="detail-value">{{ $product->product_name }}</div>
                                         </div>
 
                                         <div class="detail-group">
                                             <div class="detail-label">
-                                                <i class="bi bi-upc me-2"></i>Product Code
+                                                <i class="bi bi-upc me-2"></i>Kode Produk
                                             </div>
                                             <div class="detail-value">{{ $product->product_code }}</div>
                                         </div>
 
                                         <div class="detail-group">
                                             <div class="detail-label">
-                                                <i class="bi bi-tag me-2"></i>Category
+                                                <i class="bi bi-tag me-2"></i>Kategori
                                             </div>
                                             <div class="detail-value">
                                                 {{ $product->categoryProduct ? $product->categoryProduct->name : 'N/A' }}
@@ -737,7 +737,7 @@
 
                                         <div class="detail-group">
                                             <div class="detail-label">
-                                                <i class="bi bi-box me-2"></i>Stock
+                                                <i class="bi bi-box me-2"></i>Stok
                                             </div>
                                             <div class="detail-value">{{ $product->stock_quantity }}
                                                 {{ $product->unit }}</div>
@@ -745,7 +745,7 @@
 
                                         <div class="detail-group">
                                             <div class="detail-label">
-                                                <i class="bi bi-currency-dollar me-2"></i>Price
+                                                <i class="bi bi-currency-dollar me-2"></i>Harga
                                             </div>
                                             <div class="detail-value">
                                                 <span class="discount-badge">
@@ -755,18 +755,18 @@
                                         </div>
                                     </div>
                                 </div>
-
+s
                                 <hr>
 
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="detail-group">
-                                            <div class="detail-label">Product Details</div>
+                                            <div class="detail-label">Detail Produk</div>
                                             <div class="stats-card">
                                                 <div class="row g-3">
                                                     @if ($product->color || $product->color_text)
                                                         <div class="col-md-4">
-                                                            <div class="detail-label">Color</div>
+                                                            <div class="detail-label">Warna</div>
                                                             <div class="detail-value">
                                                                 @if ($product->color_text)
                                                                     {{ $product->color_text }}
@@ -778,12 +778,12 @@
                                                         </div>
                                                     @endif
                                                     <div class="col-md-4">
-                                                        <div class="detail-label">Weight</div>
+                                                        <div class="detail-label">Berat</div>
                                                         <div class="detail-value">{{ $product->weight_product }}
                                                             gram</div>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <div class="detail-label">Dimensions</div>
+                                                        <div class="detail-label">Dimensi</div>
                                                         <div class="detail-value">
                                                             {{ $product->dimensions['length'] ?? 'N/A' }} x
                                                             {{ $product->dimensions['width'] ?? 'N/A' }} x
@@ -801,7 +801,7 @@
                         @if ($product->productVariations->isNotEmpty())
                             <div class="card">
                                 <div class="card-header">
-                                    <h5 class="mb-0">Product Variants</h5>
+                                    <h5 class="mb-0">Produk Variasi</h5>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -811,7 +811,7 @@
                                                     <th>Type</th>
                                                     <th>Value</th>
                                                     <th>SKU</th>
-                                                    <th>Stock</th>
+                                                    <th>Stok</th>
                                                     <th>Price</th>
                                                     <th>Expired</th>
                                                     <th>Weight</th>
@@ -850,15 +850,15 @@
 
                         <div class="card">
                             <div class="card-header">
-                                <h5 class="mb-0">Additional Information</h5>
+                                <h5 class="mb-0">Informasi Tambahan</h5>
                             </div>
                             <div class="card-body">
                                 <div class="detail-group">
-                                    <div class="detail-label">Description</div>
+                                    <div class="detail-label">Deskripsi</div>
                                     <div class="detail-value">{{ $product->description }}</div>
                                 </div>
                                 <div class="detail-group mb-0">
-                                    <div class="detail-label">Additional Information</div>
+                                    <div class="detail-label">Informasi Tambahan</div>
                                     <div class="detail-value">{{ $product->information_product }}</div>
                                 </div>
                             </div>

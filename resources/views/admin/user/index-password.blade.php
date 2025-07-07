@@ -5,17 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User - Glamoire</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
         :root {
@@ -537,49 +538,6 @@
                     </div>
                 </div>
 
-                <div class="row mb-4 slide-in">
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <div class="stats-card stats-card-primary">
-                            <div class="stats-icon">
-                                <i class="bi bi-envelope-fill"></i>
-                            </div>
-                            <div class="stats-title">Total Pengguna</div>
-                            <h3 class="stats-number">{{ $users->count() }}</h3>
-                            <small class="d-flex align-items-center">
-                                <i class="bi bi-person-plus me-1"></i>
-                                {{ $users->where('date', '>=', now()->subMonth())->count() }} pengguna baru bulan ini
-                            </small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <div class="stats-card stats-card-warning">
-                            <div class="stats-icon">
-                                <i class="bi bi-exclamation-circle-fill"></i>
-                            </div>
-                            <div class="stats-title">Belum Verifikasi</div>
-                            <h3 class="stats-number">{{ $users->whereNull('email_verified_at')->count() }}</h3>
-                            <small class="d-flex align-items-center">
-                                <i class="bi bi-envelope me-1"></i>
-                                Perlu tindakan verifikasi
-                            </small>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="stats-card stats-card-success">
-                            <div class="stats-icon">
-                                <i class="bi bi-check-circle-fill"></i>
-                            </div>
-                            <div class="stats-title">Terverifikasi</div>
-                            <h3 class="stats-number">{{ $users->whereNotNull('email_verified_at')->count() }}</h3>
-                            <small class="d-flex align-items-center">
-                                <i class="bi bi-shield-check me-1"></i>
-                                Akun aktif & terverifikasi
-                            </small>
-                        </div>
-                    </div>
-                </div>
-
-
                 <div class="user-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-user-admin') }}"
                         class="user-nav-item {{ Route::currentRouteName() == 'index-user-admin' ? 'active' : '' }}">
@@ -592,37 +550,37 @@
                 </div>
 
 
-                <section class="section">
-                    <div class="card">
+                <div class="page-heading">
+                    <h3 class="mb-4">Kelola Password User</h3>
+
+                    {{-- SECTION: Admins --}}
+                    <div class="card mb-4">
                         <div class="card-header">
-                            <h4>List All User</h4>
+                            <h5>Admin, Super Admin, Accounting, Admin Gudang</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table" id="table1">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
                                         <th>Full Name</th>
                                         <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Registered at</th>
+                                        <th>Role</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($users as $user)
+                                    @foreach ($adminUsers as $user)
                                         <tr>
-                                            <td>{{ $user->fullname }}</td>
+                                            <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
-                                            <td>{{ $user->handphone }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}
-                                            </td>
+                                            <td>{{ $user->role }}</td>
                                             <td>
-                                                <a href="{{ route('detail-user-admin', $user->id) }}"
-                                                    class="btn btn-sm btn-primary mb-2 d-inline-flex align-items-center">
-                                                    <i class="bi bi-eye me-1"></i> View
-                                                </a>
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm d-inline-flex align-items-center"
+                                                    onclick="openChangePasswordModal('{{ $user->id }}', '{{ addslashes($user->fullname) }}', '{{ addslashes($user->email) }}')">
+                                                    <i class="bi bi-key me-1"></i> Change Password
+                                                </button>
                                             </td>
-
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -630,26 +588,234 @@
                         </div>
                     </div>
 
-                </section>
+                    {{-- SECTION: Users --}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Users</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($normalUsers as $user)
+                                        <tr>
+                                            <td>{{ $user->fullname }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->role }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm"
+                                                    onclick="openChangePasswordModal('{{ $user->id }}', '{{ addslashes($user->fullname) }}', '{{ addslashes($user->email) }}')">
+                                                    <i class="bi bi-key"></i> Change Password
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @include('admin.layouts.footer')
-
         </div>
+
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"> {{-- modal-dialog-centered untuk posisi tengah --}}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Change Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="changePasswordForm">
+                        @csrf
+                        <div class="modal-body">
+                            <input type="hidden" name="user_id" id="modal_user_id">
+
+                            <p><strong>Full Name:</strong> <span id="modal_fullname"></span></p>
+                            <p><strong>Email:</strong> <span id="modal_email"></span></p>
+
+                            <div class="mb-3 position-relative">
+                                <label>New Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="new_password" id="new_password" class="form-control"
+                                        required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password">
+                                        <i class="bi bi-eye-slash"></i> <!-- default: dicoret -->
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 position-relative">
+                                <label>Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="new_password_confirmation"
+                                        id="new_password_confirmation" class="form-control" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password_confirmation">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="password_error" class="alert alert-danger d-none"></div>
+                            <div id="password_success" class="alert alert-success d-none"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="assets/js/main.js"></script>
+
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalElement = document.getElementById('changePasswordModal');
+            const passwordForm = document.getElementById('changePasswordForm');
+            const passwordError = document.getElementById('password_error');
+            const passwordSuccess = document.getElementById('password_success');
+            const modalInstance = new bootstrap.Modal(modalElement);
+
+            // buka modal
+            window.openChangePasswordModal = (userId, fullname, email) => {
+                // set data
+                document.getElementById('modal_user_id').value = userId;
+                document.getElementById('modal_fullname').textContent = fullname;
+                document.getElementById('modal_email').textContent = email;
+
+                // reset form & pesan
+                passwordForm.reset();
+                passwordError.textContent = '';
+                passwordError.classList.add('d-none');
+                passwordSuccess.textContent = '';
+                passwordSuccess.classList.add('d-none');
+
+                modalInstance.show();
+            };
+
+            // toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = btn.querySelector('i');
+
+                    if (input.type === 'password') {
+                        // ubah jadi terlihat
+                        input.type = 'text';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    } else {
+                        // ubah jadi disembunyikan
+                        input.type = 'password';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    }
+                });
+            });
+
+
+            // submit
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(passwordForm);
+
+                // clear alerts
+                passwordError.textContent = '';
+                passwordError.classList.add('d-none');
+                passwordSuccess.textContent = '';
+                passwordSuccess.classList.add('d-none');
+
+                fetch("{{ route('change-password-user-admin') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // SweetAlert sukses
+                            let timerInterval;
+                            Swal.fire({
+                                title: 'Password Updated!',
+                                text: data.message || 'Password has been successfully updated.',
+                                icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6',
+                                didOpen: () => {
+                                    const b = Swal.getHtmlContainer().querySelector('b');
+                                    timerInterval = setInterval(() => {}, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    console.log('Closed by timer');
+                                }
+                            });
+
+                            // reset form
+                            passwordForm.reset();
+                            document.getElementById('modal_user_id').value = formData.get('user_id');
+
+                            // tutup modal
+                            setTimeout(() => {
+                                modalInstance.hide();
+                            }, 1000);
+                        } else {
+                            passwordError.textContent = data.message || 'An error occurred';
+                            passwordError.classList.remove('d-none');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        passwordError.textContent = 'Error updating password';
+                        passwordError.classList.remove('d-none');
+                    });
+            });
+        });
+    </script>
+
+
+
+
 </body>
 
 </html>

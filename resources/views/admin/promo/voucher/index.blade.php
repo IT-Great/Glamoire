@@ -40,6 +40,19 @@
             --border-color: #e5e7eb;
         }
 
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+
         /* Stats Card Styling */
         .stats-card {
             border-radius: 16px;
@@ -113,7 +126,7 @@
             margin-bottom: 5px;
         }
 
-         .promo-nav {
+        .promo-nav {
             background: #fff;
             border-radius: 1rem;
             padding: 1rem;
@@ -218,61 +231,96 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
-                    <div class="row">
+                    <div class="row mb-2">
                         <div class="col-12 col-md-6 order-md-1 order-last">
                             <h3>Voucher</h3>
                             <p class="text-subtitle text-muted">Buat dan kelola voucher toko Anda dengan efektif</p>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mb-4">
+                        <div class="col-12 col-md-6">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-voucher') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-tag me-1"></i> Voucher
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Semua Voucher</li>
+                                </ol>
+                            </nav>
                         </div>
                     </div>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="row mb-4 slide-in">
+                    <!-- Active Promo -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
                         <div class="stats-card stats-card-primary">
                             <div class="stats-icon">
-                                <i class="bi bi-box fs-3"></i>
+                                <i class="bi bi-gift-fill"></i> <!-- Ganti dari envelope ke gift -->
                             </div>
                             <div class="stats-title">Active Promo</div>
                             <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
 
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-gift me-1"></i>
+                                    Promo spesial yang sedang berjalan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Vouchers -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <div class="stats-card stats-card-warning">
+                        <div class="stats-card stats-card-success">
                             <div class="stats-icon">
-                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <i class="bi bi-tag"></i> <!-- Voucher ikon -->
                             </div>
                             <div class="stats-title">Active Vouchers</div>
                             <h3 class="stats-number">{{ $activeVouchers ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Voucher siap digunakan oleh pelanggan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Discount -->
                     <div class="col-12 col-md-4">
-                        <div class="stats-card stats-card-success">
+                        <div class="stats-card stats-card-warning">
                             <div class="stats-icon">
-                                <i class="bi bi-percent"></i>
+                                <i class="bi bi-percent"></i> <!-- Diskon ikon -->
                             </div>
                             <div class="stats-title">Active Discount</div>
                             <h3 class="stats-number">{{ $activeDiscounts ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-tags me-1"></i>
+                                    Diskon menarik untuk produk pilihan
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-promo') }}"
                         class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
-                        <i class="bi bi-grid-fill me-2"></i>All Promos
+                        <i class="bi bi-grid-fill me-2"></i>Promo
                     </a>
                     <a href="{{ route('index-promo-voucher') }}"
                         class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
-                        <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
+                        <i class="bi bi-receipt-cutoff me-2"></i>Voucher
                     </a>
                     <a href="{{ route('index-promo-diskon') }}"
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                        <i class="bi bi-percent me-2"></i>Discounts
+                        <i class="bi bi-percent me-2"></i>Diskon
                     </a>
                 </div>
 
@@ -281,7 +329,7 @@
                     <div class="card-header">
                         <h4 class="card-title">Buat Voucher Baru</h4>
                         {{-- <p class="text-muted">Choose the type of voucher you want to create</p> --}}
-                        <p class="text-muted">Pilih type Voucher ang ingin anda buat</p>
+                        <p class="text-muted">Pilih type Voucher yang ingin anda buat</p>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -313,17 +361,7 @@
                                         class="btn btn-primary mt-3">Buat</a>
                                 </div>
                             </div>
-                            {{-- <div class="col-md-4 mb-3">
-                                <div class="voucher-card">
-                                    <div class="voucher-icon">🚌</div>
-                                    <h4>Shipping Fee Voucher</h4>
-                                    <p>Shipping Fee Voucher applicable on selected products as part of specific
-                                        promotions
-                                    </p>
-                                    <a href="{{ route('create-promo-voucher-shippingfee') }}"
-                                        class="btn btn-primary">Create</a>
-                                </div>
-                            </div> --}}
+
                             <div class="col-md-4 mb-3">
                                 <div class="voucher-card">
                                     <div class="voucher-icon">👨‍💼</div>
@@ -341,19 +379,19 @@
                 <!-- Voucher List -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Active Vouchers</h4>
+                        <h4 class="mb-0">Voucher Aktif</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-hover" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Voucher Details</th>
-                                        <th>Type</th>
-                                        <th>Period</th>
-                                        <th>Discount</th>
+                                        <th>Detail Voucher</th>
+                                        <th>Jenis</th>
+                                        <th>Periode</th>
+                                        <th>Diskon</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -367,7 +405,7 @@
                                                     <div>
                                                         <h6 class="mb-0">
                                                             {{ Str::limit($item->promo_name, 40, '...') }}</h6>
-                                                        <small class="text-muted">Code:
+                                                        <small class="text-muted">Kode:
                                                             {{ $item->promo_code }}</small>
                                                     </div>
                                                 </div>
@@ -385,41 +423,40 @@
                                                     </div>
                                                 </div>
                                             </td>
-
                                             <td>
                                                 @if ($item->discount_type === 'nominal')
                                                     Rp
                                                     @php
-                                                        $discount = str_replace('.', '', $item->discount); // Hapus titik untuk konversi angka
+                                                        $discount = str_replace('.', '', $item->discount);
                                                     @endphp
                                                     {{ is_numeric($discount) ? number_format($discount, 0, ',', '.') : '0' }}
                                                 @else
                                                     {{ is_numeric($item->discount) ? $item->discount : '0' }}%
                                                 @endif
                                             </td>
-
                                             <td>
                                                 @php
                                                     $isActive = \Carbon\Carbon::parse($item->end_date)->isFuture();
                                                 @endphp
                                                 <span
                                                     class="badge {{ $isActive ? 'status-active' : 'status-expired' }}">
-                                                    {{ $isActive ? 'Active' : 'Expired' }}
+                                                    {{ $isActive ? 'Aktif' : 'Kadaluarsa' }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
+                                                    <a href="{{ url('detail-promo-voucher/' . $item->id) }}"
+                                                        class="btn btn-sm btn-info d-inline-flex align-items-center">
+                                                        <i class="bi bi-eye me-1"></i> View
+                                                    </a>
                                                     <a href="{{ url('edit-promo-voucher/' . $item->id) }}"
                                                         class="btn btn-sm btn-warning d-inline-flex align-items-center">
-                                                        <i class="bi bi-pencil"></i> Edit
+                                                        <i class="bi bi-pencil me-1"></i> Edit
                                                     </a>
-                                                    <a href="{{ url('detail-promo-voucher/' . $item->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i> View
-                                                    </a>
-                                                    <a href="javascript:void(0);" class="badge bg-danger delete-promo d-inline-flex align-items-center"
+                                                    <a href="javascript:void(0);"
+                                                        class="btn btn-sm btn-danger delete-promo d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
+                                                        <i class="bi bi-trash me-1"></i> Delete
                                                     </a>
                                                 </div>
                                             </td>
@@ -430,6 +467,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>
