@@ -849,19 +849,25 @@
                                 value="${product.id}" class="form-check-input select-item" ${disabled}>
                         </div>
                     </td>
-                    <td>
+                   <td>
                         <div class="d-flex align-items-center">
+                            <a href="${product.main_image}" target="_blank" rel="noopener">
                             <img src="${product.main_image}" 
-                                loading="lazy" class="lazyload me-2" alt="Product Image"
+                                loading="lazy" 
+                                class="lazyload me-2" 
+                                alt="Product Image"
                                 style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                            </a>
+
                             <div>
-                                ${product.product_name.length > 30 ? 
-                                    product.product_name.substring(0, 30) + '...' : 
-                                    product.product_name}
-                                ${hasActivePromo ? '<div class="mt-1"><span class="badge bg-danger">Active Promo</span></div>' : ''}
+                            ${product.product_name.length > 30 ? 
+                                product.product_name.substring(0, 30) + '...' : 
+                                product.product_name}
+                            ${hasActivePromo ? '<div class="mt-1"><span class="badge bg-danger">Active Promo</span></div>' : ''}
                             </div>
                         </div>
                     </td>
+
                     <td>${product.stock_quantity}</td>               
                     <td>Rp. ${number_format(product.regular_price)}</td>
                     <td>

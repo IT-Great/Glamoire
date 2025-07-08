@@ -19,7 +19,9 @@
 
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
         }
 
         .page-header {
@@ -123,6 +125,18 @@
             border-radius: 0.5rem;
             font-weight: 500;
         }
+
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
     </style>
 
 </head>
@@ -134,152 +148,163 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="/promo">Promo</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Promo</li>
-                                </ol>
-                            </nav>
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3>Detail Promo</h3>
+                            <p class="text-subtitle text-muted">Lihat detail lengkap dari promo yang sedang berlangsung
+                                atau telah dibuat.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Promo Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-tag me-1"></i> Promo Name
-                                                </div>
-                                                <div class="detail-value">{{ $promo->promo_name }}</div>
-                                            </div>
+                <div class="row align-items-center mb-4">
+                    <div class="col-12 col-md-6">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-promo') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-bookmark-star me-1"></i> Promo
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Detail Promo Event</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
 
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-calendar me-1"></i> Promo Period
-                                                </div>
-                                                <div class="mb-1">
-                                                    <i class="bi bi-calendar-event me-2"></i>
-                                                    @if ($promo->start_date)
-                                                        {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d F Y') }}
-                                                    @endif
-                                                </div>
-                                                <div>
-                                                    <i class="bi bi-calendar-event-fill me-2"></i>
-                                                    @if ($promo->end_date)
-                                                        {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d F Y') }}
-                                                    @endif
-                                                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Informasi Promo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-tag me-1"></i> Nama Promo
                                             </div>
+                                            <div class="detail-value">{{ $promo->promo_name }}</div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-percent me-1"></i> Discount
-                                                </div>
-                                                <div class="detail-value">
-                                                    <span class="discount-badge">
-                                                        @if ($promo->discount_type === 'nominal')
-                                                            Rp {{ number_format($promo->discount, 0, ',', '.') }}
-                                                        @else
-                                                            {{ $promo->discount }}%
-                                                        @endif
-                                                    </span>
-                                                </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-calendar me-1"></i> Periode Promo
+                                            </div>
+                                            <div class="mb-1">
+                                                <i class="bi bi-calendar-event me-2"></i>
+                                                @if ($promo->start_date)
+                                                    {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d F Y') }}
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <i class="bi bi-calendar-event-fill me-2"></i>
+                                                @if ($promo->end_date)
+                                                    {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d F Y') }}
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Products in Promo</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="table-responsive">
-                                        <table class="table product-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Product</th>
-                                                    <th>Stock</th>
-                                                    <th>Limit Stock</th>
-                                                    <th>Regular Price</th>
-                                                    <th>Discounted Price</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach ($promo->products as $product)
-                                                    <tr>
-                                                        <td>
-                                                            <div class="d-flex align-items-center">
-                                                                <img src="{{ Storage::url($product->main_image) }}"
-                                                                    alt="Product" class="me-3"
-                                                                    onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
-                                                                <span
-                                                                    class="product-name">{{ Str::limit($product->product_name, 20, '...') }}</span>
-                                                            </div>
-                                                        </td>
-                                                        <td>{{ $product->stock_quantity }}</td>
-                                                        <td>
-                                                            @if ($product->pivot->limit_stock)
-                                                                <span class="badge bg-info">
-                                                                    {{ $product->pivot->limit_stock }}
-                                                                </span>
-                                                            @else
-                                                                <span class="badge bg-secondary">
-                                                                    Unlimited
-                                                                </span>
-                                                            @endif
-                                                        </td>
-                                                        <td>Rp.
-                                                            {{ number_format($product->regular_price, 0, ',', '.') }}
-                                                        </td>
-                                                        <td>
-                                                            <span class="text-danger">
-                                                                Rp.
-                                                                @if ($promo->discount_type === 'nominal')
-                                                                    {{ number_format($product->regular_price - $promo->discount, 0, ',', '.') }}
-                                                                @else
-                                                                    {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
-                                                                @endif
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-percent me-1"></i> Diskon
+                                            </div>
+                                            <div class="detail-value">
+                                                <span class="discount-badge">
+                                                    @if ($promo->discount_type === 'nominal')
+                                                        Rp {{ number_format($promo->discount, 0, ',', '.') }}
+                                                    @else
+                                                        {{ $promo->discount }}%
+                                                    @endif
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">Promo Banner</h5>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Produk dalam Promo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table product-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Produk</th>
+                                                <th>Stok</th>
+                                                <th>Batas Stok</th>
+                                                <th>Harga Normal</th>
+                                                <th>Harga Diskon</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($promo->products as $product)
+                                                <tr>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                alt="Produk" class="me-3"
+                                                                onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                            <span class="product-name">
+                                                                {{ Str::limit($product->product_name, 20, '...') }}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $product->stock_quantity }}</td>
+                                                    <td>
+                                                        @if ($product->pivot->limit_stock)
+                                                            <span class="badge bg-info">
+                                                                {{ $product->pivot->limit_stock }}
+                                                            </span>
+                                                        @else
+                                                            <span class="badge bg-secondary">
+                                                                Tidak Terbatas
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-danger">
+                                                            Rp.
+                                                            @if ($promo->discount_type === 'nominal')
+                                                                {{ number_format($product->regular_price - $promo->discount, 0, ',', '.') }}
+                                                            @else
+                                                                {{ number_format($product->regular_price * (1 - $promo->discount / 100), 0, ',', '.') }}
+                                                            @endif
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <div class="card-body">
-                                    @if ($promo->image)
-                                        <img src="{{ Storage::url($promo->image) }}" alt="Promo Banner"
-                                            class="promo-banner mb-4"
-                                            onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
-                                    @else
-                                        <p>No banner uploaded</p>
-                                    @endif
+                            </div>
+                        </div>
+                    </div>
 
-                                </div>
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Promo Banner</h5>
+                            </div>
+                            <div class="card-body">
+                                @if ($promo->image)
+                                    <img src="{{ Storage::url($promo->image) }}" alt="Promo Banner"
+                                        class="promo-banner mb-4"
+                                        onclick="openImageInNewTab('{{ Storage::url($promo->image) }}')">
+                                @else
+                                    <p>No banner uploaded</p>
+                                @endif
+
                             </div>
                         </div>
                     </div>

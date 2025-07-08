@@ -13,7 +13,7 @@ class AffiliateController extends Controller
 {
     public function indexAffiliateAdmin()
     {
-        $partners = Partner::paginate(5);
+        $partners = Partner::orderBy('created_at', 'desc')->get();
 
         return view('admin.affiliate.index', compact('partners'));
     }

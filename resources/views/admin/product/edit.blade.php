@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product - Glamoire</title>
+    <title>Produk - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
@@ -736,7 +736,7 @@
 
                                                     <div class="col-md-6">
                                                         <div class="form-group has-icon-left mb-3">
-                                                            <label for="first-name-icon">Stock Produk <span
+                                                            <label for="first-name-icon">Stok Produk <span
                                                                     style="color: red">*</span></label>
                                                             <div class="position-relative mt-2">
                                                                 <input type="text"
@@ -1043,12 +1043,12 @@
                                                                 <table class="table table-bordered variant-table">
                                                                     <thead class="table-light">
                                                                         <tr>
-                                                                            <th>Image</th>
-                                                                            <th>Type Variant</th>
-                                                                            <th>Price</th>
-                                                                            <th>Stock</th>
-                                                                            <th>Weight (grams)</th>
-                                                                            <th>Expired</th>
+                                                                            <th>Gambar</th>
+                                                                            <th>Tipe Variasi</th>
+                                                                            <th>Harga</th>
+                                                                            <th>Stok</th>
+                                                                            <th>Berat (grams)</th>
+                                                                            <th>Tanggal Kadaluarsa</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="variant-table-body">
@@ -1066,17 +1066,11 @@
                                                             <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
                                                         </a>
 
-                                                        <button type="reset"
-                                                            class="btn btn-light-secondary btn-sm d-flex align-items-center justify-content-center me-2"
-                                                            style="border-radius: 5px; font-weight: bold; min-width: 120px;">
-                                                            Reset Product
-                                                        </button>
-
                                                         <button type="submit"
                                                             class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
                                                             id="submitButton"
                                                             style="border-radius: 5px; font-weight: bold; min-width: 120px;">
-                                                            Submit Product
+                                                            Update Produk
                                                         </button>
 
                                                     </div>

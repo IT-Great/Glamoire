@@ -311,17 +311,12 @@
                                             </h6>
                                             <div class="media-content">
                                                 @if ($contact->response_image)
-                                                    @php
-                                                        $responseImages = json_decode($contact->response_image);
-                                                    @endphp
-                                                    @foreach ($responseImages as $image)
-                                                        <a href="{{ asset('storage/' . $image) }}" target="_blank"
-                                                            rel="noopener">
-                                                            <img src="{{ asset('storage/' . $image) }}"
-                                                                alt="Gambar Terunggah" class="uploaded-image"
-                                                                style="cursor: pointer;">
-                                                        </a>
-                                                    @endforeach
+                                                    <a href="{{ asset('storage/' . $contact->response_image) }}"
+                                                        target="_blank" rel="noopener">
+                                                        <img src="{{ asset('storage/' . $contact->response_image) }}"
+                                                            alt="Gambar Terunggah" class="uploaded-image"
+                                                            style="cursor: pointer; max-width: 100%; height: auto;">
+                                                    </a>
                                                 @else
                                                     <p class="text-muted">Tidak ada gambar terlampir</p>
                                                 @endif
@@ -337,7 +332,8 @@
                                             </h6>
                                             <div class="video-container">
                                                 @if ($contact->response_video)
-                                                    <video controls class="video-player">
+                                                    <video controls class="video-player"
+                                                        style="max-width: 100%; height: auto;">
                                                         <source
                                                             src="{{ asset('storage/' . $contact->response_video) }}"
                                                             type="video/mp4">

@@ -720,6 +720,135 @@
             window.open(url, '_blank');
         }
 
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Initialize Simple DataTable
+        //     let table1 = document.querySelector('#table1');
+        //     let dataTable = new simpleDatatables.DataTable(table1);
+
+        //     // Use event delegation for delete button
+        //     table1.addEventListener('click', function(event) {
+        //         if (event.target.closest('.delete-product')) {
+        //             let productId = event.target.closest('.delete-product').getAttribute('data-id');
+
+        //             // SweetAlert2 confirmation dialog
+        //             Swal.fire({
+        //                 title: 'Are you sure?',
+        //                 text: 'You won\'t be able to revert this!',
+        //                 icon: 'warning',
+        //                 showCancelButton: true,
+        //                 confirmButtonColor: '#3085d6',
+        //                 cancelButtonColor: '#d33',
+        //                 confirmButtonText: 'Yes, delete it!'
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     // Send AJAX request to delete product
+        //                     fetch(`/Glamoire/public/delete-product/${productId}`, {
+        //                             // fetch(`/delete-product/${productId}`, {
+        //                             method: 'POST', // Use POST instead of DELETE
+        //                             headers: {
+        //                                 'Content-Type': 'application/json',
+        //                                 'X-CSRF-TOKEN': document.querySelector(
+        //                                     'meta[name="csrf-token"]').getAttribute(
+        //                                     'content')
+        //                             },
+        //                             body: JSON.stringify({
+        //                                 _method: 'DELETE' // Spoof DELETE method
+        //                             })
+        //                         })
+        //                         .then(response => response.json())
+        //                         .then(data => {
+        //                             if (data.success) {
+        //                                 // Remove the product from the page
+        //                                 const productElement = document.querySelector(
+        //                                     `#product-item-${productId}`);
+        //                                 if (productElement) {
+        //                                     productElement.remove();
+        //                                 }
+
+        //                                 Swal.fire({
+        //                                     title: 'Deleted!',
+        //                                     text: data.message,
+        //                                     icon: 'success',
+        //                                     timer: 1800,
+        //                                     timerProgressBar: true,
+        //                                     showConfirmButton: true
+        //                                 });
+        //                             } else {
+        //                                 Swal.fire({
+        //                                     title: 'Error!',
+        //                                     text: data.message,
+        //                                     icon: 'error',
+        //                                     timer: 1800,
+        //                                     timerProgressBar: true,
+        //                                     showConfirmButton: true
+        //                                 });
+        //                             }
+        //                         })
+        //                         .catch(error => {
+        //                             console.error('Error:', error);
+        //                             Swal.fire({
+        //                                 title: 'Error!',
+        //                                 text: 'Something went wrong while deleting the product.',
+        //                                 icon: 'error'
+        //                             });
+        //                         });
+        //                 }
+        //             });
+        //         }
+
+        //         // Bagian untuk fitur kirim notifikasi
+        //         if (event.target.closest('.notify-product')) {
+        //             let productId = event.target.closest('.notify-product').getAttribute('data-id');
+
+        //             Swal.fire({
+        //                 title: 'Are you sure?',
+        //                 text: 'You won\'t be able to revert this!',
+        //                 icon: 'warning',
+        //                 showCancelButton: true,
+        //                 confirmButtonColor: '#3085d6',
+        //                 cancelButtonColor: '#d33',
+        //                 confirmButtonText: 'Yes, Send it!'
+        //             }).then((result) => {
+        //                 if (result.isConfirmed) {
+        //                     fetch(`/send-notify/${productId}`, {
+        //                             method: 'POST',
+        //                             headers: {
+        //                                 'Content-Type': 'application/json',
+        //                                 'X-CSRF-TOKEN': document.querySelector(
+        //                                     'meta[name="csrf-token"]').getAttribute(
+        //                                     'content')
+        //                             }
+        //                         })
+        //                         .then(response => response.json())
+        //                         .then(data => {
+        //                             if (data.success) {
+        //                                 Swal.fire(
+        //                                     'Sent!',
+        //                                     'Notification has been sent successfully.',
+        //                                     'success'
+        //                                 );
+        //                             } else {
+        //                                 Swal.fire(
+        //                                     'Error!',
+        //                                     data.message || 'Failed to send notification.',
+        //                                     'error'
+        //                                 );
+        //                             }
+        //                         })
+        //                         .catch(error => {
+        //                             console.log('Error:', error);
+        //                             Swal.fire(
+        //                                 'Error!',
+        //                                 'An error occurred while sending notification.',
+        //                                 'error'
+        //                             );
+        //                         });
+        //                 }
+        //             });
+        //         }
+        //     });
+        // });
+
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize Simple DataTable
             let table1 = document.querySelector('#table1');
@@ -741,21 +870,24 @@
                         confirmButtonText: 'Yes, delete it!'
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // Create form data for method spoofing
+                            const formData = new FormData();
+                            formData.append('_method', 'DELETE');
+                            formData.append('_token', document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content'));
+
                             // Send AJAX request to delete product
-                            fetch(`/Glamoire/public/delete-product/${productId}`, {
-                                    // fetch(`/delete-product/${productId}`, {
-                                    method: 'POST', // Use POST instead of DELETE
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector(
-                                            'meta[name="csrf-token"]').getAttribute(
-                                            'content')
-                                    },
-                                    body: JSON.stringify({
-                                        _method: 'DELETE' // Spoof DELETE method
-                                    })
+                            fetch(`/delete-product/${productId}`, {
+                                    method: 'POST',
+                                    body: formData
                                 })
-                                .then(response => response.json())
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(
+                                            `HTTP error! status: ${response.status}`);
+                                    }
+                                    return response.json();
+                                })
                                 .then(data => {
                                     if (data.success) {
                                         // Remove the product from the page
@@ -796,7 +928,7 @@
                     });
                 }
 
-                // Bagian untuk fitur kirim notifikasi
+                // Bagian untuk fitur kirim notifikasi (tetap sama)
                 if (event.target.closest('.notify-product')) {
                     let productId = event.target.closest('.notify-product').getAttribute('data-id');
 
@@ -849,8 +981,6 @@
             });
         });
     </script>
-
-
 
     @if (session('success'))
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

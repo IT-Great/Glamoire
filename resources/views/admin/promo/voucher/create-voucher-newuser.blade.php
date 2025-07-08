@@ -128,18 +128,20 @@
                     <h3 class="mb-2">Buat Voucher User Baru</h3>
                     <p class="mb-3">
                         Buat Voucher User Baru Sekarang Untuk Menarik Minat Pembeli
-                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
                     </p>
 
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
-                                            Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Buat Promo Voucher User Baru
+                                 <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-voucher') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-tag me-1"></i> Voucher
+                                        </a>
                                     </li>
+                                    <li class="breadcrumb-item active">Buat Voucher User Baru</li>
                                 </ol>
+
                             </nav>
                         </div>
                     </div>

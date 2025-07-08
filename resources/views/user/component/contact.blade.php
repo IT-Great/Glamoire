@@ -181,8 +181,8 @@
                                     <label for="description"
                                         class="form-label text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Video</label>
                                     <div class="video-upload-wrap mt-2" id="video-upload-wrap">
-                                        <input type="file" id="response_video" name="response_video" class="file-upload-input"
-                                            onchange="readURLVideo(this);" accept="video/*"
+                                        <input type="file" id="response_video" name="response_video"
+                                            class="file-upload-input" onchange="readURLVideo(this);" accept="video/*"
                                             style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                         <div class="drag-text" style="text-align: center; color: #888;">
                                             <p>Drag and drop a video file or select to upload</p>
@@ -411,13 +411,13 @@
             // Add image file if exists
             const imageInput = document.querySelector('input[name="response_image"]');
             if (imageInput.files[0]) {
-                formData.append('image', imageInput.files[0]);
+                formData.append('response_image', imageInput.files[0]); // ✅ Sekarang menggunakan 'response_image'
             }
 
             // Add video file if exists
             const videoInput = document.querySelector('input[name="response_video"]');
             if (videoInput.files[0]) {
-                formData.append('video', videoInput.files[0]);
+                formData.append('response_video', videoInput.files[0]); // ✅ Sekarang menggunakan 'response_video'
             }
 
             $.ajax({

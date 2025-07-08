@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Product - Glamoire</title>
+    <title>Stok Produk - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -729,12 +729,12 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end shadow-lg"
                                             aria-labelledby="importDropdown">
-                                            <li class="dropdown-header">Product Stocks</li>
+                                            <li class="dropdown-header">Produk Stok</li>
                                             <li>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#importProductStockModal">
-                                                    <i class="bi bi-upload me-2 text-success"></i> Import Product
-                                                    Stocks
+                                                    <i class="bi bi-upload me-2 text-success"></i> Import Produk
+                                                    Stok
                                                 </a>
                                             </li>
                                             <li>
@@ -746,19 +746,19 @@
                                             </li>
 
                                             <li class="dropdown-divider"></li>
-                                            <li class="dropdown-header">Product Variants</li>
+                                            <li class="dropdown-header">Produk Variasi</li>
                                             <li>
                                                 <a class="dropdown-item" href="#" data-bs-toggle="modal"
                                                     data-bs-target="#importVariantStockModal">
-                                                    <i class="bi bi-upload me-2 text-success"></i> Import Product
-                                                    Variant Stocks
+                                                    <i class="bi bi-upload me-2 text-success"></i> Import Produk
+                                                    Variasi Stok
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="dropdown-item"
                                                     href="{{ route('download.product.variant.stock.template') }}">
                                                     <i class="bi bi-file-earmark-arrow-down me-2 text-primary"></i>
-                                                    Download Variant Template
+                                                    Download Variasi Template
                                                 </a>
                                             </li>
                                         </ul>
@@ -777,14 +777,14 @@
                                                 <a class="dropdown-item"
                                                     href="{{ route('export.product.stocks') }}?type=product">
                                                     <i class="bi bi-file-earmark-spreadsheet me-2 text-primary"></i>
-                                                    Export Product Stocks
+                                                    Export Produk Stok
                                                 </a>
                                             </li>
                                             <li>
                                                 <a class="dropdown-item"
                                                     href="{{ route('export.product.variants') }}?type=variant">
                                                     <i class="bi bi-file-earmark-spreadsheet me-2 text-primary"></i>
-                                                    Export Product Variant Stocks
+                                                    Export Produk Variasi Stok
                                                 </a>
                                             </li>
                                         </ul>
@@ -798,11 +798,11 @@
                         <table class="table table-hover" id="table1">
                             <thead>
                                 <tr>
-                                    <th>Product Details</th>
-                                    <th>Total Stock</th>
-                                    <th>Stock Details</th>
+                                    <th>Produk Detail</th>
+                                    <th>Total Stok</th>
+                                    <th>Detail Stok</th>
                                     <th>Status</th>
-                                    <th>Actions</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
