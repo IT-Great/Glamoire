@@ -223,7 +223,7 @@ class ProductController extends Controller
 
 
         } catch (Exception $err) {
-           return view('eror-403'); 
+           return view('error-403'); 
         }
     }
 

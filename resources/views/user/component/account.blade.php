@@ -535,16 +535,45 @@
                                         <div class="mobile-only">
                                             <div class="grid-container-order px-0 hover:cursor-pointer hover:text-italic">
                                             @foreach ($order->items as $item)
-                                                <img class="border border-[#183018] rounded-sm"
-                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                @if ($item->product_variant_id !== NULL)
+                                                    <img class="col-2 col-md-1 p-0 m-0"
+                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
                                                     alt="">
+                                                     <p
+                                                        class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                        {{ $item->product->brand->name }}</p>
+                                                    <p
+                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                        {{ $item->product->product_name }}</p>
+                                                    <p
+                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                        Varian {{ $item->productVariant->variant_value }}</p>
+                                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                        {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                @else
+                                                    <div class="d-flex">
+                                                        <img class="col-2 col-md-1 p-0 m-0"
+                                                        src="{{ Storage::url($item->product->main_image) }}"
+                                                        alt="">
+                                                        
+                                                        <div class="col-7 col-md-8 px-1 px-md-3">
+                                                            <p
+                                                                class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                {{ $item->product->brand->name }}</p>
+                                                            <p
+                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                {{ $item->product->product_name }}</p>
+                                                            @if ($item->is_tier !== null)
+                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            @else
+                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endforeach 
-                                            </div>   
-                                            <div class="flex items-center justify-start">
-                                                <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
-                                                <p class="ml-1 text-black text-[10px]">
-                                                    Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
-                                                </p>
                                             </div>
                                             
                                         </div>    
@@ -552,6 +581,14 @@
 
                                         <div class="d-flex justify-content-end input-group-btn mt-2">
                                             <div class="col-12 d-flex p-0 justify-content-end gap-2">
+                                                   
+                                                <div class="mobile-total align-items-center justify-content-center">
+                                                    <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
+                                                    <p class="ml-1 text-black text-[10px]">
+                                                        Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
+                                                    </p>
+                                                </div>
+
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <a class="hover:cursor-pointer text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] text-red-700"
                                                         data-bs-toggle="modal"
