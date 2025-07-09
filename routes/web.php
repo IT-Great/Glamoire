@@ -350,6 +350,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/product-admin-edit/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
 
+    Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
+    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
+    Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
+
+
     // STOCK PRODUCT 
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
@@ -384,9 +389,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         ->name('import.product.variants');
     // Route::post('/import/product-variants', [StockExportImportController::class
 
-    Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
-    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
-    Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
 
     // product-variant
     Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');

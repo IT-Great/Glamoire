@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Glamoire</title>
+    <title>Artikel - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -481,7 +481,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}">Artikel</a></li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}"
+                                            class="d-inline-flex align-items-center"><i
+                                                class="bi bi-file-richtext me-1"></i>Artikel</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Artikel</li>
                                 </ol>
                             </nav>
@@ -530,13 +532,13 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Artikel</h4>
+                                    <h4>Daftar Artikel</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('index-category-article') }}" type="button"
                                         class="btn btn-sm btn-dark d-flex align-items-center"
                                         style="margin-right: 10px;">
-                                        <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>Category
+                                        <i class="bi bi-box-arrow-in-right" style="margin-right: 3px;"></i>Kategori
                                     </a>
 
                                     <a href="{{ route('create-article') }}" type="button"
@@ -551,35 +553,37 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Title</th>
-                                        <th>Category</th>
-                                        <th>Action</th>
+                                        <th>Judul</th>
+                                        <th>Kategori</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($articles as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->title }}</td>
+                                            {{-- <td>{{ $item->title }}</td> --}}
+                                            <td> {{ Str::limit(strip_tags($item->title), 50) }}</td>
+
+
                                             <td>
                                                 <span
                                                     class="badge bg-light-success">{{ $item->categoryArticle->name }}</span>
                                             </td>
                                             <td>
                                                 <a href="{{ route('review-article', $item->id) }}"
-                                                    class="btn btn-sm btn-info">
-                                                    <i class="bi bi-box-arrow-in-up-right"
-                                                        style="margin-right: 3px;"></i>Review</span>
+                                                    class="btn btn-sm btn-info d-inline-flex align-items-center">
+                                                    <i class="bi bi-box-arrow-in-up-right me-1"></i>Review</span>
                                                 </a>
-                                                <a href="{{ route('edit-article', $item->id) }}">
-                                                    <span class="btn btn-sm btn-warning">
-                                                        <i class="bi bi-pencil" style="margin-right: 3px;"></i>Edit
-                                                    </span>
+                                                <a href="{{ route('edit-article', $item->id) }}"
+                                                    class="btn btn-sm btn-warning d-inline-flex align-items-center">
+                                                    <i class="bi bi-pencil me-1"></i>Edit
                                                 </a>
 
-                                                <button class="btn btn-sm btn-danger delete-article"
+                                                <button
+                                                    class="btn btn-sm btn-danger delete-article d-inline-flex align-items-center"
                                                     data-id="{{ $item->id }}">
-                                                    <i class="bi bi-trash" style="margin-right: 3px;"></i>Delete
+                                                    <i class="bi bi-trash me-1"></i>Delete
                                                 </button>
                                             </td>
                                         </tr>

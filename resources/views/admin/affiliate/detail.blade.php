@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Affiliate - Glamoire</title>
+    <title>Mitra - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -469,216 +469,211 @@
 
         <div id="main">
             <div class="page-heading fade-in">
-                <div class="container-fluid">
-                    <!-- Judul Halaman -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="page-title">
-                                <h3 class="mb-2">Affiliate</h3>
-                                <p>Tinjau dan tanggapi semua pengajuan kerja sama</p>
-                            </div>
+                <!-- Judul Halaman -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Mitra</h3>
+                            <p>Tinjau dan tanggapi semua pengajuan kerja sama pada halaman ini</p>
                         </div>
                     </div>
-
-                    <!-- Navigasi Breadcrumb -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('index-affiliate-admin') }}"
-                                            class="d-flex align-items-center">
-                                            <i class="bi bi-envelope me-1"></i>Affiliate
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">Detail Affiliate</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                    <section class="section">
-                        <div class="card">
-                            <div class="card-header text-primary">
-                                <h4>Detail Informasi Afiliasi</h4>
-                                <p class="text-primary-50">Ringkasan dan detail mitra afiliasi</p>
-                            </div>
-                            <div class="card-body">
-                                <!-- Informasi Pribadi -->
-                                <div class="border-bottom pb-4 mb-4">
-                                    <h5 class="text-primary mb-3">Informasi Pribadi</h5>
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-person-circle text-primary me-3"
-                                                    style="font-size: 24px;"></i>
-                                                <div>
-                                                    <h6 class="mb-1">Nama Lengkap</h6>
-                                                    <p class="text-muted">{{ $partners->fullname }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Informasi Kontak -->
-                                <div class="border-bottom pb-4 mb-4">
-                                    <h5 class="text-primary mb-3">Informasi Kontak</h5>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-telephone text-primary me-3"
-                                                    style="font-size: 24px;"></i>
-                                                <div>
-                                                    <h6 class="mb-1">Nomor Telepon</h6>
-                                                    <p class="text-muted">{{ $partners->handphone }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-envelope text-primary me-3"
-                                                    style="font-size: 24px;"></i>
-                                                <div>
-                                                    <h6 class="mb-1">Alamat Email</h6>
-                                                    <p class="text-muted">{{ $partners->email }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Informasi Produk -->
-                                <div class="border-bottom pb-4 mb-4">
-                                    <h5 class="text-primary mb-3">Informasi Produk</h5>
-                                    <div class="mb-3">
-                                        <h6 class="mb-1">Kategori Produk</h6>
-                                        <p class="text-muted">{{ $partners->category_product }}</p>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1">Deskripsi</h6>
-                                        <p class="text-muted">{{ $partners->description }}</p>
-                                    </div>
-                                </div>
-
-                                <!-- Dokumen -->
-                                <div class="border-bottom pb-4 mb-4">
-                                    <h5 class="text-primary mb-3">Dokumen</h5>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <h6 class="mb-1">Dokumen Perusahaan</h6>
-                                            <div class="p-3 border rounded bg-white">
-                                                @if ($partners->fileCompany)
-                                                    <a href="{{ asset('storage/' . $partners->fileCompany->file_path) }}"
-                                                        class="d-flex align-items-center text-decoration-none">
-                                                        <i class="bi bi-file-earmark-text text-primary me-2"></i>
-                                                        <span>{{ $partners->fileCompany->file_name }}</span>
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted"><i
-                                                            class="bi bi-exclamation-circle me-2"></i>Belum ada
-                                                        dokumen
-                                                        diunggah</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <h6 class="mb-1">Dokumen BPOM</h6>
-                                            <div class="p-3 border rounded bg-white">
-                                                @if ($partners->fileBpom)
-                                                    <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
-                                                        class="d-flex align-items-center text-decoration-none">
-                                                        <i class="bi bi-file-earmark-text text-primary me-2"></i>
-                                                        <span>{{ $partners->fileBpom->file_name }}</span>
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted"><i
-                                                            class="bi bi-exclamation-circle me-2"></i>Belum ada
-                                                        dokumen
-                                                        diunggah</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Informasi Status -->
-                                <div class="border-bottom pb-4 mb-4">
-                                    <h5 class="text-primary mb-3">Informasi Status</h5>
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <h6 class="mb-1">Status BPOM</h6>
-                                            <div class="d-flex align-items-center">
-                                                <input type="radio" class="form-check-input me-2"
-                                                    {{ $partners->bpom ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label me-3">Ya</label>
-                                                <input type="radio" class="form-check-input me-2"
-                                                    {{ !$partners->bpom ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label">Tidak</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h6 class="mb-1">Sudah Pernah Menghubungi</h6>
-                                            <div class="d-flex align-items-center">
-                                                <input type="radio" class="form-check-input me-2"
-                                                    {{ $partners->reached_email ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label me-3">Ya</label>
-                                                <input type="radio" class="form-check-input"
-                                                    {{ !$partners->reached_email ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label">Tidak</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <h6 class="mb-1">Distributor Resmi</h6>
-                                            <div class="d-flex align-items-center">
-                                                <input type="radio" class="form-check-input me-2"
-                                                    {{ $partners->distributor ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label me-3">Ya</label>
-                                                <input type="radio" class="form-check-input me-2"
-                                                    {{ !$partners->distributor ? 'checked' : '' }} disabled>
-                                                <label class="form-check-label">Tidak</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Form Tanggapan -->
-                                <form action="{{ route('send-response-affiliate', $partners->id) }}" method="POST">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="response"><strong>Tanggapan Anda: <span
-                                                    class="text-danger">*</span></strong></label>
-                                        <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}" id="response" name="response"
-                                            rows="5" placeholder="Tulis tanggapan Anda secara rinci di sini..."></textarea>
-
-                                        @if ($errors->has('response'))
-                                            <p style="color: red">{{ $errors->first('response') }}</p>
-                                        @else
-                                            <small class="text-muted" style="font-size: 14px;">
-                                                Harap berikan tanggapan yang komprehensif dan jelas untuk menjawab
-                                                pertanyaan pengguna.
-                                            </small>
-                                        @endif
-                                    </div>
-
-                                    <div class="col-12 d-flex justify-content-end mt-4">
-                                        <a href="{{ route('index-affiliate-admin') }}"
-                                            class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center me-2"
-                                            style="font-weight: bold; border-radius: 5px; min-width: 120px;">
-                                            <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
-                                        </a>
-                                        <button type="submit"
-                                            class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
-                                            id="submitButton"
-                                            style="border-radius: 5px; font-weight: bold; min-width: 120px;">
-                                            Kirim Tanggapan
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </section>
                 </div>
+
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-affiliate-admin') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-1"></i>Mitra
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Detail Mitra</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <section class="section">
+                    <div class="card">
+                        <div class="card-header text-primary">
+                            <h4>Detail Informasi Afiliasi</h4>
+                            <p class="text-primary-50">Ringkasan dan detail mitra afiliasi</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- Informasi Pribadi -->
+                            <div class="border-bottom pb-4 mb-4">
+                                <h5 class="text-primary mb-3">Informasi Pribadi</h5>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-person-circle text-primary me-3"
+                                                style="font-size: 24px;"></i>
+                                            <div>
+                                                <h6 class="mb-1">Nama Lengkap</h6>
+                                                <p class="text-muted">{{ $partners->fullname }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informasi Kontak -->
+                            <div class="border-bottom pb-4 mb-4">
+                                <h5 class="text-primary mb-3">Informasi Kontak</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-telephone text-primary me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <h6 class="mb-1">Nomor Telepon</h6>
+                                                <p class="text-muted">{{ $partners->handphone }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-envelope text-primary me-3" style="font-size: 24px;"></i>
+                                            <div>
+                                                <h6 class="mb-1">Alamat Email</h6>
+                                                <p class="text-muted">{{ $partners->email }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informasi Produk -->
+                            <div class="border-bottom pb-4 mb-4">
+                                <h5 class="text-primary mb-3">Informasi Produk</h5>
+                                <div class="mb-3">
+                                    <h6 class="mb-1">Kategori Produk</h6>
+                                    <p class="text-muted">{{ $partners->category_product }}</p>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Deskripsi</h6>
+                                    <p class="text-muted">{{ $partners->description }}</p>
+                                </div>
+                            </div>
+
+                            <!-- Dokumen -->
+                            <div class="border-bottom pb-4 mb-4">
+                                <h5 class="text-primary mb-3">Dokumen</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="mb-1">Dokumen Perusahaan</h6>
+                                        <div class="p-3 border rounded bg-white">
+                                            @if ($partners->fileCompany)
+                                                <a href="{{ asset('storage/' . $partners->fileCompany->file_path) }}"
+                                                    class="d-flex align-items-center text-decoration-none">
+                                                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                    <span>{{ $partners->fileCompany->file_name }}</span>
+                                                </a>
+                                            @else
+                                                <span class="text-muted"><i
+                                                        class="bi bi-exclamation-circle me-2"></i>Belum ada
+                                                    dokumen
+                                                    diunggah</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="mb-1">Dokumen BPOM</h6>
+                                        <div class="p-3 border rounded bg-white">
+                                            @if ($partners->fileBpom)
+                                                <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
+                                                    class="d-flex align-items-center text-decoration-none">
+                                                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
+                                                    <span>{{ $partners->fileBpom->file_name }}</span>
+                                                </a>
+                                            @else
+                                                <span class="text-muted"><i
+                                                        class="bi bi-exclamation-circle me-2"></i>Belum ada
+                                                    dokumen
+                                                    diunggah</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Informasi Status -->
+                            <div class="border-bottom pb-4 mb-4">
+                                <h5 class="text-primary mb-3">Informasi Status</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h6 class="mb-1">Status BPOM</h6>
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" class="form-check-input me-2"
+                                                {{ $partners->bpom ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label me-3">Ya</label>
+                                            <input type="radio" class="form-check-input me-2"
+                                                {{ !$partners->bpom ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label">Tidak</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="mb-1">Sudah Pernah Menghubungi</h6>
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" class="form-check-input me-2"
+                                                {{ $partners->reached_email ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label me-3">Ya</label>
+                                            <input type="radio" class="form-check-input"
+                                                {{ !$partners->reached_email ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label">Tidak</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <h6 class="mb-1">Distributor Resmi</h6>
+                                        <div class="d-flex align-items-center">
+                                            <input type="radio" class="form-check-input me-2"
+                                                {{ $partners->distributor ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label me-3">Ya</label>
+                                            <input type="radio" class="form-check-input me-2"
+                                                {{ !$partners->distributor ? 'checked' : '' }} disabled>
+                                            <label class="form-check-label">Tidak</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Tanggapan -->
+                            <form action="{{ route('send-response-affiliate', $partners->id) }}" method="POST">
+                                @csrf
+                                <div class="form-group">
+                                    <label for="response"><strong>Tanggapan Anda: <span
+                                                class="text-danger">*</span></strong></label>
+                                    <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}" id="response" name="response"
+                                        rows="5" placeholder="Tulis tanggapan Anda secara rinci di sini..."></textarea>
+
+                                    @if ($errors->has('response'))
+                                        <p style="color: red">{{ $errors->first('response') }}</p>
+                                    @else
+                                        <small class="text-muted" style="font-size: 14px;">
+                                            Harap berikan tanggapan yang komprehensif dan jelas untuk menjawab
+                                            pertanyaan pengguna.
+                                        </small>
+                                    @endif
+                                </div>
+
+                                <div class="col-12 d-flex justify-content-end mt-4">
+                                    <a href="{{ route('index-affiliate-admin') }}"
+                                        class="btn btn-secondary btn-sm d-flex align-items-center justify-content-center me-2"
+                                        style="font-weight: bold; border-radius: 5px; min-width: 120px;">
+                                        <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                    </a>
+                                    <button type="submit"
+                                        class="btn btn-primary btn-sm d-flex align-items-center justify-content-center"
+                                        id="submitButton"
+                                        style="border-radius: 5px; font-weight: bold; min-width: 120px;">
+                                        Kirim Tanggapan
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
 
                 @include('admin.layouts.footer')
             </div>

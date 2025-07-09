@@ -551,7 +551,7 @@
                 <section class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h4>List Data Mitra</h4>
+                            <h4>Daftar Mitra</h4>
                         </div>
                         <div class="card-body">
                             <table class="table" id="table1">

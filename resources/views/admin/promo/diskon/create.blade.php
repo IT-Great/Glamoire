@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount - Glamoire</title>
+    <title>Diskon - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -23,6 +23,179 @@
             font-family: 'Inter', 'Segoe UI', sans-serif;
             color: var(--text-primary);
         }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f9fafb;
+            --dark-color: #111827;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        /* Stats Card Styling */
+        .stats-card {
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-card-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .stats-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .action-buttons .btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .discount-nav {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .discount-nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .discount-nav-item.active {
+            background: #435ebe;
+            color: white;
+        }
+
+        .discount-nav-item:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .discount-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .discount-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #4CAF50;
+        }
+
+        .status-expired {
+            background-color: #f44336;
+        }
+
+        .discount-info {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .discount-tier {
+            border-left: 4px solid #435ebe;
+            padding-left: 10px;
+            margin: 5px 0;
+        }
+
+        .promo-nav {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .promo-nav-item {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #6c757d;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .promo-nav-item.active {
+            background: #435ebe;
+            color: white;
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background: white;
+        }
     </style>
 </head>
 
@@ -34,23 +207,29 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
-                    <h3 class="mb-2">Buat Diskon</h3>
-                    <p class="mb-3">
-                        Buat Diskon Produk Untuk Menarik Minat Pembeli.
-                        <a href="#" class="text-blue"></a>
-                    </p>
                     <div class="row">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Diskon</h3>
+                            <p class="text-subtitle text-muted">Buat diskon produk untuk menarik minat pembeli</p>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mb-4">
                         <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-diskon') }}">Promo
-                                            Discount</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Add Promo Discount</li>
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-diskon') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-percent me-1"></i> Diskon
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Buat Diskon</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
                 </div>
+
 
                 <section class="section">
                     <form action="{{ route('store-promo-diskon') }}" class="form form-vertical" method="POST"
@@ -369,26 +548,26 @@
                         </div>
 
                         <div class="card">
-                            <div class="card-header ">
-                                <h4>Product List</h4>
+                            <div class="card-header">
+                                <h4>Daftar Produk</h4>
                             </div>
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="product_ids">Pilih Produk <span
                                             style="color: red">*</span></label><br>
-                                    <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
-                                        dapat memilih beberapa produk.</small>
+                                    <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda dapat
+                                        memilih lebih dari satu produk.</small>
                                 </div>
                                 <table class="table" id="table1">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input type="checkbox" id="select-all"> Select All
+                                                <input type="checkbox" id="select-all"> Pilih Semua
                                             </th>
-                                            <th>Product</th>
-                                            <th>Stock</th>
-                                            <th>Price</th>
-                                            <th>Limit Stock Product</th>
+                                            <th>Produk</th>
+                                            <th>Stok</th>
+                                            <th>Harga</th>
+                                            <th>Batas Stok Produk</th>
                                             <th>Status</th>
                                         </tr>
                                     </thead>
@@ -402,16 +581,18 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload me-2" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
-                                                            onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                        <a href="{{ Storage::url($product->main_image) }}"
+                                                            target="_blank">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Gambar Produk"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                                                        </a>
                                                         <div>
                                                             {{ Str::limit($product->product_name, 20, '...') }}
                                                             @if ($product->has_active_promo)
                                                                 <div class="mt-1">
-                                                                    <span class="badge bg-danger">Active
-                                                                        Promo</span>
+                                                                    <span class="badge bg-danger">Promo Aktif</span>
                                                                 </div>
                                                             @endif
                                                         </div>
@@ -419,12 +600,12 @@
                                                 </td>
                                                 <td>{{ $product->stock_quantity }}</td>
 
-                                                <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                <td>Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                                 </td>
 
                                                 <td>
                                                     <input type="number" class="form-control limit-stock"
-                                                        placeholder="Limit Stock"
+                                                        placeholder="Batas Stok"
                                                         name="limit_stock[{{ $product->id }}]"
                                                         data-product-id="{{ $product->id }}" min="1"
                                                         max="{{ $product->stock_quantity }}"
@@ -438,9 +619,9 @@
 
                                                 <td>
                                                     @if ($product->has_active_promo)
-                                                        <span class="text-danger">Not Available</span>
+                                                        <span class="text-danger">Tidak Tersedia</span>
                                                     @else
-                                                        <span class="text-success">Available</span>
+                                                        <span class="text-success">Tersedia</span>
                                                     @endif
                                                 </td>
                                             </tr>
@@ -453,13 +634,11 @@
                                         style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
                                         <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
                                     </a>
-                                    <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                        Promo</button>
-                                    <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                        Promo</button>
+                                    <button type="submit" class="btn btn-sm btn-primary me-1">Submit Diskon</button>
                                 </div>
                             </div>
                         </div>
+
                     </form>
                 </section>
             </div>

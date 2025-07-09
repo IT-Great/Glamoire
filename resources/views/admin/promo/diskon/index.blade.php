@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discount - Glamoire</title>
+    <title>Diskon - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -214,38 +214,74 @@
                             <p class="text-subtitle text-muted">Kelola semua data diskon Anda dengan efektif</p>
                         </div>
                     </div>
+
+                    <div class="row align-items-center mb-4">
+                        <div class="col-12 col-md-6">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb mb-0">
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-diskon') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-percent me-1"></i> Diskon
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Semua Diskon</li>
+                                </ol>
+                            </nav>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Stats Cards -->
                 <div class="row mb-4 slide-in">
+                    <!-- Active Promo -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
                         <div class="stats-card stats-card-primary">
                             <div class="stats-icon">
-                                <i class="bi bi-box fs-3"></i>
+                                <i class="bi bi-gift-fill"></i> <!-- Ganti dari envelope ke gift -->
                             </div>
                             <div class="stats-title">Active Promo</div>
                             <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
 
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-gift me-1"></i>
+                                    Promo spesial yang sedang berjalan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Vouchers -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <div class="stats-card stats-card-warning">
+                        <div class="stats-card stats-card-success">
                             <div class="stats-icon">
-                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <i class="bi bi-tag"></i> <!-- Voucher ikon -->
                             </div>
                             <div class="stats-title">Active Vouchers</div>
                             <h3 class="stats-number">{{ $activeVouchers ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Voucher siap digunakan oleh pelanggan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Discount -->
                     <div class="col-12 col-md-4">
-                        <div class="stats-card stats-card-success">
+                        <div class="stats-card stats-card-warning">
                             <div class="stats-icon">
-                                <i class="bi bi-percent"></i>
+                                <i class="bi bi-percent"></i> <!-- Diskon ikon -->
                             </div>
                             <div class="stats-title">Active Discount</div>
                             <h3 class="stats-number">{{ $activeDiscounts ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-tags me-1"></i>
+                                    Diskon menarik untuk produk pilihan
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -288,7 +324,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($promo as $item)
+                                    @foreach ($promodiscount as $item)
                                         <tr id="promo-item-{{ $item->id }}">
                                             <td>
                                                 <div class="d-flex flex-column">
@@ -328,12 +364,13 @@
                                             <td>
                                                 <div class="action-buttons">
                                                     <a href="{{ url('detail-diskon/' . $item->id) }}"
-                                                        class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i> View
+                                                        class="btn btn-sm btn-info d-inline-flex align-items-center">
+                                                        <i class="bi bi-eye me-1"></i> View
                                                     </a>
-                                                    <button class="btn btn-sm btn-danger delete-promo"
+                                                    <button
+                                                        class="btn btn-sm btn-danger delete-promo d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
+                                                        <i class="bi bi-trash me-1"></i> Delete
                                                     </button>
                                                 </div>
                                             </td>
