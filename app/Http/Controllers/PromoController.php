@@ -587,7 +587,7 @@ class PromoController extends Controller
     // PROMO VOUCHER
     public function indexPromoVoucher()
     {
-        $promo = Promo::whereIn('type', ['limited voucher', 'brand voucher', 'product voucher', 'shipping fee voucher', 'new user voucher'])
+        $promovouchers = Promo::whereIn('type', ['limited voucher', 'brand voucher', 'product voucher', 'shipping fee voucher', 'new user voucher'])
             ->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($item) {
@@ -597,28 +597,39 @@ class PromoController extends Controller
                 return $item;
             });
 
-
         $products = Product::all();
         $brands = Brand::all();
 
-        // Hitung total promo yang aktif
-        $activePromos = $promo->filter(function ($item) {
-            return $item->isActive;
-        })->count();
-
-        // Hitung total voucher aktif
-        $activeVouchers = Promo::whereIn('type', [
-            'product voucher',
-            'brand voucher',
+        // voucher
+        $vouchers = Promo::whereIn('type', [
             'limited voucher',
+            'brand voucher',
+            'product voucher',
+            'shipping fee voucher',
             'new user voucher'
-        ])->where('status', 'Active')->count();
+        ])->orderBy('created_at', 'desc')->get();
 
-        // hitung total promo discount
+        $activeVouchers = $vouchers->filter(fn($item) => $item->status == 'Active')->count();
+
+        // promo
+        $promos = Promo::where('type', 'promo')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->isActive = $item->end_date
+                    ? \Carbon\Carbon::parse($item->end_date)->isFuture()
+                    : false;
+                return $item;
+            });
+
+        $activePromos = $promos->filter(fn($item) => $item->isActive)->count();
+
+        // discount
         $activeDiscounts = Promo::where('type', 'discount')->count();
 
         return view('admin.promo.voucher.index', [
-            'promo' => $promo,
+            'promovouchers' => $promovouchers,
+            'vouchers' => $vouchers,
             'products' => $products,
             'brands' => $brands,
             'activePromos' => $activePromos,
@@ -1376,8 +1387,6 @@ class PromoController extends Controller
 
 
 
-
-
     // PROMO ONGKIR   
     public function createPromoVoucherShippingFee()
     {
@@ -1497,7 +1506,7 @@ class PromoController extends Controller
     // PROMO DISKON
     public function indexPromoDiskon()
     {
-        $promo = Promo::where('type', 'discount')->with('tiers')
+        $promodiscount = Promo::where('type', 'discount')->with('tiers')
             ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan waktu pembuatan
             ->get()
             ->map(function ($item) {
@@ -1508,11 +1517,25 @@ class PromoController extends Controller
                 return $item;
             });
 
+
+        // promo
+        $promos = Promo::where('type', 'promo')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->isActive = $item->end_date
+                    ? \Carbon\Carbon::parse($item->end_date)->isFuture()
+                    : false;
+                return $item;
+            });
+
+        $activePromos = $promos->filter(fn($item) => $item->isActive)->count();
+
         $products = Product::all();
         $brands = Brand::all();
 
         // hitung total promo aktif
-        $activePromos = $promo->filter(function ($item) {
+        $activePromos = $promos->filter(function ($item) {
             return $item->isActive;
         })->count();
 
@@ -1529,9 +1552,11 @@ class PromoController extends Controller
 
 
         return view('admin.promo.diskon.index', [
-            'promo' => $promo,
+            'promodiscount' => $promodiscount,
+            'promo' => $promos,
             'products' => $products,
             'brands' => $brands,
+            'activePromos' => $activePromos,
             'activePromos' => $activePromos,
             'activeVouchers' => $activeVouchers,
             'activeDiscounts' => $activeDiscounts,

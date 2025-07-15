@@ -308,6 +308,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-promo') }}"
@@ -395,7 +396,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($promo as $item)
+                                    @foreach ($promovouchers as $item)
                                         <tr id="promo-item-{{ $item->id }}">
                                             <td>
                                                 <div class="d-flex align-items-center gap-3">
@@ -449,10 +450,10 @@
                                                         class="btn btn-sm btn-info d-inline-flex align-items-center">
                                                         <i class="bi bi-eye me-1"></i> View
                                                     </a>
-                                                    <a href="{{ url('edit-promo-voucher/' . $item->id) }}"
+                                                    {{-- <a href="{{ url('edit-promo-voucher/' . $item->id) }}"
                                                         class="btn btn-sm btn-warning d-inline-flex align-items-center">
                                                         <i class="bi bi-pencil me-1"></i> Edit
-                                                    </a>
+                                                    </a> --}}
                                                     <a href="javascript:void(0);"
                                                         class="btn btn-sm btn-danger delete-promo d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">

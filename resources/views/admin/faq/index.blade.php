@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ - Glamoire</title>
+    <title>Tanya Jawab - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -467,135 +467,131 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="container-fluid">
-                    <!-- Judul Halaman -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="page-title">
-                                <h3 class="mb-2">FAQ </h3>
-                                <p>Buat dan atur faq untuk mempermudah pengguna memahami penggunaan aplikasi</p>
+                <!-- Judul Halaman -->
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Tanya Jawab </h3>
+                            <p>Buat dan atur tanya jawab untuk mempermudah pengguna memahami penggunaan aplikasi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-contactus-admin') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-1"></i>Tanya Jawab
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Daftar Tanya Jawab</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="row mb-4 slide-in">
+                    <!-- Total FAQ -->
+                    <div class="col-12 col-md-6 mb-3 mb-md-0">
+                        <div class="stats-card stats-card-primary">
+                            <div class="stats-icon">
+                                <i class="bi bi-question-circle-fill"></i>
+                            </div>
+                            <div class="stats-title">Total Tanya Jawab</div>
+                            <h3 class="stats-number">{{ $totalFaq }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Total pertanyaan yang tersedia
+                                </small>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Navigasi Breadcrumb -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('index-contactus-admin') }}"
-                                            class="d-flex align-items-center">
-                                            <i class="bi bi-envelope me-1"></i>FAQ
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Faq</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                    <div class="row mb-4 slide-in">
-                        <!-- Total FAQ -->
-                        <div class="col-12 col-md-6 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-primary">
-                                <div class="stats-icon">
-                                    <i class="bi bi-question-circle-fill"></i>
-                                </div>
-                                <div class="stats-title">Total FAQ</div>
-                                <h3 class="stats-number">{{ $totalFaq }}</h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Total pertanyaan yang tersedia
-                                    </small>
-                                </div>
+                    <!-- Total Kategori FAQ -->
+                    <div class="col-12 col-md-6">
+                        <div class="stats-card stats-card-warning">
+                            <div class="stats-icon">
+                                <i class="bi bi-tags-fill"></i>
+                            </div>
+                            <div class="stats-title">Total Kategori Tanya Jawab</div>
+                            <h3 class="stats-number">{{ $totalCategory }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-folder me-1"></i>
+                                    Jumlah kategori unik
+                                </small>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Total Kategori FAQ -->
-                        <div class="col-12 col-md-6">
-                            <div class="stats-card stats-card-warning">
-                                <div class="stats-icon">
-                                    <i class="bi bi-tags-fill"></i>
-                                </div>
-                                <div class="stats-title">Total Kategori</div>
-                                <h3 class="stats-number">{{ $totalCategory }}</h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-folder me-1"></i>
-                                        Jumlah kategori unik
-                                    </small>
-                                </div>
+                <!-- Categories Table Section -->
+                <div class="card category-card">
+                    <div class="card-header bg-white">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <h4>Daftar Tanya Jawab</h4>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#faqModal">
+                                    <i class="fa fa-plus"></i> Buat Tanya Jawab
+                                </button>
+
                             </div>
                         </div>
                     </div>
 
-                    <!-- Categories Table Section -->
-                    <div class="card category-card">
-                        <div class="card-header bg-white">
-                            <div class="row">
-                                <div class="col-12 col-md-6">
-                                    <h4>FAQ List</h4>
-                                </div>
-                                <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
-                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#faqModal">
-                                        <i class="fa fa-plus"></i> Buat FAQ
-                                    </button>
-
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover" id="table1">
-                                    <thead>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="table1">
+                                <thead>
+                                    <tr>
+                                        <th>Kategori</th>
+                                        <th>Total Tanya Jawab</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($faqsByCategory as $category => $faqList)
                                         <tr>
-                                            <th>Category</th>
-                                            <th>Total FAQs</th>
-                                            <th>Actions</th>
+                                            <td>
+                                                <div class="category-name">{{ $category }}</div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">{{ $faqList->count() }} Tanya Jawab</span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-primary d-inline-flex align-items-center"
+                                                    data-bs-toggle="collapse"
+                                                    data-bs-target="#faq-{{ Str::slug($category) }}"
+                                                    aria-expanded="false">
+                                                    <i class="bi bi-eye me-1"></i> View
+                                                </button>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($faqsByCategory as $category => $faqList)
-                                            <tr>
-                                                <td>
-                                                    <div class="category-name">{{ $category }}</div>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-info">{{ $faqList->count() }} FAQs</span>
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        class="btn btn-sm btn-primary d-inline-flex align-items-center"
-                                                        data-bs-toggle="collapse"
-                                                        data-bs-target="#faq-{{ Str::slug($category) }}"
-                                                        aria-expanded="false">
-                                                        <i class="bi bi-eye me-1"></i> View
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr class="collapse" id="faq-{{ Str::slug($category) }}">
-                                                <td colspan="3">
-                                                    <ul>
-                                                        @foreach ($faqList as $faq)
-                                                            <li>
-                                                                <strong>{{ $faq->question }}</strong>
-                                                                <p>{{ $faq->answer }}</p>
-                                                                <button class="btn btn-sm btn-danger mb-2"
-                                                                    onclick="deleteFaq({{ $faq->id }})">Delete</button>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                        <tr class="collapse" id="faq-{{ Str::slug($category) }}">
+                                            <td colspan="3">
+                                                <ul>
+                                                    @foreach ($faqList as $faq)
+                                                        <li>
+                                                            <strong>{{ $faq->question }}</strong>
+                                                            <p>{{ $faq->answer }}</p>
+                                                            <button class="btn btn-sm btn-danger mb-2"
+                                                                onclick="deleteFaq({{ $faq->id }})">Delete</button>
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @endforeach
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -608,7 +604,7 @@
                             <div class="modal-content">
                                 <div class="modal-header bg-white">
                                     <h5 class="modal-title">
-                                        <i class="bi bi-plus-square"></i> Add New FAQ
+                                        <i class="bi bi-plus-square"></i> Tambah Tanya Jawab
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
@@ -619,7 +615,7 @@
                                     <div class="modal-body">
                                         <!-- Form FAQ -->
                                         <div class="mb-3">
-                                            <label for="category" class="form-label fw-medium">Category <span
+                                            <label for="category" class="form-label fw-medium">Kategori <span
                                                     style="color: red">*</span></label>
 
                                             <select class="form-select select2 me-2" name="category">
@@ -637,7 +633,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="question" class="form-label fw-medium">Question <span
+                                            <label for="question" class="form-label fw-medium">Pertanyaan <span
                                                     style="color: red">*</span></label>
                                             <input type="text" class="form-control" id="question"
                                                 name="question" required>
@@ -648,7 +644,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="answer" class="form-label fw-medium">Answer <span
+                                            <label for="answer" class="form-label fw-medium">Jawaban <span
                                                     style="color: red">*</span></label>
                                             <textarea class="form-control" id="answer" name="answer" rows="3" required></textarea>
 
@@ -662,8 +658,8 @@
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                                             <i class="bi bi-x-lg"></i> Close
                                         </button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="bi bi-save"></i> Save FAQ
+                                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
+                                            <i class="bi bi-save me-1"></i> Save Tanya Jawab
                                         </button>
                                     </div>
                                 </form>

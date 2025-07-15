@@ -49,7 +49,7 @@ class ArticleController extends Controller
     public function storeArticle(Request $request)
     {
         $request->validate([
-            'title' => 'required',
+            'title' => 'required|max:265',
             'category_article_id' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'content' => 'required',

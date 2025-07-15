@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User - Glamoire</title>
+    <title>Pengguna - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -432,147 +432,153 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">User Management</h3>
-                            <p>Daftar semua pengguna dalam sistem, termasuk informasi peran, status, dan aktivitas
-                                terakhir.
+                            <h3 class="mb-2">Detail Pengguna</h3>
+                            <p>
+                                Halaman ini menampilkan <strong>detail lengkap pengguna</strong> dalam sistem,
+                                berisi informasi data diri, peran, kontak, dan aktivitas pengguna.
                             </p>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Navigasi Breadcrumb -->
                 <div class="row mb-2">
                     <div class="col-12">
                         <nav aria-label="breadcrumb" class="breadcrumb-header">
                             <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('index-user-admin') }}">User</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">User Detail</li>
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-user-admin') }}" class="d-inline-flex align-items-center">
+                                        <i class="bi bi-people-fill me-1"></i> Pengguna
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Detail Pengguna
+                                </li>
                             </ol>
                         </nav>
                     </div>
                 </div>
 
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="card">
-                                <div class="card-body text-center">
-                                    <div class="avatar avatar-xl mb-3">
-                                        <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Avatar"
-                                            class="rounded-circle shadow"
-                                            style="width: 100px; height: 100px; object-fit: cover;">
-                                    </div>
-                                    <h4 class="mb-1">{{ $user->name }}</h4>
-                                    <p class="text-muted mb-2">{{ $user->role }}</p>
-                                    <p class="text-secondary small">{{ $user->email }}</p>
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="avatar avatar-xl mb-3">
+                                    <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="User Avatar"
+                                        class="rounded-circle shadow"
+                                        style="width: 100px; height: 100px; object-fit: cover;">
                                 </div>
+                                <h4 class="mb-1">{{ $user->name }}</h4>
+                                <p class="text-muted mb-2">{{ $user->role }}</p>
+                                <p class="text-secondary small">{{ $user->email }}</p>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="col-lg-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h5 class="mb-0">User Information</h5>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-user me-1"></i> Full Name
-                                                </div>
-                                                <div class="detail-value">
-                                                    <input type="text" name="fullname" id="fullname"
-                                                        class="form-control @error('fullname') is-invalid @enderror"
-                                                        value="{{ old('fullname', $user->fullname) }}"
-                                                        placeholder="Enter full name" disabled>
-                                                    @error('fullname')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                    <div class="col-lg-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">Informasi Pengguna</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-user me-1"></i> Nama
                                             </div>
-
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-envelope me-1"></i> Email
-                                                </div>
-                                                <div class="detail-value">
-                                                    <input type="email" name="email" id="email"
-                                                        class="form-control @error('email') is-invalid @enderror"
-                                                        value="{{ old('email', $user->email) }}"
-                                                        placeholder="Enter email" disabled>
-                                                    @error('email')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
-                                            </div>
-
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-phone me-1"></i> Phone Number
-                                                </div>
-                                                <div class="detail-value">
-                                                    <input type="text" name="handphone" id="handphone"
-                                                        class="form-control @error('handphone') is-invalid @enderror"
-                                                        value="{{ old('handphone', $user->handphone) }}"
-                                                        placeholder="Enter phone number" disabled>
-                                                    @error('handphone')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                                            <div class="detail-value">
+                                                <input type="text" name="fullname" id="fullname"
+                                                    class="form-control @error('fullname') is-invalid @enderror"
+                                                    value="{{ old('fullname', $user->fullname) }}"
+                                                    placeholder="Enter full name" disabled>
+                                                @error('fullname')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-calendar me-1"></i> Birth Date
-                                                </div>
-                                                <div class="detail-value">
-                                                    <input type="text" name="handphone" id="handphone"
-                                                        class="form-control @error('handphone') is-invalid @enderror"
-                                                        value="{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}"
-                                                        placeholder="Enter phone number" disabled>
-
-                                                    @error('date')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-envelope me-1"></i> Email
                                             </div>
-
-
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-venus-mars me-1"></i> Gender
-                                                </div>
-                                                <div class="detail-value">
-                                                    <select name="gender" id="gender"
-                                                        class="form-control @error('gender') is-invalid @enderror"
-                                                        disabled>
-                                                        <option value="">Select Gender</option>
-                                                        <option value="male"
-                                                            {{ old('gender', $user->gender) == 'male' ? 'selected' : '' }}>
-                                                            Male
-                                                        </option>
-                                                        <option value="female"
-                                                            {{ old('gender', $user->gender) == 'female' ? 'selected' : '' }}>
-                                                            Female
-                                                        </option>
-                                                    </select>
-                                                    @error('gender')
-                                                        <div class="invalid-feedback">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                                            <div class="detail-value">
+                                                <input type="email" name="email" id="email"
+                                                    class="form-control @error('email') is-invalid @enderror"
+                                                    value="{{ old('email', $user->email) }}" placeholder="Enter email"
+                                                    disabled>
+                                                @error('email')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
                                             </div>
+                                        </div>
 
-                                            <div class="detail-group">
-                                                <div class="detail-label">
-                                                    <i class="fas fa-user-tag me-1"></i> Role
-                                                </div>
-                                                <div class="detail-value">
-                                                    <input type="text" name="role" id="role"
-                                                        class="form-control" value="{{ $user->role }}" readonly>
-                                                </div>
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-phone me-1"></i> No Telp
+                                            </div>
+                                            <div class="detail-value">
+                                                <input type="text" name="handphone" id="handphone"
+                                                    class="form-control @error('handphone') is-invalid @enderror"
+                                                    value="{{ old('handphone', $user->handphone) }}"
+                                                    placeholder="Enter phone number" disabled>
+                                                @error('handphone')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-calendar me-1"></i> Tanggal Lahir
+                                            </div>
+                                            <div class="detail-value">
+                                                <input type="text" name="handphone" id="handphone"
+                                                    class="form-control @error('handphone') is-invalid @enderror"
+                                                    value="{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}"
+                                                    placeholder="Enter phone number" disabled>
+
+                                                @error('date')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-venus-mars me-1"></i> Jenis Kelamin
+                                            </div>
+                                            <div class="detail-value">
+                                                <select name="gender" id="gender"
+                                                    class="form-control @error('gender') is-invalid @enderror"
+                                                    disabled>
+                                                    <option value="">Select Gender</option>
+                                                    <option value="male"
+                                                        {{ old('gender', $user->gender) == 'male' ? 'selected' : '' }}>
+                                                        Male
+                                                    </option>
+                                                    <option value="female"
+                                                        {{ old('gender', $user->gender) == 'female' ? 'selected' : '' }}>
+                                                        Female
+                                                    </option>
+                                                </select>
+                                                @error('gender')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="fas fa-user-tag me-1"></i> Role
+                                            </div>
+                                            <div class="detail-value">
+                                                <input type="text" name="role" id="role"
+                                                    class="form-control" value="{{ $user->role }}" readonly>
                                             </div>
                                         </div>
                                     </div>

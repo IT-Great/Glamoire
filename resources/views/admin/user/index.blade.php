@@ -4,14 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User - Glamoire</title>
+    <title>Pengguna - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -517,7 +515,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">User</h3>
+                            <h3 class="mb-2">Pengguna</h3>
                             <p>Daftar semua pengguna dalam sistem, termasuk informasi peran, status, dan aktivitas
                                 terakhir.
                             </p>
@@ -530,8 +528,12 @@
                     <div class="col-12">
                         <nav aria-label="breadcrumb" class="breadcrumb-header">
                             <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('index-user-admin') }}">User</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">All User</li>
+                                <li class="breadcrumb-item"> <a href="{{ route('index-user-admin') }}"
+                                        class="d-inline-flex align-items-center">
+                                        <i class="bi bi-people-fill me-1"></i> Pengguna
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Daftar Pengguna</li>
                             </ol>
                         </nav>
                     </div>
@@ -583,7 +585,7 @@
                 <div class="user-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-user-admin') }}"
                         class="user-nav-item {{ Route::currentRouteName() == 'index-user-admin' ? 'active' : '' }}">
-                        <i class="bi bi-people"></i> List User
+                        <i class="bi bi-people"></i> Daftar Pengguna
                     </a>
                     <a href="{{ route('password-user-admin') }}"
                         class="user-nav-item {{ Route::currentRouteName() == 'password-user-admin' ? 'active' : '' }}">
@@ -595,17 +597,17 @@
                 <section class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h4>List All User</h4>
+                            <h4>Daftar semua pengguna</h4>
                         </div>
                         <div class="card-body">
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Full Name</th>
+                                        <th>Nama</th>
                                         <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Registered at</th>
-                                        <th>Action</th>
+                                        <th>No Telp</th>
+                                        <th>Terdaftar Pada</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>

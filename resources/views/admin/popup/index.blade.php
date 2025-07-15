@@ -739,7 +739,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <h4 class="mb-0 d-flex align-items-center">
-                                        <i class="bi bi-image me-2"></i>List Pop Up
+                                        <i class="bi bi-image me-2"></i>Daftar Pop Up
                                     </h4>
                                 </div>
 
@@ -916,6 +916,7 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Cancel</button>
+                                    
                                 <button type="submit" class="btn btn-primary">Submit Pop Up</button>
                             </div>
                         </form>

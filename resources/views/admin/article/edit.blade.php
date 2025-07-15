@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Glamoire</title>
+    <title>Artikel - Glamoire</title>
     <link rel="stylesheet" href="{{ asset('assets/vendors/summernote/summernote-lite.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/toastify/toastify.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/iconly/bold.css') }}">
@@ -88,8 +88,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">Article Management</h3>
-                                <p>Tinjau dan update semua artikel anda</p>
+                                <h3 class="mb-2">Update Artikel</h3>
+                                <p>Tinjau dan update semua artikel anda pada halaman ini</p>
                             </div>
                         </div>
                     </div>
@@ -99,8 +99,9 @@
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item"><a href="{{ route('index-article') }}"
-                                            style="text-decoration: none;">Article</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Article</li>
+                                           class="d-inline-flex align-items-center" style="text-decoration: none;"><i
+                                                class="bi bi-file-richtext me-1"></i>Artikel</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Update Artikel</li>
                                 </ol>
                             </nav>
                         </div>
@@ -133,11 +134,11 @@
                                                             <input type="text" class="form-control" name="title"
                                                                 id="article-title"
                                                                 placeholder="Masukkan judul artikel yang menarik"
-                                                                value="{{ $article->title }}" required>
+                                                                value="{{ $article->title }}" required maxlength="265">
                                                         </div>
-                                                        <small class="text-muted mt-1">
+                                                        <small id="title-helper" class="text-muted mt-1">
                                                             Judul menarik meningkatkan keterlibatan pembaca
-                                                            ({{ strlen($article->title) }}/100 karakter)
+                                                            ({{ strlen($article->title) }}/265 karakter)
                                                         </small>
                                                     </div>
 
@@ -309,7 +310,8 @@
                                                 <a href="{{ route('index-article') }}" class="btn btn-secondary">
                                                     <i class="bi bi-x-lg me-1"></i>Batal
                                                 </a>
-                                                <button type="submit" class="btn btn-primary">
+                                                <button type="submit"
+                                                    class="btn btn-primary d-inline-flex align-items-center">
                                                     <i class="bi bi-save me-1"></i>Perbarui Artikel
                                                 </button>
                                             </div>
@@ -369,18 +371,25 @@
 
             // Character counter for title
             $('#article-title').on('input', function() {
-                const maxLength = 100;
+                const maxLength = 265;
                 const currentLength = $(this).val().length;
-                $('small:contains("characters")').text(
-                    `A compelling title improves reader engagement (${currentLength}/${maxLength} characters)`
+
+                const $helper = $('#title-helper');
+
+                $helper.text(
+                    `Judul menarik meningkatkan keterlibatan pembaca (${currentLength}/${maxLength} karakter)`
                 );
 
-                if (currentLength > maxLength) {
+                if (currentLength >= maxLength) {
                     $(this).addClass('is-invalid');
+                    $helper.removeClass('text-muted').addClass('text-danger');
                 } else {
                     $(this).removeClass('is-invalid');
+                    $helper.removeClass('text-danger').addClass('text-muted');
                 }
             });
+
+
         });
 
         // Image preview functions

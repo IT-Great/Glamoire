@@ -504,12 +504,12 @@
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     @if (!$aboutUs)
                                         <a href="{{ route('create-aboutus-admin') }}" class="btn btn-sm btn-primary">
-                                            <i class="fa fa-plus"></i> Create About Us
+                                            <i class="fa fa-plus"></i> Tambah Tentang Kami
                                         </a>
                                     @else
                                         <a href="{{ route('edit-aboutus-admin', $aboutUs->id) }}"
                                             class="btn btn-sm btn-warning">
-                                            <i class="fa fa-edit"></i> Edit About Us
+                                            <i class="fa fa-edit"></i> Edit Tentang Kami
                                         </a>
                                     @endif
                                 </div>
@@ -521,11 +521,9 @@
                                 <table class="table table-bordered">
                                     {{-- HERO --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-megaphone text-primary"></i>
-                                                Hero Section
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-megaphone text-primary me-2"></i>Hero Section</h5>
                                         </th>
                                     </tr>
 
@@ -552,10 +550,9 @@
 
                                     {{-- INTRO --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-lightbulb text-warning"></i> Intro Section
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-lightbulb text-warning me-2"></i>Intro Section</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -581,10 +578,9 @@
 
                                     {{-- VISION --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-eye text-success"></i> Vision
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-eye text-success me-2"></i>Visi</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -610,10 +606,9 @@
 
                                     {{-- MISSION --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-flag text-danger"></i> Mission
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-flag text-danger me-2"></i>Misi</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -639,10 +634,9 @@
 
                                     {{-- OUR STORY --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-book text-info"></i> Our Story
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-book text-info me-2"></i>Cerita Terkini</h5>
                                         </th>
                                     </tr>
                                     <tr>
@@ -668,10 +662,9 @@
 
                                     {{-- ACHIEVEMENT --}}
                                     <tr>
-                                        <th colspan="2" class="bg-light fs-5">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="bi bi-trophy text-warning"></i> Achievement
-                                            </div>
+                                        <th>
+                                            <h5 class="d-inline-flex align-items-center"> <i
+                                                    class="bi bi-trophy text-warning me-2"></i>Sertifikat/Prestasi</h5>
                                         </th>
                                     </tr>
                                     <tr>
