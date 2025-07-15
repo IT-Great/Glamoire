@@ -18,7 +18,7 @@
                             <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- Fullscreen image -->
                             <div class="container-fluid p-0 m-0">
-                                <img src="{{ Storage::url($data['promoModal']->image) }}" alt="{{ $data['promoModal']->promo_name }}" title="{{ $data['promoModal']->promo_name }}" class="img-fluid w-auto h-100 hover:cursor-pointer" onclick="location.href='{{$data['promoModal']->promo_name}}-detail-promo'">
+                                <img src="{{ Storage::url($data['promoModal']->image) }}" alt="{{ $data['promoModal']->promo_name }}" title="{{ $data['promoModal']->promo_name }}" class="product-img img-fluid w-auto h-100 hover:cursor-pointer" onclick="location.href='{{$data['promoModal']->promo_name}}-detail-promo'">
                             </div>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                             <button type="button" class="btn-close position-absolute top-0 end-0 m-2" data-bs-dismiss="modal" aria-label="Close"></button>
                             <!-- Fullscreen image -->
                             <div class="container-fluid p-0 m-0">
-                                <img src="{{ Storage::url($data['popup']->image_popup) }}" alt="Gambar Subscribe" class="img-fluid w-auto h-100">
+                                <img src="{{ Storage::url($data['popup']->image_popup) }}" alt="Gambar Subscribe" class="product-img img-fluid w-auto h-100">
                                 <div class="d-flex gap-2">
                                     <div class="py-2 flex col-12 align-items-center justify-content-center" style="background-color: #475136">
                                         <div class="col-6 p-0 p-md-2 mb-2 mb-md-0">
@@ -76,7 +76,7 @@
                     <div class="swiper-slide">
                         <div class="container-fluid p-0 mx-md-3">
                             <a href="/{{$promo->promo_name}}-detail-promo">
-                                <img src="{{ Storage::url($promo->image) }}" alt="{{ $promo->promo_name}}" title="{{ $promo->promo_name}}" class="img-fluid">
+                                <img src="{{ Storage::url($promo->image) }}" alt="{{ $promo->promo_name}}" title="{{ $promo->promo_name}}" class="product-img img-fluid">
                             </a>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                             <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
                                 <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                                     <div class="product-image-container">
-                                        <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                        <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                     </div>
 
                                     <div class="grid text-left p-1 p-md-2">
@@ -194,7 +194,7 @@
                     <div class="swiper-slide">
                         <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
                             <div class="product-image-container">
-                                <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                             </div>
 
                             <div class="grid text-left p-1 p-md-2">
@@ -288,7 +288,7 @@
                         <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit ">
                             <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
-                                    <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                                    <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                                 </div>
 
                                 <div class="grid text-left p-1 p-md-2">
@@ -378,7 +378,7 @@
                 <div class="swiper-slide">
                     <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
                         <div class="product-image-container">
-                            <img class="card-img-top product-image {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                            <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                         </div>
 
                         <div class="grid text-left p-1 p-md-2">

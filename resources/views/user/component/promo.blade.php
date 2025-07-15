@@ -144,7 +144,7 @@
                     data-min-transaction="{{ number_format($voucher->min_transaction, 0, ',', '.') }}"
                     data-start-date="{{ \Carbon\Carbon::parse($voucher->start_date)->translatedFormat('d F Y') }}"
                     data-end-date="{{ \Carbon\Carbon::parse($voucher->end_date)->translatedFormat('d F Y') }}">
-                  <img class="card-img-top product-image transform transition-transform duration-300 hover:scale-110" 
+                  <img class="card-img-top transform transition-transform duration-300 hover:scale-110" 
                         src="{{ Storage::url($voucher->image) }}" 
                         alt="{{ $voucher->promo_name }}" 
                         title="{{$voucher->promo_name}}">
@@ -163,8 +163,8 @@
         <div class="modal-dialog modal-sm">
           <div class="modal-content" style="max-height:90vh;">
             <div class="modal-body p-0">
-              <div class="product-image-container">
-                <img id="voucherImage" class="img-fluid card-img-top rounded product-image" src="" alt="Product Image">
+              <div class="">
+                <img id="voucherImage" class="img-fluid card-img-top rounded" src="" alt="Product Image">
               </div>
               <div class="p-2">
                 <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018] font-semibold" id="voucherModalLabel"></p>
@@ -238,11 +238,11 @@
       </div>
       <div class="grid-container-promo px-3">
         @foreach ($brandVouchers as $brand)
-          {{-- <div class="bg-white rounded-sm shadow-md overflow-hidden h-fit"> --}}
+          <div class="bg-white rounded-sm shadow-md overflow-hidden h-fit">
             <div class="product-image-container">
-              <img class="product-image transform transition-transform duration-300 hover:scale-110 hover:cursor-pointer" src="{{ Storage::url($brand->image) }}" alt="{{ $brand->promo_name }}" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">
+              <img class="transform transition-transform duration-300 hover:scale-110 hover:cursor-pointer" src="{{ Storage::url($brand->image) }}" alt="{{ $brand->promo_name }}" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">
             </div>
-            {{-- <div class=" p-2">
+            <div class=" p-2">
               <div class="grid w-full gap-1">
                 <div class="grid">
                   <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018] font-semibold">{{ ucwords($brand->promo_name) }}</p>
@@ -260,10 +260,10 @@
                 <button class="ml-auto  hover:cursor-pointer bg-[#183018] text-white py-1 px-2 rounded-sm text-[7px] md:text-[9px] lg:text-[9px] xl:text-[11px]" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">
                   Lihat Detail Produk
                 </button>
-              </div> --}}
+              </div>
 
-            {{-- </div> --}}
-          {{-- </div> --}}
+            </div>
+          </div>
 
           <!-- Modal untuk setiap produk -->
           <div class="modal fade" id="detail-brand-voucher-{{$brand->id}}" tabindex="-1" aria-labelledby="detail-product-voucher-{{$brand->id}}" aria-hidden="true">
@@ -277,7 +277,7 @@
                 <div class="modal-body grid md:flex border-top border-1 p-2 overflow-y-auto custom-scroll">
                   <div class="col-12 col-md-4 p-0">
                     <div class="product-image-container">
-                      <img class="product-image" src="{{ Storage::url($brand->image) }}" alt="{{ $brand->promo_name }}" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">
+                      <img src="{{ Storage::url($brand->image) }}" alt="{{ $brand->promo_name }}" data-bs-toggle="modal" data-bs-target="#detail-brand-voucher-{{$brand->id}}">
                     </div>
                     <div class="grid w-full gap-1">
                       <div class="grid">
@@ -310,7 +310,7 @@
                         <div onclick="window.location.href = '/{{ $item->product_code }}_product'" class="bg-white rounded-sm custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <a href="/{{ $item->product_code }}_product" class="text-decoration-none">
                                 <div class="product-image-container">
-                                    <img class="card-img-top product-image {{ $item->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
+                                    <img class="card-img-top product-image-home {{ $item->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($item->main_image) }}" alt="{{ $item->product_name }}">
                                 </div>
   
                                 <div class="grid text-left p-1 p-md-2">
@@ -880,28 +880,6 @@
         modal.querySelector('#voucherStartDate').textContent = startDate;
         modal.querySelector('#voucherEndDate').textContent = endDate;
     });
-  });
-
-  var swiperCorousel = new Swiper(".mySwiperCarousel", {
-    spaceBetween: 30,
-    centeredSlides: true,
-    autoplay: {
-      delay: 2000,
-      disableOnInteraction: false,
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    breakpoint: {
-      320: {
-        navigation: false,
-      }
-    }
   });
 </script>
 @endsection

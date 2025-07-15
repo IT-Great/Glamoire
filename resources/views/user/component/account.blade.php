@@ -1208,13 +1208,13 @@
                         <div class="col-12">
                             <div class="row">
                                 @foreach ($wishlists as $wp)
-                                    <div class="col-lg-3 col-md-4 col-6 p-1">
+                                    <div class="col-lg-3 col-md-3 col-6 p-1">
                                         <div
                                             class="bg-white rounded-lg shadow-sm overflow-hidden border border-xl h-fit">
                                             <a href="/{{ $wp->product_code }}_product"
                                                 class="text-decoration-none">
-                                                <div class="position-relative overflow-hidden bg-transparent p-0">
-                                                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
+                                                <div class="product-image-container position-relative overflow-hidden bg-transparent p-0">
+                                                    <img class="product-image-home w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
                                                         src="{{ Storage::url($wp->main_image) }}"
                                                         alt="{{ $wp->product_name }}">
                                                 </div>

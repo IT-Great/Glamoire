@@ -315,7 +315,7 @@
                                                                 @endif
                                                                 @if ($ratingAndReviews->images !== null)
                                                                     @foreach (json_decode($ratingAndReviews->images, true) as $index => $image)
-                                                                        {{-- <div class="col-4 pr-1 pl-0"> --}}
+                                                                        {{-- <div class="col-2 pr-1 pl-0"> --}}
                                                                             <img class="image-rating-review hover:cursor-pointer rounded-xl mr-2" src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
                                                                         {{-- </div> --}}
                                                                     @endforeach
@@ -410,7 +410,7 @@
                             <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
                                 <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                     <div class="product-image-container">
-                                        <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
+                                        <img class="card-img-top product-image-home {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                     </div>
 
                                     <div class="grid text-left p-1 p-md-2">
@@ -502,7 +502,7 @@
                             <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
                                 <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
                                     <div class="product-image-container">
-                                        <img class="card-img-top product-image {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
+                                        <img class="card-img-top product-image-home {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                     </div>
 
                                     <div class="grid text-left p-1 p-md-2">
