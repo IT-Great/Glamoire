@@ -263,6 +263,7 @@ class UserController extends Controller
         try {
             $userId = session('id_user');
 
+            // USER LOGIN
             if (session('id_user')) {
                 $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -330,7 +331,37 @@ class UserController extends Controller
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
-            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+            // GUEST
+            else {
+                $productId = $request->product_id;
+                $quantity = $request->quantity;
+
+                $guestCart = session()->get('guest_cart', []);
+
+                // Cek apakah produk sudah ada di cart
+                $index = collect($guestCart)->search(function ($item) use ($productId) {
+                    return $item['product_id'] == $productId;
+                });
+
+                if ($index !== false) {
+                    // Produk sudah ada → update jumlah
+                    $guestCart[$index]['quantity'] += $quantity;
+                } else {
+                    // Produk belum ada → tambah baru
+                    $guestCart[] = [
+                        'product_id' => $productId,
+                        'product_variant_id' => null,
+                        'quantity' => $quantity,
+                    ];
+                }
+
+                // Simpan kembali ke session
+                session()->put('guest_cart', $guestCart);
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }   
+
+
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }

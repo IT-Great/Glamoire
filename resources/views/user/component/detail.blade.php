@@ -678,15 +678,16 @@
                 }
             },
             error: function (response) {
+                const message = response.responseJSON?.message || 'Terjadi kesalahan tak terduga';
                 Toast.fire({
                     icon: "error",
-                    text: "Kesalahan Sistem",
-                    
+                    text: message,
+
                     willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff';
+                        if (content) content.style.color = '#ffffff';
                     }
                 });
             },
