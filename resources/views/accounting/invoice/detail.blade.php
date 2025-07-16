@@ -256,9 +256,6 @@
                             <h2 class="mb-3">Detail Invoice</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
-                                            class="d-flex align-items-center"><i
-                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="{{ route('index-invoice') }}"
                                             class="d-flex align-items-center"><i
                                                 class="bi bi-credit-card me-2"></i>Invoice</a></li>
@@ -558,10 +555,12 @@
                                                 class="btn btn-warning d-flex align-items-center">
                                                 <i class="bi bi-pencil me-1"></i> Edit Invoice
                                             </a>
-                                            <a href="#" class="btn btn-primary d-flex align-items-center" onclick="window.print()">
+                                            <a href="#" class="btn btn-primary d-flex align-items-center"
+                                                onclick="window.print()">
                                                 <i class="bi bi-printer me-1"></i> Print
                                             </a>
-                                            <a href="{{ route('index-invoice') }}" class="btn btn-secondary d-flex align-items-center">
+                                            <a href="{{ route('index-invoice') }}"
+                                                class="btn btn-secondary d-flex align-items-center">
                                                 <i class="bi bi-arrow-left me-1"></i> Back to List
                                             </a>
                                         </div>

@@ -510,9 +510,6 @@
                             <h2 class="mb-3">Tambahkan Supplier Baru</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
-                                            class="d-flex align-items-center"><i
-                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="{{ route('index-supplier') }}"
                                             class="d-flex align-items-center"><i
                                                 class="bi bi-person-lines-fill me-2"></i>Supplier</a></li>

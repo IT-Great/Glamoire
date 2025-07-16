@@ -29,7 +29,7 @@ class ResetPasswordMail extends Mailable
             ->with([
                 'token' => $this->token,
                 'userName' => $this->userName,
-                'resetUrl' => route('password.reset', $this->token)
+                'resetUrl' => route('password.reset.admin', ['token' => $this->token])
             ]);
     }
 }

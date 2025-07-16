@@ -200,7 +200,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4 nav-notifications">
                         <!-- Stock Notifications -->
-                        <li class="nav-item dropdown position-relative dropdown-notifications">
+                        {{-- <li class="nav-item dropdown position-relative dropdown-notifications">
                             <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <i class="bi bi-box-seam"></i>
@@ -234,10 +234,10 @@
                                     </div>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
 
                         <!-- Contact Us Notifications -->
-                        <li class="nav-item dropdown position-relative dropdown-notifications">
+                        {{-- <li class="nav-item dropdown position-relative dropdown-notifications">
                             <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown"
                                 aria-expanded="false">
                                 <i class="bi bi-envelope"></i>
@@ -260,7 +260,7 @@
                                     </div>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                     </ul>
 
                     <!-- User Profile Dropdown -->
