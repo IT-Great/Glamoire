@@ -166,7 +166,7 @@
                 <input 
                     class="form-control rounded-xl text-gray-800 bg-white border border-gray-300 rounded-start-md py-2 px-3 text-[11px] xl:text-[12px] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" 
                     type="text" 
-                    id="search-product" 
+                    id="search-product-mobile" 
                     name="product_search" 
                     placeholder="🔍 Cari Produk">
 

@@ -1,7 +1,7 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
+<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2"  style="min-height:60vh;">
 
   <div class="container-fluid px-0 px-md-3">
     @foreach ($promo as $promo)
@@ -38,8 +38,8 @@
         @if (session('id_user'))
           @foreach ($promo->products as $product)
             <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-              <div class="position-relative overflow-hidden bg-transparent p-0">
-                  <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+              <div class="product-image-container">
+                  <img class="product-image-home w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
               </div>
               <div class="grid text-left p-1 p-md-2">
                   <div class="flex gap-1">
@@ -109,7 +109,9 @@
         @else
           @foreach ($promo->products as $product)
             <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-              <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+              <div class="product-image-container">
+                <img class="product-image-home" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+              </div>
 
               <div class="grid text-left p-1 p-md-2">
                 <div class="flex gap-1">

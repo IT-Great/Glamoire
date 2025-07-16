@@ -882,63 +882,59 @@
             },
         });
 
-        var swiperCorousel = new Swiper(".mySwiperCarousel", {
-            spaceBetween: 30,
-            centeredSlides: true,
-            autoplay: {
-                delay: 2000,
-                disableOnInteraction: false,
-            },
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            breakpoint: {
-                320: {
-                    navigation: false,
-                }
-            }
-        });
-
-        var swiperReview = new Swiper(".mySwiperReview", {
-            slidesPerView: 2,
-            spaceBetween: 5,
-            cssMode: true,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-        });
-
-        var swiperDetail = new Swiper(".mySwiperProduct", {
-            loop: true,
-            spaceBetween: 10,
-            slidesPerView: 4,
-            freeMode: true,
-            watchSlidesProgress: true,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-
-        });
-
-        // UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT
-        var swiperShow = new Swiper('.mySwiperShow', {
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            loop: true,
-        });
+      var swiperCorousel = new Swiper(".mySwiperCarousel", {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        centeredSlides: true,
+        autoplay: {
+          delay: 2000,
+          disableOnInteraction: false,
+        },
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+      
+      var swiperReview = new Swiper(".mySwiperReview", {
+        slidesPerView: 2,
+        spaceBetween: 5,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+      });
+      
+      var swiperDetail = new Swiper(".mySwiperProduct", {
+        loop: true,
+        spaceBetween: 10,
+        slidesPerView: 4,
+        freeMode: true,
+        watchSlidesProgress: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        
+      });
+      
+      // UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT
+      var swiperShow = new Swiper('.mySwiperShow', {
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        loop: true,
+      });
 
         var swiperNewest = new Swiper(".mySwiperNewest", {
             slidesPerView: 5,
@@ -985,50 +981,140 @@
             },
         });
 
-        var swiperTop = new Swiper(".mySwiperTop", {
-            slidesPerView: 5,
-            spaceBetween: 15,
-            cssMode: true,
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-            breakpoints: {
-                2560: {
-                    slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 10, // Menyusun jarak antar slide
-                },
-                1440: {
-                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 10, // Menyusun jarak antar slide
-                },
-                1024: {
-                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 10, // Menyusun jarak antar slide
-                },
-                // Tablet
-                768: {
-                    slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 5, // Menyusun jarak antar slide
-                },
-                425: {
-                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 5, // Menyusun jarak antar slide
-                    navigation: false,
-                },
-                375: {
-                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-                    spaceBetween: 5, // Menyusun jarak antar slide
-                    navigation: false,
-                },
-                // Mobile
-                320: {
-                    slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
-                    spaceBetween: 5, // Menyusun jarak antar slide
-                    navigation: false,
-                },
-            },
-        });
+      var swiperTop = new Swiper(".mySwiperTop", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
+        },
+      });
+      
+      var swiperVoucher = new Swiper(".mySwiperVoucher", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
+        },
+      });
+      
+      var swiperPromo = new Swiper(".mySwiperPromo", {
+        slidesPerView: 5,
+        spaceBetween: 15,
+        cssMode: true,
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        breakpoints: {
+          2560: {
+            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1440: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          1024: {
+            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 10, // Menyusun jarak antar slide
+          },
+          // Tablet
+          768: {
+            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+          },
+          425: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          375: {
+            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+            spaceBetween: 5, // Menyusun jarak antar slide
+            navigation: false,
+          },
+          // Mobile
+          320: {
+            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+            spaceBetween: 5,  // Menyusun jarak antar slide
+            navigation: false,
+          },
+        },
+      });
     </script>
 
     <!-- UNTUK MENGATUR RANGE DI FILTER SHOP -->

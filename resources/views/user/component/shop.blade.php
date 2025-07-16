@@ -21,11 +21,11 @@
       <div class="col-lg-2 pr-md-0 col-md-3 d-none d-md-block">
         <!-- Filter Start -->
         <div class="border border-black shadow-md rounded-sm md:mb-0 lg:mb-0 xl:mb-0 py-1 px-3">
-          <h5 class="font-weight-semi-bold text-[#183018] my-2">Filter</h5>
+          <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Filter</h5>
           <form action="{{ route('shop.category', ['category' => $category]) }}" method="GET" id="form-filter-category">
             <!-- Categories Start -->
             <div class="border-bottom pb-2">
-              <h5 class="font-weight-semi-bold text-[#183018] mb-1">{{ ucwords(strtolower($category)) }}</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] mb-1 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">{{ ucwords(strtolower($category)) }}</h5>
               @foreach ($subCategories as $subCategory)
                 <a href="{{ route('shop.category.sub', ['category' => $category, 'subcategory' => $subCategory->name]) }}" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px] d-flex align-items-center justify-content-between">
                   {{ $subCategory->name }}
@@ -37,12 +37,12 @@
 
             <!-- Brands Start -->
               <div class="border-bottom mb-4">
-                <h5 class="font-weight-semi-bold text-[#183018] my-4">Brand</h5>
+                <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Brand</h5>
                 <div class="max-h-[150px] overflow-y-auto custom-scroll">
  
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="brand" id="allbrand" value="allbrand" {{ $brandName === null ||  $brandName === 'allbrand' ? 'checked' : '' }}>
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="allbrand">
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="allbrand">
                     Semua Brand
                   </label>
                 </div>
@@ -55,7 +55,7 @@
                     value="{{ $brand->name}}" 
                     {{ $brandName == $brand->name ? 'checked' : '' }}>
 
-                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]" for="{{ $brand->name}}-{{$brand->id}}">
+                    <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="{{ $brand->name}}-{{$brand->id}}">
                       {{ $brand->name}}
                     </label>
                   </div>
@@ -68,21 +68,21 @@
             
              <!-- Price Start -->
             <div class="border-bottom mb-4 pb-4">
-              <h5 class="font-weight-semi-bold text-[#183018] my-4">Kisaran Harga</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kisaran Harga</h5>
               <div>
                 <div class="price-range-container">
                   <div>
-                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Terendah: </label><br>
+                    <label for="min-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Harga Terendah: </label><br>
                     <input class="w-full" type="range" id="min-price" name="min_price" min="0" max="500000" step="10000" 
                       value="{{ $minPrice !== null ? $minPrice : 0 }}" 
                       oninput="updatePriceRange()"/>
-                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
+                    <span id="min-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ $minPrice !== null ?  number_format($minPrice, 0, ',', '.') : 0 }}</span>
                   </div>
   
                   <div>
-                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Harga Tertinggi: </label><br>
+                    <label for="max-price" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Harga Tertinggi: </label><br>
                     <input class="w-full" type="range" id="max-price" name="max_price" min="100000" max="1000000" step="50000" value="{{ $minPrice !== null ? $maxPrice : 1000000 }}" oninput="updatePriceRange()"/>
-                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[14px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
+                    <span id="max-price-value" class="text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]">Rp{{ $minPrice !== null ?  number_format($maxPrice, 0, ',', '.') : '1.000.000' }}</span>
                   </div>
   
                 </div>
@@ -92,11 +92,11 @@
   
             <!-- Rating Start -->
             <div class="border-bottom mb-2 mb-md-3">
-              <h5 class="font-weight-semi-bold text-[#183018] my-2">Rating</h5>
+              <h5 class="font-weight-semi-bold text-[#183018] my-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Rating</h5>
               <div class="mb-4">
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="rating" id="allRating" value="all" {{ $rating === null ||  $rating === 'all' ? 'checked' : '' }}>
-                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" for="allRating">All Rating</label>
+                  <label class="form-check-label text-[10px] md:text-[10px] lg:text-[10px] xl:text-[12px]" for="allRating">All Rating</label>
                 </div>
                 <div class="form-check ml-2">
                   <input class="form-check-input" type="checkbox" name="rating" id="rating5" value="5" {{ $rating == 5 ? 'checked' : '' }}>
@@ -168,7 +168,7 @@
                   <div class="dropdown ml-auto"> <!-- Menambahkan inline style -->
                     <input type="hidden" name="sort" id="sort" value="">
 
-                    <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                    <button class="btn rounded-sm border text-black dropdown-toggle text-[10px] md:text-[12px] lg:text-[13px] xl:text-[15px]" 
                       type="button" id="triggerId" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {{ $sort !== null ? $sort : 'Urut Berdasarkan' }}
                     </button>
@@ -209,7 +209,7 @@
                               <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                                 <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
                                     <div class="product-image-container">
-                                        <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
+                                        <img class="product-image-home w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}">
                                     </div>
                                     <div class="grid text-left p-1 p-md-2">
                                         <div class="flex gap-1">
@@ -309,7 +309,7 @@
                         @foreach ($products as $product)
                           <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
                             <div class="product-image-container">
-                              <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+                              <img class="product-image-home" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
                             </div>
 
                             <div class="grid text-left p-1 p-md-2">
