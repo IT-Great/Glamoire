@@ -127,24 +127,35 @@ class ContactusController extends Controller
     }
 
 
-    public function getUnreadQuestionsCount()
+    public function getUnreadQuestionsCount(Request $request)
     {
         try {
-            // Hitung pesan yang belum direspon
             $unreadQuestions = Question::whereNull('response')
                 ->whereNull('responded_at')
                 ->count();
 
-            return response()->json([
-                'success' => true,
-                'unreadQuestions' => $unreadQuestions
-            ]);
+            // Kalau browser minta HTML, jangan kirim JSON
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'unreadQuestions' => $unreadQuestions
+                ]);
+            } else {
+                return response("Unread questions: $unreadQuestions", 200)
+                    ->header('Content-Type', 'text/plain');
+            }
         } catch (\Exception $e) {
             Log::error('Error in getUnreadQuestionsCount: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'error' => 'Failed to fetch unread count'
-            ], 500);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Failed to fetch unread count'
+                ], 500);
+            } else {
+                return response("Error: Failed to fetch unread count", 500)
+                    ->header('Content-Type', 'text/plain');
+            }
         }
     }
 }

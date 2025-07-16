@@ -612,9 +612,9 @@
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->role }}</td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-sm"
+                                                <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center"
                                                     onclick="openChangePasswordModal('{{ $user->id }}', '{{ addslashes($user->fullname) }}', '{{ addslashes($user->email) }}')">
-                                                    <i class="bi bi-key"></i> Change Password
+                                                    <i class="bi bi-key me-1"></i> Change Password
                                                 </button>
                                             </td>
                                         </tr>

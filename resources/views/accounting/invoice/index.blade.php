@@ -530,7 +530,7 @@
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
                                         <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
-                                            <i class="bi bi-grid-fill me-2"></i>Dashboard
+                                            <i class="bi bi-receipt me-2"></i>Invoice
                                         </a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">
@@ -600,11 +600,11 @@
                     <div class="finance-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                         <a href="{{ route('index-invoice') }}"
                             class="finance-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                            <i class="bi bi-receipt"></i>Manajemen Invoice
+                            <i class="bi bi-receipt"></i>Daftar Invoice
                         </a>
                         <a href="{{ route('index-supplier') }}"
                             class="finance-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                            <i class="bi bi-truck"></i>Manajemen Supplier
+                            <i class="bi bi-truck"></i>Daftar Supplier
                         </a>
                     </div>
 
@@ -614,7 +614,7 @@
                             <div class="row align-items-center">
                                 <div class="col-12 col-md-6">
                                     <h4 class="d-inline-flex align-items-center">
-                                        <i class="bi bi-receipt-cutoff me-2"></i> Invoice List
+                                        <i class="bi bi-receipt-cutoff me-2"></i>Daftar Invoice
                                     </h4>
                                 </div>
                                 <div
