@@ -58,22 +58,20 @@ class ProductController extends Controller
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('sale', 'desc')
-                ->take(10)
-                ->get();
-                
+                    ->orderBy('sale', 'desc')
+                    ->take(10)
+                    ->get();
+
                 foreach ($topsell as $prod) {
                     $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
 
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
-                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                    }
-                    elseif($variationPrices->count() == 0){
+                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    } elseif ($variationPrices->count() == 0) {
                         $prod->priceVariation = null;
-                    } 
-                    else {
+                    } else {
                         // Jika semua harga variasi sama, cukup tampilkan satu harga
                         $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                     }
@@ -85,20 +83,18 @@ class ProductController extends Controller
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('created_at', 'desc')->take(10)->get();
+                    ->orderBy('created_at', 'desc')->take(10)->get();
 
                 foreach ($new as $prodnew) {
                     $variationPrices = $prodnew->productVariations->pluck('variant_price')->unique()->sort();
 
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
-                        $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                    }
-                    elseif($variationPrices->count() == 0){
+                        $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    } elseif ($variationPrices->count() == 0) {
                         $prodnew->priceVariation = null;
-                    } 
-                    else {
+                    } else {
                         // Jika semua harga variasi sama, cukup tampilkan satu harga
                         $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                     }
@@ -131,16 +127,16 @@ class ProductController extends Controller
             } else {
                 $product = Product::with(['productVariations'])->get();
                 $popupVoucherNewUser = Popup::where('is_active', true)
-                ->where('name', 'LIKE', '%pengguna baru%')
-                ->first();
+                    ->where('name', 'LIKE', '%pengguna baru%')
+                    ->first();
 
                 foreach ($product as $product) {
                     $variationPrices = $product->productVariations->pluck('variant_price')->unique()->sort();
 
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
-                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                        $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
                     } else {
                         // Jika semua harga variasi sama, cukup tampilkan satu harga
                         $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
@@ -148,27 +144,25 @@ class ProductController extends Controller
                 }
 
                 // dd($product);
-                
+
                 $topsell = Product::with(['promos' => function ($query) {
                     $query->select('promos.*', 'promo_products.discounted_price')
                         ->wherePivot('discounted_price', '>', 0)
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('sale', 'desc')->take(10)->get();
+                    ->orderBy('sale', 'desc')->take(10)->get();
 
                 foreach ($topsell as $prod) {
                     $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
 
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
-                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                    }
-                    elseif($variationPrices->count() == 0){
+                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    } elseif ($variationPrices->count() == 0) {
                         $prod->priceVariation = null;
-                    } 
-                    else {
+                    } else {
                         // Jika semua harga variasi sama, cukup tampilkan satu harga
                         $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                     }
@@ -180,25 +174,23 @@ class ProductController extends Controller
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
-                ->orderBy('created_at', 'desc')->take(10)->get();
+                    ->orderBy('created_at', 'desc')->take(10)->get();
 
                 foreach ($new as $prodnew) {
                     $variationPrices = $prodnew->productVariations->pluck('variant_price')->unique()->sort();
 
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
-                        $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                                . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                    }
-                    elseif($variationPrices->count() == 0){
+                        $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    } elseif ($variationPrices->count() == 0) {
                         $prodnew->priceVariation = null;
-                    } 
-                    else {
+                    } else {
                         // Jika semua harga variasi sama, cukup tampilkan satu harga
                         $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                     }
                 }
-                
+
                 $date = now()->format('Y-m-d');
                 $promos = Promo::where('type', '=', 'promo')
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
@@ -223,7 +215,7 @@ class ProductController extends Controller
 
 
         } catch (Exception $err) {
-           return view('eror-403'); 
+            return view('eror-403');
         }
     }
 
@@ -232,10 +224,10 @@ class ProductController extends Controller
         try {
             $product = Product::where('product_code', $code)
                 ->with(['ratingAndReviews.user', 'promos'  => function ($query) {
-                $query->select('promos.*', 'promo_products.discounted_price')
-                    ->wherePivot('discounted_price', '>', 0)
-                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
                 }])
                 ->withCount('ratingAndReviews')   // Count the total number of reviews
                 ->withAvg('ratingAndReviews', 'rating')
@@ -249,32 +241,30 @@ class ProductController extends Controller
             $subCategories = CategoryProduct::where('parent_id', $getParent)->pluck('id')->toArray();
 
             $youlike = Product::whereIn('category_product_id', $subCategories)
-            ->with(['promos'  => function ($query) {
-            $query->select('promos.*', 'promo_products.discounted_price')
-                ->wherePivot('discounted_price', '>', 0)
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
-            }])
-            ->orderBy('sale', 'desc')->get();
+                ->with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->wherePivot('discounted_price', '>', 0)
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                }])
+                ->orderBy('sale', 'desc')->get();
             foreach ($youlike as $prod) {
                 $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                    . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                }
-                elseif($variationPrices->count() == 0){
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
                     $prod->priceVariation = null;
-                } 
-                else {
+                } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
                     $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
             // dd($youlike);
-            
+
             $product->images = json_decode($product->images, true);
             $product->dimensions = json_decode($product->dimensions, true);
 
@@ -314,7 +304,7 @@ class ProductController extends Controller
                 if ($userId) {
                     $wishlists = Wishlist::where('user_id', $userId)->get();
                     $cartId = Cart::where('user_id', $userId)->value('id');
-                    
+
                     $query = Product::where('product_code', $code)
                         ->with('ratingAndReviews.user')
                         ->withCount('ratingAndReviews')
@@ -471,19 +461,17 @@ class ProductController extends Controller
 
             if ($variationPrices->count() > 1) {
                 // Jika ada lebih dari satu harga unik, buat rentang harga
-                $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-            }
-            elseif($variationPrices->count() == 0){
+                $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                    . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+            } elseif ($variationPrices->count() == 0) {
                 $product->priceVariation = null;
-            } 
-            else {
+            } else {
                 // Jika semua harga variasi sama, cukup tampilkan satu harga
                 $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
             }
         }
 
-        
+
         $userId = session('id_user');
 
         if ($userId) {
@@ -587,9 +575,9 @@ class ProductController extends Controller
                 Mail::to($email_target)->send(new sendMailNotifyMe($data));
                 NotifyMe::where('product_id', $id)
                     ->where('email', $email_target)->update([
-                    'status' => 1,
-                    'send_at' => now(),
-                ]);
+                        'status' => 1,
+                        'send_at' => now(),
+                    ]);
             }
 
             return response()->json([
@@ -1516,6 +1504,7 @@ class ProductController extends Controller
             'message' => 'Product deleted successfully.'
         ]);
     }
+
 
 
 
