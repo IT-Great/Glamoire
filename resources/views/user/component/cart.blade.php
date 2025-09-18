@@ -11,391 +11,289 @@
             </div>
         </div>
     </div>
-
-    @php
-        $totalGuest = collect(session('guest_cart'))->sum('total');
-        // dd(session());
-    @endphp
+    
     <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
-        @if (session('id_user'))
-            @if (count($data) !== 0)
-                <div class="col-lg-9 grid gap-2 px-0 px-md-3">
-                    <div class="container border border-[#183018] rounded shadow-md">
-                        <div class="flex justify-between items-center py-2 py-md-3 border-bottom border-[#183018]">
-                            <!-- Pilih Semua -->
-                            <div class="form-check">
-                                <input 
-                                    class="form-check-input" 
-                                    type="checkbox" 
-                                    value="" 
-                                    id="select-all" 
-                                    onclick="toggleCheckboxes(this)" 
-                                    onchange="toggleSelectAll()"
-                                >
-                                <label 
-                                    class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" 
-                                    for="select-all"
-                                >
-                                    Pilih Semua
-                                </label>
-                            </div>
-                        
-                            <!-- Hapus Semua -->
-                            <button 
-                                class="btn btn-delete" 
-                                name="delete-all-product-cart" 
-                                title="Hapus semua produk terpilih dari keranjang" 
-                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                            > 
-                                <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                            </button>
-                        </div>
-                        
-            
-                        @foreach ($data as $product)
-
-                            {{-- TAMPILKAN PRODUCT VARIAN --}}
-                            @if($product->product_variant_id !== NULL)
-                                <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->productVariant->variant_stock == 0 ? 'bg-secondary' : ''}}">
-                                    <div class="d-flex">
-                                        <div class="col-lg-2 col-md-4 col-4 pl-1">
-                                            @if ($product->productVariant->variant_stock > 0)
-                                            <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{$product->product_variant_id}}" data-type="variant"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
-                                            @else
-                                            @endif
-                                            @if ($product->productVariant->variant_image == NULL)
-                                            <img src="{{ Storage::url($product->product->main_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                            @else
-                                            <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                            @endif
-                                        </div>
-                                        <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                            @if ($product->productVariant->variant_stock == 0)
-                                            <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
-                                                Stok Habis
-                                            </p>
-                                            @endif
-                                            <p class="text-dark hover:cursor-pointer text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
-                                            <a class="w-fit text-decoration-none bg-[#183018] text-white p-1 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-center">
-                                                {{ $product->productVariant->variant_value }}
-                                            </a>
-                                            
-                                            @php
-                                                $activePromo = $product->product->promos->first();
-                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                            @endphp
-
-                                                    <div class="flex gap-1">
-
-                                                        <p
-                                                            class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                            Rp{{ number_format($product->productVariant->variant_price, 0, ',', '.') }}
-                                                        </p>
-
-                                                    </div>
-
-                                                    <div class="flex gap-1">
-
-                                                        <p
-                                                            class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                            {!! $product->all_discount_tiers !!}
-                                                        </p>
-
-                                                    </div>
-
-                                                    <!-- BUTTON PLUS & MINUS & DELETE -->
-                                                    <div class="flex mt-auto bottom">
-                                                        <div class="flex ml-auto">
-                                                            <button class="btn btn-delete" name="delete-product-cart"
-                                                                title="Hapus produk dari keranjang"
-                                                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                data-type="product"
-                                                                data-id="{{ $product->product_variant_id }}">
-                                                                <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                                                            </button>
-
-                                                            @if ($product->productVariant->variant_stock == 0)
-                                                                <button
-                                                                    class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-xl"
-                                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                    title="Beritahu Saya Jika Stok Sudah Ada" type="button"
-                                                                    id="notify-me-{{ $product->productVariant->id }}"
-                                                                    onclick="notifyMe({{ $product->productVariant->id }})">
-                                                                    Beritahu Saya
-                                                                </button>
-                                                            @else
-                                                                <div class="input-group quantity-detail-produk-variant rounded-xl shadow-sm"
-                                                                    style="width: 120px;">
-                                                                    <div class="input-group-btn">
-                                                                        <button class="btn btn-minus-variant"
-                                                                            data-id="{{ $product->product_variant_id }}"
-                                                                            data-quantity="{{ $product->productVariant->variant_stock }}"
-                                                                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                            id="minus-btn-product-cart-variant-{{ $product->product_variant_id }}">
-                                                                            <i class="fa fa-minus text-xs"></i>
-                                                                        </button>
-                                                                    </div>
-
-                                                                    <input type="number"
-                                                                        id="product-quantity-{{ $product->product_variant_id }}"
-                                                                        value="{{ $product->quantity }}"
-                                                                        name="total_product_variant"
-                                                                        class="text-xs form-control bg-secondary text-center no-spinner"
-                                                                        min="1"
-                                                                        max="{{ $product->productVariant->variant_stock }}"
-                                                                        oninput="validateInput(this, {{ $product->productVariant->variant_stock }})">
-
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-plus-variant" data-id="{{$product->product_variant_id}}" data-quantity="{{$product->productVariant->variant_stock}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart-variant-{{$product->product_variant_id}}">
-                                                                <i class="fa fa-plus text-xs"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {{-- TAMPILKAN PRODUCT SAJA --}}
-                            @else
-                                <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
-                                    <div class="d-flex">
-                                        <div class="col-lg-2 col-md-4 col-4 pl-1">
-                                            @if ($product->product->stock_quantity > 0)
-                                            <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{ $product->product_id }}" data-type="product"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
-                                            @else
-                                            @endif
-                                            <img src="{{ Storage::url($product->product->main_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                        </div>
-                                        <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                            @if ($product->product->stock_quantity == 0)
-                                            <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
-                                                Stok Habis
-                                            </p>
-                                            @endif
-                                            <p class="hover:cursor-pointer text-[12px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
-                                            @php
-                                                $activePromo = $product->product->promos->first(); // Mengambil promo pertama yang aktif
-                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                            
-                                                // Mengambil produk terkait dari promo tier
-                                                $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
-                                            @endphp
-                                        
-                                            <div class="flex gap-1">
-                                                @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
-                                                <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">
-                                                    <del>
-                                                    Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
-                                                    </del>
-                                                </p>
-                                                <p class="text-decoration-none text-[#183018] text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                @else
-                                                <p class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                    Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
-                                                </p>
-                                                @endif
-                                            </div>
-
-                                                    @if (!empty($promoTiers))
-                                                        <div>
-                                                            <p class="text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
-                                                                {!! $activePromo->all_discount_tiers !!}
-                                                            </p>
-                                                            <p
-                                                                class="text-danger text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
-                                                                *Tidak bisa digabung dengan voucher diskon lainnya <br>
-                                                                *Harga Berubah ketika anda checkout
-                                                            </p>
-
-                                                        </div>
-                                                    @endif
-
-                                                    <!-- BUTTON PLUS & MINUS & DELETE -->
-                                                    <div class="flex mt-auto bottom">
-                                                        <div class="flex ml-auto">
-                                                            <button class="btn btn-delete" name="delete-product-cart"
-                                                                title="Hapus produk dari keranjang"
-                                                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                data-type="product" data-id="{{ $product->product_id }}">
-                                                                <i
-                                                                    class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                                                            </button>
-
-                                                    @if ($product->product->stock_quantity == 0)
-                                                        <button
-                                                            class="btn btn-danger text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
-                                                            data-bs-toggle="tooltip" 
-                                                            data-bs-placement="top" 
-                                                            title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                            type="button" 
-                                                            id="notify-me-{{$product->product->id}}"
-                                                            onclick="notifyMe({{$product->product->id}})">
-                                                            Beritahu Saya
-                                                        </button>   
-                                                    @else
-                                                    <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
-                                                                <i class="fa fa-minus text-xs"></i>
-                                                            </button>
-                                                        </div>
-
-                                                            <input type="number"
-                                                                id="product-quantity-{{ $product->product->id }}"
-                                                                value="{{ $product->quantity }}" name="total_product"
-                                                                class="text-xs form-control bg-secondary text-center no-spinner"
-                                                                min="1"
-                                                                max="{{ $product->product->stock_quantity }}"
-                                                                oninput="validateInput(this, {{ $product->product->stock_quantity }})">
-
-                                                            <div class="input-group-btn">
-                                                                <button class="btn btn-plus"
-                                                                    data-id="{{ $product->product_id }}"
-                                                                    data-quantity="{{ $product->product->stock_quantity }}"
-                                                                    style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                    id="plus-btn-product-cart-{{ $product->product_id }}">
-                                                                    <i class="fa fa-plus text-xs"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="col-lg-3 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0 mt-2 mt-md-0 d-none d-lg-block">
-                    <div class="position-sticky" style="top: 4rem">
-                        <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
-                            <div class="d-flex py-2">
-                                <p class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Total Harga</p>
-                                <p id="totalPrice" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
-                            </div>
-                            <div class="border-top border-[#183018] pt-2 mr-2">
-                                    <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
-                                        Beli Sekarang
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            @else
-                <div style="min-height:10vh;">
-                    <div class="flex align-items-center justify-content-center">
-                        <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
-                    </div>
-                    <div class="grid align-items-center justify-content-center">
-                        <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
-                        <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
-                    </div>
-                </div>
-            @endif
-
-        {{-- GUEST --}}
-        @else
+        @if (count($data) !== 0)
             <div class="col-lg-9 grid gap-2 px-0 px-md-3">
                 <div class="container border border-[#183018] rounded shadow-md">
-                    @foreach (session('guest_cart') as $cart)
-                        @if ($cart['product_id'] !== null)
-                            <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{  \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') == 0 ? 'bg-secondary' : ''}}">
+                    <div class="flex justify-between items-center py-2 py-md-3 border-bottom border-[#183018]">
+                        <!-- Pilih Semua -->
+                        <div class="form-check">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                value="" 
+                                id="select-all" 
+                                onclick="toggleCheckboxes(this)" 
+                                onchange="toggleSelectAll()"
+                            >
+                            <label 
+                                class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" 
+                                for="select-all"
+                            >
+                                Pilih Semua
+                            </label>
+                        </div>
+                    
+                        <!-- Hapus Semua -->
+                        <button 
+                            class="btn btn-delete" 
+                            name="delete-all-product-cart" 
+                            title="Hapus semua produk terpilih dari keranjang" 
+                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                        > 
+                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                        </button>
+                    </div>
+                    
+        
+                    @foreach ($data as $product)
+
+                        {{-- TAMPILKAN PRODUCT VARIAN --}}
+                        @if($product->product_variant_id !== NULL)
+                            <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->productVariant->variant_stock == 0 ? 'bg-secondary' : ''}}">
                                 <div class="d-flex">
                                     <div class="col-lg-2 col-md-4 col-4 pl-1">
-                                        <img src="{{ Storage::url(\App\Models\Product::where('id', $cart['product_id'])->value('main_image')) }}" alt="" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        @if ($product->productVariant->variant_stock > 0)
+                                        <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{$product->product_variant_id}}" data-type="variant"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
+                                        @else
+                                        @endif
+                                        @if ($product->productVariant->variant_image == NULL)
+                                        <img src="{{ Storage::url($product->product->main_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        @else
+                                        <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                        @endif
                                     </div>
                                     <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                        @if (\App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') == 0)
+                                        @if ($product->productVariant->variant_stock == 0)
                                         <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
                                             Stok Habis
                                         </p>
                                         @endif
-                                        <p class="hover:cursor-pointer text-[12px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ \App\Models\Product::where('id', $cart['product_id'])->value('product_code') }}')">{{ \App\Models\Product::where('id', $cart['product_id'])->value('product_name') }}</p>
+                                        <p class="text-dark hover:cursor-pointer text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
+                                        <a class="w-fit text-decoration-none bg-[#183018] text-white p-1 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-center">
+                                            {{ $product->productVariant->variant_value }}
+                                        </a>
                                         
-                                        <p class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
-                                            Jumlah {{$cart['quantity']}}
-                                        </p>
+                                        @php
+                                            $activePromo = $product->product->promos->first();
+                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                        @endphp
 
-                                        <p class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-[#183018]">
-                                            Harga Rp{{ number_format($cart['price'], 0, ',', '.') }}
-                                        </p>
-                                    
-                                        <div class="flex gap-1">
-                                            <p class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                              Total Rp{{ number_format($cart['total'], 0, ',', '.') }}
-                                            </p>
-                                        </div>
+                                                <div class="flex gap-1">
 
-                                        <!-- BUTTON PLUS & MINUS & DELETE -->
-                                        <div class="flex mt-auto bottom">
-                                            <div class="flex ml-auto">
-                                                <button class="btn btn-delete" name="delete-product-cart"
-                                                    title="Hapus produk dari keranjang"
-                                                    style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                    data-type="product" data-id="{{ $cart['product_id'] }}">
-                                                    <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                                                </button>
-                                            </div>
-                                            <div class="input-group quantity-detail-produk rounded-xl shadow-sm" style="width: 120px;">
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-minus" data-id="{{$cart['product_id']}}" data-quantity="{{ \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') }}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$cart['product_id']}}">
-                                                        <i class="fa fa-minus text-xs"></i>
-                                                    </button>
+                                                    <p
+                                                        class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
+                                                        Rp{{ number_format($product->productVariant->variant_price, 0, ',', '.') }}
+                                                    </p>
+
                                                 </div>
-    
-                                                <input type="number"
-                                                    id="product-quantity-{{ $cart['product_id'] }}"
-                                                    value="{{ $cart['quantity'] }}" name="total_product"
-                                                    class="text-xs form-control bg-secondary text-center no-spinner"
-                                                    min="1"
-                                                    max="{{ \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') }}"
-                                                    oninput="validateInput(this, {{ \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') }})">
-    
-    
-                                                <div class="input-group-btn">
-                                                    <button class="btn btn-plus"
-                                                        data-id="{{ $cart['product_id'] }}"
-                                                        data-quantity="{{ \App\Models\Product::where('id', $cart['product_id'])->value('stock_quantity') }}"
-                                                        style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                        id="plus-btn-product-cart-{{ $cart['product_id'] }}">
-                                                        <i class="fa fa-plus text-xs"></i>
-                                                    </button>
+
+                                                <div class="flex gap-1">
+
+                                                    <p
+                                                        class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
+                                                        {!! $product->all_discount_tiers !!}
+                                                    </p>
+
                                                 </div>
+
+                                                <!-- BUTTON PLUS & MINUS & DELETE -->
+                                                <div class="flex mt-auto bottom">
+                                                    <div class="flex ml-auto">
+                                                        <button class="btn btn-delete" name="delete-product-cart"
+                                                            title="Hapus produk dari keranjang"
+                                                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                                                            data-type="product"
+                                                            data-id="{{ $product->product_variant_id }}">
+                                                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                                                        </button>
+
+                                                        @if ($product->productVariant->variant_stock == 0)
+                                                            <button
+                                                                class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-xl"
+                                                                data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                title="Beritahu Saya Jika Stok Sudah Ada" type="button"
+                                                                id="notify-me-{{ $product->productVariant->id }}"
+                                                                onclick="notifyMe({{ $product->productVariant->id }})">
+                                                                Beritahu Saya
+                                                            </button>
+                                                        @else
+                                                            <div class="input-group quantity-detail-produk-variant rounded-xl shadow-sm"
+                                                                style="width: 120px;">
+                                                                <div class="input-group-btn">
+                                                                    <button class="btn btn-minus-variant"
+                                                                        data-id="{{ $product->product_variant_id }}"
+                                                                        data-quantity="{{ $product->productVariant->variant_stock }}"
+                                                                        style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                                                                        id="minus-btn-product-cart-variant-{{ $product->product_variant_id }}">
+                                                                        <i class="fa fa-minus text-xs"></i>
+                                                                    </button>
+                                                                </div>
+
+                                                                <input type="number"
+                                                                    id="product-quantity-{{ $product->product_variant_id }}"
+                                                                    value="{{ $product->quantity }}"
+                                                                    name="total_product_variant"
+                                                                    class="text-xs form-control bg-secondary text-center no-spinner"
+                                                                    min="1"
+                                                                    max="{{ $product->productVariant->variant_stock }}"
+                                                                    oninput="validateInput(this, {{ $product->productVariant->variant_stock }})">
+
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-plus-variant" data-id="{{$product->product_variant_id}}" data-quantity="{{$product->productVariant->variant_stock}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart-variant-{{$product->product_variant_id}}">
+                                                            <i class="fa fa-plus text-xs"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        {{-- TAMPILKAN PRODUCT SAJA --}}
                         @else
+                            <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
+                                <div class="d-flex">
+                                    <div class="col-lg-2 col-md-4 col-4 pl-1">
+                                        @if ($product->product->stock_quantity > 0)
+                                        <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{ $product->product_id }}" data-type="product"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
+                                        @else
+                                        @endif
+                                        <img src="{{ Storage::url($product->product->main_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-sm">
+                                    </div>
+                                    <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
+                                        @if ($product->product->stock_quantity == 0)
+                                        <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
+                                            Stok Habis
+                                        </p>
+                                        @endif
+                                        <p class="hover:cursor-pointer text-[12px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
+                                        @php
+                                            $activePromo = $product->product->promos->first(); // Mengambil promo pertama yang aktif
+                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                        
+                                            // Mengambil produk terkait dari promo tier
+                                            $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
+                                        @endphp
+                                    
+                                        <div class="flex gap-1">
+                                            @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
+                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">
+                                                <del>
+                                                Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                                </del>
+                                            </p>
+                                            <p class="text-decoration-none text-[#183018] text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
+                                            @else
+                                            <p class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
+                                                Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
+                                            </p>
+                                            @endif
+                                        </div>
+
+                                                @if (!empty($promoTiers))
+                                                    <div>
+                                                        <p class="text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
+                                                            {!! $activePromo->all_discount_tiers !!}
+                                                        </p>
+                                                        <p
+                                                            class="text-danger text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
+                                                            *Tidak bisa digabung dengan voucher diskon lainnya <br>
+                                                            *Harga Berubah ketika anda checkout
+                                                        </p>
+
+                                                    </div>
+                                                @endif
+
+                                                <!-- BUTTON PLUS & MINUS & DELETE -->
+                                                <div class="flex mt-auto bottom">
+                                                    <div class="flex ml-auto">
+                                                        <button class="btn btn-delete" name="delete-product-cart"
+                                                            title="Hapus produk dari keranjang"
+                                                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                                                            data-type="product" data-id="{{ $product->product_id }}">
+                                                            <i
+                                                                class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                                                        </button>
+
+                                                @if ($product->product->stock_quantity == 0)
+                                                    <button
+                                                        class="btn btn-danger text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
+                                                        data-bs-toggle="tooltip" 
+                                                        data-bs-placement="top" 
+                                                        title="Beritahu Saya Jika Stok Sudah Ada" 
+                                                        type="button" 
+                                                        id="notify-me-{{$product->product->id}}"
+                                                        onclick="notifyMe({{$product->product->id}})">
+                                                        Beritahu Saya
+                                                    </button>   
+                                                @else
+                                                <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
+                                                    <div class="input-group-btn">
+                                                        <button class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
+                                                            <i class="fa fa-minus text-xs"></i>
+                                                        </button>
+                                                    </div>
+
+                                                        <input type="number"
+                                                            id="product-quantity-{{ $product->product->id }}"
+                                                            value="{{ $product->quantity }}" name="total_product"
+                                                            class="text-xs form-control bg-secondary text-center no-spinner"
+                                                            min="1"
+                                                            max="{{ $product->product->stock_quantity }}"
+                                                            oninput="validateInput(this, {{ $product->product->stock_quantity }})">
+
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-plus"
+                                                                data-id="{{ $product->product_id }}"
+                                                                data-quantity="{{ $product->product->stock_quantity }}"
+                                                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                                                                id="plus-btn-product-cart-{{ $product->product_id }}">
+                                                                <i class="fa fa-plus text-xs"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     @endforeach
                 </div>
             </div>
+
             <div class="col-lg-3 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0 mt-2 mt-md-0 d-none d-lg-block">
-                    <div class="position-sticky" style="top: 4rem">
-                        <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
-                            <div class="d-flex py-2">
-                                <p class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Total Harga</p>
-                                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format($totalGuest, 0, ',', '.') }}</p>
-                            </div>
-                            <div class="border-top border-[#183018] pt-2 mr-2">
-                                    <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
-                                        Beli Sekarang
-                                    </button>
-                                </a>
-                            </div>
+                <div class="position-sticky" style="top: 4rem">
+                    <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
+                        <div class="d-flex py-2">
+                            <p class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Total Harga</p>
+                            <p id="totalPrice" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
+                        </div>
+                        <div class="border-top border-[#183018] pt-2 mr-2">
+                                <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
+                                    Beli Sekarang
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </div>
-        @endif
+            </div>
 
+        @else
+            <div style="min-height:10vh;">
+                <div class="flex align-items-center justify-content-center">
+                    <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                </div>
+                <div class="grid align-items-center justify-content-center">
+                    <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
+                    <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="d-lg-none bg-[#183018] fixed-bottom px-0 d-flex justify-content-end align-items-center gap-2" style="width: 100%; box-sizing: border-box;">

@@ -181,6 +181,7 @@ class CartController extends Controller
                 ]);
             }
             else {
+                // dd(session());
                 $guestCart = session('guest_cart', []);
                 $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
 
@@ -246,7 +247,7 @@ class CartController extends Controller
                 }
 
                 session()->put('guest_cart', $updatedGuestCart);
-                return view('user.component.cart');
+                return view('user.component.cart-guest');
                 
                 // session()->flash('register_or_login_first');
                 // return redirect()->back();
@@ -270,6 +271,7 @@ class CartController extends Controller
         }
     }
     
+    
     public function deleteProductVariantItem(Request $request){
         try {
             $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -282,6 +284,27 @@ class CartController extends Controller
             //throw $th;
         }
     }
+
+    public function deleteProductItemGuest(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+
+            $guestCart = session('guest_cart', []);
+
+            // Filter: hapus produk dengan ID yang sesuai
+            $updatedCart = collect($guestCart)->reject(function ($item) use ($productId) {
+                return $item['product_id'] == $productId;
+            })->values()->toArray(); // pastikan index ter-reset
+
+            session(['guest_cart' => $updatedCart]);
+
+            return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Keranjang']);
+        } catch (\Exception $err) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus produk']);
+        }
+    }
+
 
     public function deleteAllProductItem(Request $request){
         try {
@@ -336,6 +359,51 @@ class CartController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Product not found in cart']);
     }
+
+    // UPDATE QUANTITY PRODUCT ITEM IN CART GUEST
+    public function updateCartQuantityGuest(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+            $newQuantity = (int) $request->input('quantity');
+
+            $guestCart = session('guest_cart', []);
+
+            foreach ($guestCart as &$item) {
+                if ($item['product_id'] == $productId) {
+                    $item['quantity'] = max(1, $newQuantity);
+                    $item['total'] = $item['price'] * $newQuantity; // pastikan min qty 1
+                    $subtotalItem = $item['total'];
+                    $newQuantity = $item['quantity'];
+                    break;
+                }
+            }
+
+            session(['guest_cart' => $guestCart]);
+
+            $totalPrice = collect(session('guest_cart'))->sum('total');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Quantity updated successfully',
+                'total_price' => $totalPrice,
+                'subtotal_item' => $subtotalItem,
+                'newQuantity' => $newQuantity,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update quantity',
+                'error'   => $e->getMessage(),
+                'line'    => $e->getLine(),
+                'file'    => $e->getFile(),
+            ]);
+        }
+
+    }
+
+
 
     // GET TOTAL CHART
     public function getTotalCart(){

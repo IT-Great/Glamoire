@@ -135,14 +135,14 @@
                 @endphp
                 
                 @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                    <span class="text-muted text-decoration-line-through font-semi-bold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
+                    <span class="text-muted text-decoration-line-through font-semi-bold text-black text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">
                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                     </span>
-                    <span class="text-[#183018] font-semi-bold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
+                    <span class="text-[#183018] font-semibold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
                         Rp{{ number_format($discountedPrice, 0, ',', '.') }}
                     </span>
                 @else
-                    <span class="font-bold text-dark text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
+                    <span class="font-bold text-dark text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px] font-semibold">
                         Rp{{ number_format($product->regular_price, 0, ',', '.') }}
                     </span>
                 @endif
@@ -237,7 +237,7 @@
                                 </div>
                                 
                                 <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-xl shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                <a onclick="buyNow({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                <a onclick="buyNowGuest({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
                             </div>
                             <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
                         </div>
@@ -381,7 +381,7 @@
                                 <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
                                     + Keranjang
                                 </a>
-                                <a onclick="buyNow({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
+                                <a onclick="buyNowGuest({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
                                     Beli Sekarang
                                 </a>
                             </div>
@@ -656,6 +656,70 @@
                     .then(function () {
                         window.location.reload(); // Redirect ke halaman utama atau halaman lain
                         });
+                } else {
+                    let errors = response.errors;
+                    let errorMessages = response.message;
+                    for (const key in errors) {
+                        if (errors.hasOwnProperty(key)) {
+                            errorMessages += errors[key][0] + "<br>";
+                        }
+                    }
+                    Toast.fire({
+                    icon: "error",
+                    text: errorMessages,
+                    
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    }
+                    });
+                }
+            },
+            error: function (response) {
+                const message = response.responseJSON?.message || 'Terjadi kesalahan tak terduga';
+                Toast.fire({
+                    icon: "error",
+                    text: message,
+
+                    willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff';
+                        if (content) content.style.color = '#ffffff';
+                    }
+                });
+            },
+        });
+    }
+
+    function buyNowGuest(productId) {
+        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
+
+        $.ajax({
+            url: "{{ route('add.to.chart.with.quantity') }}", // Route register di Laravel
+            type: "POST",
+            data: {
+                _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
+                product_id: productId,
+                quantity: currentQuantity,
+            },
+            success: function (response) {
+                if (response.success) {
+                    Toast.fire({
+                      icon: "success",
+                      text: response.message,
+                      willOpen: () => {
+                        const title = document.querySelector('.swal2-title');
+                        const content = document.querySelector('.swal2-html-container');
+                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
+                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                      }
+                    })
+                    .then(function () {
+                        window.location.href = "/cart"; // Redirect ke halaman utama atau halaman lain
+                    });
                 } else {
                     let errors = response.errors;
                     let errorMessages = response.message;
