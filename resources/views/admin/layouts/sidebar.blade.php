@@ -1,40 +1,75 @@
 <style>
+    .sidebar-header {
+        background-color: #f8f9fa;
+        /* warna latar lebih soft */
+        padding: 20px 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .sidebar-header .logo {
+        display: block;
+        margin: 0 auto;
+    }
+
     .sidebar-header .logo img {
-        /* Sesuaikan ukuran lebar */
+        max-width: 160px;
         height: auto;
-        /* Agar tidak terdistorsi */
-        max-width: 200px;
-        /* Sesuaikan tinggi maksimum */
         object-fit: contain;
-        /* Menjaga proporsi gambar */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+    }
+
+    .sidebar-header .logo img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-header .company-name {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+        margin-top: 5px;
+        letter-spacing: 0.5px;
+    }
+
+    .sidebar-header .tagline {
+        font-size: 12px;
+        color: #666;
     }
 </style>
+
 
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header">
-            <div class="d-flex justify-content-between">
-                <div class="logo">
-                    <a href="index.html"> <img src="{{ asset('images/glamoire.png') }}" alt="Logo">
-                    </a>
-                </div>
-                <div class="toggler">
-                    <a href="#" class="sidebar-hide d-xl-none d-block"><i class="bi bi-x bi-middle"></i></a>
-                </div>
+            <div class="logo">
+                <a href="index.html">
+                    <img src="{{ asset('images/new-logo.png') }}" alt="Logo">
+                </a>
+                <div class="company-name">GLAMOIRE</div>
+                <div class="tagline">Indonesia’s First Plant-Based Platform</div>
             </div>
         </div>
+
 
         <div class="sidebar-menu">
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
                 <!-- Jika User adalah Admin -->
-                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'superadmin')
+                {{-- @if (Auth::user()->role === 'admin' || Auth::user()->role === 'superadmin') --}}
+                @if (in_array(Auth::user()->role, ['admin', 'superadmin', 'accounting']))
                     <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
+                @endif
+
+                @if (in_array(Auth::user()->role, ['admin', 'superadmin']))
+                    <!-- menu-menu lain hanya untuk admin/superadmin -->
                     <li
                         class="sidebar-item has-sub {{ Request::is('product-admin*') || Request::is('stock-product-admin*') ? 'active' : '' }}">
                         <a href="#" class='sidebar-link'>
@@ -106,7 +141,7 @@
                     <li class="sidebar-item {{ Request::is('contact-us-admin*') ? 'active' : '' }}">
                         <a href="{{ route('index-contactus-admin') }}" class='sidebar-link'>
                             <i class="bi bi-telephone-plus-fill"></i>
-                            <span>Contact Us</span>
+                            <span>Hubungi Kami</span>
                         </a>
                     </li>
 
@@ -120,14 +155,14 @@
                     <li class="sidebar-item {{ Request::is('faq-admin') ? 'active' : '' }}">
                         <a href="{{ route('index-faq-admin') }}" class='sidebar-link'>
                             <i class="bi bi-patch-question-fill"></i>
-                            <span>FAQ</span>
+                            <span>Tanya Jawab</span>
                         </a>
                     </li>
 
                     <li class="sidebar-item {{ Request::is('user-admin*') ? 'active' : '' }}">
                         <a href="{{ route('index-user-admin') }}" class='sidebar-link'>
                             <i class="bi bi-people-fill"></i>
-                            <span>User</span>
+                            <span>Pengguna</span>
                         </a>
                     </li>
 
@@ -151,6 +186,8 @@
                             <span>Subscribe</span>
                         </a>
                     </li>
+
+                    {{-- @endif --}}
                 @endif
 
                 <!-- Jika User adalah Accounting -->

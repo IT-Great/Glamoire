@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Voucher - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -23,6 +23,201 @@
             background-color: #f3f4f6;
             font-family: 'Inter', 'Segoe UI', sans-serif;
             color: var(--text-primary);
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --light-color: #f9fafb;
+            --dark-color: #111827;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+
+        /* Stats Card Styling */
+        .stats-card {
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stats-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: -1;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-card-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .stats-card-success {
+            background: linear-gradient(135deg, var(--success-color), #059669);
+            color: white;
+        }
+
+        .stats-card-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+        }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .stats-title {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-number {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .action-buttons a {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .promo-nav {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .promo-nav-item {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            color: #4a4a4a;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid transparent;
+        }
+
+        .promo-nav-item i {
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .promo-nav-item.active {
+            background-color: var(--primary-color);
+            /* Make sure --primary-color is defined */
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .promo-nav-item.active i {
+            transform: scale(1.2);
+            color: #fff;
+        }
+
+        .promo-nav-item:hover:not(.active) {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #212529;
+        }
+
+        .voucher-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .voucher-card:hover {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .voucher-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .voucher-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .voucher-image:hover {
+            transform: scale(1.1);
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: green;
+        }
+
+        .status-expired {
+            background-color: #f44336;
         }
 
         .custom-dropdown-menu {
@@ -93,19 +288,25 @@
         <div id="main">
             <div class="page-heading">
                 <div class="page-title">
-                    <h3 class="mb-2">Buat Produk Voucher</h3>
-                    <p class="mb-3">
-                        Buat Product Voucher Sekarang Untuk Menarik Minat Pembeli
-                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
-                    </p>
-                    <div class="row">
+                    <div class="row mb-2">
+                        <div class="col-12 col-md-6 order-md-1 order-last">
+                            <h3>Buat Voucher Produk</h3>
+                            <p>
+                                Buat Voucher Produk Sekarang Untuk Menarik Minat Pembeli
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row align-items-center mb-4">
                         <div class="col-12 col-md-6">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                            <nav aria-label="breadcrumb">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
-                                            Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Buat Produk Voucher
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-voucher') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-tag me-1"></i> Voucher
+                                        </a>
                                     </li>
+                                    <li class="breadcrumb-item active">Buat Voucher</li>
                                 </ol>
                             </nav>
                         </div>
@@ -346,57 +547,71 @@
 
                         <div class="card">
                             <div class="card-header">
-                                <h4>Product List</h4>
+                                <h4>Produk List</h4>
                             </div>
                             <div class="card-body">
                                 <div class="mb-4">
                                     <label for="product_ids">Pilih Produk <span
                                             style="color: red">*</span></label><br>
-                                    <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda
-                                        dapat memilih beberapa produk.</small>
+                                    <small class="text-muted">Pilih produk yang ingin Anda terapkan diskon. Anda dapat
+                                        memilih beberapa produk.</small>
                                 </div>
                                 <table class="table" id="table1">
                                     <thead>
                                         <tr>
                                             <th>
-                                                <input type="checkbox" id="select-all"> Select All
+                                                <input type="checkbox" id="select-all"> All
                                             </th>
-                                            <th>Product</th>
-                                            <th>Stock</th>
-                                            <th>Price</th>
-                                            <th>Limit Stock Product</th>
+                                            <th>Produk</th>
+                                            <th>Stok</th>
+                                            <th>Harga</th>
+                                            <th>Batas Stok Produk</th>
                                             <th>Status</th>
-                                            <th>Discount Per Product</th>
+                                            <th>Diskon per Produk</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($products as $product)
-                                            <tr @if ($product->has_active_promo) class="bg-light" @endif>
+                                            <tr @if ($product->has_active_promo || $product->stock_quantity <= 0) class="bg-light" @endif>
                                                 <td>
                                                     <input type="checkbox" name="product_ids[]"
                                                         value="{{ $product->id }}" class="select-item"
-                                                        @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($product->has_active_promo || $product->stock_quantity <= 0) disabled @endif>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <img src="{{ Storage::url($product->main_image) }}"
-                                                            loading="lazy" class="lazyload me-2" alt="Product Image"
-                                                            style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;"
-                                                            onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
+                                                        <a href="{{ Storage::url($product->main_image) }}"
+                                                            target="_blank" rel="noopener">
+                                                            <img src="{{ Storage::url($product->main_image) }}"
+                                                                loading="lazy" class="lazyload me-2"
+                                                                alt="Product Image"
+                                                                style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover;">
+                                                        </a>
+
+
                                                         <div>
                                                             {{ Str::limit($product->product_name, 20, '...') }}
                                                             @if ($product->has_active_promo)
                                                                 <div class="mt-1">
-                                                                    <span class="badge bg-danger">Active
-                                                                        Promo</span>
+                                                                    <span class="badge bg-danger">Active Promo</span>
+                                                                </div>
+                                                            @endif
+                                                            @if ($product->stock_quantity <= 0)
+                                                                <div class="mt-1">
+                                                                    <span class="badge bg-secondary">Out of
+                                                                        Stock</span>
                                                                 </div>
                                                             @endif
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td>{{ $product->stock_quantity }}</td>
-                                                <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                <td>
+                                                    <span
+                                                        @if ($product->stock_quantity <= 0) class="text-danger fw-bold" @endif>
+                                                        {{ $product->stock_quantity }}
+                                                    </span>
                                                 </td>
+                                                <td>Rp. {{ number_format($product->regular_price, 0, ',', '.') }}</td>
                                                 <td>
                                                     <input type="number" class="form-control limit-stock"
                                                         placeholder="Limit Stock"
@@ -404,7 +619,7 @@
                                                         data-product-id="{{ $product->id }}" min="1"
                                                         max="{{ $product->stock_quantity }}"
                                                         value="{{ old('limit_stock.' . $product->id, '') }}"
-                                                        @if ($product->has_active_promo) disabled @endif>
+                                                        @if ($product->has_active_promo || $product->stock_quantity <= 0) disabled @endif>
                                                     @if ($errors->has('limit_stock.' . $product->id))
                                                         <small class="text-danger">
                                                             {{ $errors->first('limit_stock.' . $product->id) }}
@@ -414,6 +629,8 @@
                                                 <td>
                                                     @if ($product->has_active_promo)
                                                         <span class="text-danger">Not Available</span>
+                                                    @elseif ($product->stock_quantity <= 0)
+                                                        <span class="text-secondary">Out of Stock</span>
                                                     @else
                                                         <span class="text-success">Available</span>
                                                     @endif
@@ -422,7 +639,8 @@
                                                     <div class="input-group input-group-sm">
                                                         <button class="btn dropdown-toggle" type="button"
                                                             id="dropdownTypeProduct-{{ $product->id }}"
-                                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                                            data-bs-toggle="dropdown" aria-expanded="false"
+                                                            @if ($product->has_active_promo || $product->stock_quantity <= 0) disabled @endif>
                                                             <i class="bi bi-tag-fill me-1"></i>
                                                             Tipe Diskon <i class="bi bi-chevron-down"></i>
                                                         </button>
@@ -449,7 +667,7 @@
                                                             id="discountInputProduct-{{ $product->id }}"
                                                             name="product_discount[{{ $product->id }}]"
                                                             placeholder="Masukkan diskon"
-                                                            @if ($product->has_active_promo) disabled @endif>
+                                                            @if ($product->has_active_promo || $product->stock_quantity <= 0) disabled @endif>
 
                                                         <!-- Tambahkan input tersembunyi untuk menyimpan tipe diskon -->
                                                         <input type="hidden"
@@ -466,10 +684,13 @@
                                     </tbody>
                                 </table>
                                 <div class="col-12 d-flex justify-content-end">
-                                    <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                        Voucher</button>
-                                    <button type="submit" class="btn btn-sm btn-primary me-1">Submit
-                                        Voucher</button>
+                                    <a href="{{ route('index-promo-voucher') }}"
+                                        class="btn btn-secondary btn-sm me-3"
+                                        style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
+                                    </a>
+
+                                    <button type="submit" class="btn btn-sm btn-primary me-1">Submit Voucher</button>
                                 </div>
                             </div>
                         </div>
@@ -496,46 +717,83 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Handle checkbox and limit stock interactions
+            // Get all checkboxes
+            const selectAllCheckbox = document.getElementById('select-all');
             const checkboxes = document.querySelectorAll('.select-item');
 
+            // Function to update Select All checkbox status
+            const updateSelectAllStatus = () => {
+                const availableCheckboxes = Array.from(checkboxes).filter(cb => !cb.disabled);
+                const checkedAvailableCheckboxes = availableCheckboxes.filter(cb => cb.checked);
+
+                if (availableCheckboxes.length === 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedAvailableCheckboxes.length === availableCheckboxes.length) {
+                    selectAllCheckbox.checked = true;
+                    selectAllCheckbox.indeterminate = false;
+                } else if (checkedAvailableCheckboxes.length > 0) {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = true;
+                } else {
+                    selectAllCheckbox.checked = false;
+                    selectAllCheckbox.indeterminate = false;
+                }
+            };
+
+            // Function to handle individual checkbox changes
+            const handleCheckboxChange = (checkbox) => {
+                const productId = checkbox.value;
+                const limitStockInput = document.querySelector(`input[name="limit_stock[${productId}]"]`);
+                const discountInput = document.querySelector(`input[name="product_discount[${productId}]"]`);
+                const dropdownButton = document.getElementById(`dropdownTypeProduct-${productId}`);
+
+                if (limitStockInput) {
+                    if (checkbox.checked) {
+                        limitStockInput.removeAttribute('disabled');
+                        discountInput.removeAttribute('disabled');
+                        if (dropdownButton) dropdownButton.removeAttribute('disabled');
+                    } else {
+                        limitStockInput.setAttribute('disabled', 'disabled');
+                        discountInput.setAttribute('disabled', 'disabled');
+                        if (dropdownButton) dropdownButton.setAttribute('disabled', 'disabled');
+                        limitStockInput.value = ''; // Clear the value when unchecked
+                        discountInput.value = ''; // Clear the discount input
+                    }
+                }
+
+                // Update select all status after individual checkbox change
+                updateSelectAllStatus();
+            };
+
+            // Add event listeners to individual checkboxes
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', function() {
-                    const productId = this.value;
-                    const limitStockInput = document.querySelector(
-                        `input[name="limit_stock[${productId}]"]`);
-                    const discountInput = document.querySelector(
-                        `input[name="product_discount[${productId}]"]`);
-
-                    if (limitStockInput) {
-                        if (this.checked) {
-                            limitStockInput.removeAttribute('disabled');
-                            discountInput.removeAttribute('disabled');
-                        } else {
-                            limitStockInput.setAttribute('disabled', 'disabled');
-                            discountInput.setAttribute('disabled', 'disabled');
-                            limitStockInput.value = ''; // Clear the value when unchecked
-                            discountInput.value = ''; // Clear the discount input
-                        }
-                    }
+                    handleCheckboxChange(this);
                 });
             });
 
-            // Handle "Select All" checkbox
-            const selectAllCheckbox = document.getElementById('select-all');
+            // Handle "Select All" checkbox - hanya pilih produk yang available
             if (selectAllCheckbox) {
                 selectAllCheckbox.addEventListener('change', function() {
+                    const isChecked = this.checked;
+
                     checkboxes.forEach(checkbox => {
+                        // Hanya pilih checkbox yang tidak disabled (available products)
                         if (!checkbox.disabled) {
-                            checkbox.checked = this.checked;
-                            const event = new Event('change');
-                            checkbox.dispatchEvent(event);
+                            checkbox.checked = isChecked;
+                            // Manually trigger the change event to update related inputs
+                            handleCheckboxChange(checkbox);
                         }
                     });
                 });
             }
+
+            // Initial check untuk select all status
+            updateSelectAllStatus();
 
             // Validate limit stock inputs
             const limitStockInputs = document.querySelectorAll('.limit-stock');
@@ -563,6 +821,25 @@
 
                     this.reportValidity();
                 });
+            });
+
+            // Tambahkan tooltip untuk produk yang tidak available
+            const disabledRows = document.querySelectorAll('tr.bg-light');
+            disabledRows.forEach(row => {
+                const checkbox = row.querySelector('input[type="checkbox"]');
+                if (checkbox && checkbox.disabled) {
+                    const stockQuantity = parseInt(row.querySelector('td:nth-child(3) span').textContent
+                        .trim());
+
+                    if (stockQuantity <= 0) {
+                        checkbox.setAttribute('title', 'Produk ini tidak dapat dipilih karena stok kosong');
+                        row.style.opacity = '0.6';
+                    } else {
+                        checkbox.setAttribute('title',
+                            'Produk ini tidak dapat dipilih karena sudah memiliki promo aktif');
+                        row.style.opacity = '0.6';
+                    }
+                }
             });
         });
     </script>
@@ -596,19 +873,20 @@
                         formatSymbol.textContent = currentType === 'nominal' ? 'Rp' : '%';
                         discountInput.value = ''; // Reset input when changing type
                         globalDiscountTypeInput.value = currentType; // Set hidden input value
-
                     });
                 });
 
-                discountInput.addEventListener('input', function() {
-                    let value = this.value.replace(/\D/g, '');
-                    if (currentType === 'nominal') {
-                        this.value = value ? formatRupiah(value) : '';
-                    } else {
-                        // Untuk persentase, hanya tambahkan % di belakang angka
-                        this.value = value ? value : '';
-                    }
-                });
+                if (discountInput) {
+                    discountInput.addEventListener('input', function() {
+                        let value = this.value.replace(/\D/g, '');
+                        if (currentType === 'nominal') {
+                            this.value = value ? formatRupiah(value) : '';
+                        } else {
+                            // Untuk persentase, hanya tambahkan % di belakang angka
+                            this.value = value ? value : '';
+                        }
+                    });
+                }
             };
 
             // Handle individual product discounts
@@ -627,11 +905,8 @@
                             `formatSymbolProduct-${productId}`);
                         const discountInput = document.getElementById(
                             `discountInputProduct-${productId}`);
-
-                        // Tambahkan ini
                         const productDiscountTypeInput = document.getElementById(
                             `productDiscountType-${productId}`);
-
 
                         productTypes[productId] = type;
                         dropdownButton.innerHTML = type === 'nominal' ?
@@ -640,8 +915,9 @@
                         formatSymbol.textContent = type === 'nominal' ? 'Rp' : '%';
                         discountInput.value = ''; // Reset input when changing type
 
-                        // Tambahkan ini
-                        productDiscountTypeInput.value = type;
+                        if (productDiscountTypeInput) {
+                            productDiscountTypeInput.value = type;
+                        }
                     });
                 });
 
@@ -666,27 +942,6 @@
             initializeProductDiscounts();
         });
     </script>
-
-    {{-- <script>
-        // Handle Select All
-        document.getElementById('select-all').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.select-item');
-            checkboxes.forEach(checkbox => checkbox.checked = this.checked);
-        });
-
-        // Optionally, you can also update the "Select All" checkbox state
-        // if individual checkboxes are deselected
-        document.querySelectorAll('.select-item').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const selectAll = document.getElementById('select-all');
-                if (!this.checked) {
-                    selectAll.checked = false;
-                } else if (document.querySelectorAll('.select-item:checked').length === checkboxes.length) {
-                    selectAll.checked = true;
-                }
-            });
-        });
-    </script> --}}
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {

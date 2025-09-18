@@ -4,14 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User - Glamoire</title>
+    <title>Pengguna - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
-
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
-
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
@@ -455,6 +453,54 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
         }
+
+        .user-nav {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .user-nav-item {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            color: #4a4a4a;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid transparent;
+        }
+
+        .user-nav-item i {
+            font-size: 1.1rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .user-nav-item.active {
+            background-color: var(--primary-color);
+            /* Make sure --primary-color is defined */
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .user-nav-item.active i {
+            transform: scale(1.2);
+            color: #fff;
+        }
+
+        .user-nav-item:hover:not(.active) {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #212529;
+        }
     </style>
 
 </head>
@@ -469,7 +515,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">User</h3>
+                            <h3 class="mb-2">Pengguna</h3>
                             <p>Daftar semua pengguna dalam sistem, termasuk informasi peran, status, dan aktivitas
                                 terakhir.
                             </p>
@@ -482,8 +528,12 @@
                     <div class="col-12">
                         <nav aria-label="breadcrumb" class="breadcrumb-header">
                             <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('index-user-admin') }}">User</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">All User</li>
+                                <li class="breadcrumb-item"> <a href="{{ route('index-user-admin') }}"
+                                        class="d-inline-flex align-items-center">
+                                        <i class="bi bi-people-fill me-1"></i> Pengguna
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Daftar Pengguna</li>
                             </ol>
                         </nav>
                     </div>
@@ -531,20 +581,33 @@
                     </div>
                 </div>
 
+
+                <div class="user-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="{{ route('index-user-admin') }}"
+                        class="user-nav-item {{ Route::currentRouteName() == 'index-user-admin' ? 'active' : '' }}">
+                        <i class="bi bi-people"></i> Daftar Pengguna
+                    </a>
+                    <a href="{{ route('password-user-admin') }}"
+                        class="user-nav-item {{ Route::currentRouteName() == 'password-user-admin' ? 'active' : '' }}">
+                        <i class="bi bi-key"></i> Kelola Password
+                    </a>
+                </div>
+
+
                 <section class="section">
                     <div class="card">
                         <div class="card-header">
-                            <h4>List All User</h4>
+                            <h4>Daftar semua pengguna</h4>
                         </div>
                         <div class="card-body">
                             <table class="table" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Full Name</th>
+                                        <th>Nama</th>
                                         <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Registered at</th>
-                                        <th>Action</th>
+                                        <th>No Telp</th>
+                                        <th>Terdaftar Pada</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -553,7 +616,8 @@
                                             <td>{{ $user->fullname }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>{{ $user->handphone }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($user->date)->translatedFormat('d F Y') }}
+                                            </td>
                                             <td>
                                                 <a href="{{ route('detail-user-admin', $user->id) }}"
                                                     class="btn btn-sm btn-primary mb-2 d-inline-flex align-items-center">

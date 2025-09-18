@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - Glamoire</title>
+    <title>Artikel - Glamoire</title>
 
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -144,8 +144,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title">
-                                <h3 class="mb-2">Manajemen Artikel</h3>
-                                <p>Kelola semua artikel dan konten Anda dari satu dasbor</p>
+                                <h3 class="mb-2">Buat Artikel</h3>
+                                <p>Buat artikel/konten Anda pada halaman ini</p>
                             </div>
                         </div>
                     </div>
@@ -154,8 +154,9 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}">Artikel</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Semua Artikel</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}" class="d-inline-flex align-items-center"><i
+                                                class="bi bi-file-richtext me-1"></i>Artikel</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Buat Artikel</li>
                                 </ol>
                             </nav>
                         </div>
@@ -280,7 +281,8 @@
 
                         <!-- Tombol Aksi -->
                         <div class="d-flex gap-2 justify-content-end mt-4 border-top pt-4">
-                            <a href="{{ route('index-article') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('index-article') }}"
+                                class="btn btn-outline-secondary d-inline-flex align-items-center">
                                 <i class="bi bi-arrow-left me-1"></i>Kembali
                             </a>
                             <button type="submit" class="btn btn-primary">

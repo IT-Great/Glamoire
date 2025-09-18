@@ -16,6 +16,8 @@ use App\Models\Product;
 use App\Models\RatingAndReview;
 use App\Models\ProductVariations;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+
 
 use Exception;
 use Carbon\Carbon;
@@ -34,45 +36,43 @@ class UserController extends Controller
                 'shippingAddress' => function ($query) {
                     $query->orderBy('is_main', 'DESC'); // Mengurutkan shippingAddress berdasarkan is_main
                 },
-                'wishlist.product', 
+                'wishlist.product',
                 'cart.cartItems',
                 'orders.items.product.brand',
                 'orders.invoice',
                 'orders.items.productVariant',
                 'orders.ratingAndReviews'
             ])->where('id', $id)
-            ->with(['orders' => function ($query) {
-                $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
-            }])->first();
+                ->with(['orders' => function ($query) {
+                    $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
+                }])->first();
 
 
             $getWishlist = Wishlist::where('user_id', $id)->pluck('product_id');
             $getProductWishlist  = Product::whereIn('id', $getWishlist)
-            ->with(['promos'  => function ($query) {
-                $query->select('promos.*', 'promo_products.discounted_price')
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                    ->wherePivot('discounted_price', '>', 0);
+                ->with(['promos'  => function ($query) {
+                    $query->select('promos.*', 'promo_products.discounted_price')
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                        ->wherePivot('discounted_price', '>', 0);
                 }])
-            ->get();
+                ->get();
 
             foreach ($getProductWishlist as $prod) {
                 $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.') 
-                                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                }
-                elseif($variationPrices->count() == 0){
+                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                } elseif ($variationPrices->count() == 0) {
                     $prod->priceVariation = null;
-                } 
-                else {
+                } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
                     $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
-            
+
             return view('user.component.account', [
                 'profile' => $profile,
                 'wishlists' => $getProductWishlist,
@@ -86,7 +86,6 @@ class UserController extends Controller
     public function actionAddShippingAddress(Request $request)
     {
         try {
-
             $id = User::where('id', session('id_user'))->value('id');
             $checkMainAddress = Shipping_address::where('user_id', $id)->where('is_main', true)->first();
             $checkUseAddress = Shipping_address::where('user_id', $id)->where('is_use', true)->first();
@@ -98,6 +97,7 @@ class UserController extends Controller
                 'province'       => $request->province_name,
                 'regency'        => $request->regency_name,
                 'district'       => $request->district_name,
+                'subdistrict'    => $request->subdistrict_name,
                 'address'        => $request->address,
                 'benchmark'      => $request->benchmark,
                 'user_id'        => $id,
@@ -114,30 +114,59 @@ class UserController extends Controller
             dd($err);
         }
     }
+    
+    public function actionAddShippingAddressGuest(Request $request)
+    {
+        try {
+            $information = [
+                'email'          => $request->email,
+                'label'          => $request->label,
+                'recipient_name' => $request->recipient_name,
+                'handphone'      => $request->handphone,
+                'province'       => $request->province_name,
+                'regency'        => $request->regency_name,
+                'district'       => $request->district_name,
+                'subdistrict'    => $request->subdistrict_name,
+                'address'        => $request->address,
+                'benchmark'      => $request->benchmark,
+                'id_province'    => $request->province,
+                'id_regency'     => $request->regency,
+                'id_district'    => $request->district,
+            ];
+
+            session()->put('guest_information', $information);
+
+            session()->flash('after_add_address');
+            return redirect()->back();
+        } catch (\Exception $err) {
+            dd($err);
+        }
+    }
+
 
     public function addToChart(Request $request)
     {
         try {
             $userId = session('id_user');
-            
+
             if (session('id_user')) {
                 $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
 
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
-                if($checkCartUser){
+                if ($checkCartUser) {
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
                     $product = Product::with(['promos'  => function ($query) {
-                    $query->select('promos.*', 'promo_products.discounted_price')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                        ->wherePivot('discounted_price', '>', 0);
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->wherePivot('discounted_price', '>', 0);
                     }])
-                    ->where('id', $request->product_id)->first();
+                        ->where('id', $request->product_id)->first();
 
                     $activePromo = $product->promos->first();
                     $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
-                    
+
                     $total = $price;
 
                     Cart_item::create([
@@ -149,24 +178,24 @@ class UserController extends Controller
                         'total'      => $total,
                     ]);
 
-                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART
+                    // JIKA BARU PERTAMA KALI MENAMBAHKAN CART
                 } else {
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
-                    
+
                     $cartId = Cart::where('user_id', session('id_user'))->value('id');
                     $product = Product::with(['promos'  => function ($query) {
-                    $query->select('promos.*', 'promo_products.discounted_price')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                        ->wherePivot('discounted_price', '>', 0);
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->wherePivot('discounted_price', '>', 0);
                     }])
-                    ->where('id', $request->product_id)->first();
+                        ->where('id', $request->product_id)->first();
 
                     $activePromo = $product->promos->first();
                     $price = $activePromo ? $activePromo->pivot->discounted_price : $product->regular_price;
-                    
+
                     $total = $price;
 
                     Cart_item::create([
@@ -177,19 +206,48 @@ class UserController extends Controller
                         'price'      => $price,
                         'total'      => $total,
                     ]);
-                    
                 }
-                
+
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
-            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+            else {
+                $productId   = $request->product_id;
+                $quantity    = 1;
+                $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
 
+                $guestCart = session()->get('guest_cart', []);
+
+                // Cek apakah produk sudah ada di cart
+                $index = collect($guestCart)->search(function ($item) use ($productId) {
+                    return $item['product_id'] == $productId;
+                });
+
+                if ($index !== false) {
+                    // Produk sudah ada → update jumlah)
+                    $guestCart[$index]['quantity'] += $quantity;
+                    if($guestCart[$index]['quantity'] >= $maxQuantity){
+                        $guestCart[$index]['quantity'] = $maxQuantity-1;
+                    }
+                } else {
+                    // Produk belum ada → tambah baru
+                    $guestCart[] = [
+                        'product_id' => $productId,
+                        'product_variant_id' => null,
+                        'quantity' => $quantity,
+                    ];
+                }
+
+                // Simpan kembali ke session
+                session()->put('guest_cart', $guestCart);
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }  
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
     }
 
-   public function addToCartBuyNow(Request $request)
+    public function addToCartBuyNow(Request $request)
     {
         $cartId = Cart::where('user_id', session('id_user'))->value('id');
         $orderItems = OrderItem::where('order_id', $request->product_id)->get();
@@ -231,11 +289,11 @@ class UserController extends Controller
 
                     if (!$cartItem) {
                         $price = ProductVariations::where('id', $products->product_variant_id)->value('variant_price');
-                        
+
                         Cart_item::create([
                             'cart_id'           => $cartId,
                             'product_id'        => $products->product_id,
-                            'product_variant_id'=> $products->product_variant_id,
+                            'product_variant_id' => $products->product_variant_id,
                             'quantity'          => 1,
                             'is_choose'         => TRUE,
                             'price'             => $price,
@@ -260,41 +318,43 @@ class UserController extends Controller
     }
 
 
-    public function addToChartWithQuantity(Request $request){
+    public function addToChartWithQuantity(Request $request)
+    {
         try {
             $userId = session('id_user');
-            
+
+            // USER LOGIN
             if (session('id_user')) {
                 $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
 
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
-                if($checkCartUser){
+                if ($checkCartUser) {
                     $checkCartItem = Cart_item::where('cart_id', $cartId)
-                    ->where('product_id', $request->product_id)->exists();
+                        ->where('product_id', $request->product_id)->exists();
 
                     // JIKA PRODUK SUDAH ADA DI CART USER
                     if ($checkCartItem) {
                         $cartItem  = Cart_item::where('cart_id', $cartId)
-                        ->where('product_id', $request->product_id)->first();
+                            ->where('product_id', $request->product_id)->first();
 
-                        $itemPrice = $cartItem->price; 
+                        $itemPrice = $cartItem->price;
                         $itemQuantity = $cartItem->quantity;
 
                         // Tingkatkan kuantitas item dengan 1
                         $newQuantity = $itemQuantity + $request->quantity;
-    
+
                         // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
                         $newPrice = $itemPrice * $newQuantity;
 
                         // Update kuantitas dan harga di database
                         $cartItem->update([
                             'quantity' => $newQuantity,
-                            'total'    => $newPrice, 
+                            'total'    => $newPrice,
                         ]);
                     }
                     // JIKA PRODUK BELUM ADA DI CART USER
-                    else{
+                    else {
                         $cartId = Cart::where('user_id', session('id_user'))->value('id');
                         $product = Product::where('id', $request->product_id)->first();
                         $total = $product->regular_price;
@@ -309,8 +369,8 @@ class UserController extends Controller
                         ]);
                     }
 
-                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
-                }else{
+                    // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                } else {
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
@@ -327,59 +387,92 @@ class UserController extends Controller
                         'price'      => $product->regular_price,
                         'total'      => $total,
                     ]);
-                    
                 }
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
-            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+            // GUEST
+            else {
+                $productId   = $request->product_id;
+                $quantity    = $request->quantity;
+                $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
+
+                $guestCart = session()->get('guest_cart', []);
+
+                // Cek apakah produk sudah ada di cart
+                $index = collect($guestCart)->search(function ($item) use ($productId) {
+                    return $item['product_id'] == $productId;
+                });
+
+                if ($index !== false) {
+                    // Produk sudah ada → update jumlah)
+                    $guestCart[$index]['quantity'] += $quantity;
+                    if($guestCart[$index]['quantity'] >= $maxQuantity){
+                        $guestCart[$index]['quantity'] = $maxQuantity-1;
+                    }
+                } else {
+                    // Produk belum ada → tambah baru
+                    $guestCart[] = [
+                        'product_id' => $productId,
+                        'product_variant_id' => null,
+                        'quantity' => $quantity,
+                    ];
+                }
+
+                // Simpan kembali ke session
+                session()->put('guest_cart', $guestCart);
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }   
+
 
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
     }
 
-    public function addToChartWithQuantityVariant(Request $request){
+    public function addToChartWithQuantityVariant(Request $request)
+    {
         try {
             $userId = session('id_user');
-            
+
             if (session('id_user')) {
                 $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
 
                 // JIKA CART SUDAH ADA MAKA TIDAK PERLU CREATE CART
-                if($checkCartUser){
+                if ($checkCartUser) {
                     $checkCartItem = Cart_item::where('cart_id', $cartId)
-                    ->where('product_id', $request->product_id)
-                    ->where('product_variant_id', $request->product_variant_id)
-                    ->exists();
+                        ->where('product_id', $request->product_id)
+                        ->where('product_variant_id', $request->product_variant_id)
+                        ->exists();
 
                     // JIKA PRODUK SUDAH ADA DI CART USER
                     if ($checkCartItem) {
                         $cartItem  = Cart_item::where('cart_id', $cartId)
-                        ->where('product_id', $request->product_id)->first();
+                            ->where('product_id', $request->product_id)->first();
 
-                        $itemPrice = $cartItem->price; 
+                        $itemPrice = $cartItem->price;
                         $itemQuantity = $cartItem->quantity;
 
                         // Tingkatkan kuantitas item dengan 1
                         $newQuantity = $itemQuantity + $request->quantity;
-    
+
                         // Hitung total harga baru berdasarkan harga satuan dan kuantitas baru
                         $newPrice = $itemPrice * $newQuantity;
 
                         // Update kuantitas dan harga di database
                         $cartItem->update([
                             'quantity' => $newQuantity,
-                            'total'    => $newPrice, 
+                            'total'    => $newPrice,
                         ]);
                     }
                     // JIKA PRODUK BELUM ADA DI CART USER
-                    else{
+                    else {
                         $cartId = Cart::where('user_id', session('id_user'))->value('id');
                         $product = ProductVariations::where('id', $request->product_variant_id)
-                        ->where('product_id', $request->product_id)
-                        ->first();
+                            ->where('product_id', $request->product_id)
+                            ->first();
 
                         $total = $product->variant_price;
 
@@ -394,8 +487,8 @@ class UserController extends Controller
                         ]);
                     }
 
-                // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
-                }else{
+                    // JIKA BARU PERTAMA KALI MENAMBAHKAN CART ITEM
+                } else {
                     $cart = Cart::create([
                         'user_id' => $userId,
                     ]);
@@ -412,32 +505,30 @@ class UserController extends Controller
                         'price'      => $product->regular_price,
                         'total'      => $total,
                     ]);
-                    
                 }
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
-
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
     }
 
-    public function addToWishlist(Request $request){
+    public function addToWishlist(Request $request)
+    {
         try {
 
             if (session('id_user')) {
                 $userId = session('id_user');
-    
-                if($request->product_variant_id !== null){
+
+                if ($request->product_variant_id !== null) {
                     Wishlist::create([
                         'user_id'    => $userId,
                         'product_id' => $request->product_id,
                         'product_variant_id' => $request->product_variant_id,
                     ]);
-                }
-                else{
+                } else {
                     Wishlist::create([
                         'user_id'    => $userId,
                         'product_id' => $request->product_id,
@@ -456,18 +547,18 @@ class UserController extends Controller
         try {
             if (session('id_user')) {
                 $userId = session('id_user');
-    
-                if($request->product_variant_id){
+
+                if ($request->product_variant_id) {
                     Wishlist::where('product_id', $request->product_id)
-                    ->where('product_variant_id', $request->product_variant_id)
-                    ->where('user_id', $userId)
-                    ->delete();
+                        ->where('product_variant_id', $request->product_variant_id)
+                        ->where('user_id', $userId)
+                        ->delete();
                 } else {
                     Wishlist::where('product_id', $request->product_id)
-                    ->where('user_id', $userId)
-                    ->delete();
+                        ->where('user_id', $userId)
+                        ->delete();
                 }
-    
+
                 return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Wishlist']);
             }
             return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
@@ -510,6 +601,34 @@ class UserController extends Controller
 
         return redirect()->back();
     }
+    
+    public function updateShippingAddressGuest(Request $request)
+    {
+        try {
+            // dd($request);
+            $information = [
+                'email'          => $request->email,
+                'label'          => $request->label,
+                'recipient_name' => $request->recipient_name,
+                'handphone'      => $request->handphone,
+                'province'       => $request->province_name,
+                'regency'        => $request->regency_name,
+                'district'       => $request->district_name,
+                'address'        => $request->address,
+                'benchmark'      => $request->benchmark,
+                'id_province'    => $request->province,
+                'id_regency'     => $request->regency,
+                'id_district'    => $request->district,
+            ];
+
+            session()->put('guest_information', $information);
+
+            session()->flash('after_edit_info');
+            return redirect()->back();
+        } catch (\Exception $err) {
+            dd($err);
+        }
+    }
 
     public function deleteShippingAddress(Request $request)
     {
@@ -551,7 +670,7 @@ class UserController extends Controller
             ]);
 
             $checkIsUser = Shipping_address::where('user_id', session('id_user'))
-            ->get();
+                ->get();
 
             // Ambil semua alamat pengguna berdasarkan user_id dari session
             $checkIsUser = Shipping_address::where('user_id', session('id_user'))->get();
@@ -626,16 +745,14 @@ class UserController extends Controller
                     'created_at' => now(),
                 ]);
                 return response()->json(['success' => true, 'message' => 'Selamat Anda Berhasil Berlangganan']);
-            }
-            else {
+            } else {
                 return response()->json(['success' => false, 'message' => 'Email sudah terdaftar']);
             }
-
         } catch (Exception $err) {
             dd($err);
         }
     }
-    
+
     // TAB MY PROFILE
     public function getActiveTab()
     {
@@ -717,7 +834,7 @@ class UserController extends Controller
                     ->first();
 
                 $averageRating = round($product->rating_and_reviews_avg_rating, 1);
-                
+
                 // Update rating dan total ulasan di tabel produk
                 Product::where('id', $productId)->update([
                     'rating' => $averageRating,
@@ -746,6 +863,39 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         return view('admin.user.detail', compact('user'));
+    }
 
+    // public function passwordUserAdmin()
+    // {
+    //     $users = User::where('role', 'user')->get();
+
+    //     return view('admin.user.index-password', compact('users'));
+    // }
+
+    public function passwordUserAdmin()
+    {
+        $adminUsers = User::whereIn('role', ['admin', 'superadmin', 'accounting', 'gudang'])->get();
+        $normalUsers = User::where('role', 'user')->get();
+
+        return view('admin.user.index-password', compact('adminUsers', 'normalUsers'));
+    }
+
+
+
+    public function changePasswordUserAdmin(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'new_password' => 'required|min:8|confirmed',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password successfully updated.'
+        ]);
     }
 }

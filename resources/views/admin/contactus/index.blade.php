@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact-Us - Glamoire</title>
+    <title>Hubungi Kami - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -473,7 +473,7 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">Contact Us</h3>
+                            <h3 class="mb-2">Hubungi Kami</h3>
                             <p>Tinjau dan tanggapi semua pertanyaan pelanggan di satu tempat</p>
                         </div>
                     </div>
@@ -486,10 +486,10 @@
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
                                     <a href="{{ route('index-contactus-admin') }}" class="d-flex align-items-center">
-                                        <i class="bi bi-envelope me-1"></i>Contact Us
+                                        <i class="bi bi-envelope me-1"></i>Hubungi Kami
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">All Contact Us</li>
+                                <li class="breadcrumb-item active" aria-current="page">Daftar Hubungi Kami</li>
                             </ol>
                         </nav>
                     </div>

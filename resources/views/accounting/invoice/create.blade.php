@@ -762,9 +762,6 @@
                             <h2 class="mb-3">Buat Invoice Baru</h2>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
-                                            class="d-flex align-items-center"><i
-                                                class="bi bi-grid-fill me-2"></i>Dashboard</a></li>
                                     <li class="breadcrumb-item"><a href="{{ route('index-invoice') }}"
                                             class="d-flex align-items-center"><i
                                                 class="bi bi-credit-card me-2"></i>Invoice</a></li>

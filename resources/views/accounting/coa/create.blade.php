@@ -562,7 +562,7 @@
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('coa_no') ? 'is-invalid' : '' }}"
                                                                     placeholder="xxx.xxx" id="brand-name-icon"
-                                                                    name="coa_no">
+                                                                    name="coa_no" value="{{ old('coa_no') }}">
                                                             </div>
                                                             @if ($errors->has('name'))
                                                                 <p style="color: red">{{ $errors->first('coa_no') }}</p>
@@ -575,7 +575,8 @@
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <label for="brand-name-icon" style="margin-bottom: 10px;">Category<span
+                                                            <label for="brand-name-icon"
+                                                                style="margin-bottom: 10px;">Category<span
                                                                     style="color: red"> *</span></label>
                                                             <select
                                                                 class="form-control select2-basic-category {{ $errors->has('coa_category_id') ? 'is-invalid' : '' }}"
@@ -584,11 +585,13 @@
                                                                     {{ old('coa_category_id') ? '' : 'selected' }}>
                                                                     Pilih Sub Kategori</option>
                                                                 @foreach ($categories as $category)
-                                                                    <option value="{{ $category->id }}">
+                                                                    <option value="{{ $category->id }}"
+                                                                        {{ old('coa_category_id') == $category->id ? 'selected' : '' }}>
                                                                         {{ $category->category_name }}
                                                                     </option>
                                                                 @endforeach
                                                             </select>
+
 
                                                             <!-- Link untuk menambahkan kategori baru -->
                                                             <a href="#" data-bs-toggle="modal"
@@ -613,13 +616,13 @@
 
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <label for="brand-name-icon">Name<span
-                                                                    style="color: red"> *</span></label>
+                                                            <label for="brand-name-icon">Name<span style="color: red">
+                                                                    *</span></label>
                                                             <div class="position-relative mt-2 mb-2">
                                                                 <input type="text"
                                                                     class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}"
                                                                     placeholder="Nama" id="brand-name-icon"
-                                                                    name="name">
+                                                                    name="name" value="{{ old('name') }}">
                                                             </div>
                                                             @if ($errors->has('name'))
                                                                 <p style="color: red">{{ $errors->first('name') }}</p>
@@ -635,7 +638,8 @@
                                                         <div class="form-group">
                                                             <label for="brand-description">Deskripsi</label>
                                                             <textarea class="form-control mt-2 mb-2 {{ $errors->has('description') ? 'is-invalid' : '' }}" id="brand-description"
-                                                                rows="10" placeholder="Deskripsi" name="description"></textarea>
+                                                                rows="10" placeholder="Deskripsi" name="description">{{ old('description') }}</textarea>
+
                                                             @if ($errors->has('description'))
                                                                 <p style="color: red">
                                                                     {{ $errors->first('description') }}</p>

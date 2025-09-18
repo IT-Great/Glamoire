@@ -20,12 +20,6 @@
     <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
 
     <style>
-        body {
-            background-color: #f3f4f6;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            color: var(--text-primary);
-        }
-
         :root {
             --primary-color: #6366f1;
             --secondary-color: #4f46e5;
@@ -40,9 +34,61 @@
             --border-color: #e5e7eb;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .page-title h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.75rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .breadcrumb {
+            background-color: transparent;
+            padding: 0;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-secondary);
+            font-weight: 400;
         }
 
         /* Stats Card Styling */
@@ -88,6 +134,11 @@
             color: white;
         }
 
+        .stats-card-danger {
+            background: linear-gradient(135deg, var(--danger-color), #ef4444);
+            color: white;
+        }
+
         .stats-icon {
             width: 48px;
             height: 48px;
@@ -113,7 +164,166 @@
             margin-bottom: 0;
         }
 
-       .promo-nav {
+        /* Table Styling */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table> :not(:first-child) {
+            border-top: none;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: rgba(243, 246, 249, 0.6);
+            border-color: var(--border-color);
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            padding: 1.25rem 1.5rem;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .table>tbody>tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table>tbody>tr:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        /* Stock Badge */
+        .stock-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-buttons .badge {
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .action-buttons .badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .badge.bg-info {
+            background-color: var(--info-color) !important;
+            color: white;
+        }
+
+        .badge.bg-danger {
+            background-color: var(--danger-color) !important;
+        }
+
+        /* Quick Action Button */
+        .quick-action-btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsiveness */
+        @media (max-width: 992px) {
+            .stats-card {
+                margin-bottom: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .table td {
+                padding: 1rem;
+            }
+        }
+
+        /* DataTables Custom Styling */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: var(--primary-color) !important;
+            color: white !important;
+            border: none;
+            border-radius: 8px;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: var(--secondary-color) !important;
+            color: white !important;
+            border: none;
+        }
+
+        .dataTables_wrapper .dataTables_info {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .promo-nav {
             background: #fff;
             border-radius: 1rem;
             padding: 1rem;
@@ -227,9 +437,9 @@
         <div id="main">
             <div class="page-heading">
                 <!-- Breadcrumb -->
-                <div class="page-title">
-                    <div class="row">
-                        <div class="col-12 col-md-6 order-md-1 order-last">
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
                             <h3>Promo</h3>
                             <p class="text-subtitle text-muted">Kelola semua data promosi Anda pada halaman ini.
                             </p>
@@ -237,36 +447,71 @@
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
+                <div class="row align-items-center mb-4">
+                    <div class="col-12 col-md-6">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-promo') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-bookmark-star me-1"></i> Promo
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Semua Promo Event</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
                 <div class="row mb-4 slide-in">
+                    <!-- Active Promo -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
                         <div class="stats-card stats-card-primary">
                             <div class="stats-icon">
-                                <i class="bi bi-box fs-3"></i>
+                                <i class="bi bi-gift-fill"></i> <!-- Ganti dari envelope ke gift -->
                             </div>
                             <div class="stats-title">Active Promo</div>
                             <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
 
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-gift me-1"></i>
+                                    Promo spesial yang sedang berjalan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Vouchers -->
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
-                        <div class="stats-card stats-card-warning">
+                        <div class="stats-card stats-card-success">
                             <div class="stats-icon">
-                                <i class="bi bi-exclamation-circle-fill"></i>
+                                <i class="bi bi-tag"></i> <!-- Voucher ikon -->
                             </div>
                             <div class="stats-title">Active Vouchers</div>
                             <h3 class="stats-number">{{ $activeVouchers ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-check-circle me-1"></i>
+                                    Voucher siap digunakan oleh pelanggan
+                                </small>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- Active Discount -->
                     <div class="col-12 col-md-4">
-                        <div class="stats-card stats-card-success">
+                        <div class="stats-card stats-card-warning">
                             <div class="stats-icon">
-                                <i class="bi bi-percent"></i>
+                                <i class="bi bi-percent"></i> <!-- Diskon ikon -->
                             </div>
                             <div class="stats-title">Active Discount</div>
                             <h3 class="stats-number">{{ $activeDiscounts ?? 0 }}</h3>
-
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-tags me-1"></i>
+                                    Diskon menarik untuk produk pilihan
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -275,22 +520,22 @@
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-promo') }}"
                         class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
-                        <i class="bi bi-grid-fill me-2"></i>All Promos
+                        <i class="bi bi-grid-fill me-2"></i>Promo
                     </a>
                     <a href="{{ route('index-promo-voucher') }}"
                         class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
-                        <i class="bi bi-receipt-cutoff me-2"></i>Vouchers
+                        <i class="bi bi-receipt-cutoff me-2"></i>Voucher
                     </a>
                     <a href="{{ route('index-promo-diskon') }}"
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
-                        <i class="bi bi-percent me-2"></i>Discounts
+                        <i class="bi bi-percent me-2"></i>Diskon
                     </a>
                 </div>
 
                 <!-- Main Content -->
                 <div class="card promo-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">All Promotional Campaigns</h5>
+                        <h5 class="mb-0 d-flex align-items-center"><i class="bi bi-tag me-2"></i>List Promo</h5>
                         <a href="{{ route('create-promo') }}"
                             class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
                             <i class="fa fa-plus me-2"></i>Buat Promo
@@ -302,12 +547,11 @@
                             <table class="table table-hover" id="table1">
                                 <thead>
                                     <tr>
-                                        <th>Campaign Details</th>
-                                        <th>Period</th>
-                                        <th>Discount</th>
+                                        <th>Detail Promo</th>
+                                        <th>Periode</th>
+                                        <th>Diskon</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
-                                        {{-- <th>Is Active</th> --}}
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -368,16 +612,16 @@
                                                 <div class="action-buttons">
                                                     <a href="{{ url('detail-promo/' . $item->id) }}"
                                                         class="btn btn-sm btn-info d-inline-flex align-items-center">
-                                                        <i class="bi bi-eye"></i> View
+                                                        <i class="bi bi-eye me-1"></i> View
                                                     </a>
-                                                    <a href="{{ url('edit-promo/' . $item->id) }}"
-                                                        class="badge bg-warning d-inline-flex align-items-center">
-                                                        <i class="bi bi-pencil"></i> Edit
-                                                    </a>
+                                                    {{-- <a href="{{ url('edit-promo/' . $item->id) }}"
+                                                        class="btn btn-sm btn-warning d-inline-flex align-items-center">
+                                                        <i class="bi bi-pencil me-1"></i> Edit
+                                                    </a> --}}
                                                     <a href="javascript:void(0);"
-                                                        class="badge bg-danger delete-promo d-inline-flex align-items-center"
+                                                        class="btn btn-sm btn-danger delete-promo d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">
-                                                        <i class="bi bi-trash"></i> Delete
+                                                        <i class="bi bi-trash me-1"></i> Delete
                                                     </a>
                                                 </div>
                                             </td>

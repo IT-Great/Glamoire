@@ -1,6 +1,8 @@
 @extends('user.layouts.master')
 
 @section('content')
+@php use Illuminate\Support\Str; @endphp
+
 <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-2 py-2 mb-4">
   <div class="container-fluid px-0 px-md-3">
     <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
@@ -25,9 +27,13 @@
             <div class="border-bottom pb-2">
               <h5 class="font-weight-semi-bold text-[#183018] mb-2 text-[10px] md:text-[10px] lg:text-[10px] xl:text-[13px]">Kategori</h5>
               @foreach ($categories as $category)
+                  @php
+                    $categoryId = Str::slug($category->name);
+                  @endphp
                   <div class="d-flex align-items-center">
                       <a href="/belanja-{{$category->name}}" class="text-[7px] md:text-[9px] lg:text-[10px] xl:text-[12px]">{{ ucwords(strtolower($category->name)) }}</a>
-                      <a class="ml-auto text-[7px] md:text-[9px] lg:text-[10px] xl:text-[11px] text-decoration-none" style="color: #183018;" onclick="toggleListSubCategory(event, '#sub-category-{{$category->name}}', this)">
+                      <a class="ml-auto text-[7px] md:text-[9px] lg:text-[10px] xl:text-[11px] text-decoration-none" style="color: #183018;" 
+                        onclick="toggleListSubCategory(event, '#sub-category-{{ $categoryId }}', this)">
                           <i class="fas fa-chevron-down hover:cursor-pointer"></i>
                           <i class="fas fa-chevron-up hover:cursor-pointer" hidden></i>
                       </a>
@@ -35,7 +41,7 @@
 
                   {{-- Display subcategories only if they exist for the category --}}
                   @if(isset($subCategories[$category->id]))
-                      <div class="grid pb-4 sub-category" id="sub-category-{{$category->name}}" style="display: none;">
+                      <div class="grid pb-4 sub-category" id="sub-category-{{ $categoryId }}" style="display: none;">
                           @foreach ($subCategories[$category->id] as $subcategory)
                               <a href="/belanja-{{$category->name}}-{{ $subcategory->name }}" class="grid text-[7px] md:text-[9px] lg:text-[9px] xl:text-[12px]">{{ $subcategory->name }}</a>
                           @endforeach
@@ -216,8 +222,8 @@
                           <div class="grid-container-shop" style="min-height:48vh;">
                             @foreach ($products as $product)
                               <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-                                <div class="product-image-container-shop">
-                                    <img class="img-fluid rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}" loading="lazy">
+                                <div class="product-image-wrapper">
+                                    <img class="product-image img-fluid rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name}}" loading="lazy">
                                 </div>
                                 <div class="grid text-left p-1 p-md-2">
                                     <div class="flex gap-1">
@@ -315,8 +321,8 @@
                             <div class="grid-container-shop" style="min-height:48vh;">
                                 @foreach ($products as $product)
                                   <div onclick="window.location.href = '/{{ $product->product_code }}_product'" class="bg-white rounded-lg custom-shadow border border-secondary overflow-hidden h-fit hover:cursor-pointer">
-                                    <div class="product-image-container-shop">
-                                      <img class="card-img-top" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" loading="lazy">
+                                    <div class="product-image-wrapper">
+                                      <img class="card-img-top product-img product-image" src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" loading="lazy">
                                     </div>
 
                                     <div class="grid text-left p-1 p-md-2">

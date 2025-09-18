@@ -33,40 +33,6 @@ class AuthenticateController extends Controller
         return view('admin.login.index'); // Adjust the view name accordingly
     }
 
-    // public function login(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required',
-    //         'password' => 'required',
-    //     ]);
-
-    //     if ($validator->fails()) {
-    //         return redirect()->route('login-admin')
-    //             ->withErrors($validator)
-    //             ->withInput();
-    //     }
-
-    //     $credentials = $request->only('name', 'password');
-
-    //     // if (Auth::attempt($credentials)) {
-    //     //     // Authentication passed
-    //     //     return redirect()->intended('dashboard');
-    //     // }
-
-    //     if (Auth::attempt($credentials)) {
-    //         // Authentication passed
-    //         Log::info('Login successful for user: ' . $credentials['name']);
-    //         return redirect()->intended('dashboard');
-    //     } else {
-    //         Log::warning('Login failed for user: ' . $credentials['name']);
-    //     }
-
-    //     // Authentication failed
-    //     return redirect()->route('login-admin')
-    //         ->withErrors(['name' => 'These credentials do not match our records.'])
-    //         ->withInput();
-    // }
-
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -113,47 +79,6 @@ class AuthenticateController extends Controller
     }
 
     // Kirim link reset password
-    // public function sendResetLink(Request $request)
-    // {
-    //     $request->validate([
-    //         'email' => 'required|email',
-    //     ]);
-
-    //     // Cek apakah user ada dan memiliki role yang diizinkan
-    //     $user = User::where('email', $request->email)
-    //         ->whereIn('role', ['admin', 'superadmin', 'accounting'])
-    //         ->first();
-
-    //     if (!$user) {
-    //         return back()->withErrors([
-    //             'email' => 'Email tidak ditemukan atau tidak memiliki akses untuk reset password.'
-    //         ]);
-    //     }
-
-    //     // Generate token
-    //     $token = Str::random(64);
-
-    //     // Simpan token ke database
-    //     DB::table('password_reset_tokens')->updateOrInsert(
-    //         ['email' => $request->email],
-    //         [
-    //             'token' => Hash::make($token),
-    //             'created_at' => now()
-    //         ]
-    //     );
-
-    //     // Kirim email dengan token
-    //     try {
-    //         Mail::to($request->email)->send(new ResetPasswordMail($token, $user->name ?? $user->fullname));
-
-    //         return back()->with('success', 'Link reset password telah dikirim ke email Anda.');
-    //     } catch (\Exception $e) {
-    //         return back()->withErrors([
-    //             'email' => 'Gagal mengirim email. Silakan coba lagi.'
-    //         ]);
-    //     }
-    // }
-
     public function sendResetLink(Request $request)
     {
         try {
@@ -210,54 +135,6 @@ class AuthenticateController extends Controller
     }
 
     // Proses reset password
-    // public function resetPassword(Request $request)
-    // {
-    //     $request->validate([
-    //         'token' => 'required',
-    //         'email' => 'required|email',
-    //         'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    //     ]);
-
-    //     // Cek token di database
-    //     $passwordReset = DB::table('password_reset_tokens')
-    //         ->where('email', $request->email)
-    //         ->first();
-
-    //     if (!$passwordReset || !Hash::check($request->token, $passwordReset->token)) {
-    //         return back()->withErrors([
-    //             'token' => 'Token reset password tidak valid atau sudah kedaluwarsa.'
-    //         ]);
-    //     }
-
-    //     // Cek apakah token sudah lebih dari 1 jam
-    //     if (now()->diffInMinutes($passwordReset->created_at) > 60) {
-    //         return back()->withErrors([
-    //             'token' => 'Token reset password sudah kedaluwarsa.'
-    //         ]);
-    //     }
-
-    //     // Cek user dan role
-    //     $user = User::where('email', $request->email)
-    //         ->whereIn('role', ['admin', 'superadmin', 'accounting'])
-    //         ->first();
-
-    //     if (!$user) {
-    //         return back()->withErrors([
-    //             'email' => 'User tidak ditemukan atau tidak memiliki akses.'
-    //         ]);
-    //     }
-
-    //     // Update password
-    //     $user->update([
-    //         'password' => Hash::make($request->password)
-    //     ]);
-
-    //     // Hapus token setelah digunakan
-    //     DB::table('password_reset_tokens')->where('email', $request->email)->delete();
-
-    //     return redirect()->route('login-admin')->with('success', 'Password berhasil diubah. Silakan login dengan password baru.');
-    // }
-
     public function resetPassword(Request $request)
     {
         try {

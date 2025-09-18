@@ -479,7 +479,7 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
+                                    <li class="breadcrumb-item"><a href="{{ route('index-brand-admin') }}"
                                             class="d-flex align-items-center"><i
                                                 class="bi bi-award-fill me-1"></i>Brand</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Buat Brand</li>

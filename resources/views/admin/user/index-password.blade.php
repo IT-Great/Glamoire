@@ -4,18 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Glamoire</title>
+    <title>Pengguna - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
     <link rel="stylesheet" href="assets/vendors/iconly/bold.css">
+    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="assets/vendors/fontawesome/all.min.css">
-    <link rel="stylesheet" href="assets/vendors/simple-datatables/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 
     <style>
@@ -264,8 +264,6 @@
         .action-buttons {
             display: flex;
             gap: 0.5rem;
-            align-items: center;
-            /* Tambahan agar semua button sejajar secara vertikal */
         }
 
         .action-buttons .badge {
@@ -459,7 +457,7 @@
             margin-bottom: 1.5rem;
         }
 
-        .finance-nav {
+        .user-nav {
             background: #fff;
             border-radius: 1rem;
             padding: 1rem;
@@ -470,7 +468,7 @@
             gap: 1rem;
         }
 
-        .finance-nav-item {
+        .user-nav-item {
             padding: 0.75rem 1.5rem;
             border-radius: 0.75rem;
             color: #4a4a4a;
@@ -483,25 +481,25 @@
             border: 1px solid transparent;
         }
 
-        .finance-nav-item i {
+        .user-nav-item i {
             font-size: 1.1rem;
             margin-right: 0.5rem;
             transition: transform 0.3s ease;
         }
 
-        .finance-nav-item.active {
+        .user-nav-item.active {
             background-color: var(--primary-color);
             /* Make sure --primary-color is defined */
             color: #fff;
             border-color: var(--primary-color);
         }
 
-        .finance-nav-item.active i {
+        .user-nav-item.active i {
             transform: scale(1.2);
             color: #fff;
         }
 
-        .finance-nav-item:hover:not(.active) {
+        .user-nav-item:hover:not(.active) {
             background-color: #e9ecef;
             border-color: #dee2e6;
             color: #212529;
@@ -517,171 +515,73 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="page-title mb-4">
-                    <div class="row align-items-center">
-                        <div class="col-12 col-md-6">
-                            <h3 class="d-flex align-items-center gap-2 mb-1">
-                                Invoice
-                            </h3>
-                            <p class="text-muted mb-2">
-                                Halaman ini menampilkan semua data <strong>invoice</strong> yang tercatat dalam sistem.
+                <div class="row mb-2">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Pengguna</h3>
+                            <p>
+                                Halaman ini digunakan untuk <strong>mengelola password pengguna</strong> dalam sistem.
+                                Anda dapat melihat daftar semua pengguna, termasuk informasi peran serta melakukan perubahan password jika diperlukan.
                             </p>
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
-                                            <i class="bi bi-receipt me-2"></i>Invoice
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">
-                                        Daftar Invoice
-                                    </li>
-                                </ol>
-                            </nav>
                         </div>
                     </div>
                 </div>
 
-                <section class="section">
-                    <!-- Stats Row -->
-                    <div class="row mb-4 slide-in">
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-primary">
-                                <div class="stats-icon">
-                                    <i class="bi bi-receipt-cutoff"></i>
-                                </div>
-                                <div class="stats-title">Total Invoice</div>
-                                <h3 class="stats-number">{{ $invoices->count() }}</h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Jumlah semua invoice yang terdata
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="col-12 col-md-4 mb-3 mb-md-0">
-                            <div class="stats-card stats-card-success">
-                                <div class="stats-icon">
-                                    <i class="bi bi-cash-stack"></i>
-                                </div>
-                                <div class="stats-title">Total Nominal</div>
-                                <h3 class="stats-number">Rp {{ number_format($invoices->sum('amount'), 0, ',', '.') }}
-                                </h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Total nilai dari semua invoice
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-md-4">
-                            <div class="stats-card stats-card-warning">
-                                <div class="stats-icon">
-                                    <i class="bi bi-exclamation-circle"></i>
-                                </div>
-                                <div class="stats-title">Invoice Belum Lunas</div>
-                                <h3 class="stats-number">{{ $invoices->where('payment_status', 'Not Yet')->count() }}
-                                </h3>
-                                <div class="mt-3">
-                                    <small class="d-flex align-items-center">
-                                        <i class="bi bi-info-circle me-1"></i>
-                                        Invoice yang belum dibayar
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item"><a href="{{ route('index-user-admin') }}" class="d-inline-flex align-items-center"><i class="bi bi-people me-1"></i>Pengguna</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Daftar Pengguna</li>
+                            </ol>
+                        </nav>
                     </div>
+                </div>
 
-                    <!-- Navigation Tabs -->
-                    <div class="finance-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
-                        <a href="{{ route('index-invoice') }}"
-                            class="finance-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                            <i class="bi bi-receipt"></i>Daftar Invoice
-                        </a>
-                        <a href="{{ route('index-supplier') }}"
-                            class="finance-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                            <i class="bi bi-truck"></i>Daftar Supplier
-                        </a>
-                    </div>
+                <div class="user-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
+                    <a href="{{ route('index-user-admin') }}"
+                        class="user-nav-item {{ Route::currentRouteName() == 'index-user-admin' ? 'active' : '' }}">
+                        <i class="bi bi-people"></i> Daftar Pengguna
+                    </a>
+                    <a href="{{ route('password-user-admin') }}"
+                        class="user-nav-item {{ Route::currentRouteName() == 'password-user-admin' ? 'active' : '' }}">
+                        <i class="bi bi-key"></i> Kelola Password
+                    </a>
+                </div>
 
-                    {{-- data table invoice --}}
-                    <div class="card">
+
+                <div class="page-heading">
+                    <h3 class="mb-4">Kelola Password Pengguna</h3>
+
+                    {{-- SECTION: Admins --}}
+                    <div class="card mb-4">
                         <div class="card-header">
-                            <div class="row align-items-center">
-                                <div class="col-12 col-md-6">
-                                    <h4 class="d-inline-flex align-items-center">
-                                        <i class="bi bi-receipt-cutoff me-2"></i>Daftar Invoice
-                                    </h4>
-                                </div>
-                                <div
-                                    class="col-12 col-md-6 d-flex justify-content-md-end align-items-center order-md-2 order-first">
-
-                                    <a href="{{ route('create-invoice') }}" type="button"
-                                        class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                                        <i class="bi bi-plus fs-6 me-1"></i> Add Invoice
-                                    </a>
-                                </div>
-                            </div>
+                            <h5>Admin, Super Admin, Accounting, Admin Gudang</h5>
                         </div>
                         <div class="card-body">
-                            <table class="table" id="table1">
+                            <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>INVOICE</th>
-                                        <th>SUPPLIER</th>
-                                        <th>AMOUNT</th>
-                                        <th>DATE</th>
-                                        <th>DEADLINE</th>
-                                        <th>STATUS</th>
-                                        <th>PAYMENT</th>
-                                        <th>ACTIONS</th>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($invoices as $invoice)
+                                    @foreach ($adminUsers as $user)
                                         <tr>
-                                            <td><strong>{{ $invoice->no_invoice }}</strong></td>
-                                            <td>{{ $invoice->supplier->name ?? '-' }}</td>
-                                            <td class="amount-cell">
-                                                {{ number_format($invoice->amount, 0, ',', '.') }}</p>
-                                            </td>
-                                            <td> {{ \Carbon\Carbon::parse($invoice->deadline_invoice)->format('M d, Y') }}
-                                            </td>
-                                            <td class="deadline-safe">
-                                                {{ \Carbon\Carbon::parse($invoice->date)->format('M d, Y') }}
-                                            </td>
+                                            <td>{{ $user->name }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->role }}</td>
                                             <td>
-                                                <span
-                                                    class="badge bg-light-success">{{ $invoice->payment_status }}</span>
-                                            </td>
-                                            <td>{{ $invoice->payment_method }}</td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <a href="{{ route('get-invoice-details', ['id' => $invoice->id]) }}"
-                                                        class="btn btn-sm btn-info d-flex align-items-center justify-content-center">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('edit-invoice', ['id' => $invoice->id]) }}"
-                                                        class="btn btn-sm btn-warning d-flex align-items-center justify-content-center">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </a>
-                                                    @if ($invoice->payment_status == 'Not Yet')
-                                                        <a href="{{ route('view-process-payment', ['id' => $invoice->id]) }}"
-                                                            class="btn btn-sm btn-success d-flex align-items-center justify-content-center">
-                                                            <i class="bi bi-credit-card"></i>
-                                                        </a>
-                                                    @endif
-                                                    <button
-                                                        class="btn btn-sm btn-danger delete-invoice d-flex align-items-center justify-content-center"
-                                                        data-id="{{ $invoice->id }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
-
+                                                <button type="button"
+                                                    class="btn btn-primary btn-sm d-inline-flex align-items-center"
+                                                    onclick="openChangePasswordModal('{{ $user->id }}', '{{ addslashes($user->fullname) }}', '{{ addslashes($user->email) }}')">
+                                                    <i class="bi bi-key me-1"></i> Change Password
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -689,91 +589,110 @@
                             </table>
                         </div>
                     </div>
-                </section>
+
+                    {{-- SECTION: Users --}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Pengguna</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($normalUsers as $user)
+                                        <tr>
+                                            <td>{{ $user->fullname }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            <td>{{ $user->role }}</td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm d-inline-flex align-items-center"
+                                                    onclick="openChangePasswordModal('{{ $user->id }}', '{{ addslashes($user->fullname) }}', '{{ addslashes($user->email) }}')">
+                                                    <i class="bi bi-key me-1"></i> Change Password
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             @include('admin.layouts.footer')
         </div>
+
+        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"> {{-- modal-dialog-centered untuk posisi tengah --}}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Change Password</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="changePasswordForm">
+                        @csrf
+                        <div class="modal-body">
+                            <input type="hidden" name="user_id" id="modal_user_id">
+
+                            <p><strong>Full Name:</strong> <span id="modal_fullname"></span></p>
+                            <p><strong>Email:</strong> <span id="modal_email"></span></p>
+
+                            <div class="mb-3 position-relative">
+                                <label>New Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="new_password" id="new_password" class="form-control"
+                                        required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password">
+                                        <i class="bi bi-eye-slash"></i> <!-- default: dicoret -->
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mb-3 position-relative">
+                                <label>Confirm Password</label>
+                                <div class="input-group">
+                                    <input type="password" name="new_password_confirmation"
+                                        id="new_password_confirmation" class="form-control" required>
+                                    <button class="btn btn-outline-secondary toggle-password" type="button"
+                                        data-target="new_password_confirmation">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="password_error" class="alert alert-danger d-none"></div>
+                            <div id="password_success" class="alert alert-success d-none"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/sweetalert2/sweetalert2.all.min.js"></script>
-
-    {{-- modal delete data --}}
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '.delete-invoice', function(e) {
-                e.preventDefault();
-
-                const invoiceId = $(this).data('id');
-
-                Swal.fire({
-                    title: 'Apakah kamu yakin?',
-                    text: "Data invoice akan dihapus secara permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Kirim request delete ke server
-                        $.ajax({
-                            url: `/invoice-suppliers/${invoiceId}`,
-                            type: 'DELETE',
-                            data: {
-                                _token: $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function(response) {
-                                // Tampilkan pesan sukses dengan timer dan progress bar
-                                Swal.fire({
-                                    title: 'Berhasil!',
-                                    text: response.message ||
-                                        'Invoice berhasil dihapus.',
-                                    icon: 'success',
-                                    confirmButtonText: 'OK',
-                                    confirmButtonColor: '#4A69E2',
-                                    timer: 2000, // waktu dalam ms
-                                    timerProgressBar: true
-                                }).then(() => {
-                                    // Refresh halaman setelah sukses
-                                    window.location.reload();
-                                });
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    title: 'Gagal!',
-                                    text: xhr.responseJSON?.message ||
-                                        'Terjadi kesalahan.',
-                                    icon: 'error',
-                                    confirmButtonText: 'OK',
-                                    confirmButtonColor: '#dc3545',
-                                    timer: 2000,
-                                    timerProgressBar: true
-                                });
-                            }
-                        });
-                    }
-                });
-            });
-        });
-    </script>
-
-    {{-- modal sukses --}}
-    @if (session('success'))
-        <script>
-            Swal.fire({
-                title: 'Success!',
-                text: '{{ session('success') }}',
-                icon: 'success',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#4A69E2',
-                timer: 2000,
-                timerProgressBar: true
-            });
-        </script>
-    @endif
+    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/pages/dashboard.js"></script>
+    <script src="assets/js/main.js"></script>
 
     <script>
         // Simple Datatable
@@ -781,11 +700,124 @@
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
 
-    <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/pages/dashboard.js"></script>
-    <script src="assets/vendors/fontawesome/all.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modalElement = document.getElementById('changePasswordModal');
+            const passwordForm = document.getElementById('changePasswordForm');
+            const passwordError = document.getElementById('password_error');
+            const passwordSuccess = document.getElementById('password_success');
+            const modalInstance = new bootstrap.Modal(modalElement);
+
+            // buka modal
+            window.openChangePasswordModal = (userId, fullname, email) => {
+                // set data
+                document.getElementById('modal_user_id').value = userId;
+                document.getElementById('modal_fullname').textContent = fullname;
+                document.getElementById('modal_email').textContent = email;
+
+                // reset form & pesan
+                passwordForm.reset();
+                passwordError.textContent = '';
+                passwordError.classList.add('d-none');
+                passwordSuccess.textContent = '';
+                passwordSuccess.classList.add('d-none');
+
+                modalInstance.show();
+            };
+
+            // toggle password visibility
+            document.querySelectorAll('.toggle-password').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const targetId = btn.getAttribute('data-target');
+                    const input = document.getElementById(targetId);
+                    const icon = btn.querySelector('i');
+
+                    if (input.type === 'password') {
+                        // ubah jadi terlihat
+                        input.type = 'text';
+                        icon.classList.remove('bi-eye-slash');
+                        icon.classList.add('bi-eye');
+                    } else {
+                        // ubah jadi disembunyikan
+                        input.type = 'password';
+                        icon.classList.remove('bi-eye');
+                        icon.classList.add('bi-eye-slash');
+                    }
+                });
+            });
+
+
+            // submit
+            passwordForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(passwordForm);
+
+                // clear alerts
+                passwordError.textContent = '';
+                passwordError.classList.add('d-none');
+                passwordSuccess.textContent = '';
+                passwordSuccess.classList.add('d-none');
+
+                fetch("{{ route('change-password-user-admin') }}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // SweetAlert sukses
+                            let timerInterval;
+                            Swal.fire({
+                                title: 'Password Updated!',
+                                text: data.message || 'Password has been successfully updated.',
+                                icon: 'success',
+                                timer: 2000,
+                                timerProgressBar: true,
+                                showConfirmButton: true,
+                                confirmButtonText: 'OK',
+                                confirmButtonColor: '#3085d6',
+                                didOpen: () => {
+                                    const b = Swal.getHtmlContainer().querySelector('b');
+                                    timerInterval = setInterval(() => {}, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    console.log('Closed by timer');
+                                }
+                            });
+
+                            // reset form
+                            passwordForm.reset();
+                            document.getElementById('modal_user_id').value = formData.get('user_id');
+
+                            // tutup modal
+                            setTimeout(() => {
+                                modalInstance.hide();
+                            }, 1000);
+                        } else {
+                            passwordError.textContent = data.message || 'An error occurred';
+                            passwordError.classList.remove('d-none');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        passwordError.textContent = 'Error updating password';
+                        passwordError.classList.remove('d-none');
+                    });
+            });
+        });
+    </script>
+
+
+
+
 </body>
 
 </html>

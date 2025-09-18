@@ -209,7 +209,7 @@
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->handphone }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                    {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }} (61258)</p>
+                                                    {{ $sa->subdistrict }}, {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->address }}</p>
                                                 @if ($sa->benchmark)
@@ -348,6 +348,22 @@
                                                                 </select>
                                                                 <input type="hidden" name="district_name"
                                                                     id="change_district_name_{{$sa->id}}">
+                                                            </div>
+                                                            
+                                                            <div class="col-12 p-0">
+                                                                <label for="village"
+                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                                                <select
+                                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                    aria-label="village" name="subdistrict_change">
+                                                                    <option value="{{ $sa->subdistrict }}" selected>
+                                                                        {{ strtolower($sa->subdistrict) }}</option>
+                                                                    <option
+                                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                        Pilih Desa/Kelurahan</option>
+                                                                </select>
+                                                                <input type="hidden" name="subdistrict_name"
+                                                                    id="change_subdistrict_name_{{$sa->id}}">
                                                             </div>
 
                                                             <!-- ALAMAT -->
@@ -535,16 +551,45 @@
                                         <div class="mobile-only">
                                             <div class="grid-container-order px-0 hover:cursor-pointer hover:text-italic">
                                             @foreach ($order->items as $item)
-                                                <img class="border border-[#183018] rounded-sm"
-                                                    src="{{ Storage::url($item->product->main_image) }}"
+                                                @if ($item->product_variant_id !== NULL)
+                                                    <img class="col-2 col-md-1 p-0 m-0"
+                                                    src="{{ Storage::url($item->productVariant->variant_image) }}"
                                                     alt="">
+                                                     <p
+                                                        class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                        {{ $item->product->brand->name }}</p>
+                                                    <p
+                                                        class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                        {{ $item->product->product_name }}</p>
+                                                    <p
+                                                        class="text-black text-[8px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
+                                                        Varian {{ $item->productVariant->variant_value }}</p>
+                                                    <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                        {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                @else
+                                                    <div class="d-flex">
+                                                        <img class="col-2 col-md-1 p-0 m-0"
+                                                        src="{{ Storage::url($item->product->main_image) }}"
+                                                        alt="">
+                                                        
+                                                        <div class="col-7 col-md-8 px-1 px-md-3">
+                                                            <p
+                                                                class="font-semibold text-black mb-0 text-[8px] md:text-10px] lg:text-[10px] xl:text-[12px]">
+                                                                {{ $item->product->brand->name }}</p>
+                                                            <p
+                                                                class="text-black text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
+                                                                {{ $item->product->product_name }}</p>
+                                                            @if ($item->is_tier !== null)
+                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                Beli {{ $item->quantity }} jadi Rp{{ number_format($item->subtotal, 0, ',', '.') }}</p>
+                                                            @else
+                                                            <p class="text-[7px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
+                                                                {{ $item->quantity }} x Rp{{ number_format($item->price, 0, ',', '.') }}</p>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endforeach 
-                                            </div>   
-                                            <div class="flex items-center justify-start">
-                                                <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
-                                                <p class="ml-1 text-black text-[10px]">
-                                                    Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
-                                                </p>
                                             </div>
                                             
                                         </div>    
@@ -552,6 +597,14 @@
 
                                         <div class="d-flex justify-content-end input-group-btn mt-2">
                                             <div class="col-12 d-flex p-0 justify-content-end gap-2">
+                                                   
+                                                <div class="mobile-total align-items-center justify-content-center">
+                                                    <p class="text-[#183018] text-[10px] font-semibold">Total :</p>
+                                                    <p class="ml-1 text-black text-[10px]">
+                                                        Rp{{ number_format($order->total_item_price, 0, ',', '.') }}
+                                                    </p>
+                                                </div>
+
                                                 <div class="d-flex align-items-center justify-content-center">
                                                     <a class="hover:cursor-pointer text-[10px] md:text-[10px] lg:text-[13px] xl:text-[15px] text-red-700"
                                                         data-bs-toggle="modal"
@@ -1171,13 +1224,13 @@
                         <div class="col-12">
                             <div class="row">
                                 @foreach ($wishlists as $wp)
-                                    <div class="col-lg-3 col-md-4 col-6 p-1">
+                                    <div class="col-lg-3 col-md-3 col-6 p-1">
                                         <div
                                             class="bg-white rounded-lg shadow-sm overflow-hidden border border-xl h-fit">
                                             <a href="/{{ $wp->product_code }}_product"
                                                 class="text-decoration-none">
-                                                <div class="position-relative overflow-hidden bg-transparent p-0">
-                                                    <img class="img-fluid w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
+                                                <div class="product-image-container position-relative overflow-hidden bg-transparent p-0">
+                                                    <img class="product-image-home w-100 rounded-sm pb-1 md:pb-2 lg:pb-2 xl:pb-2"
                                                         src="{{ Storage::url($wp->main_image) }}"
                                                         alt="{{ $wp->product_name }}">
                                                 </div>
@@ -1401,6 +1454,17 @@
                                         Kecamatan</option>
                                 </select>
                                 <input type="hidden" name="district_name" id="address_district_name">
+                            </div>
+                            
+                            <div class="col-12 p-0">
+                                <label for="villages"
+                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                    aria-label="villages" name="subdistrict" id="address_subdistrict">
+                                    <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih
+                                        Desa/Kelurahan</option>
+                                </select>
+                                <input type="hidden" name="subdistrict_name" id="address_subdistrict_name">
                             </div>
 
                             <!-- ALAMAT -->
@@ -2310,6 +2374,39 @@
                         );
                 }
             });
+        
+            document
+            .getElementById("address_district")
+            .addEventListener("change", function() {
+                const districtId = this.value;
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("address_subdistrict_name").value =
+                    districtName; // Save name in hidden input
+
+                const subdistrictSelect = document.getElementById("address_subdistrict");
+                subdistrictSelect.innerHTML =
+                    '<option value="">Pilih Desa/Kelurahan</option>';
+                document.getElementById("address_subdistrict_name").value = ""; // Clear previous district name
+
+                // GET DATA DISTRICT FROM REGENCY
+                if (districtId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((subdistricts) => {
+                            subdistricts.forEach((subdistrict) => {
+                                let option = document.createElement("option");
+                                option.value = subdistrict.id;
+                                option.text = subdistrict.name;
+                                subdistrictSelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching districts:", error)
+                        );
+                }
+            });
 
         // Event listener for regency selection
         document
@@ -2325,6 +2422,13 @@
             .addEventListener("change", function() {
                 const districtName = this.options[this.selectedIndex].text; // Get the name
                 document.getElementById("address_district_name").value = districtName; // Save name in hidden input
+            });
+       
+        document
+            .getElementById("address_subdistrict")
+            .addEventListener("change", function() {
+                const subdistrictName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("address_subdistrict_name").value = subdistrictName; // Save name in hidden input
             });
         // END API WILAYAH REGISTER
     </script>

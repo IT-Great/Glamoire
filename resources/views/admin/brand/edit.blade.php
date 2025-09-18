@@ -110,7 +110,7 @@
         .upload-zone {
             border: 2px dashed #cbd5e1;
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             padding: 24px;
             text-align: center;
             background-color: #f8fafc;
@@ -156,7 +156,7 @@
         .error-message {
             color: #ef4444;
             font-size: 12px;
-            margin-top: 8px;
+            margin-bottom: 4px;
             font-weight: 500;
         }
 
@@ -521,7 +521,7 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
+                                    <li class="breadcrumb-item"><a href="{{ route('index-brand-admin') }}"
                                             class="d-flex align-items-center"><i
                                                 class="bi bi-award-fill me-1"></i>Brand</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Edit Brand</li>
@@ -604,15 +604,13 @@
                                                         </div>
 
                                                         <!-- Kolom Kanan -->
-                                                        <div class="upload-container">
+                                                        <div class="form-group upload-container">
                                                             <!-- Upload Title -->
-                                                            <div class="upload-title">Brand Logo <span
-                                                                    style="color: red;">*</span></div>
-
+                                                            <label for="brand-name" class="mb-2">Brand Logo <span
+                                                                    style="color: red">*</span></label>
                                                             <!-- Using exactly your code structure for current logo -->
                                                             @if ($brand->brand_logo)
                                                                 <div class="mb-4">
-
                                                                     <div class="d-flex align-items-center gap-3">
                                                                         <a href="{{ asset('storage/' . $brand->brand_logo) }}"
                                                                             target="_blank">
@@ -622,7 +620,7 @@
                                                                                 style="max-width: 100px; max-height: 100px; object-fit: cover;">
                                                                         </a>
                                                                         <div>
-                                                                            <p class="mb-1 fw-bold">
+                                                                            <p class="mb-1 fw-bold text-break w-100">
                                                                                 {{ basename($brand->brand_logo) }}
                                                                             </p>
                                                                             <small class="text-muted">Brand Logo yang
@@ -659,6 +657,10 @@
                                                                 </div>
                                                             </div>
                                                             <div class="error-message" id="upload-error"></div>
+
+                                                            @error('brand_logo')
+                                                                <small class="text-danger">{{ $message }}</small>
+                                                            @enderror
 
                                                             <!-- Preview of New Upload -->
                                                             <div class="upload-preview" id="upload-preview"
@@ -705,7 +707,7 @@
 
                                                     </div>
                                                     <!-- Submit Button -->
-                                                    <div class="col-12 d-flex justify-content-end">
+                                                    <div class="col-12 d-flex justify-content-end mt-2">
                                                         <a href="{{ route('index-brand-admin') }}"
                                                             class="btn btn-secondary btn-sm me-2"
                                                             style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">

@@ -158,44 +158,90 @@
         <div id="main">
             <div class="page-heading">
                 <!-- Header area with improved styling -->
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="page-title mb-0">
-                                <i class="bi bi-file-earmark-text me-2"></i>Article Preview
-                            </h2>
-                            <p class="text-muted">Tinjau Article anda</p>
+                <div class="page-title">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title">
+                                <h3 class="mb-2">Review Artikel</h3>
+                                <p>Kelola  dan review artikel/konten anda pada halaman ini</p>
+                            </div>
                         </div>
-                        <div>
-                            <nav aria-label="breadcrumb">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}"><i
-                                                class="bi bi-journal-text me-1"></i>Article</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Review Article</li>
+                                    <li class="breadcrumb-item"><a href="{{ route('index-article') }}"
+                                            class="d-inline-flex align-items-center"><i
+                                                class="bi bi-file-richtext me-1"></i>Artikel</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Review Artikel</li>
                                 </ol>
                             </nav>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Article info card -->
-                    <div class="card shadow-sm mb-4">
-                        <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Article Information</h5>
+                <!-- Article info card -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informasi Artikel</h5>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="article-title mb-4 mt-4">{{ $article->title }}</h5>
+                                <div class="d-flex align-items-center mb-3">
+                                    <span class="badge bg-light text-primary me-2">
+                                        <i class="bi bi-tag-fill me-1"></i>{{ $article->categoryArticle->name }}
+                                    </span>
+                                    <span class="text-muted small">
+                                        <i class="bi bi-calendar3 me-1"></i>Created:
+                                        {{ $article->created_at->format('M d, Y') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Article content preview -->
+                <div class="row">
+                    <!-- Main content area -->
+                    <div class="col-lg-9">
+                        <div class="card shadow-sm article-preview mb-4">
+                            <!-- Featured image with improved display -->
+                            <div class="featured-image-container">
+                                <a href="{{ asset('storage/' . $article->image) }}" target="_blank"
+                                    title="Buka gambar di tab baru">
+                                    <img src="{{ asset('storage/' . $article->image) }}" alt="{{ $article->title }}"
+                                        class="img-fluid featured-image">
+                                </a>
                             </div>
 
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    <h5 class="article-title mb-1">{{ $article->title }}</h5>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <span class="badge bg-light text-primary me-2">
-                                            <i class="bi bi-tag-fill me-1"></i>{{ $article->categoryArticle->name }}
-                                        </span>
+                            <!-- Article content with improved styling -->
+                            <div class="card-body article-content p-4">
+                                <div class="content-wrapper">
+                                    {!! $article->content !!}
+                                </div>
+                            </div>
+
+                            <!-- Article footer with meta information -->
+                            <div class="card-footer bg-light">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
                                         <span class="text-muted small">
-                                            <i class="bi bi-calendar3 me-1"></i>Created:
-                                            {{ $article->created_at->format('M d, Y') }}
+                                            <i class="bi bi-person me-1"></i>Author:
+                                            {{ $article->user->name ?? 'Admin' }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span class="text-muted small">
+                                            <i class="bi bi-clock me-1"></i>Reading time:
+                                            {{ ceil(str_word_count(strip_tags($article->content)) / 200) }} min
                                         </span>
                                     </div>
                                 </div>
@@ -203,84 +249,42 @@
                         </div>
                     </div>
 
-                    <!-- Article content preview -->
-                    <div class="row">
-                        <!-- Main content area -->
-                        <div class="col-lg-9">
-                            <div class="card shadow-sm article-preview mb-4">
-                                <!-- Featured image with improved display -->
-                                <div class="featured-image-container">
-                                    <a href="{{ asset('storage/' . $article->image) }}" target="_blank"
-                                        title="Buka gambar di tab baru">
-                                        <img src="{{ asset('storage/' . $article->image) }}"
-                                            alt="{{ $article->title }}" class="img-fluid featured-image">
-                                    </a>
-                                </div>
-
-                                <!-- Article content with improved styling -->
-                                <div class="card-body article-content p-4">
-                                    <div class="content-wrapper">
-                                        {!! $article->content !!}
+                    <!-- Sidebar with additional information -->
+                    <div class="col-lg-3">
+                        <!-- Article status card - removed publish status -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-activity me-2"></i>Article Status</h6>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="status-icon me-3">
+                                        <i class="bi bi-file-text text-primary fs-4"></i>
                                     </div>
-                                </div>
-
-                                <!-- Article footer with meta information -->
-                                <div class="card-footer bg-light">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="text-muted small">
-                                                <i class="bi bi-person me-1"></i>Author:
-                                                {{ $article->user->name ?? 'Admin' }}
-                                            </span>
-                                        </div>
-                                        <div>
-                                            <span class="text-muted small">
-                                                <i class="bi bi-clock me-1"></i>Reading time:
-                                                {{ ceil(str_word_count(strip_tags($article->content)) / 200) }} min
-                                            </span>
-                                        </div>
+                                    <div>
+                                        <h6 class="mb-0">Article</h6>
+                                        <span class="text-muted small">Last updated:
+                                            {{ $article->updated_at->format('M d, Y') }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Sidebar with additional information -->
-                        <div class="col-lg-3">
-                            <!-- Article status card - removed publish status -->
-                            <div class="card shadow-sm mb-4">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0"><i class="bi bi-activity me-2"></i>Article Status</h6>
-                                </div>
-                                <div class="card-body p-3">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <div class="status-icon me-3">
-                                            <i class="bi bi-file-text text-primary fs-4"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-0">Article</h6>
-                                            <span class="text-muted small">Last updated:
-                                                {{ $article->updated_at->format('M d, Y') }}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <!-- Actions card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="bi bi-tools me-2"></i>Actions</h6>
                             </div>
+                            <div class="card-body p-3">
+                                <div class="d-grid gap-2">
+                                    <a href="{{ route('edit-article', $article->id) }}"
+                                        class="btn btn-outline-primary">
+                                        <i class="bi bi-pencil me-1"></i>Edit Article
+                                    </a>
 
-                            <!-- Actions card -->
-                            <div class="card shadow-sm mb-4">
-                                <div class="card-header bg-light">
-                                    <h6 class="mb-0"><i class="bi bi-tools me-2"></i>Actions</h6>
-                                </div>
-                                <div class="card-body p-3">
-                                    <div class="d-grid gap-2">
-                                        <a href="{{ route('edit-article', $article->id) }}"
-                                            class="btn btn-outline-primary">
-                                            <i class="bi bi-pencil me-1"></i>Edit Article
-                                        </a>
-
-                                        <a href="{{ route('index-article') }}" class="btn btn-outline-secondary">
-                                            <i class="bi bi-arrow-left me-1"></i>Kembali
-                                        </a>
-                                    </div>
+                                    <a href="{{ route('index-article') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-1"></i>Kembali
+                                    </a>
                                 </div>
                             </div>
                         </div>

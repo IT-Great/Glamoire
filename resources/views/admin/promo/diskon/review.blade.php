@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo - Glamoire</title>
+    <title>Diskon - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -38,6 +38,11 @@
             --radius-md: 0.5rem;
             --radius-lg: 1rem;
         }
+
+        a {
+            text-decoration: none;
+        }
+
 
         body {
             background-color: #f3f4f6;
@@ -610,23 +615,29 @@
         <div id="main" class="premium-container">
             <!-- Breadcrumb -->
             <div class="page-title">
-                <h3 class="mb-2">Detail Promo Diskon</h3>
-                <p class="mb-3">
-                    Buat Diskon Produk Untuk Menarik Minat Pembeli.
-                    <a href="#" class="text-blue" style="text-decoration: none;">Pelajari Selengkapnya</a>
-                </p>
                 <div class="row">
+                    <div class="col-12 col-md-6 order-md-1 order-last">
+                        <h3>Diskon</h3>
+                        <p class="text-subtitle text-muted">Review data diskon yang sudah anda buat pada halaman ini</p>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-4">
                     <div class="col-12 col-md-6">
-                        <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
+                        <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('index-promo-diskon') }}"
-                                        style="text-decoration: none;">Promo Discount</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Add Promo Discount</li>
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-promo-diskon') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-percent me-1"></i> Diskon
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active">Detail Diskon</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
             </div>
+
             <div class="col-md-12">
                 <div class="premium-card">
                     <div class="premium-card-header">
@@ -717,56 +728,6 @@
                                             <div class="premium-stat-desc">Sebelum kampanye berakhir</div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="premium-timeline-section mt-4">
-                            <div class="premium-info-header">
-                                <h4>Progres Kampanye</h4>
-                                <div class="premium-info-subtitle">Status kampanye saat ini</div>
-                            </div>
-
-                            <div class="timeline-container mt-3">
-                                @php
-                                    $startDate = \Carbon\Carbon::parse($promo->start_date);
-                                    $endDate = \Carbon\Carbon::parse($promo->end_date);
-                                    $currentDate = now();
-                                    $totalDuration = $startDate->diffInSeconds($endDate);
-                                    $elapsedDuration = $startDate->diffInSeconds($currentDate);
-                                    $progressPercentage = min(100, max(0, ($elapsedDuration / $totalDuration) * 100));
-                                @endphp
-
-                                <div class="timeline-track">
-                                    <div class="timeline-progress" style="width: {{ $progressPercentage }}%"></div>
-
-                                    <div class="timeline-marker start">
-                                        <div class="timeline-label">Mulai</div>
-                                        <div class="timeline-date">{{ $startDate->format('d M Y') }}</div>
-                                    </div>
-
-                                    <div class="timeline-marker current"
-                                        style="--progress-percentage: {{ $progressPercentage }}%">
-                                        <div class="timeline-label">Sekarang</div>
-                                        <div class="timeline-date">{{ $currentDate->format('d M Y') }}</div>
-                                    </div>
-
-                                    <div class="timeline-marker end">
-                                        <div class="timeline-label">Selesai</div>
-                                        <div class="timeline-date">{{ $endDate->format('d M Y') }}</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-                                <div>
-                                    <div class="premium-progress-label">Status Progres</div>
-                                    <div class="premium-progress-value">{{ round($progressPercentage) }}% Selesai
-                                    </div>
-                                </div>
-                                <div class="text-end">
-                                    <div class="premium-progress-label">Sisa Waktu</div>
-                                    <div class="premium-progress-value">{{ $daysRemaining }} hari</div>
                                 </div>
                             </div>
                         </div>
@@ -1004,7 +965,9 @@
                                 </div>
                                 <div class="product-info">
                                     <h5 class="product-name">{{ $product->product_name }}</h5>
-                                    <p class="product-description">{{ Str::limit($product->description, 100) }}</p>
+                                    <p class="product-description">
+                                        {{ Str::limit(strip_tags($product->description), 100) }}
+                                    </p>
 
                                     <div class="price-comparison">
                                         <span class="original-price">Rp
@@ -1047,7 +1010,8 @@
                                             @endif
                                         </div>
                                         <div>
-                                            <button class="btn btn-sm btn-outline-primary"
+                                            <button
+                                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center"
                                                 onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
                                                 <i class="bi bi-eye"></i>
                                             </button>

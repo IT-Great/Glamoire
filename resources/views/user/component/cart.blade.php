@@ -11,7 +11,7 @@
             </div>
         </div>
     </div>
-
+    
     <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
         @if (count($data) !== 0)
             <div class="col-lg-9 grid gap-2 px-0 px-md-3">
@@ -104,10 +104,9 @@
                                                         <button class="btn btn-delete" name="delete-product-cart"
                                                             title="Hapus produk dari keranjang"
                                                             style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                            data-type="variant"
+                                                            data-type="product"
                                                             data-id="{{ $product->product_variant_id }}">
-                                                            <i
-                                                                class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+                                                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
                                                         </button>
 
                                                         @if ($product->productVariant->variant_stock == 0)
@@ -238,35 +237,34 @@
                                                         </button>
                                                     </div>
 
-                                                                <input type="number"
-                                                                    id="product-quantity-{{ $product->product->id }}"
-                                                                    value="{{ $product->quantity }}" name="total_product"
-                                                                    class="text-xs form-control bg-secondary text-center no-spinner"
-                                                                    min="1"
-                                                                    max="{{ $product->product->stock_quantity }}"
-                                                                    oninput="validateInput(this, {{ $product->product->stock_quantity }})">
+                                                        <input type="number"
+                                                            id="product-quantity-{{ $product->product->id }}"
+                                                            value="{{ $product->quantity }}" name="total_product"
+                                                            class="text-xs form-control bg-secondary text-center no-spinner"
+                                                            min="1"
+                                                            max="{{ $product->product->stock_quantity }}"
+                                                            oninput="validateInput(this, {{ $product->product->stock_quantity }})">
 
-
-                                                                <div class="input-group-btn">
-                                                                    <button class="btn btn-plus"
-                                                                        data-id="{{ $product->product_id }}"
-                                                                        data-quantity="{{ $product->product->stock_quantity }}"
-                                                                        style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                        id="plus-btn-product-cart-{{ $product->product_id }}">
-                                                                        <i class="fa fa-plus text-xs"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        @endif
+                                                        <div class="input-group-btn">
+                                                            <button class="btn btn-plus"
+                                                                data-id="{{ $product->product_id }}"
+                                                                data-quantity="{{ $product->product->stock_quantity }}"
+                                                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
+                                                                id="plus-btn-product-cart-{{ $product->product_id }}">
+                                                                <i class="fa fa-plus text-xs"></i>
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </div>
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                </div>
+            </div>
 
             <div class="col-lg-3 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0 mt-2 mt-md-0 d-none d-lg-block">
                 <div class="position-sticky" style="top: 4rem">
@@ -286,16 +284,15 @@
             </div>
 
         @else
-        <div style="min-height:10vh;">
-            <div class="flex align-items-center justify-content-center">
-                <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+            <div style="min-height:10vh;">
+                <div class="flex align-items-center justify-content-center">
+                    <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
+                </div>
+                <div class="grid align-items-center justify-content-center">
+                    <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
+                    <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
+                </div>
             </div>
-            <div class="grid align-items-center justify-content-center">
-                <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
-                <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
-            </div>
-        </div>
-            
         @endif
     </div>
 

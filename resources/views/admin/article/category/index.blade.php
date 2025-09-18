@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Article - Glamoire</title>
+    <title>Kategori Artikel - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -481,7 +481,8 @@
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-category-article') }}">Kategori
+                                    <li class="breadcrumb-item"><a href="{{ route('index-category-article') }}" class="d-inline-flex align-items-center"><i
+                                                class="bi bi-file-richtext me-1"></i>Kategori
                                             Artikel</a></li>
                                     <li class="breadcrumb-item active" aria-current="page">Semua Kategori Artikel</li>
                                 </ol>
@@ -531,7 +532,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-12 col-md-6">
-                                    <h4>List Category Artikel</h4>
+                                    <h4>Daftar Kategori Artikel</h4>
                                 </div>
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="{{ route('index-article') }}" type="button"
@@ -553,9 +554,9 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Category Name</th>
-                                        <th>Total Article</th>
-                                        <th>Action</th>
+                                        <th>Nama Kategori</th>
+                                        <th>Total Artikel</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -568,7 +569,8 @@
                                                     class="badge bg-light-success">{{ $item->articles_count ?? '0' }}</span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-danger delete-category"
+                                                <button
+                                                    class="btn btn-sm btn-danger delete-category d-inline-flex align-items-center"
                                                     data-id="{{ $item->id }}"> <i class="bi bi-trash"
                                                         style="margin-right: 3px"></i>Delete</button>
                                             </td>
@@ -624,10 +626,12 @@
 
                             <div class="modal-footer bg-light"
                                 style="border-bottom-left-radius: 12px; border-bottom-right-radius: 12px;">
-                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                                <button type="button"
+                                    class="btn btn-outline-secondary d-inline-flex align-items-center"
+                                    data-bs-dismiss="modal">
                                     <i class="bi bi-x me-1"></i>Batal
                                 </button>
-                                <button type="submit" class="btn btn-primary px-4">
+                                <button type="submit" class="btn btn-primary px-4 d-inline-flex align-items-center">
                                     <i class="bi bi-check2 me-1"></i>Buat Kategori
                                 </button>
                             </div>

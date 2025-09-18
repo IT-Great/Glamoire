@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Voucher - Glamoire</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -128,18 +128,20 @@
                     <h3 class="mb-2">Buat Voucher User Baru</h3>
                     <p class="mb-3">
                         Buat Voucher User Baru Sekarang Untuk Menarik Minat Pembeli
-                        <a href="#" class="text-blue">Pelajari Lebih Lanjut</a>
                     </p>
 
                     <div class="row">
                         <div class="col-12 col-md-6">
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('index-promo-voucher') }}">Promo
-                                            Voucher</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Buat Promo Voucher User Baru
+                                    <li class="breadcrumb-item">
+                                        <a href="{{ route('index-promo-voucher') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-tag me-1"></i> Voucher
+                                        </a>
                                     </li>
+                                    <li class="breadcrumb-item active">Buat Voucher User Baru</li>
                                 </ol>
+
                             </nav>
                         </div>
                     </div>
@@ -383,8 +385,6 @@
                                                 <i class="bi bi-box-arrow-in-left me-1"></i> Kembali
                                             </a>
 
-                                            <button type="reset" class="btn btn-sm btn-light-secondary me-3">Reset
-                                                Voucher</button>
                                             <button type="submit" class="btn btn-sm btn-primary me-1">Submit
                                                 Voucher</button>
 

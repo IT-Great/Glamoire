@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact-Us - Glamoire</title>
+    <title>Hubungi Kami - Glamoire</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -235,153 +235,143 @@
 
         <div id="main">
             <div class="page-heading">
-                <div class="container-fluid">
-                    <!-- Judul Halaman -->
-                    <div class="row ">
-                        <div class="col-12">
-                            <div class="page-title">
-                                <h3 class="mb-2">Contact Us</h3>
-                                <p>Tinjau dan tanggapi semua pertanyaan pelanggan di satu tempat</p>
-                            </div>
+                <!-- Judul Halaman -->
+                <div class="row ">
+                    <div class="col-12">
+                        <div class="page-title">
+                            <h3 class="mb-2">Hubungi Kami</h3>
+                            <p>Tinjau dan tanggapi semua pertanyaan pelanggan pada halaman ini</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Navigasi Breadcrumb -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <nav aria-label="breadcrumb" class="breadcrumb-header">
-                                <ol class="breadcrumb mb-0">
-                                    <li class="breadcrumb-item">
-                                        <a href="{{ route('index-contactus-admin') }}"
-                                            class="d-flex align-items-center">
-                                            <i class="bi bi-envelope me-1"></i>Contact Us
-                                        </a>
-                                    </li>
-                                    <li class="breadcrumb-item active" aria-current="page">All Contact Us</li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-
-                    <!-- Main Content -->
-                    <div class="contact-detail-card">
-                        <div class="card-header">
-                            <h4>Detail Pesan Kontak dan Formulir Tanggapan</h4>
-                            <p class="text-muted">Tinjau detail pesan kontak dan berikan tanggapan yang jelas dan
-                                bermanfaat.</p>
-                        </div>
-
-                        <div class="card-body p-4">
-                            <!-- User Info Section -->
-                            <div class="user-info-container">
-                                <div class="d-flex align-items-center">
-                                    <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="Foto Pengguna"
-                                        class="user-avatar rounded-circle">
-                                    <div class="user-details">
-                                        <h5 class="user-name">{{ $contact->fullname }}</h5>
-                                        <p class="user-email mb-2">
-                                            <i class="bi bi-envelope"></i> {{ $contact->email }}
-                                        </p>
-                                        <p class="timestamp">
-                                            <i class="bi bi-clock"></i>
-                                            {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Message Section -->
-                            <div class="message-container">
-                                <h6 class="message-header">
-                                    <i class="bi bi-chat-text"></i> Isi Pesan
-                                </h6>
-                                <div class="message-content">
-                                    {{ $contact->question }}
-                                </div>
-                            </div>
-
-                            <!-- Media Section -->
-                            <div class="media-container">
-                                <div class="row">
-                                    <!-- Image Display -->
-                                    <div class="col-md-6 mb-4 mb-md-0">
-                                        <div class="media-box">
-                                            <h6 class="media-header">
-                                                <i class="bi bi-image"></i> Gambar Terlampir
-                                            </h6>
-                                            <div class="media-content">
-                                                @if ($contact->response_image)
-                                                    @php
-                                                        $responseImages = json_decode($contact->response_image);
-                                                    @endphp
-                                                    @foreach ($responseImages as $image)
-                                                        <a href="{{ asset('storage/' . $image) }}" target="_blank"
-                                                            rel="noopener">
-                                                            <img src="{{ asset('storage/' . $image) }}"
-                                                                alt="Gambar Terunggah" class="uploaded-image"
-                                                                style="cursor: pointer;">
-                                                        </a>
-                                                    @endforeach
-                                                @else
-                                                    <p class="text-muted">Tidak ada gambar terlampir</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Video Display -->
-                                    <div class="col-md-6">
-                                        <div class="media-box">
-                                            <h6 class="media-header">
-                                                <i class="bi bi-camera-video"></i> Video Terlampir
-                                            </h6>
-                                            <div class="video-container">
-                                                @if ($contact->response_video)
-                                                    <video controls class="video-player">
-                                                        <source
-                                                            src="{{ asset('storage/' . $contact->response_video) }}"
-                                                            type="video/mp4">
-                                                        Browser Anda tidak mendukung pemutaran video.
-                                                    </video>
-                                                @else
-                                                    <p class="text-muted">Tidak ada video terlampir</p>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Response Form -->
-                            <form action="{{ route('send-response', $contact->id) }}" method="POST"
-                                class="response-form">
-                                @csrf
-                                <div class="form-group mb-4">
-                                    <label class="form-label">
-                                        <i class="bi bi-reply"></i> Tanggapan Anda
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}" name="response" rows="5"
-                                        placeholder="Ketik tanggapan Anda di sini..."></textarea>
-                                    @error('response')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="text-end">
-                                    <a href="{{ route('index-contactus-admin') }}"
-                                        class="btn btn-secondary btn-sm me-2"
-                                        style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
-                                        <i class="bi bi-box-arrow-in-left me-1"></i>
-                                        Kembali
+                <!-- Navigasi Breadcrumb -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb" class="breadcrumb-header">
+                            <ol class="breadcrumb mb-0">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('index-contactus-admin') }}" class="d-flex align-items-center">
+                                        <i class="bi bi-envelope me-1"></i>Hubungi Kami
                                     </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">Detail/Tanggapi pertanyaan</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
 
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        <i class="bi bi-send"></i> Kirim Tanggapan
-                                    </button>
+                <!-- Main Content -->
+                <div class="contact-detail-card">
+                    <div class="card-header">
+                        <h4>Detail Pesan Kontak dan Formulir Tanggapan</h4>
+                        <p class="text-muted">Tinjau detail pesan kontak dan berikan tanggapan yang jelas dan
+                            bermanfaat.</p>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <!-- User Info Section -->
+                        <div class="user-info-container">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ asset('assets/images/faces/2.jpg') }}" alt="Foto Pengguna"
+                                    class="user-avatar rounded-circle">
+                                <div class="user-details">
+                                    <h5 class="user-name">{{ $contact->fullname }}</h5>
+                                    <p class="user-email mb-2">
+                                        <i class="bi bi-envelope"></i> {{ $contact->email }}
+                                    </p>
+                                    <p class="timestamp">
+                                        <i class="bi bi-clock"></i>
+                                        {{ \Carbon\Carbon::parse($contact->created_at)->translatedFormat('d F Y H:i') }}
+                                    </p>
                                 </div>
-                            </form>
+                            </div>
                         </div>
+
+                        <!-- Message Section -->
+                        <div class="message-container">
+                            <h6 class="message-header">
+                                <i class="bi bi-chat-text"></i> Isi Pesan
+                            </h6>
+                            <div class="message-content">
+                                {{ $contact->question }}
+                            </div>
+                        </div>
+
+                        <!-- Media Section -->
+                        <div class="media-container">
+                            <div class="row">
+                                <!-- Image Display -->
+                                <div class="col-md-6 mb-4 mb-md-0">
+                                    <div class="media-box">
+                                        <h6 class="media-header">
+                                            <i class="bi bi-image"></i> Gambar Terlampir
+                                        </h6>
+                                        <div class="media-content">
+                                            @if ($contact->response_image)
+                                                <a href="{{ asset('storage/' . $contact->response_image) }}"
+                                                    target="_blank" rel="noopener">
+                                                    <img src="{{ asset('storage/' . $contact->response_image) }}"
+                                                        alt="Gambar Terunggah" class="uploaded-image"
+                                                        style="cursor: pointer; max-width: 100%; height: auto;">
+                                                </a>
+                                            @else
+                                                <p class="text-muted">Tidak ada gambar terlampir</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Video Display -->
+                                <div class="col-md-6">
+                                    <div class="media-box">
+                                        <h6 class="media-header">
+                                            <i class="bi bi-camera-video"></i> Video Terlampir
+                                        </h6>
+                                        <div class="video-container">
+                                            @if ($contact->response_video)
+                                                <video controls class="video-player"
+                                                    style="max-width: 100%; height: auto;">
+                                                    <source src="{{ asset('storage/' . $contact->response_video) }}"
+                                                        type="video/mp4">
+                                                    Browser Anda tidak mendukung pemutaran video.
+                                                </video>
+                                            @else
+                                                <p class="text-muted">Tidak ada video terlampir</p>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Response Form -->
+                        <form action="{{ route('send-response', $contact->id) }}" method="POST" class="response-form">
+                            @csrf
+                            <div class="form-group mb-4">
+                                <label class="form-label">
+                                    <i class="bi bi-reply"></i> Tanggapan Anda
+                                    <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}" name="response" rows="5"
+                                    placeholder="Ketik tanggapan Anda di sini..."></textarea>
+                                @error('response')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="text-end">
+                                <a href="{{ route('index-contactus-admin') }}" class="btn btn-secondary btn-sm me-2"
+                                    style="font-weight: bold; display: inline-flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-box-arrow-in-left me-1"></i>
+                                    Kembali
+                                </a>
+
+                                <button type="submit" class="btn btn-sm btn-primary">
+                                    <i class="bi bi-send"></i> Kirim Tanggapan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

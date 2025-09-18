@@ -185,7 +185,9 @@ Route::post('/voucher-new-user', [FormController::class, 'voucherNewUser'])->nam
 // Route::get('/{user}_account', [UserController::class, 'account'])->name('account');
 Route::put('/edit-account', [UserController::class, 'updateProfile'])->name('edit.account');
 Route::post('/add-shipping-address', [UserController::class, 'actionAddShippingAddress'])->name('add.shipping.address');
+Route::post('/add-shipping-address-guest', [UserController::class, 'actionAddShippingAddressGuest'])->name('add.shipping.address.guest');
 Route::put('/edit-shipping-address', [UserController::class, 'updateShippingAddress'])->name('edit.shipping.address');
+Route::post('/edit-shipping-address-guest', [UserController::class, 'updateShippingAddressGuest'])->name('edit.shipping.address.guest');
 Route::post('/delete-shipping-address', [UserController::class, 'deleteShippingAddress'])->name('delete.shipping.address');
 Route::post('/set-main-address', [UserController::class, 'setMainAddress'])->name('main.shipping.address');
 Route::post('/use-address', [UserController::class, 'useAddress'])->name('use.shipping.address');
@@ -240,6 +242,10 @@ Route::post('/remove-all-product-cart', [CartController::class, 'deleteAllProduc
 Route::post('/remove-product-variant-cart', [CartController::class, 'deleteProductVariantItem'])->name('delete.product.variant.cart');
 Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
 Route::post('/update-cart-quantity-variant', [CartController::class, 'updateCartQuantityVariant'])->name('update.cart.quantity.variant');
+Route::post('/remove-product-cart-guest', [CartController::class, 'deleteProductItemGuest'])->name('delete.product.cart.guest');
+Route::post('/remove-product-variant-cart-guest', [CartController::class, 'deleteProductVariantItemGuest'])->name('delete.product.variant.cart.guest');
+Route::post('/update-cart-quantity-guest', [CartController::class, 'updateCartQuantityGuest'])->name('update.cart.quantity.guest');
+Route::post('/update-cart-quantity-variant-guest', [CartController::class, 'updateCartQuantityVariantGuest'])->name('update.cart.quantity.variant.guest');
 
 // ADD & REMOVE WISHLIST
 Route::post('/wishlist', [UserController::class, 'addToWishlist'])->name('add.to.wishlist');
@@ -350,6 +356,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/product-admin-edit/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
 
+    Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
+    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
+    Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
+
+
     // STOCK PRODUCT 
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
@@ -384,9 +395,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         ->name('import.product.variants');
     // Route::post('/import/product-variants', [StockExportImportController::class
 
-    Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
-    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
-    Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
 
     // product-variant
     Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');
@@ -520,9 +528,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         return view('admin.chat.index');
     });
 
-    // user detail
+    // USER & KELOLA PASSWORD
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
     Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
+    Route::get('/user-admin-password', [UserController::class, 'passwordUserAdmin'])->name('password-user-admin');
+    Route::post('/user-admin-password/change', [UserController::class, 'changePasswordUserAdmin'])->name('change-password-user-admin');
 
     // TENTANG KAMI
     Route::get('/aboutus-admin', [AboutusController::class, 'indexAboutusAdmin'])->name('index-aboutus-admin');

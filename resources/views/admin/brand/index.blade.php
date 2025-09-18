@@ -530,7 +530,7 @@
                     <div class="col-12">
                         <div class="page-title">
                             <h3>Brand</h3>
-                            <p>Kelola semua data produk yang tersedia pada halaman ini.</p>
+                            <p>Kelola semua data brand yang tersedia pada halaman ini.</p>
                         </div>
                     </div>
                 </div>
@@ -539,14 +539,13 @@
                     <div class="col-12 col-md-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"
-                                        class="d-flex align-items-center"><i
-                                            class="bi bi-award-fill me-1"></i>Brand</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('index-brand-admin') }}"
+                                        class="d-flex align-items-center"><i class="bi bi-award-fill me-1"></i>Brand</a>
+                                </li>
                                 <li class="breadcrumb-item active">Semua Brand</li>
                             </ol>
                         </nav>
                     </div>
-
                 </div>
             </div>
 
@@ -613,8 +612,8 @@
                 <div class="card-header bg-white">
                     <div class="row">
                         <div class="col-12 col-md-6">
-                            <h4 class="mb-0 d-flex align-items-center"><i class="bi bi-award-fill me-2"></i>Brand
-                                Directory</h4>
+                            <h4 class="mb-0 d-flex align-items-center"><i class="bi bi-award-fill me-2"></i>List Brand
+                            </h4>
                         </div>
                         <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                             <a href="{{ route('create-brand-admin') }}" class="btn btn-sm btn-primary">
@@ -627,10 +626,10 @@
                     <table class="table table-hover" id="table1">
                         <thead>
                             <tr>
-                                <th>Brand Details</th>
-                                <th>Total Products</th>
-                                <th>Brand Code</th>
-                                <th>Actions</th>
+                                <th>Detail Brand</th>
+                                <th>Total Produk</th>
+                                <th>Kode Brand</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -684,7 +683,7 @@
                         <div class="modal-content">
                             <div class="modal-header" style="background: #183018; color: white;">
                                 <h5 class="modal-title text-white" id="brandModalLabel">
-                                    <i class="bi bi-tag me-2"></i>Brand Detail
+                                    <i class="bi bi-tag me-2"></i>Detail Brand
                                 </h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
@@ -701,7 +700,7 @@
                                                         <i class="bi bi-tag-fill fs-1 text-primary"></i>
                                                     </div>
                                                     <div>
-                                                        <div class="text-secondary">Brand Code</div>
+                                                        <div class="text-secondary">Kode Brand</div>
                                                         <h2 id="modalBrandCode" class="mb-0 fw-bold">-</h2>
                                                     </div>
                                                 </div>
@@ -731,7 +730,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-3">
                                                     <i class="bi bi-fonts me-2 text-secondary"></i>
-                                                    <div class="text-secondary">Brand Name</div>
+                                                    <div class="text-secondary">Nama Brand</div>
                                                 </div>
                                                 <h3 id="modalBrandName" class="mb-0 fw-bold">-</h3>
                                             </div>
@@ -744,7 +743,7 @@
                                             <div class="card-body">
                                                 <div class="d-flex align-items-center mb-3">
                                                     <i class="bi bi-info-circle me-2 text-secondary"></i>
-                                                    <div class="text-secondary">Brand Details</div>
+                                                    <div class="text-secondary">Detail Brand</div>
                                                 </div>
                                                 <div class="py-2">
                                                     <div class="row mb-3">
@@ -766,7 +765,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center mb-3">
                                             <i class="bi bi-card-text me-2 text-secondary"></i>
-                                            <div class="text-secondary">Brand Description</div>
+                                            <div class="text-secondary">Deskripsi Brand</div>
                                         </div>
                                         <p id="modalDescription" class="mb-0">-</p>
                                     </div>
@@ -778,10 +777,11 @@
                                     <i class="bi bi-x-circle me-2"></i>Close
                                 </button>
 
-                                <a id="editBrand" href="{{ route('detail-brand-admin', $brand->id) }}"
-                                    class="btn btn-sm btn-warning d-flex align-items-center">
+                                <a id="editBrand" data-template="{{ route('detail-brand-admin', ':id') }}"
+                                    href="#" class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil me-2"></i>Edit
                                 </a>
+
 
                             </div>
                         </div>
@@ -948,8 +948,11 @@
                         $('#modalUpdatedDate').text('-');
                     }
 
-                    // Set edit link
-                    $('#editBrand').attr('href', `/edit-brand/${id}`);
+                    let editUrlTemplate = $('#editBrand').data(
+                    'template'); // hasil: /brand-admin-detail/:id
+                    let url = editUrlTemplate.replace(':id', id);
+                    $('#editBrand').attr('href', url);
+
 
                     // Show the modal
                     $('#brandModal').modal('show');

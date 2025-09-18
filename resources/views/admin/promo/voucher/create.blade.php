@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Voucher - Glamoire</title>
+    <title>Voucher - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -397,11 +397,8 @@
                                                             <i class="bi bi-box-arrow-in-left me-1"></i>Kembali
                                                         </a>
 
-                                                        <button type="reset"
-                                                            class="btn btn-sm btn-light-secondary me-3">Reset
-                                                            Promo</button>
                                                         <button type="submit"
-                                                            class="btn btn-sm btn-primary me-1">Submit Promo</button>
+                                                            class="btn btn-sm btn-primary me-1">Submit Voucher</button>
                                                     </div>
                                                 </div>
                                             </div>

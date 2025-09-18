@@ -525,14 +525,14 @@
                 <div class="page-title" style="margin-bottom: 25px;">
                     <div class="row align-items-center">
                         <div class="col-12 col-md-6 order-md-1 order-last">
-                            <h3 class="mb-1">Manajemen Supplier</h3>
+                            <h3 class="mb-1">Supplier</h3>
                             <p class="text-muted mb-2">Halaman ini digunakan untuk mengelola data supplier yang
                                 terdaftar dalam sistem.</p>
                             <nav aria-label="breadcrumb" class="breadcrumb-header">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
                                         <a href="{{ route('dashboard') }}" class="d-flex align-items-center">
-                                            <i class="bi bi-grid-fill me-2"></i>Dashboard
+                                            <i class="bi bi-person-lines-fill me-2"></i>Supplier
                                         </a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">Daftar Supplier</li>
@@ -599,11 +599,11 @@
                     <div class="finance-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                         <a href="{{ route('index-invoice') }}"
                             class="finance-nav-item {{ Route::currentRouteName() == 'index-invoice' ? 'active' : '' }}">
-                            <i class="bi bi-receipt"></i>Manajemen Invoice
+                            <i class="bi bi-receipt"></i>Daftar Invoice
                         </a>
                         <a href="{{ route('index-supplier') }}"
                             class="finance-nav-item {{ Route::currentRouteName() == 'index-supplier' ? 'active' : '' }}">
-                            <i class="bi bi-person-lines-fill"></i>Manajemen Supplier
+                            <i class="bi bi-person-lines-fill"></i>Daftar Supplier
                         </a>
                     </div>
 
@@ -613,7 +613,7 @@
                             <div class="row align-items-center">
                                 <div class="col-12 col-md-6">
                                     <h4 class="d-inline-flex align-items-center">
-                                        <i class="bi bi-person-lines-fill fs-4 me-3"></i> Supplier List
+                                        <i class="bi bi-person-lines-fill fs-4 me-3"></i>Daftar Supplier
                                     </h4>
 
                                 </div>

@@ -1,6 +1,59 @@
 @extends('user.layouts.master')
 @section('content')
 
+
+<!-- Modal: Pilih Checkout Sebagai -->
+<div class="modal fade" id="loginUserCheckout" tabindex="-1" aria-labelledby="loginUser" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-xl" style="background-color:#183018;">
+            <div class="modal-body px-4 pb-4">
+                <!-- Logo -->
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <img src="{{ asset('images/new-logo.png') }}" alt="Logo" style="max-height: 60px;" />
+                </div>
+
+                <p class="text-center text-light text-sm">Pilih metode login untuk melanjutkan proses pembelian</p>
+
+                <!-- Tombol Login dengan Email -->
+                <div class="mt-3">
+                    <button class="btn btn-light w-100 mb-2 d-flex align-items-center justify-content-center gap-2 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                        data-bs-toggle="modal" data-bs-target="#emailLoginModal" data-bs-dismiss="modal">
+                        <i class="fas fa-envelope text-sm"></i> Masuk dengan Email
+                    </button>
+    
+                    <!-- Tombol Login dengan Google -->
+                    <button class="btn btn-light w-100 mb-3 d-flex align-items-center justify-content-center gap-2 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" style="height:20px;">
+                        Masuk dengan Google
+                    </button>
+                </div>
+
+                <!-- Divider -->
+                <div class="text-center my-2 text-light">atau</div>
+
+                <!-- Tombol Guest Checkout -->
+                <a href="javascript:void(0);" 
+                    class="btn btn-primary w-100 py-2 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#form-address-new"
+                    data-bs-dismiss="modal">
+                       <i class="fas fa-user text-sm"></i> Lanjutkan sebagai Tamu
+                </a>
+
+
+                <!-- Keterangan -->
+                <div class="mt-3 text-center text-light text-xs">
+                    Dengan melanjutkan, Anda menyetujui
+                    <a href="#" class="text-primary">Syarat & Ketentuan</a> dan
+                    <a href="#" class="text-primary">Kebijakan Privasi</a>.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
 <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-1 pt-md-2 h-fit">
     <div class="container-fluid px-0 px-md-3">
         <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3 px-0 px-md-3">
@@ -16,180 +69,173 @@
 
     <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
         <div class="col-lg-8 grid gap-2 px-0 px-md-3">
-            @if (count($data['address']) !== 0)
-                @foreach ($data['address'] as $checkout_address)
-                    @if($checkout_address->is_use)
-                        <div class="col-12 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
-                            <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px] mb-2">Alamat Pengiriman</h1>
-                            <div class="grid gap-1 gap-md-2 mb-md-2">
-                                <div class="d-flex gap-1 gap-md-2 align-items-center">
-                                    <i class="fas fa-location-arrow text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"></i>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $checkout_address->label }}</p>
-                                    <p class="font-bold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">.</p>
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $checkout_address->recipient_name }}</p>
-                                </div>
-                                <div class="d-flex gap-1 gap-md-2">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $checkout_address->address }}</p>
-                                    @if ($checkout_address->benchmark !== null)
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">({{ $checkout_address->benchmark }})</p>
-                                    @endif
-                                </div>
-                                <div class="d-flex">
-                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ ucwords(strtolower($checkout_address->subdistrict)) }}, {{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
-                                    </p>
-                                </div>
-                                <div class="d-flex">
-                                    <button type="button" class="btn btn-dark rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" data-bs-toggle="modal" data-bs-target="#change_address" id="change-address">
-                                        Ubah Alamat
-                                    </button>
-                                </div>
-                            </div>
+            @if (count($data['information']) !== 0)
+                <div class="col-12 md:shadow-md md:rounded p-md-3 py-2 py-md-0 border-bottom border-top md:border-none">
+                    <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px] mb-2">Informasi Pengiriman</h1>
+                    <div class="grid gap-1 gap-md-2 mb-md-2">
+                        <div class="d-flex gap-1 gap-md-2 align-items-center">
+                            <i class="fas fa-user text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"></i>
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $data['information']['email'] }}</p>
                         </div>
-                    @endif
-                @endforeach
-            @else
-            <!-- MODAL TAMBAH ALAMAT -->
-            <div class="modal fade" id="form-address-new" tabindex="-1" aria-labelledby="form-address-new" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-                    <div class="modal-header" style="background-color: #183018">
-                        <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
-                    </div>
-
-                                <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-                                    <form method="POST" action="{{ route('add.shipping.address') }}"
-                                        id="add-address-form-null">
-                                        @csrf
-                                        <div class="grid gap-1 gap-md-2">
-                                            <div class="grid md:flex">
-                                                <div class="col-md-6">
-                                                    <div class="col-12 p-0">
-                                                        <label for="label"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
-                                                        <input type="text"
-                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            name="label" placeholder="Masukkan Nama Label Untuk Alamatmu"
-                                                            required>
-                                                    </div>
-                                                    <div class="col-12 p-0">
-                                                        <label for="receiver"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
-                                                            Penerima</label>
-                                                        <input type="text"
-                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            name="recipient_name" placeholder="Masukkan Nama Penerima"
-                                                            required>
-                                                    </div>
-                                                    <div class="col-12 p-0">
-                                                        <label for="handphone"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
-                                                        <div class="input-group">
-                                                            <span
-                                                                class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                                id="basic-addon1">+62</span>
-                                                            <input type="number"
-                                                                class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                                name="handphone" placeholder="Contoh : 8979254301"
-                                                                pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
-                                                        </div>
-                                                    </div>
-                                                    <!-- ALAMAT -->
-                                                    <div class="col-12 p-0">
-                                                        <label for="alamat"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
-                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
-                                                            rows="3" placeholder="Masukkan Alamatmu" required></textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="provinsi"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Provinsi" name="province" id="checkout_province">
-                                                            <option
-                                                                class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Provinsi</option>
-                                                        </select>
-                                                        <input type="hidden" name="province_name"
-                                                            id="checkout_province_name">
-                                                    </div>
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="kabupaten/kota"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Kabupaten/Kota" name="regency"
-                                                            id="checkout_regency">
-                                                            <option
-                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Kabupaten/Kota</option>
-                                                        </select>
-                                                        <input type="hidden" name="regency_name"
-                                                            id="checkout_regency_name">
-                                                    </div>
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="kecamatan"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Kecamatan" name="district"
-                                                            id="checkout_district">
-                                                            <option
-                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Kecamatan</option>
-                                                        </select>
-                                                        <input type="hidden" name="district_name"
-                                                            id="checkout_district_name">
-                                                    </div>
-                                                    
-                                                    <div class="col-12 p-0">
-                                                        <label for="village"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Desa/Kelurahan</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="village" name="subdistrict"
-                                                            id="checkout_subdistrict">
-                                                            <option
-                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Desa/Kelurahan</option>
-                                                        </select>
-                                                        <input type="hidden" name="subdistrict_name"
-                                                            id="checkout_subdistrict_name">
-                                                    </div>
-
-                                                    <!-- PATOKAN -->
-                                                    <div class="col-12 p-0">
-                                                        <label for="patokan"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
-                                                            (Opsional)</label>
-                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
-                                                            rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                            <!-- BUTTON SUBMIT -->
-                            <div class="col-12 p-0">
-                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
-                            </div>
-
-                                        </div>
-                                    </form>
-
-                    </div>
+                        <div class="d-flex gap-1 gap-md-2 align-items-center">
+                            <i class="fas fa-phone text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"></i>
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $data['information']['handphone'] }}</p>
+                        </div>
+                        <div class="d-flex gap-1 gap-md-2 align-items-center">
+                            <i class="fas fa-location-arrow text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"></i>
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $data['information']['label'] }}</p>
+                            <p class="font-bold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">.</p>
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $data['information']['recipient_name'] }}</p>
+                        </div>
+                        <div class="d-flex gap-1 gap-md-2">
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $data['information']['address'] }}</p>
+                            @if ($data['information']['benchmark'] !== null)
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">({{ $data['information']['benchmark'] }})</p>
+                            @endif
+                        </div>
+                        <div class="d-flex">
+                            <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ ucwords(strtolower($data['information']['district'])) }}, {{ ucwords(strtolower($data['information']['regency'])) }}, {{ ucwords(strtolower($data['information']['province'])) }}
+                            </p>
+                        </div>
+                        <div class="d-flex">
+                            <button type="button" class="btn btn-dark rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" data-bs-toggle="modal" data-bs-target="#change_address" id="change-address">
+                                Ubah Informasi
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- END MODAL TAMBAH ALAMAT -->
+            @else
+            <!-- MODAL TAMBAH INFORMASI GUEST -->
+            <div class="modal fade " id="form-address-new" tabindex="-1" aria-labelledby="form-address-new" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+                        <div class="modal-header" style="background-color: #183018">
+                            <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px]" id="exampleModalLabel">Tambahkan Informasi Pengiriman</h1>
+                        </div>
+
+                        <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                            <form method="POST" action="{{ route('add.shipping.address.guest') }}"
+                                id="add-address-form-null">
+                                @csrf
+                                <div class="grid gap-1 gap-md-2">
+                                    <div class="grid md:flex">
+                                        <div class="col-md-6">
+                                            <div class="col-12 p-0">
+                                                <label for="label"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Email</label>
+                                                <input type="email"
+                                                    class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    name="email" placeholder="Masukkan emailmu"
+                                                    required>
+                                            </div>
+                                            <div class="col-12 p-0">
+                                                <label for="receiver"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
+                                                    Penerima</label>
+                                                <input type="text"
+                                                    class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    name="recipient_name" placeholder="Masukkan Nama Penerima"
+                                                    required>
+                                            </div>
+                                            <div class="col-12 p-0">
+                                                <label for="handphone"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
+                                                <div class="input-group">
+                                                    <span
+                                                        class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                        id="basic-addon1">+62</span>
+                                                    <input type="number"
+                                                        class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                        name="handphone" placeholder="Contoh : 8979254301"
+                                                        pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 p-0">
+                                            <label for="label"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
+                                            <input type="text"
+                                                class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                name="label" placeholder="Masukkan Nama Label Untuk Alamatmu"
+                                                required>
+                                            </div>
+                                            <!-- ALAMAT -->
+                                            <div class="col-12 p-0">
+                                                <label for="alamat"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
+                                                <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
+                                                    rows="3" placeholder="Masukkan Alamatmu" required></textarea>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+
+                                            <div class="col-12 p-0">
+                                                <label for="provinsi"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
+                                                <select
+                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    aria-label="Provinsi" name="province" id="checkout_province">
+                                                    <option
+                                                        class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                        Pilih Provinsi</option>
+                                                </select>
+                                                <input type="hidden" name="province_name"
+                                                    id="checkout_province_name">
+                                            </div>
+
+                                            <div class="col-12 p-0">
+                                                <label for="kabupaten/kota"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
+                                                <select
+                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    aria-label="Kabupaten/Kota" name="regency"
+                                                    id="checkout_regency">
+                                                    <option
+                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                        Pilih Kabupaten/Kota</option>
+                                                </select>
+                                                <input type="hidden" name="regency_name"
+                                                    id="checkout_regency_name">
+                                            </div>
+
+                                            <div class="col-12 p-0">
+                                                <label for="kecamatan"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
+                                                <select
+                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    aria-label="Kecamatan" name="district"
+                                                    id="checkout_district">
+                                                    <option
+                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                        Pilih Kecamatan</option>
+                                                </select>
+                                                <input type="hidden" name="district_name"
+                                                    id="checkout_district_name">
+                                            </div>
+                                            <!-- PATOKAN -->
+                                            <div class="col-12 p-0">
+                                                <label for="patokan"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
+                                                    (Opsional)</label>
+                                                <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
+                                                    rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- BUTTON SUBMIT -->
+                                    <div class="col-12 p-0">
+                                    <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>  
             @endif
             
-            <form class="grid gap-2">
+        <form class="grid gap-2">
                 @csrf
                 <div class="col-12 md:shadow-md md:rounded border-bottom border-top md:border-none p-md-3 px-3 px-md-0 py-2 py-md-0">
                     <h1 class="font-semibold text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px] mb-2">Rincian Pengiriman</h1>
@@ -201,12 +247,10 @@
                         <div class="flex gap-1 align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M112 0C85.5 0 64 21.5 64 48l0 48L16 96c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 208 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 160l-16 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l16 0 176 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 224l-48 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l48 0 144 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L64 288l0 128c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L112 0zM544 237.3l0 18.7-128 0 0-96 50.7 0L544 237.3zM160 368a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm272 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z"/>
                             </svg>
-                            @foreach ($data['address'] as $checkout_address)
-                            @if($checkout_address->is_use)
-                                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] text-[#183018]">Menuju {{ ucwords(strtolower($checkout_address->district)) }}, {{ ucwords(strtolower($checkout_address->regency)) }}, {{ ucwords(strtolower($checkout_address->province)) }}
+                            @if (count($data['information']) !== 0)
+                                <p class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] text-[#183018]">Menuju {{ ucwords(strtolower($data['information']['district'])) }}, {{ ucwords(strtolower($data['information']['regency'])) }}, {{ ucwords(strtolower($data['information']['province'])) }}
                                 </p>
-                                @endif
-                            @endforeach
+                            @endif
                         </div>
                         <div class="flex gap-1 align-items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" width="15"; height="15"; viewBox="0 0 640 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
@@ -245,40 +289,40 @@
                     </div>  
     
                     {{-- Produk Biasa --}}
-                    @if ($product->productVariant == null)
+                    {{-- @if ($product->productVariant == null) --}}
                         <div class="flex">
                             <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
-                                <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
+                                <img src="{{ Storage::url($product['product']['main_image']) }}" alt="gambar produk" class="rounded-sm border">
                             </div>
                             <div class="col p-0">
                                 <div class="flex col-12 gap-1 gap-md-2 pl-1 pl-md-3">
-                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product->product->brand->name }}</p>
+                                    <p class="font-semibold text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product['product']->brand->name }}</p>
                                 </div>
                                 <div class="grid lg:flex">
                                     <div class="col-lg-9 pl-1 pl-md-3">
-                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product->product->product_name }}</p>
+                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product['product']->product_name }}</p>
                                     </div>
                                     <div class="col-lg-3 p-lg-0 pl-1 pl-md-3">
-                                        @if ($product->bundle_price !== null)
+                                        @if ($product['bundle_price'] !== null)
                                             <div class="grid gap-1 font-semibold">
                                                 <div>
                                                     <del class="d-flex gap-1">
-                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">{{ $product->quantity }}</p>
+                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">{{ $product['quantity'] }}</p>
                                                         <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">X</p>
-                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                                        <p class="text-black text-[10px] md:text-[10px] lg:text-[11px] xl:text-[12px] text-muted">Rp{{ number_format($product['price'], 0, ',', '.') }}</p>
                                                     </del>
                                                 </div>
                                                 <div class="d-flex gap-1">
-                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Beli {{ $product->quantity }}</p>
+                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Beli {{ $product['quantity'] }}</p>
                                                     <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">jadi</p>
-                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($product->bundle_price, 0, ',', '.') }}</p>
+                                                    <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($product['bundle_price'], 0, ',', '.') }}</p>
                                                 </div>
                                             </div>
                                         @else
                                             <div class="d-flex gap-1 font-semibold ml-auto">
-                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product->quantity }}</p>
+                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">{{ $product['quantity'] }}</p>
                                                 <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">X</p>
-                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($product->price, 0, ',', '.') }}</p>
+                                                <p class="text-black text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Rp{{ number_format($product['price'], 0, ',', '.') }}</p>
                                             </div>
                                         @endif
                                     </div>
@@ -287,8 +331,8 @@
                         </div>
 
                     {{-- Produk varian --}}
-                    @else
-                        <div class="flex">
+                    {{-- @else --}}
+                        {{-- <div class="flex">
                             <div class="w-[70px] h-[70px] w-md-[110px] h-md-[110px]">
                                 @if ($product->productVariant->variant_image == null)
                                     <img src="{{ Storage::url($product->product->main_image) }}" alt="gambar produk" class="rounded-sm border">
@@ -316,8 +360,8 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
+                        </div> --}}
+                    {{-- @endif --}}
                 </div>
             @endforeach
         </div>
@@ -388,8 +432,175 @@
 
 @include('spinner')
 
+@if (count($data['information']))
+    <!-- MODAL CHANGE ADDRESS -->
+    <div class="modal fade" id="change_address" tabindex="-1" aria-labelledby="change_address" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+        <div class="modal-header bg-[#183018]">
+            <div class="flex gap-3 justify-content-center align-items-center">
+                <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
+                <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Ubah Informasi Pengiriman</h1>
+            </div>
+        </div>
+            <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                <form method="POST" action="{{ route('edit.shipping.address.guest') }}"
+                    id="add-address-form-null">
+                    @csrf
+                    <div class="grid gap-1 gap-md-2">
+                        <div class="grid md:flex">
+                            <div class="col-md-6">
+                                <div class="col-12 p-0">
+                                    <label for="label"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Email</label>
+                                    <input type="email"
+                                        class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        name="email" placeholder="Masukkan emailmu" value="{{ $data['information']['email'] }}"
+                                        required>
+                                </div>
+                                <div class="col-12 p-0">
+                                    <label for="receiver"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
+                                        Penerima</label>
+                                    <input type="text"
+                                        class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        name="recipient_name" placeholder="Masukkan Nama Penerima" value="{{ $data['information']['recipient_name'] }}"
+                                        required>
+                                </div>
+                                <div class="col-12 p-0">
+                                    <label for="handphone"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
+                                    <div class="input-group">
+                                        <span
+                                            class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                            id="basic-addon1">+62</span>
+                                        <input type="number"
+                                            class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                            name="handphone" placeholder="Contoh : 8979254301" value="{{ $data['information']['handphone'] }}"
+                                            pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 p-0">
+                                <label for="label"
+                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
+                                <input type="text"
+                                    class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                    name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" value="{{ $data['information']['label'] }}"
+                                    required>
+                                </div>
+                                <!-- ALAMAT -->
+                                <div class="col-12 p-0">
+                                    <label for="alamat"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
+                                    <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
+                                        rows="3" placeholder="Masukkan Alamatmu" required>{{ $data['information']['address'] }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+
+                                <div class="col-12 p-0">
+                                    <label for="provinsi"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
+                                    <select
+                                        class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        aria-label="Provinsi" name="province" id="checkout_province_selected" onchange="onProvinceChanged(this)">
+                                        <option
+                                            class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                            Pilih Provinsi</option>
+                                    </select>
+                                    <input type="hidden" name="province_name" id="checkout_province_name_selected">
+                                </div>
+
+                                <div class="col-12 p-0">
+                                    <label for="kabupaten/kota"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
+                                    <select
+                                        class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        aria-label="Kabupaten/Kota" name="regency"
+                                        id="checkout_regency_selected" onchange="onRegencyChanged(this)">
+                                        <option
+                                            class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                            Pilih Kabupaten/Kota</option>
+                                    </select>
+                                    <input type="hidden" name="regency_name"
+                                        id="checkout_regency_name_selected">
+                                </div>
+
+                                <div class="col-12 p-0">
+                                    <label for="kecamatan"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
+                                    <select
+                                        class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        aria-label="Kecamatan" name="district"
+                                        id="checkout_district_selected">
+                                        <option
+                                            class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                            Pilih Kecamatan</option>
+                                    </select>
+                                    <input type="hidden" name="district_name"
+                                        id="checkout_district_name_selected">
+                                </div>
+                                <!-- PATOKAN -->
+                                <div class="col-12 p-0">
+                                    <label for="patokan"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
+                                        (Opsional)</label>
+                                    <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
+                                        rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang">{{ $data['information']['benchmark'] }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BUTTON SUBMIT -->
+                        <div class="col-12 p-0">
+                        <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- END MODAL CHANGE ADDRESS -->
+@endif
+
+<!-- MODAL RINCIAN PENGIRIMAN -->
+<div class="modal fade" id="shipping_details" tabindex="-1" aria-labelledby="shipping_details" aria-hidden="true">
+<div class="modal-dialog">
+    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
+    <div class="modal-header border-none pb-0">
+        <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih Pengiriman</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+
+    <div class="modal-body">
+        @foreach ($data['shippingFee'] as $sp)
+            <div class="col-12 mb-2 p-0 shipping-fee-detail" id="shipping-fee-{{ $sp['id'] }}" onclick="selectShipping(this)">
+                <div class="p-2 rounded-sm custom-shadow">
+                    
+                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $sp['description'] }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($sp['value'], 0, ',', '.') }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">Estimasi {{ $sp['etd'] }} hari</p>
+    
+                    <div class="d-flex gap-2 input-group-btn mt-2">
+                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]" name="useShipping" data-id="{{ $sp['id'] }}">
+                            Gunakan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+    </div>
+    </div>
+</div>
+</div>
+<!-- END MODAL RINCIAN PENGIRIMAN -->
+
 <script>    
-    let ongkir = null;
+    let ongkir = 50000;
     let productItems = {!! json_encode($data['cartItems']) !!};
     let productIds = [];
     let productVariantIds = {};
@@ -397,7 +608,7 @@
     let productPrices = {};
     let voucher = null;
     let totalPrice = {{ $data['totalPrice'] }};
-    let shippingAddressId = {{ $data['shippingAddressId'] }};
+    let shippingAddressId = [];
     let totalItem = {{ $data['totalProduct'] }};
     let subTotal = 0;
     let totalItemPrice = {{ $data['totalPrice'] }};
@@ -422,95 +633,94 @@
             product_variant_id: product.product_variant_id || null // Gunakan null jika product_variant_id tidak ada
         };
     });
+    
+    // const shippingFee = document.getElementById("choose_shipping_fee");
 
+    // Event listener for shipping option change
+    // shippingFee.addEventListener("change", function() {
+    //     updateOngkir(); // Update 'ongkir' when shipping option changes
+    // });
+
+    // Initialize 'ongkir' on page load if an option is selected
+    // if (shippingFee) {
+    //     updateOngkir();
+    // }
     // Output example
     // console.log(formattedData);
 
 
     // ONGKIR - Shipping
-    const shippingFee = document.getElementById("choose_shipping_fee");
 
     // Function to fetch and update 'ongkir' based on selected shipping service
-    function updateOngkir() {
-        const selectedService = shippingFee.value.trim();
-        console.log(selectedService);
+    // function updateOngkir() {
+    //     const selectedService = shippingFee.value.trim();
 
-        if (selectedService) {
-            $.ajax({
-                url: '/checkout', 
-                type: 'GET',
-                data: { service: selectedService },
-                beforeSend: function() {
-                    $('.loading-container').show();
-                },
-                success: function(response) {
-                    ongkir = response.ongkir;
-                    // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+    //     if (selectedService) {
+    //         $.ajax({
+    //             url: '/checkout', 
+    //             type: 'GET',
+    //             data: { service: selectedService },
+    //             beforeSend: function() {
+    //                 $('.loading-container').show();
+    //             },
+    //             success: function(response) {
+    //                 ongkir = response.ongkir;
+    //                 // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
-                    // restoreOriginalValues();
+    //                 restoreOriginalValues();
 
-                    shippingDiscountAmount = 0;
-                    shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
+    //                 shippingDiscountAmount = 0;
+    //                 shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
 
-                    $(".input-code").removeClass("d-none").addClass("d-flex");
-                    $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
-                    $("#choose-voucher").removeClass("text-success").addClass("text-dark");
+    //                 $(".input-code").removeClass("d-none").addClass("d-flex");
+    //                 $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+    //                 $("#choose-voucher").removeClass("text-success").addClass("text-dark");
     
-                    // Update displayed prices with the latest values
-                    resetVoucherOngkir();
-                    updateOngkirDisplay();
-                    updateThriftyDisplay();
-                },
-                complete: function() {
-                    $('.loading-container').hide();
-                },
-                error: function(error) {
-                    console.error("Failed to fetch ongkir:", error);
-                }
-            });
-        }
-    }
+    //                 // Update displayed prices with the latest values
+    //                 resetVoucherOngkir();
+    //                 updateOngkirDisplay();
+    //                 updateThriftyDisplay();
+    //             },
+    //             complete: function() {
+    //                 $('.loading-container').hide();
+    //             },
+    //             error: function(error) {
+    //                 console.error("Failed to fetch ongkir:", error);
+    //             }
+    //         });
+    //     }
+    // }
 
     // Reset voucher ongkir saat pilih jenis pengiriman
-    function resetVoucherOngkir() {
-        currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
-        if (currentlySelectedElement) {
-            currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
-            currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
-            currentlySelectedElement.classList.remove('selected');
-            // $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
-        }
-    }
+    // function resetVoucherOngkir() {
+    //     currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
+    //     if (currentlySelectedElement) {
+    //         currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
+    //         currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
+    //         currentlySelectedElement.classList.remove('selected');
+    //         // $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
+    //     }
+    // }
 
     // Function to update display or calculations that use 'ongkir'
-    function updateOngkirDisplay() {
-        if (ongkir !== null) {
-            $("#shipping_price").text("Rp" + formatRupiah(ongkir));
-            $("#ongkir-user").text("Rp" + formatRupiah(ongkir));
+    // function updateOngkirDisplay() {
+    //     if (ongkir !== null) {
+    //         $("#shipping_price").text("Rp" + formatRupiah(ongkir));
+    //         $("#ongkir-user").text("Rp" + formatRupiah(ongkir));
 
-            // Calculate the subtotal based on `ongkir`, promo discount, and shipping discount
-            subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-            $("#total-shopping").text("Rp" + formatRupiah(subTotal));
+    //         // Calculate the subtotal based on `ongkir`, promo discount, and shipping discount
+    //         subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+    //         $("#total-shopping").text("Rp" + formatRupiah(subTotal));
 
-            // Display the shipping discount if applied
-            if (shippingDiscount > 0) {
-                $("#ongkir").text("-Rp" + formatRupiah(shippingDiscount));
-                $("#ongkir-use").removeClass("d-none").addClass("d-flex");
-            } else {
-                $("#ongkir-use").removeClass("d-flex").addClass("d-none");
-            }
-        }
-    }
-
-    // Event listener for shipping option change
-    shippingFee.addEventListener("change", function() {
-        updateOngkir(); // Update 'ongkir' when shipping option changes
-    });
-
-    // Initialize 'ongkir' on page load if an option is selected
-    if (shippingFee) {
-        updateOngkir();
-    }
+    //         // Display the shipping discount if applied
+    //         if (shippingDiscount > 0) {
+    //             $("#ongkir").text("-Rp" + formatRupiah(shippingDiscount));
+    //             $("#ongkir-use").removeClass("d-none").addClass("d-flex");
+    //         } else {
+    //             $("#ongkir-use").removeClass("d-flex").addClass("d-none");
+    //         }
+    //     }
+    // }
 
     // Format numbers to Indonesian Rupiah
     function formatRupiah(number) {
@@ -628,7 +838,7 @@
                     $('.spinner-border').show();
                 },
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
                     if (response.exists) {
                         $('#validationVoucher').text('Kode Voucher Tersedia').addClass('text-success').show();
                         $('#button-code-voucher').prop('disabled', false);
@@ -757,13 +967,13 @@
                 $('.loading-container').show(); // Show the spinner
             },
             success: function (response) {
-                // console.log(response);
+                console.log(response);
                 if (response.success) {
                     saveOriginalValues(response); // Save values for later restoration
                     updateTotals(response); // Update totals based on the response
                     updateThriftyDisplay(); // Show savings based on the response
                 } else {
-                    $("#validationVoucher").text(response.message).show();
+                    $("#validationVoucher").text(response.error).show();
                 }
             },
             complete: function () {
@@ -881,613 +1091,128 @@
     function formatRupiah(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-
-
-    function selectAddress(addressElement) {
-        const allAddress = document.querySelectorAll('.shipping-address');
-
-        allAddress.forEach(address => {
-            promo.querySelector('.grid').classList.remove('border-dark');
-            promo.querySelector('.fas.fa-check').classList.add('hidden');
-        });
-
-        // Add border to the selected promo
-        promoElement.querySelector('.grid').classList.add('border', 'border-dark');
-        promoElement.querySelector('.fas.fa-check').classList.remove('hidden');
-    }
-
-    $(document).on('click', 'button[name="useAddress"]', function(e) {
-        e.preventDefault();
-        var id = $(this).data('id');
-        // console.log(id);
-        $.ajax({
-            url: "{{ route('use.shipping.address') }}",
-            type: 'POST',
-            data: {
-                address_id: id,
-                _token: '{{ csrf_token() }}'
-            },
-            beforeSend: function() {
-                $('.loading-container').show(); // Show the spinner
-            },
-            success: function(response) {
-                Toast.fire({
-                    icon: "success",
-                    text: response.message,
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                }).then(function () {
-                    location.reload(); // Redirect ke halaman utama atau halaman lain
-                });
-            },
-            complete: function() {
-                $('.loading-container').hide(); // Show the spinner
-            },
-            error: function(xhr) {
-                Toast.fire({
-                    icon: "error",
-                    text: "Kesalahan Sistem",
-                    title: "Oops..",
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                });
-            }
-        });
-    });
-
-    
-    // $(document).on('click', '#paynow', function(e) { 
-    //     e.preventDefault();
-    
-    //     $.ajax({
-    //         url: "{{ route('order.payment') }}",
-    //         type: 'POST',
-    //         data: {
-    //             products: formattedData,
-    //             subtotal: subTotal,          // Removed the colon inside the key
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //             _token: '{{ csrf_token() }}'
-    //         },
-    //         beforeSend: function() {
-    //             $('.loading-container').show(); // Show the spinner
-    //         },
-    //         success: function(response) {
-    //             Toast.fire({
-    //                 icon: "success",
-    //                 text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-    //                 title: "Pembayaranmu Berhasil",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             }).then(function () {
-    //                 location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-    //             });
-    //         },
-    //         complete: function() {
-    //             $('.loading-container').hide(); // Show the spinner
-    //         },
-    //         error: function(xhr) {
-    //             Toast.fire({
-    //                 icon: "error",
-    //                 text: "Kesalahan Sistem",
-    //                 title: "Oops..",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             });
-    //         }
-    //     });
-    // });
-
-    // Add DOKU payment modal HTML
-    $('body').append(`
-        <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #183018">
-                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[16px] xl:text-[16px]" id="dokuPaymentModalLabel">Informasi Pembayaran</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="dokuPaymentContainer">
-                        <div class="text-center" id="loadingPayment">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">Mempersiapkan pembayaran...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `);
-
-    // Handle payment button click
-    // $('#paynow').click(function(e) {
-    //     e.preventDefault();
-
-    //     $('#paynow').prop('disabled', true);
-    //     $('#dokuPaymentModal').modal('show');
-
-    //     // Make AJAX request
-    //     $.ajax({
-    //         url: '/initiate-doku-payment',
-    //         method: 'POST',
-    //         data: {
-    //             total_amount: subTotal,
-    //             products: formattedData,
-    //             subtotal: subTotal,         
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //         },
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         success: function(response) {
-    //             if (response.success && response.payment_url) {
-    //                 // Load DOKU payment iframe
-    //                 console.log({
-    //                     paymentUrl:response.payment_url,
-    //                     result:response.tes,
-    //                 });
-    //                 $('#dokuPaymentContainer').html(`
-    //                     <iframe 
-    //                         src="${response.payment_url}"
-    //                         frameborder="0"
-    //                         width="100%"
-    //                         height="600px"
-    //                         style="overflow: hidden;">
-    //                     </iframe>
-    //                 `);
-    //             } else {
-    //                 throw new Error('Invalid payment URL');
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Show error message
-    //             $('#dokuPaymentContainer').html(`
-    //         <div class="alert alert-danger">
-    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
-    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-    //         </div>
-    //     `);
-    //             console.error('Payment error:', error);
-    //         },
-    //         complete: function() {
-    //             $('#paynow').prop('disabled', false);
-    //         }
-    //     });
-    // });
-
 </script>
 
-    <!-- JIKA ALAMAT KOSONG FOR API WILAYAH-->
-    @if (count($data['address']) !== 0)
-    @else
-        <script>
-            // API WILAYAH FOR ADDRESS
-            fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-                .then((response) => response.json())
-                .then((provinces) => {
-                    const provinceSelect = document.getElementById("checkout_province");
+<!-- JIKA ALAMAT KOSONG FOR API WILAYAH-->
+@if (count($data['information']) !== 0)
+@else
+    <script>
+        // API WILAYAH FOR ADDRESS
+        fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+            .then((response) => response.json())
+            .then((provinces) => {
+                const provinceSelect = document.getElementById("checkout_province");
 
-                    provinces.forEach((province) => {
-                        let option = document.createElement("option");
-                        option.value = province.id;
-                        option.text = province.name;
-                        provinceSelect.appendChild(option);
-                    });
-                })
-                .catch((error) => console.error("Error fetching provinces:", error));
-
-            // Event listener for province selection
-            // PILIH PROVINSI
-            document
-                .getElementById("checkout_province")
-                .addEventListener("change", function() {
-                    const provinceId = this.value;
-                    const provinceName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_province_name").value = provinceName; // Save name in hidden input
-
-                    const regencySelect = document.getElementById("checkout_regency");
-                    regencySelect.innerHTML =
-                        '<option value="">Pilih Kabupaten/Kota</option>';
-                    document.getElementById("checkout_regency_name").value = ""; // Clear previous regency name
-
-                    // GET DATA REGENCIES FROM PROVINCE
-                    if (provinceId) {
-                        fetch(
-                                `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
-                            )
-                            .then((response) => response.json())
-                            .then((regencies) => {
-                                regencies.forEach((regency) => {
-                                    let option = document.createElement("option");
-                                    option.value = regency.id;
-                                    option.text = regency.name;
-                                    regencySelect.appendChild(option);
-                                });
-                            })
-                            .catch((error) =>
-                                console.error("Error fetching regencies:", error)
-                            );
-                    }
+                provinces.forEach((province) => {
+                    let option = document.createElement("option");
+                    option.value = province.id;
+                    option.text = province.name;
+                    provinceSelect.appendChild(option);
                 });
+            })
+            .catch((error) => console.error("Error fetching provinces:", error));
 
-            document
-                .getElementById("checkout_regency")
-                .addEventListener("change", function() {
-                    const regenciesId = this.value;
-                    const regenciesName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_regency_name").value =
-                        regenciesName; // Save name in hidden input
+        // Event listener for province selection
+        // PILIH PROVINSI
+        document
+            .getElementById("checkout_province")
+            .addEventListener("change", function() {
+                const provinceId = this.value;
+                const provinceName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_province_name").value =
+                    provinceName; // Save name in hidden input
 
-                    const districtSelect = document.getElementById("checkout_district");
-                    districtSelect.innerHTML =
-                        '<option value="">Pilih Kecamatan</option>';
-                    document.getElementById("checkout_district_name").value = ""; // Clear previous regency name
+                const regencySelect = document.getElementById("checkout_regency");
+                regencySelect.innerHTML =
+                    '<option value="">Pilih Kabupaten/Kota</option>';
+                document.getElementById("checkout_regency_name").value = ""; // Clear previous regency name
 
-                    // GET DATA DISTRICT FROM REGENCY
-                    if (regenciesId) {
-                        fetch(
-                                `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
-                            )
-                            .then((response) => response.json())
-                            .then((districts) => {
-                                districts.forEach((district) => {
-                                    let option = document.createElement("option");
-                                    option.value = district.id;
-                                    option.text = district.name;
-                                    districtSelect.appendChild(option);
-                                });
-                            })
-                            .catch((error) =>
-                                console.error("Error fetching districts:", error)
-                            );
-                    }
-                });
-            
-            document
-                .getElementById("checkout_district")
-                .addEventListener("change", function() {
-                    const districtId = this.value;
-                    const districtName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_subdistrict_name").value =
-                        districtName; // Save name in hidden input
+                // GET DATA REGENCIES FROM PROVINCE
+                if (provinceId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((regencies) => {
+                            regencies.forEach((regency) => {
+                                let option = document.createElement("option");
+                                option.value = regency.id;
+                                option.text = regency.name;
+                                regencySelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching regencies:", error)
+                        );
+                }
+            });
 
-                    const subdistrictSelect = document.getElementById("checkout_subdistrict");
-                    subdistrictSelect.innerHTML =
-                        '<option value="">Pilih Desa/Kelurahan</option>';
-                    document.getElementById("checkout_subdistrict_name").value = ""; // Clear previous regency name
+        document
+            .getElementById("checkout_regency")
+            .addEventListener("change", function() {
+                const regenciesId = this.value;
+                const regenciesName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_regency_name").value =
+                    regenciesName; // Save name in hidden input
 
-                    // GET DATA DISTRICT FROM REGENCY
-                    if (districtId) {
-                        fetch(
-                                `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
-                            )
-                            .then((response) => response.json())
-                            .then((subdistricts) => {
-                                subdistricts.forEach((subdistrict) => {
-                                    let option = document.createElement("option");
-                                    option.value = subdistrict.id;
-                                    option.text = subdistrict.name;
-                                    subdistrictSelect.appendChild(option);
-                                });
-                            })
-                            .catch((error) =>
-                                console.error("Error fetching districts:", error)
-                            );
-                    }
-                });
+                const districtSelect = document.getElementById("checkout_district");
+                districtSelect.innerHTML =
+                    '<option value="">Pilih Kecamatan</option>';
+                document.getElementById("checkout_district_name").value = ""; // Clear previous regency name
 
-            // Event listener for regency selection
-            document
-                .getElementById("checkout_regency")
-                .addEventListener("change", function() {
-                    const regencyName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_regency_name").value = regencyName; // Save name in hidden input
-                });
+                // GET DATA DISTRICT FROM REGENCY
+                if (regenciesId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((districts) => {
+                            districts.forEach((district) => {
+                                let option = document.createElement("option");
+                                option.value = district.id;
+                                option.text = district.name;
+                                districtSelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching districts:", error)
+                        );
+                }
+            });
 
-            // Event listener for district selection
-            document
-                .getElementById("checkout_district")
-                .addEventListener("change", function() {
-                    const districtName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_district_name").value =
-                        districtName; // Save name in hidden input
-                });
-            
-                document
-                .getElementById("checkout_subdistrict")
-                .addEventListener("change", function() {
-                    const subdistrictName = this.options[this.selectedIndex].text; // Get the name
-                    document.getElementById("checkout_subdistrict_name").value =
-                        subdistrictName; // Save name in hidden input
-                });
-            // END API WILAYAH REGISTER
-        </script>
-    @endif
+        // Event listener for regency selection
+        document
+            .getElementById("checkout_regency")
+            .addEventListener("change", function() {
+                const regencyName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_regency_name").value = regencyName; // Save name in hidden input
+            });
+
+        // Event listener for district selection
+        document
+            .getElementById("checkout_district")
+            .addEventListener("change", function() {
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_district_name").value =
+                    districtName; // Save name in hidden input
+            });
+        // END API WILAYAH REGISTER
+    </script>
+@endif
 
 <!-- JIKA ALAMAT KOSONG MENAMPILKAN POP-UP TAMBAH ALAMAT PENGIRIMAN -->
-@if(count($data['address']) == 0)
+@if(count($data['information']) == 0)
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var myModal = new bootstrap.Modal(document.getElementById('form-address-new'), {
+            var myModal = new bootstrap.Modal(document.getElementById('loginUserCheckout'), {
                 backdrop: 'static', // Prevent closing when clicking outside the modal
                 keyboard: false     // Prevent closing when pressing Esc
             });
             myModal.show();
         });
+       
     </script>
 @endif
-
-<!-- MODAL CHANGE ADDRESS -->
-<div class="modal fade" id="change_address" tabindex="-1" aria-labelledby="change_address" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header bg-[#183018]">
-        <div class="flex gap-3 justify-content-center align-items-center">
-            <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
-            <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih Alamat Pengiriman</h1>
-        </div>
-      </div>
-
-      <div class="modal-body overflow-y-auto custom-scroll">
-        <button type="button" class="btn border btn-light d-flex align-items-center rounded-sm mb-2 custom-shadow" data-bs-dismiss="modal" id="open-add-address-modal">
-            <i class="fas fa-thin fa-plus me-2 d-flex align-items-center text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]"></i>
-            <p class="text-black mb-0 text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Tambahkan Alamat</p>
-        </button>
-        @foreach ($data['address'] as $address)
-            @if ($address->is_use)
-                <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
-                    <div class="p-2 rounded-sm border border-dark">
-                        <div class="d-flex align-items-center">
-                            <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
-                            @if ($address->is_main)
-                                <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                                text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
-                                        @endif
-                                    </div>
-
-                        <div class="flex">
-                            <div class="col-10 p-0">
-                                <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $address->recipient_name }}</p>
-                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ ucwords(strtolower($address->subdistrict)) }}, {{ ucwords(strtolower($address->district)) }}, {{ ucwords(strtolower($address->regency)) }}, {{ ucwords(strtolower($address->province)) }}</p>
-                                <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
-                                @if ($address->benchmark)
-                                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
-                                @endif
-                            </div>
-                            <div class="col-2 p-0 d-flex flex-column align-items-start justify-content-center">
-                                <i class="fas fa-check"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            @else
-            <div class="col-12 mb-2 p-0 shipping-address" id="shipping-address-{{ $address->id }}" onclick="selectAddress(this)">
-                <div class="p-2 rounded-sm custom-shadow">
-                    <div class="d-flex align-items-center">
-                        <p class="text-black mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">{{ $address->label }}</p>
-                        @if ($address->is_main)
-                            <span class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto
-                            text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
-                        @endif
-                    </div>
-                    
-                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $address->recipient_name }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ ucwords(strtolower($address->subdistrict)) }}, {{ ucwords(strtolower($address->district)) }}, {{ ucwords(strtolower($address->regency)) }}, {{ ucwords(strtolower($address->province)) }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
-                    @if ($address->benchmark)
-                        <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
-                    @endif
-    
-                    <div class="d-flex gap-2 input-group-btn mt-2">
-                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]" name="useAddress" data-id="{{ $address->id }}">
-                            Gunakan
-                        </button>
-                    </div>
-                </div>
-            </div>
-            @endif
-        @endforeach
-       </div>
-    </div>
-  </div>
-</div>
-<!-- END MODAL CHANGE ADDRESS -->
-
-<!-- MODAL RINCIAN PENGIRIMAN -->
-<div class="modal fade" id="shipping_details" tabindex="-1" aria-labelledby="shipping_details" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-      <div class="modal-header border-none pb-0">
-        <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih Pengiriman</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-
-      <div class="modal-body">
-        @foreach ($data['shippingFee'] as $sp)
-            <div class="col-12 mb-2 p-0 shipping-fee-detail" id="shipping-fee-{{ $sp['id'] }}" onclick="selectShipping(this)">
-                <div class="p-2 rounded-sm custom-shadow">
-                    
-                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $sp['description'] }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($sp['value'], 0, ',', '.') }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">Estimasi {{ $sp['etd'] }} hari</p>
-    
-                    <div class="d-flex gap-2 input-group-btn mt-2">
-                        <button type="button" class="bg-white hover:border-dark btn border w-full rounded-sm text-[#183018] text-[10px] md:text-[11px] lg:text-[13px] xl:text-[15px]" name="useShipping" data-id="{{ $sp['id'] }}">
-                            Gunakan
-                        </button>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-
-    </div>
-    </div>
-  </div>
-</div>
-<!-- END MODAL RINCIAN PENGIRIMAN -->
-
-    <!-- MODAL TAMBAH ADDRESS -->
-    <div class="modal fade" id="add_address" tabindex="-1" aria-labelledby="add_address" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content overflow-y-auto" style="max-height:90vh;">
-                <div class="modal-header border-none bg-[#183018]">
-                    <div class="flex gap-3 justify-content-center align-items-center">
-                        <h1 type="button" class="text-white font-semibold" data-bs-dismiss="modal" aria-label="Close">X</h1>
-                        <h1 class="modal-title text-white text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Tambahkan Alamat Baru</h1>
-                    </div>
-                    {{-- <h1 class="modal-title text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                        id="exampleModalLabel">Tambahkan Alamat Baru</h1>
-                    <button type="button" class="btn-close" id="close-modal-add-address" data-bs-dismiss="modal"
-                        aria-label="Close"></button> --}}
-                </div>
-
-                <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-                    <form method="POST" action="{{ route('add.shipping.address') }}" id="add-address-form">
-                        @csrf
-                        <div class="grid gap-1 gap-md-2">
-                            <div class="grid md:flex">
-                                <div class="col-md-6">
-                                    <div class="col-12 p-0">
-                                        <label for="label"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
-                                        <input type="text"
-                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            name="label" placeholder="Masukkan Nama Label Untuk Alamatmu" required>
-                                    </div>
-                                    <div class="col-12 p-0">
-                                        <label for="receiver"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
-                                            Penerima</label>
-                                        <input type="text"
-                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            name="recipient_name" placeholder="Masukkan Nama Penerima" required>
-                                    </div>
-                                    <div class="col-12 p-0">
-                                        <label for="handphone"
-                                            class="form-label text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
-                                        <div class="input-group">
-                                            <span
-                                                class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                id="basic-addon1">+62</span>
-                                            <input type="number"
-                                                class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                name="handphone" placeholder="Contoh : 8979254301"
-                                                pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
-                                        </div>
-                                    </div>
-                                    <!-- ALAMAT -->
-                                    <div class="col-12 p-0">
-                                        <label for="alamat"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
-                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
-                                            rows="3" placeholder="Masukkan Alamatmu" required></textarea>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="col-12 p-0">
-                                        <label for="provinsi"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
-                                        <select
-                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            aria-label="Provinsi" name="province" id="add_checkout_province">
-                                            <option
-                                                class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                Pilih Provinsi</option>
-                                        </select>
-                                        <input type="hidden" name="province_name" id="add_checkout_province_name">
-                                    </div>
-
-                                    <div class="col-12 p-0">
-                                        <label for="kabupaten/kota"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
-                                        <select
-                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            aria-label="Kabupaten/Kota" name="regency" id="add_checkout_regency">
-                                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih
-                                                Kabupaten/Kota</option>
-                                        </select>
-                                        <input type="hidden" name="regency_name" id="add_checkout_regency_name">
-                                    </div>
-
-                                    <div class="col-12 p-0">
-                                        <label for="kecamatan"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
-                                        <select
-                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            aria-label="Kecamatan" name="district" id="add_checkout_district">
-                                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih
-                                                Kecamatan</option>
-                                        </select>
-                                        <input type="hidden" name="district_name" id="add_checkout_district_name">
-                                    </div>
-
-                                    <div class="col-12 p-0">
-                                        <label for="village"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Desa/Kelurahan</label>
-                                        <select
-                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                            aria-label="village" name="subdistrict" id="add_checkout_subdistrict">
-                                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih
-                                                Desa/Kelurahan</option>
-                                        </select>
-                                        <input type="hidden" name="subdistrict_name" id="add_checkout_subdistrict_name">
-                                    </div>
-
-                                    <!-- PATOKAN -->
-                                    <div class="col-12 p-0">
-                                        <label for="patokan"
-                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
-                                            (Opsional)</label>
-                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
-                                            rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                <!-- BUTTON SUBMIT -->
-                <div class="col-12 p-0">
-                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
-                </div>
-            </div>
-            </form>
-        </div>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL USE PROMO -->
 <div class="modal fade" id="promo" tabindex="-1" aria-labelledby="promo" aria-hidden="true">
@@ -1504,8 +1229,19 @@
                 <div class="col-12 p-0 gap-1">
 
                     @php
-                        $brandIds = $data['cartItems']->pluck('brand_id'); // Ambil semua brand_id dari cartItems
-                        $productIds = $data['cartItems']->pluck('product_id');
+                        $cartCollection = collect($data['cartItems']);
+
+                        $brandIds = $cartCollection
+                            ->pluck('product.brand.id')
+                            ->filter()     // hilangkan null jika ada produk tanpa brand
+                            ->unique()
+                            ->values();
+
+                        $productIds = $cartCollection
+                            ->pluck('product.id')
+                            ->unique()
+                            ->values();
+
 
                         $voucherDisabled = $data['voucherDisabled'];
                         // Filter voucher berdasarkan kecocokan dengan brand_id di cartItems
@@ -1770,35 +1506,149 @@
 </script>
 
 <!-- API WILAYAH FOR ADDRESS -->
-<script>
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then((response) => response.json())
-        .then((provinces) => {
-            const provinceSelect = document.getElementById("add_checkout_province");
+@if(count($data['information']) == 0)
+    <script>
+        fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+            .then((response) => response.json())
+            .then((provinces) => {
+                const provinceSelect = document.getElementById("add_checkout_province");
 
-            provinces.forEach((province) => {
-                let option = document.createElement("option");
-                option.value = province.id;
-                option.text = province.name;
-                provinceSelect.appendChild(option);
+                provinces.forEach((province) => {
+                    let option = document.createElement("option");
+                    option.value = province.id;
+                    option.text = province.name;
+                    provinceSelect.appendChild(option);
+                });
+                
+            })
+            .catch((error) => console.error("Error fetching provinces:", error));
+
+        // Event listener for province selection
+        // PILIH PROVINSI
+        document
+            .getElementById("add_checkout_province")
+            .addEventListener("change", function() {
+                const provinceId = this.value;
+                const provinceName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("add_checkout_province_name").value =
+                    provinceName; // Save name in hidden input
+
+                const regencySelect = document.getElementById("add_checkout_regency_selected");
+                regencySelect.innerHTML =
+                    '<option value="">Pilih Kabupaten/Kota</option>';
+                document.getElementById("add_checkout_regency_name").value = ""; // Clear previous regency name
+
+                // GET DATA REGENCIES FROM PROVINCE
+                if (provinceId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((regencies) => {
+                            regencies.forEach((regency) => {
+                                let option = document.createElement("option");
+                                option.value = regency.id;
+                                option.text = regency.name;
+                                regencySelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching regencies:", error)
+                        );
+                }
             });
-        })
-        .catch((error) => console.error("Error fetching provinces:", error));
 
-    // Event listener for province selection
-    // PILIH PROVINSI
-    document
-        .getElementById("add_checkout_province")
-        .addEventListener("change", function() {
-            const provinceId = this.value;
-            const provinceName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_province_name").value =
-                provinceName; // Save name in hidden input
+        document
+            .getElementById("add_checkout_regency")
+            .addEventListener("change", function() {
+                const regenciesId = this.value;
+                const regenciesName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("add_checkout_regency_name").value =
+                    regenciesName; // Save name in hidden input
 
-            const regencySelect = document.getElementById("add_checkout_regency");
+                const districtSelect = document.getElementById("add_checkout_district");
+                districtSelect.innerHTML =
+                    '<option value="">Pilih Kecamatan</option>';
+                document.getElementById("add_checkout_district_name").value = ""; // Clear previous regency name
+
+                // GET DATA DISTRICT FROM REGENCY
+                if (regenciesId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((districts) => {
+                            districts.forEach((district) => {
+                                let option = document.createElement("option");
+                                option.value = district.id;
+                                option.text = district.name;
+                                districtSelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching districts:", error)
+                        );
+                }
+            });
+
+        // Event listener for regency selection
+        document
+            .getElementById("add_checkout_regency")
+            .addEventListener("change", function() {
+                const regencyName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("add_checkout_regency_name").value = regencyName; // Save name in hidden input
+            });
+
+        // Event listener for district selection
+        document
+            .getElementById("add_checkout_district")
+            .addEventListener("change", function() {
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("add_checkout_district_name").value =
+                    districtName; // Save name in hidden input
+            });
+        // END API WILAYAH REGISTER
+    </script>
+@else
+    <script>
+        fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+            .then((response) => response.json())
+            .then((provinces) => {
+                const provinceSelect = document.getElementById("checkout_province_selected");
+
+                const provinceSelected = "{{ $data['information']['province'] ?? '' }}";
+
+                provinces.forEach((province) => {
+                    let option = document.createElement("option");
+                    option.value = province.id;
+                    option.text = province.name;
+
+                    if (province.name === provinceSelected) {
+                        option.selected = true;
+                    }
+
+                    provinceSelect.appendChild(option);
+                });
+
+                // Tambahkan setelah forEach selesai
+                if (provinceSelected !== "") {
+                    onProvinceChanged(provinceSelect); // << panggil manual!
+                }
+
+                
+            })
+            .catch((error) => console.error("Error fetching provinces:", error));
+
+        // Event listener for province selection
+        // PILIH PROVINSI
+        function onProvinceChanged(selectElement) {
+            const provinceId = selectElement.value;
+            const provinceName = selectElement.options[selectElement.selectedIndex].text; // Get the name
+            document.getElementById("checkout_province_name_selected").value = provinceName;
+            const regencySelect = document.getElementById("checkout_regency_selected");
             regencySelect.innerHTML =
                 '<option value="">Pilih Kabupaten/Kota</option>';
-            document.getElementById("add_checkout_regency_name").value = ""; // Clear previous regency name
+            document.getElementById("checkout_regency_name_selected").value = ""; // Clear previous regency name
 
             // GET DATA REGENCIES FROM PROVINCE
             if (provinceId) {
@@ -1807,31 +1657,38 @@
                     )
                     .then((response) => response.json())
                     .then((regencies) => {
+                        const regencySelected = "{{ $data['information']['regency'] ?? '' }}";
                         regencies.forEach((regency) => {
                             let option = document.createElement("option");
                             option.value = regency.id;
                             option.text = regency.name;
                             regencySelect.appendChild(option);
+                            
+                            if (regency.name === regencySelected) {
+                                option.selected = true;
+                            }
                         });
+
+                        if (regencySelected !== "") {
+                            onRegencyChanged(regencySelect); // << panggil manual!
+                        }
                     })
                     .catch((error) =>
                         console.error("Error fetching regencies:", error)
                     );
-            }
-        });
+                }
+        };
 
-    document
-        .getElementById("add_checkout_regency")
-        .addEventListener("change", function() {
-            const regenciesId = this.value;
-            const regenciesName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_regency_name").value =
+        function onRegencyChanged(selectElement){
+            const regenciesId = selectElement.value;
+            const regenciesName = selectElement.options[selectElement.selectedIndex].text; // Get the name
+            document.getElementById("checkout_regency_name_selected").value =
                 regenciesName; // Save name in hidden input
 
-            const districtSelect = document.getElementById("add_checkout_district");
+            const districtSelect = document.getElementById("checkout_district_selected");
             districtSelect.innerHTML =
                 '<option value="">Pilih Kecamatan</option>';
-            document.getElementById("add_checkout_district_name").value = ""; // Clear previous regency name
+            document.getElementById("checkout_district_name_selected").value = ""; // Clear previous regency name
 
             // GET DATA DISTRICT FROM REGENCY
             if (regenciesId) {
@@ -1840,80 +1697,36 @@
                     )
                     .then((response) => response.json())
                     .then((districts) => {
+                        const districtSelected = "{{ $data['information']['district'] ?? '' }}";
                         districts.forEach((district) => {
                             let option = document.createElement("option");
                             option.value = district.id;
                             option.text = district.name;
                             districtSelect.appendChild(option);
+                            if (district.name === districtSelected) {
+                                option.selected = true;
+                            }
                         });
                     })
                     .catch((error) =>
                         console.error("Error fetching districts:", error)
                     );
             }
-        });
-    
-    document
-        .getElementById("add_checkout_district")
-        .addEventListener("change", function() {
-            const districtId = this.value;
-            const districtName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_district_name").value =
-                districtName; // Save name in hidden input
+        }
 
-            const subdistrictSelect = document.getElementById("add_checkout_subdistrict");
-            subdistrictSelect.innerHTML =
-                '<option value="">Pilih Desa/Kelurahan</option>';
-            document.getElementById("add_checkout_subdistrict_name").value = ""; // Clear previous regency name
+        // Event listener for district selection
+        document
+            .getElementById("checkout_district_selected")
+            .addEventListener("change", function() {
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_district_name_selected").value =
+                    districtName; // Save name in hidden input
+            });
+        // END API WILAYAH REGISTER
+    </script>
+@endif
 
-            // GET DATA DISTRICT FROM REGENCY
-            if (districtId) {
-                fetch(
-                        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
-                    )
-                    .then((response) => response.json())
-                    .then((subdistricts) => {
-                        subdistricts.forEach((subdistrict) => {
-                            let option = document.createElement("option");
-                            option.value = subdistrict.id;
-                            option.text = subdistrict.name;
-                            subdistrictSelect.appendChild(option);
-                        });
-                    })
-                    .catch((error) =>
-                        console.error("Error fetching districts:", error)
-                    );
-            }
-        });
-
-    // Event listener for regency selection
-    document
-        .getElementById("add_checkout_regency")
-        .addEventListener("change", function() {
-            const regencyName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_regency_name").value = regencyName; // Save name in hidden input
-        });
-
-    // Event listener for district selection
-    document
-        .getElementById("add_checkout_district")
-        .addEventListener("change", function() {
-            const districtName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_district_name").value =
-                districtName; // Save name in hidden input
-        });
-    
-    document
-        .getElementById("add_checkout_subdistrict")
-        .addEventListener("change", function() {
-            const subdistrictName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("add_checkout_subdistrict_name").value =
-                subdistrictName; // Save name in hidden input
-        });
-    // END API WILAYAH REGISTER
-</script>
-
-@if(session('after_add_address'))
+@if(session('after_edit_info'))
     <script>
         var Toast = Swal.mixin({
             toast: true,
@@ -1932,7 +1745,7 @@
         });
         Toast.fire({
             icon: "success",
-            text: "Berhasil menambahkan alamat pengiriman",
+            text: "Berhasil mengubah informasi pengiriman",
             willOpen: () => {
                 const title = document.querySelector('.swal2-title');
                 const content = document.querySelector('.swal2-html-container');
@@ -1978,7 +1791,7 @@
 <script>
     $('#paynow').click(function(e) {
         e.preventDefault();
-        console.log(ongkir);
+        // console.log(ongkir);
         if(ongkir == null){
             Toast.fire({
                 icon: "error",
@@ -2090,4 +1903,5 @@
 
     });
 </script>
+
 @endsection

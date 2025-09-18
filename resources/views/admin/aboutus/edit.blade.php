@@ -543,10 +543,10 @@
                                                 <div>
                                                     <h4 class="mb-2 d-flex align-items-center">
                                                         <i class="bi bi-pencil-square me-2"></i>
-                                                        Formulir Edit Brand
+                                                        Formulir Edit Tentang Kami
                                                     </h4>
                                                     <p class="text-muted mb-0">
-                                                        Silakan edit formulir di bawah ini untuk update brand di sistem.
+                                                        Silakan edit formulir di bawah ini untuk update informasi Tentang Kami di sistem.
                                                     </p>
                                                 </div>
 
