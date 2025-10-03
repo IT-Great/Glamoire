@@ -42,7 +42,10 @@ class AppServiceProvider extends ServiceProvider
             // dd($subCategories);
             $view->with('categories', $categories)->with('brands', $brands)->with('subCategories', $subCategories);
         });
-        if (config('app.env') !== 'https://glamoire.co.id') {
+        if (config('app.env') !== 'http://localhost') {
+            URL::forceScheme('http');
+        }
+        if (config('app.env') === 'production') {
             URL::forceScheme('https');
         }
     }
