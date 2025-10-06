@@ -342,28 +342,6 @@
                 .catch(error => console.error('Stock Alerts Error:', error));
         }
 
-        function updateContactUsNotifications() {
-            fetch("{{ route('unread-questions-count') }}")
-                .then(response => response.json())
-                .then(data => {
-                    const contactBadge = document.getElementById('contact-us-notif');
-                    const unreadMessagesCount = document.getElementById('unread-messages-count');
-                    const messageUpdateTime = document.getElementById('message-update-time');
-
-                    // Unread messages
-                    contactBadge.textContent = data.unreadQuestions;
-                    contactBadge.classList.toggle('d-none', data.unreadQuestions === 0);
-
-                    unreadMessagesCount.textContent = data.unreadQuestions > 0 ?
-                        `${data.unreadQuestions} Unread Message${data.unreadQuestions > 1 ? 's' : ''}` :
-                        'No new messages';
-
-                    // Update time
-                    messageUpdateTime.textContent = new Date().toLocaleTimeString();
-                })
-                .catch(error => console.error('Contact Us Notifications Error:', error));
-        }
-
         // Initial checks
         updateStockAlerts();
         updateContactUsNotifications();
