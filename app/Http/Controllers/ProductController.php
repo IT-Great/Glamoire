@@ -114,6 +114,11 @@ class ProductController extends Controller
 
                 $promoModal = $mainPromo;
 
+                // Ambil data popup untuk slider
+                $popups = Popup::where('is_active', true)
+                    ->whereIn('display_type', ['slider', 'both'])
+                    ->get();
+
                 $data = [
                     'wishlist'  => $wishlist,
                     'cartItems' => $cartItems,
@@ -121,6 +126,8 @@ class ProductController extends Controller
                     'promoModal' => $promoModal,
                     'topsell' => $topsell,
                     'new'     => $new,
+                    'popups'    => $popups, // ⬅️ kirim ke view
+
                 ];
 
                 return view('user.component.home')->with('data', $data);
@@ -197,12 +204,19 @@ class ProductController extends Controller
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                     ->get();
 
+                // Ambil data popup untuk slider
+                $popups = Popup::where('is_active', true)
+                    ->whereIn('display_type', ['slider', 'both'])
+                    ->get();
+
                 $data = [
                     'topsell' => $topsell,
                     'new'     => $new,
                     'product' => $product,
                     'promos'  => $promos,
                     'popup'   => $popupVoucherNewUser,
+                    'popups'    => $popups, // ⬅️ kirim ke view
+
                 ];
 
                 // dd(count($data['wishlist']));
@@ -222,8 +236,6 @@ class ProductController extends Controller
     public function detail(Request $request, $code)
     {
         try {
-            // session()->forget('guest_cart');
-            // dd(session());
             $product = Product::where('product_code', $code)
                 ->with(['ratingAndReviews.user', 'promos'  => function ($query) {
                     $query->select('promos.*', 'promo_products.discounted_price')
