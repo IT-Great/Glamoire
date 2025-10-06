@@ -22,16 +22,605 @@ use App\Models\City;
 use App\Models\ProductStocks;
 use App\Models\ProductVariations;
 use App\Models\PromoProduct;
+use App\Models\District;
+use App\Models\Area;
+
+
 use Exception;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 use App\Services\DokuService;
 use PDO;
 
 class CheckoutController extends Controller
 {
+    // API RAJAONGKIR
+    // public function index(Request $request)
+    // {
+    //     try {
+    //         $userId = session('id_user');
+    //         $date = now()->format('Y-m-d');
+
+    //         if ($userId) {
+    //             $user = Auth::user();
+
+    //             // Check if user is verified
+    //             if (!$user->hasVerifiedEmail()) {
+    //                 return redirect('/' . $userId . '_account');
+    //             }
+
+    //             $data = Cart::where('user_id', $userId)
+    //                 ->with('cartItems')
+    //                 ->get();
+
+    //             // HANDLE VOUCHER USER
+    //             $checkVoucherUsage = Order::where('user_id', $userId)
+    //                 ->where(function ($query) {
+    //                     $query->whereNotNull('voucher_promo')
+    //                         ->orWhereNotNull('voucher_ongkir');
+    //                 })
+    //                 ->select('voucher_promo', 'voucher_ongkir')
+    //                 ->get()
+    //                 ->flatMap(function ($order) {
+    //                     return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
+    //                 })
+    //                 ->unique()
+    //                 ->values()
+    //                 ->toArray();
+
+
+    //                 // dd($checkVoucherUsage);
+    //                 // Check if there are any used vouchers
+                    
+    //                 $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+    //                     ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+    //                     ->when('product voucher' === 'product voucher', function($query) {
+    //                         return $query->with('products');
+    //                     })
+    //                     ->when('type' === 'brand voucher', function($query) {
+    //                         return $query->with('products');
+    //                     })
+    //                     ->whereNotIn('promo_code', $checkVoucherUsage)
+    //                     ->whereColumn('total_used', '<', 'usage_quota')
+    //                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+    //                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+    //                     ->select(
+    //                         'brands.name as brand_name',  // Nama brand
+    //                         'promos.*'                   // Data promo
+    //                     )
+    //                     ->distinct()  // Menghindari duplikasi
+    //                     ->get();
+
+    //                 // dd($vouchers);
+    //                 $productVouchers = $vouchers->filter(function ($voucher) {
+    //                     return $voucher->type === 'product voucher';
+    //                 });
+                    
+    //                 $brandVouchers = $vouchers->filter(function ($voucher) {
+    //                     return $voucher->type === 'brand voucher';
+    //                 });
+                    
+    //                 $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+    //                     return $voucher->promoProducts->pluck('product_id');
+    //                 })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+    //                 $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+    //                     return $voucher->promoProducts->pluck('product_id');
+    //                 })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                    
+    //                 // dd($productVoucherIds);
+    //             // END HANDLE VOUCHER USER
+
+
+    //             // AMBIL SELURUH DATA ALAMAT PENGIRIMAN USER
+    //             $address = Shipping_address::where('user_id', session('id_user'))
+    //                 ->orderBy('is_main', 'DESC')
+    //                 ->get();
+    //             // END ALL SHIPPING ADDRESS USER
+
+    //             // AMBIL DATA ALAMAT PENGIRIMAN YANG DIGUNAKAN
+    //             $shippingAddressId = Shipping_address::where('user_id', session('id_user'))
+    //                 ->where('is_use', 1)
+    //                 ->value('id');
+    //             $province = Shipping_address::where('user_id', session('id_user'))
+    //                 ->where('is_use', 1)
+    //                 ->value('province');
+    //             $regency = Shipping_address::where('user_id', session('id_user'))
+    //                 ->where('is_use', 1)
+    //                 ->value('regency');
+    //             // END GET DATA USE SHIPPING
+
+
+    //             // MENGAMBIL PRODUK YANG DIBELI MELALUI KERANJANG
+    //             $cartId = Cart::where('user_id', session('id_user'))->value('id');
+
+    //             $cartItems = Cart_item::where('cart_id', $cartId)
+    //                 ->leftJoin('products', 'products.id', '=', 'cart_items.product_id')
+    //                 ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
+    //                 ->where('is_choose', true)
+    //                 ->whereHas('product', function ($query) {
+    //                     $query->where('stock_quantity', '!=', 0);
+    //                 })
+    //                 ->with(['product' => function ($query) {
+    //                     $query->with(['promos' => function ($query) {
+    //                         $query->select('promos.*')
+    //                             ->with(['tiers'])
+    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+    //                     }]);
+    //                 }, 'productVariant'])
+    //                 ->select(
+    //                     'cart_items.*',        // Semua kolom dari tabel cart_items
+    //                     'products.brand_id',   // brand_id dari tabel products
+    //                     'brands.id as brand_id' // id dari tabel brands
+    //                 )
+    //                 ->get();
+            
+    //                 foreach ($cartItems as $item) {
+    //                     if ($item->product && $item->product->promos) {
+    //                         foreach ($item->product->promos as $promo) {
+    //                             if ($promo->tiers) {
+    //                                 foreach ($promo->tiers as $tier) {
+    //                                     switch ($tier->discount_type) {
+    //                                         case 'percentage':
+    //                                             // Contoh logika untuk diskon persentase
+    //                                             if ($item->quantity == $tier->min_quantity) {
+    //                                                 $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
+    //                                                 $item->bundle_price = $discountedPrice;
+    //                                                 $item->total = $discountedPrice;
+    //                                             }
+    //                                             break;
+                    
+    //                                         case 'nominal':
+    //                                             // Contoh logika untuk diskon nominal
+    //                                             if ($item->quantity == $tier->min_quantity) {
+    //                                                 $discountedPrice = $item->total - $tier->discount_value;
+    //                                                 $item->bundle_price = $discountedPrice;
+    //                                                 $item->total = $discountedPrice;
+    //                                             }
+    //                                             break;
+                    
+    //                                         case 'package':
+    //                                             if ($item->quantity == $tier->min_quantity) {
+    //                                                 $item->bundle_price = $tier->package_price; // Tetapkan harga paket
+    //                                                 $item->total = $tier->package_price;
+    //                                             }
+    //                                             break;
+                    
+    //                                         default:
+    //                                             // Logika default jika tidak ada kasus yang cocok
+    //                                             $item->discounted_price = $item->product->price;
+    //                                             break;
+    //                                         }
+    //                                     }
+    //                                 }
+    //                         }
+    //                     }
+    //                 }
+                    
+    //             $voucherDisabled = false; // Default awal
+    //             // dd($cartItems);
+    //             foreach ($cartItems as $prod) {
+    //                 $activePromo = $prod->product->promos->first();
+    //                 $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+    //                 $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
+                    
+    //                 if($promoTiers == ""){
+    //                     $promoTiers = null;
+    //                 }
+                    
+    //                 $di = [
+    //                     "discountedPrice" => $discountedPrice,
+    //                     "promoTier"       => $promoTiers,
+    //                 ];
+
+    //                 if ($discountedPrice !== null || $promoTiers !== null) {
+    //                     $voucherDisabled = true;
+    //                     break; 
+    //                 }
+    //             }
+
+    //             // dd($voucherDisabled);
+
+    //             $totalItem = $cartItems->count();
+    //             $totalWeight = $cartItems->sum(function ($cartItem) {
+    //                 return ($cartItem->product->weight_product ?? 0) * $cartItem->quantity; // Multiply weight by quantity
+    //             });
+    //             if (count($cartItems) == 0) {
+    //                 return redirect('/');
+    //             }
+    //             foreach ($cartItems as $item) {
+    //                 if ($item->product->stock_quantity == 0) {
+    //                     return redirect('/cart')->with('stock_empty', 'Stok produk ' . $item->product->product_name . ' kosong');
+    //                 }
+    //             }
+    //             $totalProduct = $cartItems->sum('quantity');
+    //             $totalPrice = $cartItems->sum('total');
+    //             // END PRODUK ITEM
+
+    //             // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
+    //             $provinceId = null;
+    //             $provinces = Province::get();
+    //             foreach ($provinces as $resprov) {
+    //                 if (strtolower($resprov['province']) === strtolower($province)) {
+    //                     $provinceId = $resprov['province_id'];
+    //                     break; // Berhenti setelah ditemukan
+    //                 }
+    //             }
+
+    //             // $responseProvince = Http::withHeaders([
+    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             // ])->get('https://rajaongkir.komerce.id/api/v1/destination/province');  
+
+    //             // Log::info('provinsi:', [
+    //             //     'status' => $responseProvince->body(),
+    //             // ]);
+    //             // // dd('provinsi:', $responseProvince->json());
+    //             // if ($responseProvince->successful()) {
+    //             //     $provinces = $responseProvince->json()['data'];
+
+    //             //     foreach ($provinces as $resprov) {
+    //             //         if (strtolower($resprov['name']) === strtolower($province)) {
+    //             //             $provinceId = $resprov['id'];
+    //             //             break; // Berhenti setelah ditemukan
+    //             //         }
+    //             //     }
+    //             //     foreach ($provinces as $resprov) {
+    //             //         Province::updateOrCreate(
+    //             //             ['province_id' => $resprov['id']], // Check for uniqueness by province_id
+    //             //             ['province' => $resprov['name']]
+    //             //         );
+    //             //     }
+    //             // } else {
+    //             //     Log::error('Failed to fetch provinces: ' . $responseProvince->status());
+    //             // }
+         
+
+    //             // dd($regency);
+
+    //             // foreach ($provinces as $resprov) {
+    //             //     $responseCities = Http::withHeaders([
+    //             //         'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             //     ])->get('https://rajaongkir.komerce.id/api/v1/destination/city/'.$resprov->province_id, );
+
+                    
+    //             //     if ($responseCities->successful()) {
+    //             //         $cities = $responseCities->json()['data'];
+    //             //         dd($cities);
+    //             //         foreach ($cities as $rescit) {
+    //             //             if (strtolower($rescit['name']) === strtolower($regency)) {
+    //             //                 $cityId = $rescit['id'];
+    //             //                 break; // Berhenti setelah ditemukan
+    //             //             }
+    //             //         }
+    
+    //             //         foreach ($cities as $rescity) {
+    //             //             // Insert or update city data if it doesn't exist
+    //             //             City::updateOrCreate(
+    //             //                 ['city_id' => $rescity['city_id']], // Unique constraint on city_id
+    //             //                 [
+    //             //                     'province_id' => $rescity['province_id'],
+    //             //                     'province' => $rescity['province'],
+    //             //                     'type' => $rescity['type'],
+    //             //                     'city_name' => $rescity['city_name'],
+    //             //                     'postal_code' => $rescity['postal_code']
+    //             //                 ]
+    //             //             );
+    //             //         }
+    //             //     } else {
+    //             //         Log::error('Failed to fetch cities: ' . $responseCities->status());
+    //             //     }
+    //             // }
+
+    //             $cityId = null;
+    //             $cities = City::where('province_id', $provinceId)->get();
+    //             $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
+    //             foreach ($cities as $rescit) {
+    //                 if (strtolower($rescit['city_name']) === strtolower($regency)) {
+    //                     $cityId = $rescit['city_id'];
+    //                     break; // Berhenti setelah ditemukan
+    //                 }
+    //             }
+
+    //             // dd($cityId);
+
+    //             // $responseShipping = Http::withHeaders([
+    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             // ])->post('https://api.rajaongkir.com/starter/cost', [
+    //             //     'origin' => 114,
+    //             //     'destination' => $cityId,
+    //             //     'weight' => $totalWeight,
+    //             //     'courier' => 'jne',
+    //             // ]);
+
+                
+    //             // $responseShipping = Http::withHeaders([
+    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             // ])->get('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost');
+    //             $responseShipping = Http::asForm()->withHeaders([
+    //                 'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
+    //                 'origin'      => 1391,
+    //                 'destination' => 1376,
+    //                 'weight'      => 1000,
+    //                 'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
+    //                 'price'       => 'lowest',
+    //             ]);
+
+    //             // dd($responseShipping->body());
+
+    //             // $responseShipping = Http::withHeaders([
+    //             //     'accept' => 'application/json',
+    //             //     'content-type' => 'application/json',
+    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
+    //             //     // isi body JSON request di sini, misalnya:
+    //             //     // 'origin' => '501', 
+    //             //     // 'destination' => '114',
+    //             //     // 'weight' => 1700,
+    //             //     // 'courier' => 'jne',
+    //             // ]);
+
+    //             // Log::info('tes:', [
+    //             //     'status' => $responseShipping->status(),
+    //             //     'body'   => $responseShipping->body(),
+    //             // ]);
+
+
+    //             // $responseShipping = Http::asForm()->withHeaders([
+    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+    //             // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
+    //             //     'origin'      => 1391,
+    //             //     'destination' => 1376,
+    //             //     'weight'      => 1000,
+    //             //     'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
+    //             //     'price'       => 'lowest',
+    //             // ]);
+
+    //             Log::info('RajaOngkir Response:', [
+    //                 'status' => $responseShipping->status(),
+    //                 'body'   => $responseShipping->json(), // langsung decode ke array
+    //             ]);
+
+    //             // dd($responseShipping->json());
+
+    //             $sfee = [];
+    //             if ($responseShipping->successful()) {
+    //                 $shippingFee = $responseShipping->json()['data'];
+
+    //                 foreach ($shippingFee as $index => $sf) {
+    //                     $sfee[$index] = [
+    //                         'id' => $index,
+    //                         'description' => $sf['description'],
+    //                         'value' => $sf['cost'],
+    //                         'etd' => $sf['etd'],
+    //                     ];
+    //                 }
+    //                 // foreach ($shippingFee[0]['costs'] as $service) {
+    //                 //     ShippingFee::create([
+    //                 //         'code' => $shippingFee[0]['code'],
+    //                 //         'name' => $shippingFee[0]['name'],
+    //                 //         'service' => $service['service'],
+    //                 //         'description' => $service['description'],
+    //                 //         'cost_value' => $service['cost'][0]['value'],
+    //                 //         'etd' => $service['cost'][0]['etd'],
+    //                 //         'note' => $service['cost'][0]['note'] ?? '',
+    //                 //     ]);
+    //                 // }
+    //             } else {
+    //                 Log::error('Failed to fetch shipping: ' . $responseShipping->status());
+    //             }
+
+    //             // ONGKIR
+    //             $ongkir = null;
+    //             if ($request->service) {
+    //                 foreach ($sfee as $service) {
+    //                     if (trim($service['id']) === trim($request->service)) {
+    //                         $ongkir = $service['value'];
+    //                         break;
+    //                     }
+    //                 }
+    //                 return response()->json([
+    //                     'success' => true,
+    //                     'service' => $request->service,
+    //                     'ongkir'   => $ongkir,
+    //                 ]);
+    //             }
+    //             // END ONGKIR
+
+    //             // dd($vouchers);
+    //             // dd($voucherDisabled);
+    //             $groupedVouchers = $vouchers->groupBy('type');
+    //             $data = [
+    //                 'address'       => $address,
+    //                 'shippingAddressId' => $shippingAddressId,
+    //                 'shippingFee'   => $sfee,
+    //                 'province'     => $province,
+    //                 'regency'       => $regency,
+    //                 'cartItems'     => $cartItems,
+    //                 'totalProduct'  => $totalProduct,
+    //                 'totalPrice'    => $totalPrice,
+    //                 'vouchers'      => $vouchers,
+    //                 'totalItem'     => $totalItem,
+    //                 'ongkir'        => $ongkir,
+    //                 'weight'        => $totalWeight,
+    //                 'productVoucherIds' => $productVoucherIds,
+    //                 'brandVoucherIds' => $brandVoucherIds,
+    //                 'voucherDisabled' => $voucherDisabled,
+    //             ];
+
+    //             $productIds = $data['cartItems']->pluck('product_id');
+
+    //             // dd($productIds->intersect($data['productVoucherIds'])->isNotEmpty());
+    //             // dd($data['cartItems']->pluck('product_id'));
+    //             $brandIds = $cartItems->pluck('brand_id'); // Ambil semua brand_id dari cartItems
+    //             $productIds = $cartItems->pluck('product_id');
+
+
+    //             $unusableVouchers = $vouchers->filter(function ($voucher) use ($data, $brandIds, $productIds) {
+    //                 // Voucher unusable jika salah satu kondisi tidak terpenuhi
+    //                 return
+    //                     $data['totalPrice'] < $voucher->min_transaction ||
+    //                     $data['totalItem'] > $voucher->max_quantity_buyer ||
+    //                     !$brandIds->contains($voucher->brand_id) ||
+    //                     $productIds->intersect($data['productVoucherIds'])->isEmpty();
+    //             });
+
+    //             // dd($unusableVouchers);
+    //             // dd($groupedVouchers);
+    //             return view('user.component.checkout', [
+    //                 'groupedVouchers' => $groupedVouchers,
+    //             ])->with('data', $data);
+    //         } else {
+    //             // Guest
+    //             $guestCart = session('guest_cart', []);
+    //             $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
+
+    //             if (empty($productIds)) {
+    //                 return redirect('/'); // Tidak ada produk di cart
+    //             }
+
+    //             $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+    //                 ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+    //                 ->when('product voucher' === 'product voucher', function($query) {
+    //                     return $query->with('products');
+    //                 })
+    //                 ->when('type' === 'brand voucher', function($query) {
+    //                     return $query->with('products');
+    //                 })
+    //                 ->whereColumn('total_used', '<', 'usage_quota')
+    //                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+    //                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+    //                 ->select(
+    //                     'brands.name as brand_name',  // Nama brand
+    //                     'promos.*'                   // Data promo
+    //                 )
+    //                 ->distinct()  // Menghindari duplikasi
+    //                 ->get();
+
+    //             $productVouchers = $vouchers->filter(function ($voucher) {
+    //                 return $voucher->type === 'product voucher';
+    //             });
+                
+    //             $brandVouchers = $vouchers->filter(function ($voucher) {
+    //                 return $voucher->type === 'brand voucher';
+    //             });
+                
+    //             $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+    //                 return $voucher->promoProducts->pluck('product_id');
+    //             })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+    //             $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+    //                 return $voucher->promoProducts->pluck('product_id');
+    //             })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+    //             // Ambil data produk (dan varian jika perlu)
+    //             $products = Product::whereIn('id', $productIds)
+    //                 ->with([
+    //                     'brand',
+    //                     'promos' => function ($query) {
+    //                         $query->select('promos.*')
+    //                             ->with('tiers')
+    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+    //                     }
+    //                 ])
+    //                 ->get()
+    //                 ->keyBy('id');
+
+    //             $cartItems = [];
+
+    //             foreach ($guestCart as $item) {
+    //                 $productId = $item['product_id'];
+    //                 $quantity = $item['quantity'];
+    //                 $product = $products[$productId] ?? null;
+
+    //                 if (!$product || $product->stock_quantity == 0) {
+    //                     return redirect('/cart')->with('stock_empty', 'Stok produk tidak tersedia');
+    //                 }
+
+    //                 $price = $item['price'];
+
+    //                 // Cek apakah ada promo aktif
+    //                 $promo = $product->promos->first();
+    //                 $tierPrice = null;
+
+    //                 if ($promo) {
+    //                     foreach ($promo->tiers as $tier) {
+    //                         if ($quantity == $tier->min_quantity) {
+    //                             if ($tier->discount_type == 'percentage') {
+    //                                 $tierPrice = $price * ((100 - $tier->discount_value) / 100);
+    //                             } elseif ($tier->discount_type == 'nominal') {
+    //                                 $tierPrice = $price - $tier->discount_value;
+    //                             } elseif ($tier->discount_type == 'package') {
+    //                                 $tierPrice = $tier->package_price;
+    //                             }
+    //                             break;
+    //                         }
+    //                     }
+    //                 }
+
+    //                 $finalPrice = $tierPrice ?? $price;
+    //                 $total = $finalPrice * $quantity;
+
+    //                 $cartItems[] = [
+    //                     'product' => $product,
+    //                     'quantity' => $quantity,
+    //                     'price' => $finalPrice,
+    //                     'total' => $total,
+    //                     'bundle_price' => $tierPrice ?? null,
+    //                 ];
+    //             }
+
+    //             // Hitung total keseluruhan
+    //             $totalPrice = collect($cartItems)->sum('total');
+    //             $totalProduct = collect($cartItems)->sum('quantity');
+    //             $totalItem = count($cartItems);
+    //             $totalWeight = collect($cartItems)->sum(function ($item) {
+    //                 return ($item['product']->weight_product ?? 0) * $item['quantity'];
+    //             });
+
+    //             // Ganti dengan logic shipping guest jika diperlukan
+    //             $sfee = [];
+    //             $ongkir = null;
+    //             $province = null;
+    //             $regency = null;
+
+    //             // dd(session());
+    //             $information = session('guest_information') ?? [];
+                
+    //             $data = [
+    //                 'shippingFee'   => $sfee,
+    //                 'province'      => $province,
+    //                 'regency'       => $regency,
+    //                 'cartItems'     => $cartItems,
+    //                 'totalProduct'  => $totalProduct,
+    //                 'totalPrice'    => $totalPrice,
+    //                 'totalItem'     => $totalItem,
+    //                 'ongkir'        => $ongkir,
+    //                 'weight'        => $totalWeight,
+    //                 'voucherDisabled' => false, // Default untuk guest
+    //                 'information'   => $information,
+    //                 'vouchers'      => $vouchers,
+    //                 'productVoucherIds' => $productVoucherIds,
+    //                 'brandVoucherIds' => $brandVoucherIds,
+    //             ];
+
+    //             // dd(session());
+    //             return view('user.component.checkout-guest', [
+    //                 'groupedVouchers' => [], // Kosong karena guest tidak pakai voucher
+    //             ])->with('data', $data);
+                
+    //         }
+    //     } catch (Exception $err) {
+    //         dd($err);
+    //     }
+    // }
+
+    // API BITESHIP
     public function index(Request $request)
     {
         try {
@@ -125,6 +714,12 @@ class CheckoutController extends Controller
                 $regency = Shipping_address::where('user_id', session('id_user'))
                     ->where('is_use', 1)
                     ->value('regency');
+                $district = Shipping_address::where('user_id', session('id_user'))
+                    ->where('is_use', 1)
+                    ->value('district');
+                $subdistrict = Shipping_address::where('user_id', session('id_user'))
+                    ->where('is_use', 1)
+                    ->value('subdistrict');
                 // END GET DATA USE SHIPPING
 
 
@@ -245,69 +840,129 @@ class CheckoutController extends Controller
                     }
                 }
 
-                // $responseProvince = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->get('https://api.rajaongkir.com/starter/province');            
+                // AMBIL DATA PROVINSI DARI CARIKODEPOS.ID
+
+                // $provinceId = "cmc3dhj4a0003108tos1y4h7h";
+
+                // cek detail provinsi
+                // $responseProvince = Http::get('https://carikodepos.id/api/cities/');
+                // $responseCities = Http::get("https://carikodepos.id/api/provinces/".$provinceId."/cities");
+
+                // Log::info('provinsi:', [
+                //     'status' => $responseProvince,
+                // ]);
+
+                // $getProvinceId = DB::connection('mysql2')
+                //     ->table('provinces')
+                //     ->where('prov_name', 'LIKE', '%' . $province . '%')
+                //     ->value('prov_id');
+                // dd($getProvinceId);
+                
+                
+                // $getCities = DB::connection('mysql2')
+                //     ->table('cities')
+                //     ->where('city_name', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
+                //     ->where('prov_id', $getProvinceId)
+                //     ->value('city_id');
+
+                // $getDistricts = DB::connection('mysql2')
+                //     ->table('districts')
+                //     ->where('dis_name', 'LIKE', '%' . $district . '%')
+                //     ->where('city_id', $getCities)
+                //     ->value('dis_id');
+
+                // $getSubdistricts = DB::connection('mysql2')
+                //     ->table('subdistricts')
+                //     ->where('dis_id', $getDistricts)
+                //     ->pluck('subdis_id')
+                //     ->toArray();
+
+                // dd($getSubdistricts);
+                // dd($province);
+
+                $getPostalCode = Area::where('province', 'LIKE', '%' . $province . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
+                    ->where('district', 'LIKE', '%' . $district . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower($subdistrict)))
+                    ->value('postal_code');
+
+                $postalCodeGCS = Area::where('province', 'LIKE', '%' . "Jawa Timur" . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', 'Surabaya') . '%')
+                    ->where('district', 'LIKE', '%' . 'Dukuh pakis' . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower('Pradah kali kendal')))
+                    ->value('postal_code');
+
+                // dd($postalCodeGCS);
+                
+                // $getPostal = prov_id,city_id,dis_id,subdis_id;
+
+                // dd($responseProvince->json());
+                // dd('provinsi:', $responseProvince->json());
                 // if ($responseProvince->successful()) {
-                //     $provinces = $responseProvince->json()['rajaongkir']['results'];
+                //     $provinces = $responseProvince->json()['data'];
 
                 //     foreach ($provinces as $resprov) {
-                //         if (strtolower($resprov['province']) === strtolower($province)) {
-                //             $provinceId = $resprov['province_id'];
+                //         if (strtolower($resprov['name']) === strtolower($province)) {
+                //             $provinceId = $resprov['id'];
                 //             break; // Berhenti setelah ditemukan
                 //         }
                 //     }
                 //     foreach ($provinces as $resprov) {
                 //         Province::updateOrCreate(
-                //             ['province_id' => $resprov['province_id']], // Check for uniqueness by province_id
-                //             ['province' => $resprov['province']]
+                //             ['province_id' => $resprov['id']], // Check for uniqueness by province_id
+                //             ['province' => $resprov['name']]
                 //         );
                 //     }
                 // } else {
                 //     Log::error('Failed to fetch provinces: ' . $responseProvince->status());
                 // }
+         
 
                 // dd($regency);
 
-                // $responseCities = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->get('https://api.rajaongkir.com/starter/city', );
-                // if ($responseCities->successful()) {
-                //     $cities = $responseCities->json()['rajaongkir']['results'];
+                // foreach ($provinces as $resprov) {
+                //     $responseCities = Http::withHeaders([
+                //         'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                //     ])->get('https://rajaongkir.komerce.id/api/v1/destination/city/'.$resprov->province_id, );
 
-                //     foreach ($cities as $rescit) {
-                //         if (strtolower($rescit['city_name']) === strtolower($regency)) {
-                //             $cityId = $rescit['city_id'];
-                //             break; // Berhenti setelah ditemukan
+                    
+                //     if ($responseCities->successful()) {
+                //         $cities = $responseCities->json()['data'];
+                //         dd($cities);
+                //         foreach ($cities as $rescit) {
+                //             if (strtolower($rescit['name']) === strtolower($regency)) {
+                //                 $cityId = $rescit['id'];
+                //                 break; // Berhenti setelah ditemukan
+                //             }
                 //         }
+    
+                //         foreach ($cities as $rescity) {
+                //             // Insert or update city data if it doesn't exist
+                //             City::updateOrCreate(
+                //                 ['city_id' => $rescity['city_id']], // Unique constraint on city_id
+                //                 [
+                //                     'province_id' => $rescity['province_id'],
+                //                     'province' => $rescity['province'],
+                //                     'type' => $rescity['type'],
+                //                     'city_name' => $rescity['city_name'],
+                //                     'postal_code' => $rescity['postal_code']
+                //                 ]
+                //             );
+                //         }
+                //     } else {
+                //         Log::error('Failed to fetch cities: ' . $responseCities->status());
                 //     }
-
-                //     foreach ($cities as $rescity) {
-                //         // Insert or update city data if it doesn't exist
-                //         City::updateOrCreate(
-                //             ['city_id' => $rescity['city_id']], // Unique constraint on city_id
-                //             [
-                //                 'province_id' => $rescity['province_id'],
-                //                 'province' => $rescity['province'],
-                //                 'type' => $rescity['type'],
-                //                 'city_name' => $rescity['city_name'],
-                //                 'postal_code' => $rescity['postal_code']
-                //             ]
-                //         );
-                //     }
-                // } else {
-                //     Log::error('Failed to fetch cities: ' . $responseCities->status());
                 // }
 
-                $cityId = null;
-                $cities = City::where('province_id', $provinceId)->get();
-                $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
-                foreach ($cities as $rescit) {
-                    if (strtolower($rescit['city_name']) === strtolower($regency)) {
-                        $cityId = $rescit['city_id'];
-                        break; // Berhenti setelah ditemukan
-                    }
-                }
+                // $cityId = null;
+                // $cities = City::where('province_id', $provinceId)->get();
+                // $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
+                // foreach ($cities as $rescit) {
+                //     if (strtolower($rescit['city_name']) === strtolower($regency)) {
+                //         $cityId = $rescit['city_id'];
+                //         break; // Berhenti setelah ditemukan
+                //     }
+                // }
 
                 // dd($cityId);
 
@@ -321,30 +976,148 @@ class CheckoutController extends Controller
                 // ]);
 
                 
+                // $responseShipping = Http::withHeaders([
+                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                // ])->get('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost');
+
+                // $responseShipping = Http::asForm()->withHeaders([
+                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
+                //     'origin'      => 1391,
+                //     'destination' => 1376,
+                //     'weight'      => 1000,
+                //     'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
+                //     'price'       => 'lowest',
+                // ]);
+
+                // dd($responseShipping->body());
+
+                // $responseShipping = Http::withHeaders([
+                //     'accept' => 'application/json',
+                //     'content-type' => 'application/json',
+                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
+                // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
+                //     // isi body JSON request di sini, misalnya:
+                //     // 'origin' => '501', 
+                //     // 'destination' => '114',
+                //     // 'weight' => 1700,
+                //     // 'courier' => 'jne',
+                // ]);
+
+                // Log::info('tes:', [
+                //     'status' => $responseShipping->status(),
+                //     'body'   => $responseShipping->body(),
+                // ]);
+
+                $shippingStart = Http::withHeaders([
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $postalCodeGCS, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+                foreach($shippingStart['areas'] as $rs){
+                    $areaIdStart = $rs['id'];
+                }
+
                 $responseShipping = Http::withHeaders([
-                    'x-api-key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                ])->get('https://api-sandbox.collaborator.komerce.id/tariff/api/v1/calculate?', [
-                    'shipper_destination_id' => 31597,
-                    'receiver_destination_id' => 368,
-                    'weight' => 490,
-                    'item_value' => 50000,
-                    'cod' => 'no'
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $getPostalCode, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+            
+                // dd($responseShipping->json());
+                foreach($responseShipping['areas'] as $rs){
+                    $areaId = $rs['id'];
+                }
+
+                // Log::info('RajaOngkir Response:', [
+                //     'status' => $responseShipping->status(),
+                //     'body'   => $responseShipping->json(), // langsung decode ke array
+                // ]);
+
+
+                // dd($responseShipping->json());
+                $courierRates = Http::withHeaders([
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Content-Type'  => 'application/json',
+                ])->post('https://api.biteship.com/v1/rates/couriers', [
+                    "origin_area_id"      => $areaIdStart,  // area ID asal
+                    "destination_area_id" => $areaId,  // area ID tujuan
+                    "couriers"            => "paxel,jne,sicepat",
+                    "items" => [
+                        [
+                            "name"        => "Shoes",
+                            "description" => "Black colored size 45",
+                            "value"       => 199000,
+                            "length"      => 30,
+                            "width"       => 15,
+                            "height"      => 20,
+                            "weight"      => 200,
+                            "quantity"    => 2
+                        ]
+                    ]
                 ]);
                 
+                // $createOrder = Http::withHeaders([
+                //     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                //     'Content-Type'  => 'application/json',
+                // ])->post('https://api.biteship.com/v1/orders', [
+                //     "shipper_contact_name" => "Amir",
+                //     "shipper_contact_phone" => "088888888888",
+                //     "shipper_contact_email" => "biteship@test.com",
+                //     "shipper_organization" => "Biteship Org Test",
+                //     "origin_contact_name" => "Amir",
+                //     "origin_contact_phone" => "088888888888",
+                //     "origin_address" => "Plaza Senayan, Jalan Asia Afrik...",
+                //     "origin_note" => "Deket pintu masuk STC",
+                //     "origin_postal_code" => 12440,
+                //     "destination_contact_name" => "John Doe",
+                //     "destination_contact_phone" => "088888888888",
+                //     "destination_contact_email" => "jon@test.com",
+                //     "destination_address" => "Lebak Bulus MRT...",
+                //     "destination_postal_code" => 12950,
+                //     "destination_note" => "Near the gas station",
+                //     "courier_company" => "jne",
+                //     "courier_type" => "reg",
+                //     "courier_insurance" => 500000,
+                //     "delivery_type" => "now",
+                //     "order_note" => "Please be careful",
+                //     "metadata" => [],
+                //     "items" => [
+                //         [
+                //         "name" => "Black L",
+                //         "description" => "White Shirt",
+                //         "category" => "fashion",
+                //         "value" => 165000,
+                //         "quantity" => 1,
+                //         "height" => 10,
+                //         "length" => 10,
+                //         "weight" => 200,
+                //         "width" => 10
+                //         ]
+                //     ]
+                // ]);
 
-                Log::info('tes :' ,[$responseShipping->status(), $responseShipping->body()]);
+                // dd($createOrder->json());
 
+                Log::info('RajaOngkir Response:', [
+                    'order' => $createOrder->json(),
+                ]);
 
                 $sfee = [];
                 if ($responseShipping->successful()) {
-                    $shippingFee = $responseShipping->json()['rajaongkir']['results'];
+                    $shippingFee = $courierRates->json()['pricing'];
 
-                    foreach ($shippingFee[0]['costs'] as $index => $sf) {
+                    foreach ($shippingFee as $index => $sf) {
                         $sfee[$index] = [
-                            'id' => $sf['service'],
+                            'id' => $index,
+                            'name' => $sf['courier_name'],
                             'description' => $sf['description'],
-                            'value' => $sf['cost'][0]['value'],
-                            'etd' => $sf['cost'][0]['etd']
+                            'value' => $sf['price'],
+                            'etd' => $sf['duration'],
                         ];
                     }
                     // foreach ($shippingFee[0]['costs'] as $service) {
@@ -364,18 +1137,24 @@ class CheckoutController extends Controller
 
                 // ONGKIR
                 $ongkir = null;
-                if ($request->service) {
+                if ($request->service !== null) {
                     foreach ($sfee as $service) {
                         if (trim($service['id']) === trim($request->service)) {
                             $ongkir = $service['value'];
                             break;
                         }
                     }
+
+                    Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
+
                     return response()->json([
                         'success' => true,
                         'service' => $request->service,
                         'ongkir'   => $ongkir,
                     ]);
+                }
+                else{
+                    Log::info(['service : '. $request->service]);
                 }
                 // END ONGKIR
 
@@ -423,8 +1202,145 @@ class CheckoutController extends Controller
                     'groupedVouchers' => $groupedVouchers,
                 ])->with('data', $data);
             } else {
-                session()->flash('register_or_login_first');
-                return redirect()->back();
+                // Guest
+                $guestCart = session('guest_cart', []);
+                $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
+
+                if (empty($productIds)) {
+                    return redirect('/'); // Tidak ada produk di cart
+                }
+
+                $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+                    ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+                    ->when('product voucher' === 'product voucher', function($query) {
+                        return $query->with('products');
+                    })
+                    ->when('type' === 'brand voucher', function($query) {
+                        return $query->with('products');
+                    })
+                    ->whereColumn('total_used', '<', 'usage_quota')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->select(
+                        'brands.name as brand_name',  // Nama brand
+                        'promos.*'                   // Data promo
+                    )
+                    ->distinct()  // Menghindari duplikasi
+                    ->get();
+
+                $productVouchers = $vouchers->filter(function ($voucher) {
+                    return $voucher->type === 'product voucher';
+                });
+                
+                $brandVouchers = $vouchers->filter(function ($voucher) {
+                    return $voucher->type === 'brand voucher';
+                });
+                
+                $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+                    return $voucher->promoProducts->pluck('product_id');
+                })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+                $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+                    return $voucher->promoProducts->pluck('product_id');
+                })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+                // Ambil data produk (dan varian jika perlu)
+                $products = Product::whereIn('id', $productIds)
+                    ->with([
+                        'brand',
+                        'promos' => function ($query) {
+                            $query->select('promos.*')
+                                ->with('tiers')
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                                ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                        }
+                    ])
+                    ->get()
+                    ->keyBy('id');
+
+                $cartItems = [];
+
+                foreach ($guestCart as $item) {
+                    $productId = $item['product_id'];
+                    $quantity = $item['quantity'];
+                    $product = $products[$productId] ?? null;
+
+                    if (!$product || $product->stock_quantity == 0) {
+                        return redirect('/cart')->with('stock_empty', 'Stok produk tidak tersedia');
+                    }
+
+                    $price = $item['price'];
+
+                    // Cek apakah ada promo aktif
+                    $promo = $product->promos->first();
+                    $tierPrice = null;
+
+                    if ($promo) {
+                        foreach ($promo->tiers as $tier) {
+                            if ($quantity == $tier->min_quantity) {
+                                if ($tier->discount_type == 'percentage') {
+                                    $tierPrice = $price * ((100 - $tier->discount_value) / 100);
+                                } elseif ($tier->discount_type == 'nominal') {
+                                    $tierPrice = $price - $tier->discount_value;
+                                } elseif ($tier->discount_type == 'package') {
+                                    $tierPrice = $tier->package_price;
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    $finalPrice = $tierPrice ?? $price;
+                    $total = $finalPrice * $quantity;
+
+                    $cartItems[] = [
+                        'product' => $product,
+                        'quantity' => $quantity,
+                        'price' => $finalPrice,
+                        'total' => $total,
+                        'bundle_price' => $tierPrice ?? null,
+                    ];
+                }
+
+                // Hitung total keseluruhan
+                $totalPrice = collect($cartItems)->sum('total');
+                $totalProduct = collect($cartItems)->sum('quantity');
+                $totalItem = count($cartItems);
+                $totalWeight = collect($cartItems)->sum(function ($item) {
+                    return ($item['product']->weight_product ?? 0) * $item['quantity'];
+                });
+
+                // Ganti dengan logic shipping guest jika diperlukan
+                $sfee = [];
+                $ongkir = null;
+                $province = null;
+                $regency = null;
+
+                // dd(session());
+                $information = session('guest_information') ?? [];
+                
+                $data = [
+                    'shippingFee'   => $sfee,
+                    'province'      => $province,
+                    'regency'       => $regency,
+                    'cartItems'     => $cartItems,
+                    'totalProduct'  => $totalProduct,
+                    'totalPrice'    => $totalPrice,
+                    'totalItem'     => $totalItem,
+                    'ongkir'        => $ongkir,
+                    'weight'        => $totalWeight,
+                    'voucherDisabled' => false, // Default untuk guest
+                    'information'   => $information,
+                    'vouchers'      => $vouchers,
+                    'productVoucherIds' => $productVoucherIds,
+                    'brandVoucherIds' => $brandVoucherIds,
+                ];
+
+                // dd(session());
+                return view('user.component.checkout-guest', [
+                    'groupedVouchers' => [], // Kosong karena guest tidak pakai voucher
+                ])->with('data', $data);
+                
             }
         } catch (Exception $err) {
             dd($err);
@@ -828,180 +1744,357 @@ class CheckoutController extends Controller
     public function checkApplyVoucher(Request $request)
     {
         try {
-            $userId = session('id_user');
-            $voucherCode = $request->code_voucher_promo;
-            $ongkirCode = $request->code_voucher_ongkir;
+            if(session('id_user')){
+                $userId = session('id_user');
+                $voucherCode = $request->code_voucher_promo;
+                $ongkirCode = $request->code_voucher_ongkir;
 
-            // Basic response if user ID is not found
-            if (!$userId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User not found.'
-                ]);
-            }
+                // Basic response if user ID is not found
+                if (!$userId) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'User not found.'
+                    ]);
+                }
 
-            // Initialize variables
-            $totalPrice = 0;
-            $discount = 0;
-            $ongkirVoucher = 0;
-            $ongkirDiscount = 0;
-            $voucher = null;
-            $ongkir = null;
-            $discountOngkir = 0;
-            $ongkirAfter = $request->shipping_cost;
+                // Initialize variables
+                $totalPrice = 0;
+                $discount = 0;
+                $ongkirVoucher = 0;
+                $ongkirDiscount = 0;
+                $voucher = null;
+                $ongkir = null;
+                $discountOngkir = 0;
+                $ongkirAfter = $request->shipping_cost;
 
 
-            // Retrieve promo voucher if `voucherCode` is provided
-            if (!empty($voucherCode)) {
-                $voucher = Promo::where('promo_code', $voucherCode)->first();
-            }
+                // Retrieve promo voucher if `voucherCode` is provided
+                if (!empty($voucherCode)) {
+                    $voucher = Promo::where('promo_code', $voucherCode)->first();
+                }
 
-            // Retrieve ongkir discount if `ongkirCode` is provided
-            if (!empty($ongkirCode)) {
-                $ongkir = Promo::where('promo_code', $ongkirCode)->first();
-                $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
-                if ($ongkirDiscount <= 100) {
-                    $discountOngkir = $request->shipping_cost * ($ongkirDiscount / 100);
-                    $ongkirAfter = $request->shipping_cost - $discountOngkir;
+                // Retrieve ongkir discount if `ongkirCode` is provided
+                if (!empty($ongkirCode)) {
+                    $ongkir = Promo::where('promo_code', $ongkirCode)->first();
+                    $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
+                    if ($ongkirDiscount <= 100) {
+                        $discountOngkir = $request->shipping_cost * ($ongkirDiscount / 100);
+                        $ongkirAfter = $request->shipping_cost - $discountOngkir;
+                    } else {
+                        $discountOngkir = min($request->shipping_cost, $ongkirDiscount);
+                        $ongkirAfter = $request->shipping_cost - $discountOngkir;
+                    }
+                }
+
+                // Return error if neither `voucher` nor `ongkir` is valid
+                if (!$voucher && !$ongkir) {
+                    return response()->json([   
+                        'success' => false,
+                        'message' => 'Kode promo tidak valid atau sudah tidak aktif.'
+                    ]);
+                }
+
+                // Fetch cart items and calculate `totalPrice`
+                $cartId = Cart::where('user_id', $userId)->value('id');
+                $cartItems = Cart_item::where('cart_id', $cartId)
+                    ->where('is_choose', true)
+                    ->with(['product.brand'])
+                    ->get();
+
+                $totalPrice = $cartItems->sum('total');
+                $totalProduct = $cartItems->sum('quantity');
+
+                // Calculate discount if `voucher` exists
+                if ($voucher) {
+                    $percent = $voucher->discount;
+
+                    if ($voucher->type == 'limited voucher') {
+                        $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
+                        $totalShopping = $totalPrice - $discount + $request->shipping_cost - $discountOngkir;
+                    } elseif ($voucher->type == 'product voucher') {
+                        $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                        $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                        // Filter cart items yang eligible untuk diskon
+                        $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                            return $eligibleProductIds->contains($cartItem->product_id);
+                        });
+
+                        // Hitung total harga dari semua produk yang eligible
+                        $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                        // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                        $percent = $voucher->discount;
+
+                        if ($percent <= 100) {
+                            // Logika diskon presentase
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice = $product->price - ($product->price * $percent / 100);
+                                $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount = $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        } else {
+                            // Logika diskon nominal
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice =  $product->price - min($percent, $product->price);
+                                $product->afterPrecentage = $product->quantity * min($percent, $product->price);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount =  $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        }
+                    } elseif ($voucher->type == 'brand voucher') {
+                        $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                        $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                        // Filter cart items yang eligible untuk diskon
+                        $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                            return $eligibleProductIds->contains($cartItem->product_id);
+                        });
+
+                        // Hitung total harga dari semua produk yang eligible
+                        $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                        // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                        $percent = $voucher->discount;
+
+                        if ($percent <= 100) {
+                            // Logika diskon presentase
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice = $product->price - ($product->price * $percent / 100);
+                                $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount = $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        } else {
+                            // Logika diskon nominal
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice =  $product->price - $percent;
+                                $product->afterPrecentage = $product->quantity * $percent;
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount =  $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        }
+                    }
                 } else {
-                    $discountOngkir = min($request->shipping_cost, $ongkirDiscount);
-                    $ongkirAfter = $request->shipping_cost - $discountOngkir;
+                    // Cuma Ongkir
+                    $totalShopping = $totalPrice + $request->shipping_cost - $discountOngkir;
                 }
-            }
 
-            // Return error if neither `voucher` nor `ongkir` is valid
-            if (!$voucher && !$ongkir) {
+                // Calculate `totalShopping`
+
+                // Format outputs
+
+                $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
+                $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
+                $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
+                $ongkirFormatted = $ongkirCode ? number_format($discountOngkir, 0, ',', '.') : null;
+                $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
+
+                // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
+                $hemat = ($voucherCode && $ongkirCode) ? $discount + $ongkirDiscount : ($voucherCode ? $discount : $ongkirDiscount);
+                $hematFormatted = number_format($hemat, 0, ',', '.');
+
                 return response()->json([
-                    'success' => false,
-                    'message' => 'Kode promo tidak valid atau sudah tidak aktif.'
+                    'success' => true,
+                    'tes' => $discount,
+                    'discountFormatted' => $discountFormatted,
+                    'totalShoppingFormatted' => $totalShopping,
+                    'discount' => $discountFormatted,  // Null if no promo voucher
+                    'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
+                    'hemat' => $hematFormatted,
+                    'ongkirCalculate' => $ongkirCalculated,
+                    'ongkirVoucher' => $ongkirVoucher,
+                    'request' => $request->all(),
                 ]);
             }
+            else{
+                $voucherCode = $request->code_voucher_promo;
+                $ongkirCode = $request->code_voucher_ongkir;
 
-            // Fetch cart items and calculate `totalPrice`
-            $cartId = Cart::where('user_id', $userId)->value('id');
-            $cartItems = Cart_item::where('cart_id', $cartId)
-                ->where('is_choose', true)
-                ->with(['product.brand'])
-                ->get();
+                // Initialize variables
+                $totalPrice = 0;
+                $discount = 0;
+                $ongkirVoucher = 0;
+                $ongkirDiscount = 0;
+                $voucher = null;
+                $ongkir = null;
+                $discountOngkir = 0;
+                $ongkirAfter = $request->shipping_cost;
 
-            $totalPrice = $cartItems->sum('total');
-            $totalProduct = $cartItems->sum('quantity');
 
-            // Calculate discount if `voucher` exists
-            if ($voucher) {
-                $percent = $voucher->discount;
+                // Retrieve promo voucher if `voucherCode` is provided
+                if (!empty($voucherCode)) {
+                    $voucher = Promo::where('promo_code', $voucherCode)->first();
+                }
 
-                if ($voucher->type == 'limited voucher') {
-                    $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
-                    $totalShopping = $totalPrice - $discount + $request->shipping_cost - $discountOngkir;
-                } elseif ($voucher->type == 'product voucher') {
-                    $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
-                    $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
-
-                    // Filter cart items yang eligible untuk diskon
-                    $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
-                        return $eligibleProductIds->contains($cartItem->product_id);
-                    });
-
-                    // Hitung total harga dari semua produk yang eligible
-                    $eligibleCartTotal = $eligibleCartItems->sum('total');
-
-                    // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
-                    $percent = $voucher->discount;
-
-                    if ($percent <= 100) {
-                        // Logika diskon presentase
-                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
-                            $product->discPrice = $product->price - ($product->price * $percent / 100);
-                            $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
-                            return $product->quantity * $product->discPrice;
-                        });
-
-                        $discount = $eligibleCartItems->sum('afterPrecentage');
-                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
-                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                // Retrieve ongkir discount if `ongkirCode` is provided
+                if (!empty($ongkirCode)) {
+                    $ongkir = Promo::where('promo_code', $ongkirCode)->first();
+                    $ongkirDiscount = $ongkir ? $ongkir->discount : 0;
+                    if ($ongkirDiscount <= 100) {
+                        $discountOngkir = $request->shipping_cost * ($ongkirDiscount / 100);
+                        $ongkirAfter = $request->shipping_cost - $discountOngkir;
                     } else {
-                        // Logika diskon nominal
-                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
-                            $product->discPrice =  $product->price - min($percent, $product->price);
-                            $product->afterPrecentage = $product->quantity * min($percent, $product->price);
-                            return $product->quantity * $product->discPrice;
-                        });
-
-                        $discount =  $eligibleCartItems->sum('afterPrecentage');
-                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
-                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
-                    }
-                } elseif ($voucher->type == 'brand voucher') {
-                    $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
-                    $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
-
-                    // Filter cart items yang eligible untuk diskon
-                    $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
-                        return $eligibleProductIds->contains($cartItem->product_id);
-                    });
-
-                    // Hitung total harga dari semua produk yang eligible
-                    $eligibleCartTotal = $eligibleCartItems->sum('total');
-
-                    // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
-                    $percent = $voucher->discount;
-
-                    if ($percent <= 100) {
-                        // Logika diskon presentase
-                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
-                            $product->discPrice = $product->price - ($product->price * $percent / 100);
-                            $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
-                            return $product->quantity * $product->discPrice;
-                        });
-
-                        $discount = $eligibleCartItems->sum('afterPrecentage');
-                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
-                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
-                    } else {
-                        // Logika diskon nominal
-                        $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
-                            $product->discPrice =  $product->price - $percent;
-                            $product->afterPrecentage = $product->quantity * $percent;
-                            return $product->quantity * $product->discPrice;
-                        });
-
-                        $discount =  $eligibleCartItems->sum('afterPrecentage');
-                        $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
-                        $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        $discountOngkir = min($request->shipping_cost, $ongkirDiscount);
+                        $ongkirAfter = $request->shipping_cost - $discountOngkir;
                     }
                 }
-            } else {
-                // Cuma Ongkir
-                $totalShopping = $totalPrice + $request->shipping_cost - $discountOngkir;
+
+                // Return error if neither `voucher` nor `ongkir` is valid
+                if (!$voucher && !$ongkir) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Kode promo tidak valid atau sudah tidak aktif.'
+                    ]);
+                }
+
+                // Fetch cart items and calculate `totalPrice`
+                $guestCart = session('guest_cart', []);
+
+                $cartItems = collect($guestCart)
+                ->map(function ($item) {
+                    $product = \App\Models\Product::with('brand')->find($item['product_id']);
+                    return (object)[
+                        'product_id' => $product->id,
+                        'product' => $product,
+                        'quantity' => $item['quantity'],
+                        'price' => $product->price,
+                        'total' => $product->price * $item['quantity'],
+                    ];
+                });
+                
+                $totalPrice = collect(session('guest_cart'))->sum('total');
+                $totalProduct = $cartItems->sum('quantity');
+
+                // Calculate discount if `voucher` exists
+                if ($voucher) {
+                    $percent = $voucher->discount;
+
+                    if ($voucher->type == 'limited voucher') {
+                        $discount = ($percent <= 100) ? $totalPrice * ($percent / 100) : $percent;
+                        $totalShopping = $totalPrice - $discount + $request->shipping_cost - $discountOngkir;
+                    } elseif ($voucher->type == 'product voucher') {
+                        $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                        $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                        // Filter cart items yang eligible untuk diskon
+                        $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                            return $eligibleProductIds->contains($cartItem->product_id);
+                        });
+
+                        // Hitung total harga dari semua produk yang eligible
+                        $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                        // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                        $percent = $voucher->discount;
+
+                        if ($percent <= 100) {
+                            // Logika diskon presentase
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice = $product->price - ($product->price * $percent / 100);
+                                $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount = $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        } else {
+                            // Logika diskon nominal
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice =  $product->price - min($percent, $product->price);
+                                $product->afterPrecentage = $product->quantity * min($percent, $product->price);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount =  $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        }
+                    } elseif ($voucher->type == 'brand voucher') {
+                        $getIdVoucher = Promo::where('promo_code', '=', $voucherCode)->value('id');
+                        $eligibleProductIds = PromoProduct::where('promo_id', '=', $getIdVoucher)->pluck('product_id');
+
+                        // Filter cart items yang eligible untuk diskon
+                        $eligibleCartItems = $cartItems->filter(function ($cartItem) use ($eligibleProductIds) {
+                            return $eligibleProductIds->contains($cartItem->product_id);
+                        });
+
+                        // Hitung total harga dari semua produk yang eligible
+                        $eligibleCartTotal = $eligibleCartItems->sum('total');
+
+                        // Hitung diskon (dibatasi oleh nilai maksimal diskon pada voucher)
+                        $percent = $voucher->discount;
+
+                        if ($percent <= 100) {
+                            // Logika diskon presentase
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice = $product->price - ($product->price * $percent / 100);
+                                $product->afterPrecentage = $product->quantity * ($product->price * $percent / 100);
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount = $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        } else {
+                            // Logika diskon nominal
+                            $totalEligibleProduct = $eligibleCartItems->sum(function ($product) use ($percent) {
+                                $product->discPrice =  $product->price - $percent;
+                                $product->afterPrecentage = $product->quantity * $percent;
+                                return $product->quantity * $product->discPrice;
+                            });
+
+                            $discount =  $eligibleCartItems->sum('afterPrecentage');
+                            $nonDiscountedItemsTotal = $cartItems->diff($eligibleCartItems)->sum('total');
+                            $totalShopping = $nonDiscountedItemsTotal + $totalEligibleProduct  + $request->shipping_cost - $discountOngkir;
+                        }
+                    }
+                } else {
+                    // Cuma Ongkir
+                    $totalShopping = $totalPrice + $request->shipping_cost - $discountOngkir;
+                }
+
+                // Calculate `totalShopping`
+
+                // Format outputs
+
+                $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
+                $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
+                $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
+                $ongkirFormatted = $ongkirCode ? number_format($discountOngkir, 0, ',', '.') : null;
+                $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
+
+                // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
+                $hemat = ($voucherCode && $ongkirCode) ? $discount + $ongkirDiscount : ($voucherCode ? $discount : $ongkirDiscount);
+                $hematFormatted = number_format($hemat, 0, ',', '.');
+
+                return response()->json([
+                    'success' => true,
+                    'tes' => $cartItems,
+                    'discountFormatted' => $discountFormatted,
+                    'totalShoppingFormatted' => $totalShopping,
+                    'discount' => $discountFormatted,  // Null if no promo voucher
+                    'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
+                    'hemat' => $hematFormatted,
+                    'ongkirCalculate' => $ongkirCalculated,
+                    'ongkirVoucher' => $ongkirVoucher,
+                    'request' => $request->all(),
+                ]);
             }
-
-            // Calculate `totalShopping`
-
-            // Format outputs
-
-            $totalPriceFormatted = number_format($totalPrice, 0, ',', '.');
-            $discountFormatted = $voucher ? number_format($discount, 0, ',', '.') : null;
-            $totalShoppingFormatted = number_format($totalShopping, 0, ',', '.');
-            $ongkirFormatted = $ongkirCode ? number_format($discountOngkir, 0, ',', '.') : null;
-            $ongkirCalculated = $ongkirCode ? number_format($ongkirAfter, 0, ',', '.') : null;
-
-            // Calculate 'hemat' based on `voucherCode` and `ongkirCode`
-            $hemat = ($voucherCode && $ongkirCode) ? $discount + $ongkirDiscount : ($voucherCode ? $discount : $ongkirDiscount);
-            $hematFormatted = number_format($hemat, 0, ',', '.');
-
-            return response()->json([
-                'success' => true,
-                'tes' => $discount,
-                'discountFormatted' => $discountFormatted,
-                'totalShoppingFormatted' => $totalShopping,
-                'discount' => $discountFormatted,  // Null if no promo voucher
-                'ongkir' => $ongkirFormatted,       // Null if no ongkir voucher
-                'hemat' => $hematFormatted,
-                'ongkirCalculate' => $ongkirCalculated,
-                'ongkirVoucher' => $ongkirVoucher,
-                'request' => $request->all(),
-            ]);
         } catch (Exception $err) {
             return response()->json([
                 'success' => false,

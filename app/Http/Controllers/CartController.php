@@ -181,8 +181,76 @@ class CartController extends Controller
                 ]);
             }
             else {
-                session()->flash('register_or_login_first');
-                return redirect()->back();
+                // dd(session());
+                $guestCart = session('guest_cart', []);
+                $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
+
+                $expiredPromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') < ?", [Carbon::today()])
+                    ->with(['products' => function ($query) {
+                        $query->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->get()
+                    ->pluck('products.*.id')
+                    ->flatten()
+                    ->intersect($productIds); // hanya yang ada di cart guest
+
+                $regularPrices = Product::whereIn('id', $expiredPromoProductIds)
+                    ->pluck('regular_price', 'id');
+
+
+                $activePromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->where('status', 'Active')
+                    ->with(['products' => function ($query) {
+                        $query->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->get()
+                    ->pluck('products.*.id')
+                    ->flatten()
+                    ->intersect($productIds);
+
+                $discountedPrices = Product::whereIn('id', $activePromoProductIds)
+                    ->with(['promos' => function ($query) {
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->wherePivot('discounted_price', '>', 0)
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                    }])
+                    ->get()
+                    ->mapWithKeys(function ($product) {
+                        $discounted = $product->promos->first()->pivot->discounted_price ?? $product->regular_price;
+                        return [$product->id => $discounted];
+                    });
+
+                $updatedGuestCart = [];
+
+                foreach ($guestCart as $item) {
+                    $productId = $item['product_id'];
+                    $quantity = $item['quantity'];
+
+                    // Tentukan harga
+                    if (isset($discountedPrices[$productId])) {
+                        $price = $discountedPrices[$productId];
+                    } elseif (isset($regularPrices[$productId])) {
+                        $price = $regularPrices[$productId];
+                    } else {
+                        // fallback ke harga sekarang dari produk
+                        $price = Product::find($productId)->regular_price ?? 0;
+                    }
+
+                    $updatedGuestCart[] = [
+                        'product_id' => $productId,
+                        'quantity' => $quantity,
+                        'price' => $price,
+                        'total' => $price * $quantity
+                    ];
+                }
+
+                session()->put('guest_cart', $updatedGuestCart);
+                return view('user.component.cart-guest');
+                
+                // session()->flash('register_or_login_first');
+                // return redirect()->back();
             }
         } catch (Exception $err) {
             dd($err);
@@ -203,6 +271,7 @@ class CartController extends Controller
         }
     }
     
+    
     public function deleteProductVariantItem(Request $request){
         try {
             $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -215,6 +284,27 @@ class CartController extends Controller
             //throw $th;
         }
     }
+
+    public function deleteProductItemGuest(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+
+            $guestCart = session('guest_cart', []);
+
+            // Filter: hapus produk dengan ID yang sesuai
+            $updatedCart = collect($guestCart)->reject(function ($item) use ($productId) {
+                return $item['product_id'] == $productId;
+            })->values()->toArray(); // pastikan index ter-reset
+
+            session(['guest_cart' => $updatedCart]);
+
+            return response()->json(['success' => true, 'message' => 'Berhasil Menghapus Barang Dari Keranjang']);
+        } catch (\Exception $err) {
+            return response()->json(['success' => false, 'message' => 'Gagal menghapus produk']);
+        }
+    }
+
 
     public function deleteAllProductItem(Request $request){
         try {
@@ -269,6 +359,51 @@ class CartController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Product not found in cart']);
     }
+
+    // UPDATE QUANTITY PRODUCT ITEM IN CART GUEST
+    public function updateCartQuantityGuest(Request $request)
+    {
+        try {
+            $productId = $request->input('product_id');
+            $newQuantity = (int) $request->input('quantity');
+
+            $guestCart = session('guest_cart', []);
+
+            foreach ($guestCart as &$item) {
+                if ($item['product_id'] == $productId) {
+                    $item['quantity'] = max(1, $newQuantity);
+                    $item['total'] = $item['price'] * $newQuantity; // pastikan min qty 1
+                    $subtotalItem = $item['total'];
+                    $newQuantity = $item['quantity'];
+                    break;
+                }
+            }
+
+            session(['guest_cart' => $guestCart]);
+
+            $totalPrice = collect(session('guest_cart'))->sum('total');
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Quantity updated successfully',
+                'total_price' => $totalPrice,
+                'subtotal_item' => $subtotalItem,
+                'newQuantity' => $newQuantity,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update quantity',
+                'error'   => $e->getMessage(),
+                'line'    => $e->getLine(),
+                'file'    => $e->getFile(),
+            ]);
+        }
+
+    }
+
+
 
     // GET TOTAL CHART
     public function getTotalCart(){

@@ -209,7 +209,7 @@
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->handphone }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
-                                                    {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }} (61258)</p>
+                                                    {{ $sa->subdistrict }}, {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px]">
                                                     {{ $sa->address }}</p>
                                                 @if ($sa->benchmark)
@@ -348,6 +348,22 @@
                                                                 </select>
                                                                 <input type="hidden" name="district_name"
                                                                     id="change_district_name_{{$sa->id}}">
+                                                            </div>
+                                                            
+                                                            <div class="col-12 p-0">
+                                                                <label for="village"
+                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                                                <select
+                                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                    aria-label="village" name="subdistrict_change">
+                                                                    <option value="{{ $sa->subdistrict }}" selected>
+                                                                        {{ strtolower($sa->subdistrict) }}</option>
+                                                                    <option
+                                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                        Pilih Desa/Kelurahan</option>
+                                                                </select>
+                                                                <input type="hidden" name="subdistrict_name"
+                                                                    id="change_subdistrict_name_{{$sa->id}}">
                                                             </div>
 
                                                             <!-- ALAMAT -->
@@ -1439,6 +1455,17 @@
                                 </select>
                                 <input type="hidden" name="district_name" id="address_district_name">
                             </div>
+                            
+                            <div class="col-12 p-0">
+                                <label for="villages"
+                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                    aria-label="villages" name="subdistrict" id="address_subdistrict">
+                                    <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Pilih
+                                        Desa/Kelurahan</option>
+                                </select>
+                                <input type="hidden" name="subdistrict_name" id="address_subdistrict_name">
+                            </div>
 
                             <!-- ALAMAT -->
                             <div class="col-12 p-0">
@@ -2347,6 +2374,39 @@
                         );
                 }
             });
+        
+            document
+            .getElementById("address_district")
+            .addEventListener("change", function() {
+                const districtId = this.value;
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("address_subdistrict_name").value =
+                    districtName; // Save name in hidden input
+
+                const subdistrictSelect = document.getElementById("address_subdistrict");
+                subdistrictSelect.innerHTML =
+                    '<option value="">Pilih Desa/Kelurahan</option>';
+                document.getElementById("address_subdistrict_name").value = ""; // Clear previous district name
+
+                // GET DATA DISTRICT FROM REGENCY
+                if (districtId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((subdistricts) => {
+                            subdistricts.forEach((subdistrict) => {
+                                let option = document.createElement("option");
+                                option.value = subdistrict.id;
+                                option.text = subdistrict.name;
+                                subdistrictSelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching districts:", error)
+                        );
+                }
+            });
 
         // Event listener for regency selection
         document
@@ -2362,6 +2422,13 @@
             .addEventListener("change", function() {
                 const districtName = this.options[this.selectedIndex].text; // Get the name
                 document.getElementById("address_district_name").value = districtName; // Save name in hidden input
+            });
+       
+        document
+            .getElementById("address_subdistrict")
+            .addEventListener("change", function() {
+                const subdistrictName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("address_subdistrict_name").value = subdistrictName; // Save name in hidden input
             });
         // END API WILAYAH REGISTER
     </script>

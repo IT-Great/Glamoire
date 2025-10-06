@@ -185,7 +185,9 @@ Route::post('/voucher-new-user', [FormController::class, 'voucherNewUser'])->nam
 // Route::get('/{user}_account', [UserController::class, 'account'])->name('account');
 Route::put('/edit-account', [UserController::class, 'updateProfile'])->name('edit.account');
 Route::post('/add-shipping-address', [UserController::class, 'actionAddShippingAddress'])->name('add.shipping.address');
+Route::post('/add-shipping-address-guest', [UserController::class, 'actionAddShippingAddressGuest'])->name('add.shipping.address.guest');
 Route::put('/edit-shipping-address', [UserController::class, 'updateShippingAddress'])->name('edit.shipping.address');
+Route::post('/edit-shipping-address-guest', [UserController::class, 'updateShippingAddressGuest'])->name('edit.shipping.address.guest');
 Route::post('/delete-shipping-address', [UserController::class, 'deleteShippingAddress'])->name('delete.shipping.address');
 Route::post('/set-main-address', [UserController::class, 'setMainAddress'])->name('main.shipping.address');
 Route::post('/use-address', [UserController::class, 'useAddress'])->name('use.shipping.address');
@@ -240,6 +242,10 @@ Route::post('/remove-all-product-cart', [CartController::class, 'deleteAllProduc
 Route::post('/remove-product-variant-cart', [CartController::class, 'deleteProductVariantItem'])->name('delete.product.variant.cart');
 Route::post('/update-cart-quantity', [CartController::class, 'updateCartQuantity'])->name('update.cart.quantity');
 Route::post('/update-cart-quantity-variant', [CartController::class, 'updateCartQuantityVariant'])->name('update.cart.quantity.variant');
+Route::post('/remove-product-cart-guest', [CartController::class, 'deleteProductItemGuest'])->name('delete.product.cart.guest');
+Route::post('/remove-product-variant-cart-guest', [CartController::class, 'deleteProductVariantItemGuest'])->name('delete.product.variant.cart.guest');
+Route::post('/update-cart-quantity-guest', [CartController::class, 'updateCartQuantityGuest'])->name('update.cart.quantity.guest');
+Route::post('/update-cart-quantity-variant-guest', [CartController::class, 'updateCartQuantityVariantGuest'])->name('update.cart.quantity.variant.guest');
 
 // ADD & REMOVE WISHLIST
 Route::post('/wishlist', [UserController::class, 'addToWishlist'])->name('add.to.wishlist');

@@ -2027,22 +2027,38 @@
     </script>
 
     <!-- AMBIL TOTAL CART ITEMS -->
-    <script>
+    @php
+      $user = session('id_user');
+      $cartGuest = session('guest_cart', []); // Ambil cart dari session
+      $totalItem = collect($cartGuest)->sum('quantity'); // Jumlah semua qty
+    @endphp
+
+    @if ($user !== null)
+      <script>
         $(document).ready(function() {
-            // Memanggil route secara AJAX
-            $.ajax({
-                url: "{{ route('get.total.cart') }}",
-                type: 'GET',
-                success: function(data) {
-                    // Update jumlah cart items di dalam elemen dengan ID total_cart_items
-                    $('#total_cart_items').text(data);
-                },
-                error: function(error) {
-                    console.error('Error fetching total cart items:', error);
-                }
-            });
+          $.ajax({
+              url: "{{ route('get.total.cart') }}",
+              type: 'GET',
+              success: function(data) {
+                  // Update jumlah cart items di dalam elemen dengan ID total_cart_items
+                  $('#total_cart_items').text(data);
+              },
+              error: function(error) {
+                  console.error('Error fetching total cart items:', error);
+              }
+          });
         });
-    </script>
+      </script>
+    @else
+      <script>
+        $(document).ready(function() {
+          // Update jumlah cart items di dalam elemen dengan ID total_cart_items
+          let totalItem = {{ $totalItem }};
+    
+          $('#total_cart_items').text(totalItem);
+        });
+      </script>
+    @endif
 
     @if (session('register_or_login_first'))
         <script>

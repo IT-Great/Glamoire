@@ -37,12 +37,12 @@ class PrismalinkController extends Controller
 
     public function __construct()
     {
-        $this->merchantKeyId = env('PRISMALINK_MERCH_KEY_ID');
-        $this->merchantId = env('PRISMALINK_MERCH_ID'); 
-        $this->backendCallbackUrl = env('PRISMALINK_BACKEND_CALLBACK');
-        $this->frontendCallbackUrl = env('PRISMALINK_FRONTEND_CALLBACK');
-        $this->secretKey = env('PRISMALINK_SECRET_KEY');
-        $this->transactionUrl = env('PRISMALINK_TRANSACTION_API');
+        $this->merchantKeyId = env('PRISMALINK_MERCH_KEY_ID', '8f0f43c38c0e456faa3340077b84e42e');
+        $this->merchantId = env('PRISMALINK_MERCH_ID', '001746361612626'); 
+        $this->backendCallbackUrl = env('PRISMALINK_BACKEND_CALLBACK', 'http://127.0.0.1:8000/callback-payment');
+        $this->frontendCallbackUrl = env('PRISMALINK_FRONTEND_CALLBACK', 'http://127.0.0.1:8000/callback-payment');
+        $this->secretKey = env('PRISMALINK_SECRET_KEY', '21b8b5e7f47f0d53756a6cf7');
+        $this->transactionUrl = env('PRISMALINK_TRANSACTION_API', 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/submit-trx');
     }
 
     public function viewsSubmitPayment()
@@ -204,7 +204,6 @@ class PrismalinkController extends Controller
 
         // Panggil endpoint Prismalink dengan MAC yang dihasilkan secara dinamis
         $url = $this->transactionUrl;   
-        // Log::info('url', ['mac' => $this->merchantKeyId]);
         
         $response = Http::withHeaders([
             'mac' => $mac,

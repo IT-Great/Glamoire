@@ -86,7 +86,6 @@ class UserController extends Controller
     public function actionAddShippingAddress(Request $request)
     {
         try {
-
             $id = User::where('id', session('id_user'))->value('id');
             $checkMainAddress = Shipping_address::where('user_id', $id)->where('is_main', true)->first();
             $checkUseAddress = Shipping_address::where('user_id', $id)->where('is_use', true)->first();
@@ -98,6 +97,7 @@ class UserController extends Controller
                 'province'       => $request->province_name,
                 'regency'        => $request->regency_name,
                 'district'       => $request->district_name,
+                'subdistrict'    => $request->subdistrict_name,
                 'address'        => $request->address,
                 'benchmark'      => $request->benchmark,
                 'user_id'        => $id,
@@ -114,6 +114,35 @@ class UserController extends Controller
             dd($err);
         }
     }
+    
+    public function actionAddShippingAddressGuest(Request $request)
+    {
+        try {
+            $information = [
+                'email'          => $request->email,
+                'label'          => $request->label,
+                'recipient_name' => $request->recipient_name,
+                'handphone'      => $request->handphone,
+                'province'       => $request->province_name,
+                'regency'        => $request->regency_name,
+                'district'       => $request->district_name,
+                'subdistrict'    => $request->subdistrict_name,
+                'address'        => $request->address,
+                'benchmark'      => $request->benchmark,
+                'id_province'    => $request->province,
+                'id_regency'     => $request->regency,
+                'id_district'    => $request->district,
+            ];
+
+            session()->put('guest_information', $information);
+
+            session()->flash('after_add_address');
+            return redirect()->back();
+        } catch (\Exception $err) {
+            dd($err);
+        }
+    }
+
 
     public function addToChart(Request $request)
     {
@@ -181,7 +210,38 @@ class UserController extends Controller
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
-            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+            else {
+                $productId   = $request->product_id;
+                $quantity    = 1;
+                $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
+
+                $guestCart = session()->get('guest_cart', []);
+
+                // Cek apakah produk sudah ada di cart
+                $index = collect($guestCart)->search(function ($item) use ($productId) {
+                    return $item['product_id'] == $productId;
+                });
+
+                if ($index !== false) {
+                    // Produk sudah ada → update jumlah)
+                    $guestCart[$index]['quantity'] += $quantity;
+                    if($guestCart[$index]['quantity'] >= $maxQuantity){
+                        $guestCart[$index]['quantity'] = $maxQuantity-1;
+                    }
+                } else {
+                    // Produk belum ada → tambah baru
+                    $guestCart[] = [
+                        'product_id' => $productId,
+                        'product_variant_id' => null,
+                        'quantity' => $quantity,
+                    ];
+                }
+
+                // Simpan kembali ke session
+                session()->put('guest_cart', $guestCart);
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }  
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
@@ -263,6 +323,7 @@ class UserController extends Controller
         try {
             $userId = session('id_user');
 
+            // USER LOGIN
             if (session('id_user')) {
                 $checkCartUser = Cart::where('user_id', session('id_user'))->exists();
                 $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -330,7 +391,41 @@ class UserController extends Controller
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
             }
-            return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
+            // GUEST
+            else {
+                $productId   = $request->product_id;
+                $quantity    = $request->quantity;
+                $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
+
+                $guestCart = session()->get('guest_cart', []);
+
+                // Cek apakah produk sudah ada di cart
+                $index = collect($guestCart)->search(function ($item) use ($productId) {
+                    return $item['product_id'] == $productId;
+                });
+
+                if ($index !== false) {
+                    // Produk sudah ada → update jumlah)
+                    $guestCart[$index]['quantity'] += $quantity;
+                    if($guestCart[$index]['quantity'] >= $maxQuantity){
+                        $guestCart[$index]['quantity'] = $maxQuantity-1;
+                    }
+                } else {
+                    // Produk belum ada → tambah baru
+                    $guestCart[] = [
+                        'product_id' => $productId,
+                        'product_variant_id' => null,
+                        'quantity' => $quantity,
+                    ];
+                }
+
+                // Simpan kembali ke session
+                session()->put('guest_cart', $guestCart);
+
+                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+            }   
+
+
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
@@ -505,6 +600,34 @@ class UserController extends Controller
         session()->flash('after_update_address');
 
         return redirect()->back();
+    }
+    
+    public function updateShippingAddressGuest(Request $request)
+    {
+        try {
+            // dd($request);
+            $information = [
+                'email'          => $request->email,
+                'label'          => $request->label,
+                'recipient_name' => $request->recipient_name,
+                'handphone'      => $request->handphone,
+                'province'       => $request->province_name,
+                'regency'        => $request->regency_name,
+                'district'       => $request->district_name,
+                'address'        => $request->address,
+                'benchmark'      => $request->benchmark,
+                'id_province'    => $request->province,
+                'id_regency'     => $request->regency,
+                'id_district'    => $request->district,
+            ];
+
+            session()->put('guest_information', $information);
+
+            session()->flash('after_edit_info');
+            return redirect()->back();
+        } catch (\Exception $err) {
+            dd($err);
+        }
     }
 
     public function deleteShippingAddress(Request $request)

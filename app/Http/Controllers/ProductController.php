@@ -222,6 +222,8 @@ class ProductController extends Controller
     public function detail(Request $request, $code)
     {
         try {
+            // session()->forget('guest_cart');
+            // dd(session());
             $product = Product::where('product_code', $code)
                 ->with(['ratingAndReviews.user', 'promos'  => function ($query) {
                     $query->select('promos.*', 'promo_products.discounted_price')
