@@ -504,6 +504,13 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     Route::delete('/delete-promo/{id}', [PromoController::class, 'deletePromo'])->name('delete-promo');
 
+    // PROMO GIFT
+    Route::get('/promo-gift', [PromoController::class, 'indexPromoGift'])->name('index-promo-gift');
+    Route::get('/create-promo-gift', [PromoController::class, 'createPromoGift'])->name('create-promo-gift');
+    Route::post('/create-promo-gift', [PromoController::class, 'storePromoGift'])->name('store-promo-gift');
+    Route::get('/detail-promo-gift/{id}', [PromoController::class, 'detailGift'])->name('detail-gift');
+    Route::delete('/delete-promo-gift/{id}', [PromoController::class, 'deleteGift'])->name('delete-gift');
+
     // AFFILIATE
     Route::get('/affiliate-admin', [AffiliateController::class, 'indexAffiliateAdmin'])->name('index-affiliate-admin');
     Route::get('/affiliate-admin-detail/{id}', [AffiliateController::class, 'detailAffiliateAdmin'])->name('detail-affiliate-admin');
@@ -559,8 +566,8 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/admin/contacts/{id}/respond', [ContactusController::class, 'sendResponse'])->name('send-response');
     Route::delete('/delete-contact/{id}', [ContactusController::class, 'deleteResponse'])->name('delete-contact');
 
-    Route::get('/notifications/contact-us', [ContactusController::class, 'getUnreadQuestionsCount'])
-        ->name('unread-questions-count');
+    // Route::get('/notifications/contact-us', [ContactusController::class, 'getUnreadQuestionsCount'])
+    //     ->name('unread-questions-count');
 
     // subscribe
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');

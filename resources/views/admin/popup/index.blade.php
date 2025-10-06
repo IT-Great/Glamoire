@@ -662,6 +662,255 @@
         .text-muted {
             color: #64748b !important;
         }
+
+        #popupMedia {
+            width: 100%;
+            max-width: 400px;
+            /* atur lebar maksimum */
+            height: 250px;
+            /* tinggi tetap seperti preview upload */
+            border: 2px dashed #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin: 0 auto;
+            /* biar posisi center */
+            background: #f8f9fa;
+        }
+
+        #popupMedia img,
+        #popupMedia video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* biar gambar/video tidak ketarik */
+            border-radius: 8px;
+        }
+
+        .preview-media-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            width: 100%;
+            height: 250px;
+            /* tinggi tetap sama dengan container upload */
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-media-container img,
+        .preview-media-container video {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            /* menjaga aspek rasio */
+            border-radius: 6px;
+        }
+
+        /* Untuk preview image (bukan di container) */
+        .preview-image-container {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Update preview content agar lebih rapi */
+        .preview-content {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            /* ubah jadi column */
+            gap: 12px;
+            position: relative;
+        }
+
+        .preview-details {
+            width: 100%;
+            text-align: center;
+            /* center align text */
+        }
+
+        .modal-content {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .modal-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1.5rem 2rem;
+        }
+
+        .modal-header .modal-title {
+            font-weight: 600;
+            font-size: 1.25rem;
+            color: #1f2937;
+        }
+
+        .modal-header .btn-close {
+            opacity: 0.5;
+        }
+
+        .modal-header .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            background-color: #ffffff;
+        }
+
+        /* Simple Info Row */
+        .info-row {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-content {
+            font-size: 0.95rem;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+
+        /* Media Container Simple */
+        .media-container {
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+            max-height: 400px;
+        }
+
+        .media-container img,
+        .media-container video {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+
+        /* Simple Badge */
+        .simple-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .simple-badge.active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .simple-badge.inactive {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .simple-badge.display {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            background: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            padding: 1.25rem 2rem;
+        }
+
+        .modal-footer .btn {
+            padding: 0.625rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .modal-footer .btn-secondary {
+            background-color: #6b7280;
+            border: none;
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        /* Empty State Simple */
+        .empty-media {
+            text-align: center;
+            padding: 2rem;
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .media-container {
+                min-height: 200px;
+                max-height: 300px;
+            }
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.15);
+        }
+
+        .remove-button:hover {
+            background-color: #ef4444;
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);
+            transform: scale(1.05);
+        }
     </style>
 
 </head>
@@ -676,9 +925,9 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">Pop Up</h3>
-                            <p>Halaman ini digunakan untuk mengelola banner informasi pop-up yang akan ditampilkan
-                                kepada pengguna, termasuk pengaturan konten, gambar, dan periode tayang.</p>
+                            <h3 class="mb-2">Slider & Pop Up</h3>
+                            <p>Halaman ini digunakan untuk mengelola banner informasi slider & pop-up yang akan ditampilkan
+                                kepada pengguna, termasuk pengaturan konten, gambar, video, dan periode tayang.</p>
                         </div>
                     </div>
                 </div>
@@ -690,11 +939,11 @@
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
                                     <a href="{{ route('index-user-admin') }}" class="d-flex align-items-center">
-                                        <i class="bi bi-image me-1"></i> Pop Up
+                                        <i class="bi bi-image me-1"></i>Slider & Pop Up
                                     </a>
                                 </li>
 
-                                <li class="breadcrumb-item active" aria-current="page">Semua Gambar Pop up</li>
+                                <li class="breadcrumb-item active" aria-current="page">Semua Media Slider & Pop up</li>
                             </ol>
                         </nav>
                     </div>
@@ -706,9 +955,9 @@
                             <div class="stats-icon">
                                 <i class="bi bi-files"></i>
                             </div>
-                            <div class="stats-title">Total Pop Up</div>
+                            <div class="stats-title">Total Media</div>
                             <h3 class="stats-number">{{ $popups->count() }}</h3>
-                            <small><i class="bi bi-plus-square me-1"></i> Pop up yang sudah dibuat</small>
+                            <small><i class="bi bi-plus-square me-1"></i> Media yang sudah dibuat</small>
                         </div>
                     </div>
                     <div class="col-12 col-md-4 mb-3 mb-md-0">
@@ -716,7 +965,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-toggle-on"></i>
                             </div>
-                            <div class="stats-title">Pop Up Aktif</div>
+                            <div class="stats-title">Media Aktif</div>
                             <h3 class="stats-number">{{ $popups->where('is_active', true)->count() }}</h3>
                             <small><i class="bi bi-eye me-1"></i> Sedang ditampilkan</small>
                         </div>
@@ -726,7 +975,7 @@
                             <div class="stats-icon">
                                 <i class="bi bi-toggle-off"></i>
                             </div>
-                            <div class="stats-title">Pop Up Nonaktif</div>
+                            <div class="stats-title">Media Nonaktif</div>
                             <h3 class="stats-number">{{ $popups->where('is_active', false)->count() }}</h3>
                             <small><i class="bi bi-eye-slash me-1"></i> Tidak ditampilkan</small>
                         </div>
@@ -739,14 +988,14 @@
                             <div class="row">
                                 <div class="col-12 col-md-6">
                                     <h4 class="mb-0 d-flex align-items-center">
-                                        <i class="bi bi-image me-2"></i>Daftar Pop Up
+                                        <i class="bi bi-image me-2"></i>Daftar Media Slider & Pop Up
                                     </h4>
                                 </div>
 
                                 <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                     <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                         data-bs-target="#categoryModal">
-                                        <i class="fa fa-plus"></i> Add Pop Up
+                                        <i class="fa fa-plus"></i> Add Media
                                     </a>
                                 </div>
                             </div>
@@ -758,7 +1007,7 @@
                                     <tr>
                                         <th>Nama</th>
                                         <th>Deskripsi</th>
-                                        <th>Gambar</th>
+                                        <th>Type Media</th>
                                         <th>Dibuat pada</th>
                                         <th>Switch Nonaktif</th>
                                         <th>Aksi</th>
@@ -770,15 +1019,7 @@
                                             <td>{{ $popup->name }}</td>
                                             <td>{{ $popup->description }}</td>
                                             <td>
-                                                @if ($popup->image_popup)
-                                                    <a href="{{ asset('storage/' . $popup->image_popup) }}"
-                                                        target="_blank">
-                                                        <img src="{{ asset('storage/' . $popup->image_popup) }}"
-                                                            alt="Popup Image" width="100">
-                                                    </a>
-                                                @else
-                                                    <span class="text-muted">Tidak ada gambar</span>
-                                                @endif
+                                                {{ $popup->media_type }}
                                             </td>
 
                                             <td>{{ \Carbon\Carbon::parse($popup->created_at)->translatedFormat('d F Y') }}
@@ -827,7 +1068,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
-                        <form id="categoryForm">
+                        <form id="categoryForm" enctype="multipart/form-data">
+                            @csrf
                             <input type="hidden" name="parent_id" id="parentId">
                             <input type="hidden" name="type" id="categoryType" value="category">
                             <div class="modal-body">
@@ -853,51 +1095,46 @@
                                 </div>
 
                                 <!-- Category Image Upload -->
+                                <!-- Media Upload -->
                                 <div class="form-group upload-container">
-                                    <label for="categoryImage" class="mb-2">Gambar Pop Up <span
+                                    <label for="mediaPopup" class="mb-2">Media Pop Up <span
                                             class="text-danger">*</span></label>
 
-                                    <!-- Zona Unggah -->
                                     <div class="upload-zone" id="upload-zone">
-                                        <input type="file" name="image_popup" id="file-input-image"
-                                            class="file-input" accept="image/*" onchange="handleFileSelect(this)">
-                                        <div class="upload-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"
-                                                fill="currentColor" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
-                                                <path
-                                                    d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z" />
-                                            </svg>
+                                        <input type="file" name="media_popup" id="file-input-media"
+                                            class="file-input" accept="image/*,video/mp4"
+                                            onchange="handleFileSelect(this)">
+                                        <div class="upload-icon">🎬</div>
+                                        <div class="upload-prompt">Klik untuk pilih file atau seret file ke sini</div>
+                                        <div class="upload-hint">
+                                            Format: <strong>JPG, PNG, JPEG, MP4</strong> — Maks.
+                                            <strong>2MB</strong><br>
+                                            Ukuran disarankan: <strong>1920 x 800 piksel</strong>
                                         </div>
-                                        <div class="upload-prompt">Klik untuk memilih file atau seret file ke sini
-                                        </div>
-                                        <div class="upload-hint">Format yang diterima: JPG, PNG — Maks. 2MB</div>
                                         <div class="progress-container" id="upload-progress-container">
                                             <div class="progress-bar" id="upload-progress-bar"></div>
                                         </div>
                                     </div>
+
                                     <div class="error-message" id="upload-error"></div>
 
-                                    <!-- Pratinjau Upload -->
+                                    <!-- Preview -->
                                     <div class="upload-preview" id="upload-preview" style="display: none;">
-                                        <div class="preview-header">Pratinjau Gambar Pop Up</div>
+                                        <div class="preview-header">Pratinjau Media</div>
                                         <div class="preview-content">
-                                            <div class="preview-image-container">
-                                                <img class="preview-image" id="preview-image" src=""
-                                                    alt="Pratinjau">
-                                                <div class="preview-icon" id="preview-icon" style="display: none;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="32"
-                                                        height="32" fill="currentColor" viewBox="0 0 16 16">
-                                                        <path
-                                                            d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z" />
-                                                    </svg>
-                                                </div>
+                                            <div class="preview-media-container" id="preview-container">
+                                                <img id="preview-image" class="preview-media"
+                                                    style="display: none;" />
+                                                <video id="preview-video" class="preview-media" controls
+                                                    style="display: none;">
+                                                    <source id="preview-video-source" src=""
+                                                        type="video/mp4">
+                                                    Browser Anda tidak mendukung video.
+                                                </video>
                                             </div>
                                             <div class="preview-details">
-                                                <div class="preview-filename" id="preview-filename">nama_file.jpg
-                                                </div>
-                                                <div class="preview-meta">Gambar pop up yang akan diunggah</div>
+                                                <div class="preview-filename" id="preview-filename"></div>
+                                                <div class="preview-meta">Media pop up yang akan diunggah</div>
                                             </div>
                                             <button type="button" class="remove-button" onclick="removeUpload()">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -912,11 +1149,23 @@
                                     </div>
                                 </div>
 
+
+                                <!-- Pilihan Display Type -->
+                                <div class="form-group mt-3">
+                                    <label for="displayType">Tampilkan di <span class="text-danger">*</span></label>
+                                    <select class="form-control" name="display_type" id="displayType" required>
+                                        <option value="popup">Hanya Pop Up</option>
+                                        <option value="slider">Hanya Slider</option>
+                                        <option value="both">Pop Up & Slider</option>
+                                    </select>
+                                </div>
+
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Cancel</button>
-                                    
+
                                 <button type="submit" class="btn btn-primary">Submit Pop Up</button>
                             </div>
                         </form>
@@ -924,22 +1173,56 @@
                 </div>
             </div>
 
-            <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
+
+
+            <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Detail Popup</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <h4 class="modal-title" id="popupModalLabel">Detail Pop Up</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p><strong>Nama:</strong> <span id="popup-name"></span></p>
-                            <p><strong>Deskripsi:</strong> <span id="popup-description"></span></p>
-                            <p><strong>Tanggal:</strong> <span id="popup-created-at"></span></p>
-                            <p><strong>Gambar:</strong></p>
-                            <div id="popup-image"></div>
+                            <!-- Nama Pop Up -->
+                            <div class="info-row">
+                                <div class="info-label">Nama Pop Up</div>
+                                <div class="info-content" id="popupName"></div>
+                            </div>
+
+                            <!-- Deskripsi -->
+                            <div class="info-row">
+                                <div class="info-label">Deskripsi</div>
+                                <div class="info-content" id="popupDescription"></div>
+                            </div>
+
+                            <!-- Media -->
+                            <div class="info-row">
+                                <div class="info-label">Media</div>
+                                <div class="media-container" id="popupMedia"></div>
+                            </div>
+
+                            <!-- Display Type -->
+                            <div class="info-row">
+                                <div class="info-label">Display Type</div>
+                                <div class="info-content" id="popupDisplayType"></div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="info-row">
+                                <div class="info-label">Status</div>
+                                <div class="info-content" id="popupStatus"></div>
+                            </div>
+
+                            <!-- Tanggal Dibuat -->
+                            <div class="info-row">
+                                <div class="info-label">Tanggal Dibuat</div>
+                                <div class="info-content" id="popupCreated"></div>
+                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         </div>
                     </div>
                 </div>
@@ -961,6 +1244,129 @@
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
     </script>
+
+    {{-- HANDLE FILE --}}
+    <script>
+        function handleFileSelect(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const validTypes = ["image/jpeg", "image/png", "image/jpg", "video/mp4"];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+
+            const errorEl = document.getElementById("upload-error");
+            const previewContainer = document.getElementById("preview-container");
+            errorEl.textContent = "";
+            previewContainer.innerHTML = "";
+
+            if (!validTypes.includes(file.type)) {
+                errorEl.textContent = "File harus berformat JPG, PNG, JPEG, atau MP4.";
+                input.value = "";
+                return;
+            }
+
+            if (file.size > maxSize) {
+                errorEl.textContent = "Ukuran file tidak boleh lebih dari 10MB.";
+                input.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.startsWith("image/")) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.classList.add("preview-image");
+                    img.style.maxWidth = "250px";
+                    previewContainer.appendChild(img);
+                } else if (file.type === "video/mp4") {
+                    const video = document.createElement("video");
+                    video.src = e.target.result;
+                    video.controls = true;
+                    video.width = 250;
+                    previewContainer.appendChild(video);
+                }
+            };
+            reader.readAsDataURL(file);
+
+            document.getElementById("upload-preview").style.display = "block";
+            document.getElementById("preview-filename").innerText = file.name;
+        }
+
+        function removeUpload() {
+            document.getElementById("file-input-media").value = "";
+            document.getElementById("upload-preview").style.display = "none";
+            document.getElementById("preview-container").innerHTML = "";
+            document.getElementById("upload-error").textContent = "";
+        }
+
+        // ✅ Tangani submit form pakai AJAX
+        document.getElementById("categoryForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let formData = new FormData(this);
+
+            fetch("{{ route('store-popup-admin') }}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "success",
+                            title: "Berhasil!",
+                            text: data.message,
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            background: "#f9fff9",
+                            color: "#183018",
+                            iconColor: "#28a745",
+                            customClass: {
+                                popup: "swal2-rounded swal2-shadow",
+                                title: "swal2-title-custom",
+                                timerProgressBar: "swal2-progress-custom"
+                            },
+                            didClose: () => {
+                                location.reload();
+                            }
+                        });
+
+                        this.reset();
+                        removeUpload();
+                    } else {
+                        Swal.fire({
+                            toast: true,
+                            position: "top-end",
+                            icon: "error",
+                            title: "Oops...",
+                            text: data.message || "Terjadi kesalahan.",
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    }
+                })
+                .catch(err => {
+                    Swal.fire({
+                        toast: true,
+                        position: "top-end",
+                        icon: "error",
+                        title: "Error",
+                        text: "Gagal mengirim data ke server!",
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    console.error(err);
+                });
+        });
+    </script>
+
 
     {{-- SWITCH IS ACTIVE --}}
     <script>
@@ -1080,382 +1486,49 @@
 
     {{-- MODAL SHOW --}}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.btn-show-popup').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.getAttribute('data-id');
+        $(document).ready(function() {
+            $('.btn-show-popup').on('click', function() {
+                let popupId = $(this).data('id');
 
-                    fetch(`/popup/${id}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            document.getElementById('popup-name').textContent = data.name;
-                            document.getElementById('popup-description').textContent = data
-                                .description;
-                            document.getElementById('popup-created-at').textContent = data
-                                .created_at;
+                $.ajax({
+                    url: '/popup/' + popupId,
+                    method: 'GET',
+                    success: function(response) {
+                        // isi data ke modal
+                        $('#popupName').text(response.name);
+                        $('#popupDescription').text(response.description);
+                        $('#popupDisplayType').text(response.display_type);
 
-                            const imageContainer = document.getElementById('popup-image');
-                            imageContainer.innerHTML = '';
+                        // tampilkan status aktif / tidak
+                        let status = response.is_active ? 'Aktif' : 'Non Aktif';
+                        $('#popupStatus').text(status);
 
-                            if (data.image_popup) {
-                                const link = document.createElement('a');
-                                link.href = data.image_popup;
-                                link.target = '_blank';
+                        // tampilkan tanggal
+                        $('#popupCreated').text(response.created_at);
 
-                                const img = document.createElement('img');
-                                img.src = data.image_popup;
-                                img.width = 150;
-                                img.classList.add('img-thumbnail');
+                        // tampilkan media
+                        let mediaHtml = '';
+                        if (response.media_type === 'image' && response.media_popup) {
+                            mediaHtml = `<img src="${response.media_popup}" 
+                                    alt="${response.name}" class="img-fluid rounded">`;
+                        } else if (response.media_type === 'video' && response.media_popup) {
+                            mediaHtml = `<video class="w-100 rounded" controls>
+                                    <source src="${response.media_popup}" type="video/mp4">
+                                    Browser anda tidak mendukung video.
+                                </video>`;
+                        } else {
+                            mediaHtml = `<p class="text-muted">Tidak ada media</p>`;
+                        }
+                        $('#popupMedia').html(mediaHtml);
 
-                                link.appendChild(img);
-                                imageContainer.appendChild(link);
-                            } else {
-                                imageContainer.textContent = 'Tidak ada gambar';
-                            }
-
-                            const modal = new bootstrap.Modal(document.getElementById(
-                                'popupModal'));
-                            modal.show();
-                        })
-                        .catch(err => {
-                            console.error(err);
-                            alert('Gagal mengambil data popup.');
-                        });
+                        // buka modal
+                        $('#popupModal').modal('show');
+                    },
+                    error: function() {
+                        alert('Gagal mengambil data popup');
+                    }
                 });
             });
-        });
-    </script>
-
-
-    {{-- HANDLE UPLOAD IMAGE --}}
-    <script>
-        // Handle file selection
-        function handleFileSelect(input) {
-            const file = input.files[0];
-            if (!file) return;
-
-            // Validate file
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
-
-            // Reset error
-            document.getElementById('upload-error').textContent = '';
-            document.getElementById('upload-zone').classList.remove('error');
-
-            // Check file type
-            if (!validTypes.includes(file.type)) {
-                document.getElementById('upload-error').textContent = 'File must be in JPG or PNG format.';
-                document.getElementById('upload-zone').classList.add('error');
-                input.value = '';
-                return;
-            }
-
-            // Check file size
-            if (file.size > maxSize) {
-                document.getElementById('upload-error').textContent = 'File size must not exceed 2MB.';
-                document.getElementById('upload-zone').classList.add('error');
-                input.value = '';
-                return;
-            }
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewContainer = document.getElementById('upload-preview');
-                const previewImage = document.getElementById('preview-image');
-                const previewIcon = document.getElementById('preview-icon');
-                const previewFilename = document.getElementById('preview-filename');
-
-                previewContainer.style.display = 'block';
-                previewFilename.textContent = file.name;
-
-                // Always show image for image files
-                previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
-                previewIcon.style.display = 'none';
-
-                // Simulate upload progress
-                simulateUploadProgress();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Remove upload
-        function removeUpload() {
-            document.getElementById('file-input-image').value = '';
-            document.getElementById('upload-preview').style.display = 'none';
-            document.getElementById('upload-progress-container').style.display = 'none';
-            document.getElementById('upload-progress-bar').style.width = '0%';
-            document.getElementById('upload-error').textContent = '';
-            document.getElementById('upload-zone').classList.remove('error');
-        }
-
-        // Simulate upload progress
-        function simulateUploadProgress() {
-            const progressContainer = document.getElementById('upload-progress-container');
-            const progressBar = document.getElementById('upload-progress-bar');
-
-            progressContainer.style.display = 'block';
-            progressBar.style.width = '0%';
-
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 5;
-                progressBar.style.width = progress + '%';
-
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        progressContainer.style.display = 'none';
-                    }, 500);
-                }
-            }, 50);
-        }
-
-        // Drag and drop handling
-        const dropZone = document.getElementById('upload-zone');
-
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('drag-over');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('drag-over');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('drag-over');
-
-            const fileInput = document.getElementById('file-input-image');
-            if (e.dataTransfer.files.length) {
-                fileInput.files = e.dataTransfer.files;
-                handleFileSelect(fileInput);
-            }
-        });
-
-        // Form submission handler
-        // Updated JavaScript untuk form submission
-        document.getElementById('categoryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const name = document.getElementById('categoryName').value;
-            const description = document.getElementById('categoryDescription').value;
-            const imageFile = document.getElementById('file-input-image').files[0];
-
-            if (!name || !description || !imageFile) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'Silakan lengkapi semua field yang diperlukan dan pilih gambar.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Disable submit button dan show loading
-            const submitButton = document.querySelector('button[type="submit"]');
-            const originalText = submitButton.innerHTML;
-            submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
-
-            // Buat FormData untuk mengirim file
-            const formData = new FormData();
-            formData.append('name', name);
-            formData.append('description', description);
-            formData.append('image_popup', imageFile);
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-            // Kirim data ke server
-            fetch('/popup-create-admin', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000, // 3 detik
-                            timerProgressBar: true,
-                            didOpen: (toast) => {
-                                toast.addEventListener('mouseenter', Swal.stopTimer)
-                                toast.addEventListener('mouseleave', Swal.resumeTimer)
-                            },
-                            willClose: () => {
-                                // Reset form, tutup modal, reload
-                                document.getElementById('categoryForm').reset();
-                                removeUpload();
-                                const modal = bootstrap.Modal.getInstance(document.getElementById(
-                                    'categoryModal'));
-                                modal.hide();
-                                location.reload();
-                            }
-                        });
-
-                        Toast.fire({
-                            icon: 'success',
-                            title: `${data.message} — halaman akan dimuat ulang…`
-                        });
-                    }
-
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan saat mengirim data. Silakan coba lagi.',
-                        confirmButtonText: 'OK'
-                    });
-                })
-                .finally(() => {
-                    // Restore submit button
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = originalText;
-                });
-        });
-
-        // Fungsi untuk validasi real-time
-        function validateForm() {
-            const name = document.getElementById('categoryName').value.trim();
-            const description = document.getElementById('categoryDescription').value.trim();
-            const imageFile = document.getElementById('file-input-image').files[0];
-            const submitButton = document.querySelector('button[type="submit"]');
-
-            if (name && description && imageFile) {
-                submitButton.disabled = false;
-                submitButton.classList.remove('btn-secondary');
-                submitButton.classList.add('btn-primary');
-            } else {
-                submitButton.disabled = true;
-                submitButton.classList.remove('btn-primary');
-                submitButton.classList.add('btn-secondary');
-            }
-        }
-
-        // Event listeners untuk validasi real-time
-        document.getElementById('categoryName').addEventListener('input', validateForm);
-        document.getElementById('categoryDescription').addEventListener('input', validateForm);
-        document.getElementById('file-input-image').addEventListener('change', validateForm);
-
-        // Inisialisasi validasi saat modal dibuka
-        document.getElementById('categoryModal').addEventListener('shown.bs.modal', function() {
-            validateForm();
-        });
-
-        // Handle file selection (fungsi yang sudah ada, sedikit dimodifikasi)
-        function handleFileSelect(input) {
-            const file = input.files[0];
-            if (!file) {
-                validateForm();
-                return;
-            }
-
-            // Validate file
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
-
-            // Reset error
-            document.getElementById('upload-error').textContent = '';
-            document.getElementById('upload-zone').classList.remove('error');
-
-            // Check file type
-            if (!validTypes.includes(file.type)) {
-                document.getElementById('upload-error').textContent = 'File harus berformat JPG, PNG, atau JPEG.';
-                document.getElementById('upload-zone').classList.add('error');
-                input.value = '';
-                validateForm();
-                return;
-            }
-
-            // Check file size
-            if (file.size > maxSize) {
-                document.getElementById('upload-error').textContent = 'Ukuran file tidak boleh melebihi 2MB.';
-                document.getElementById('upload-zone').classList.add('error');
-                input.value = '';
-                validateForm();
-                return;
-            }
-
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const previewContainer = document.getElementById('upload-preview');
-                const previewImage = document.getElementById('preview-image');
-                const previewIcon = document.getElementById('preview-icon');
-                const previewFilename = document.getElementById('preview-filename');
-
-                previewContainer.style.display = 'block';
-                previewFilename.textContent = file.name;
-
-                // Always show image for image files
-                previewImage.src = e.target.result;
-                previewImage.style.display = 'block';
-                previewIcon.style.display = 'none';
-
-                // Simulate upload progress
-                simulateUploadProgress();
-
-                // Validate form after successful file selection
-                validateForm();
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // Remove upload (fungsi yang sudah ada, sedikit dimodifikasi)
-        function removeUpload() {
-            document.getElementById('file-input-image').value = '';
-            document.getElementById('upload-preview').style.display = 'none';
-            document.getElementById('upload-progress-container').style.display = 'none';
-            document.getElementById('upload-progress-bar').style.width = '0%';
-            document.getElementById('upload-error').textContent = '';
-            document.getElementById('upload-zone').classList.remove('error');
-
-            // Validate form after removing file
-            validateForm();
-        }
-
-        // Reset form when modal is closed
-        document.getElementById('categoryModal').addEventListener('hidden.bs.modal', function() {
-            document.getElementById('categoryForm').reset();
-            removeUpload();
-
-            // Reset submit button
-            const submitButton = document.querySelector('button[type="submit"]');
-            submitButton.disabled = false;
-            submitButton.innerHTML = 'Submit Pop Up';
-            submitButton.classList.remove('btn-secondary');
-            submitButton.classList.add('btn-primary');
-        });
-
-        // Fungsi untuk menampilkan preview gambar yang sudah ada (jika edit)
-        function displayExistingImage(imagePath, fileName) {
-            if (imagePath) {
-                const previewContainer = document.getElementById('upload-preview');
-                const previewImage = document.getElementById('preview-image');
-                const previewFilename = document.getElementById('preview-filename');
-
-                previewContainer.style.display = 'block';
-                previewImage.src = '/storage/' + imagePath;
-                previewImage.style.display = 'block';
-                previewFilename.textContent = fileName || 'Gambar saat ini';
-
-                // Update preview header text
-                document.querySelector('.preview-header').textContent = 'Gambar Pop Up Saat Ini';
-            }
-        }
-
-        // Reset form when modal is closed
-        document.getElementById('categoryModal').addEventListener('hidden.bs.modal', function() {
-            document.getElementById('categoryForm').reset();
-            removeUpload();
         });
     </script>
 

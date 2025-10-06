@@ -578,23 +578,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <h6 class="mb-1">Dokumen BPOM</h6>
-                                        <div class="p-3 border rounded bg-white">
-                                            @if ($partners->fileBpom)
-                                                <a href="{{ asset('storage/' . $partners->fileBpom->file_path) }}"
-                                                    class="d-flex align-items-center text-decoration-none">
-                                                    <i class="bi bi-file-earmark-text text-primary me-2"></i>
-                                                    <span>{{ $partners->fileBpom->file_name }}</span>
-                                                </a>
-                                            @else
-                                                <span class="text-muted"><i
-                                                        class="bi bi-exclamation-circle me-2"></i>Belum ada
-                                                    dokumen
-                                                    diunggah</span>
-                                            @endif
-                                        </div>
-                                    </div>
+                                 
                                 </div>
                             </div>
 

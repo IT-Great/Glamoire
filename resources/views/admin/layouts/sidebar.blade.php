@@ -1,58 +1,28 @@
 <style>
-    .sidebar-header {
-        background-color: #f8f9fa;
-        /* warna latar lebih soft */
-        padding: 20px 10px;
+    .auth-logo {
         text-align: center;
-        border-bottom: 1px solid #ddd;
+        margin-bottom: 1rem;
+        margin-top: 2rem;
     }
 
-    .sidebar-header .logo {
-        display: block;
-        margin: 0 auto;
-    }
-
-    .sidebar-header .logo img {
-        max-width: 160px;
-        height: auto;
-        object-fit: contain;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-radius: 4px;
-    }
-
-    .sidebar-header .logo img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .sidebar-header .company-name {
-        font-weight: bold;
-        font-size: 14px;
-        color: #333;
-        margin-top: 5px;
-        letter-spacing: 0.5px;
-    }
-
-    .sidebar-header .tagline {
-        font-size: 12px;
-        color: #666;
+    .auth-logo h4 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #183018 0%, #2d4f2d 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
     }
 </style>
 
 
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
-        <div class="sidebar-header">
-            <div class="logo">
-                <a href="index.html">
-                    <img src="{{ asset('images/new-logo.png') }}" alt="Logo">
-                </a>
-                <div class="company-name">GLAMOIRE</div>
-                <div class="tagline">Indonesia’s First Plant-Based Platform</div>
-            </div>
+        <div class="auth-logo">
+            <!-- Tambahkan gambar di sini -->
+            <img src="{{ asset('images/new-logo2-cut.png') }}" alt="Logo" style="max-height: 70px;">
         </div>
-
 
         <div class="sidebar-menu">
             <ul class="menu">
@@ -128,6 +98,9 @@
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                                 <a href="{{ route('index-promo-diskon') }}">Diskon</a>
                             </li>
+                            <li class="submenu-item {{ Request::is('promo-gift') ? 'active' : '' }}">
+                                <a href="{{ route('index-promo-gift') }}">Gift</a>
+                            </li>
                         </ul>
                     </li>
 
@@ -176,7 +149,7 @@
                     <li class="sidebar-item {{ Request::is('popup*') ? 'active' : '' }}">
                         <a href="{{ route('index-popup-admin') }}" class='sidebar-link'>
                             <i class="bi bi-window"></i>
-                            <span>Pop up</span>
+                            <span>Slider & Pop up</span>
                         </a>
                     </li>
 

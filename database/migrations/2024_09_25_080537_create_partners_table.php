@@ -18,14 +18,11 @@ return new class extends Migration
             $table->string('email');
             $table->string('company_name');
             $table->string('description');
-            $table->boolean('bpom');
             $table->boolean('distributor');
             $table->boolean('reached_email');
             $table->string('category_product');
             $table->unsignedBigInteger('file_company');
             $table->foreign('file_company')->references('id')->on('file_partners')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->unsignedBigInteger('file_bpom');
-            $table->foreign('file_bpom')->references('id')->on('file_partners')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }
