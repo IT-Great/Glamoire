@@ -12,83 +12,86 @@ class PopupController extends Controller
 {
     public function indexPopupAdmin()
     {
-        $popups = Popup::all();
+        $popups = Popup::latest()->get(); // urutkan dari yang terbaru ke yang lama
         return view('admin.popup.index', compact('popups'));
     }
+
 
     public function storePopupAdmin(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'image_popup' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'media_popup' => 'required|mimes:jpeg,png,jpg,mp4|max:10240', // max 10MB
+            'display_type' => 'required|in:popup,slider,both',
         ], [
             'name.required' => 'Nama pop-up wajib diisi',
-            'name.max' => 'Nama pop-up maksimal 255 karakter',
             'description.required' => 'Deskripsi wajib diisi',
-            'image_popup.required' => 'Gambar pop-up wajib dipilih',
-            'image_popup.image' => 'File harus berupa gambar',
-            'image_popup.mimes' => 'Format gambar harus JPG, PNG, atau JPEG',
-            'image_popup.max' => 'Ukuran gambar maksimal 2MB',
+            'media_popup.required' => 'File wajib dipilih',
+            'media_popup.mimes' => 'Format harus JPG, PNG, JPEG, atau MP4',
+            'media_popup.max' => 'Ukuran maksimal 10MB',
+            'display_type.required' => 'Pilih tipe tampilan',
         ]);
 
-        $imagePath = null;
+        $mediaPath = null;
+        $mediaType = 'image';
 
         try {
-            // Proses upload gambar
-            if ($request->hasFile('image_popup')) {
-                $image = $request->file('image_popup');
-                $imageName = time() . '_' . $image->getClientOriginalName();
-                $imagePath = $image->storeAs('popup_images', $imageName, 'public');
+            if ($request->hasFile('media_popup')) {
+                $file = $request->file('media_popup');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $mediaPath = $file->storeAs('popup_media', $fileName, 'public');
+
+                // Cek tipe file
+                $extension = $file->getClientOriginalExtension();
+                if (in_array($extension, ['mp4'])) {
+                    $mediaType = 'video';
+                }
             }
 
-            // Simpan data ke database
             $popup = new \App\Models\Popup();
             $popup->name = $validatedData['name'];
             $popup->description = $validatedData['description'];
-            $popup->image_popup = $imagePath;
-            $popup->is_active = true; // 👉 default active
+            $popup->media_popup = $mediaPath;
+            $popup->media_type = $mediaType;
+            $popup->display_type = $validatedData['display_type'];
+            $popup->is_active = true;
             $popup->save();
-
 
             return response()->json([
                 'success' => true,
-                'message' => 'Pop-up berhasil disimpan!',
+                'message' => 'Data berhasil disimpan!',
                 'data' => $popup
             ], 200);
         } catch (\Throwable $e) {
-            // Jika gagal upload / simpan → hapus file yg sudah terupload
-            if ($imagePath && Storage::disk('public')->exists($imagePath)) {
-                Storage::disk('public')->delete($imagePath);
+            if ($mediaPath && Storage::disk('public')->exists($mediaPath)) {
+                Storage::disk('public')->delete($mediaPath);
             }
-
-            // log error lengkap
-            Log::error('Gagal menyimpan popup', [
-                'error_message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-                'input' => $request->all(),
-            ]);
-
+            Log::error('Gagal menyimpan popup', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat menyimpan data. Silakan cek log untuk detail.'
+                'message' => 'Terjadi kesalahan saat menyimpan data.'
             ], 500);
         }
     }
+
 
     public function show($id)
     {
         $popup = Popup::findOrFail($id);
 
         return response()->json([
-            'name' => $popup->name,
+            'id'          => $popup->id,
+            'name'        => $popup->name,
             'description' => $popup->description,
-            'image_popup' => $popup->image_popup ? asset('storage/' . $popup->image_popup) : null,
-            'created_at' => $popup->created_at->translatedFormat('d F Y')
+            'media_popup' => $popup->media_popup ? asset('storage/' . $popup->media_popup) : null,
+            'media_type'  => $popup->media_type,
+            'display_type' => $popup->display_type,
+            'is_active'   => $popup->is_active,
+            'created_at'  => $popup->created_at->translatedFormat('d F Y')
         ]);
     }
+
 
     public function toggle($id)
     {
@@ -103,18 +106,37 @@ class PopupController extends Controller
             'message' => $popup->is_active ? 'Popup diaktifkan' : 'Popup dinonaktifkan'
         ]);
     }
-
     public function destroy($id)
     {
-        $popup = Popup::findOrFail($id);
+        try {
+            $popup = Popup::find($id);
 
-        // jika ada file gambar, hapus dari storage
-        if ($popup->image_popup && \Storage::disk('public')->exists($popup->image_popup)) {
-            \Storage::disk('public')->delete($popup->image_popup);
+            if (!$popup) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data popup tidak ditemukan.'
+                ], 404);
+            }
+
+            // Jika ada file media, hapus dari storage
+            if ($popup->media_popup && Storage::disk('public')->exists($popup->media_popup)) {
+                Storage::disk('public')->delete($popup->media_popup);
+            }
+
+            // Hapus record popup dari database
+            $popup->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Popup berhasil dihapus!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Gagal menghapus popup: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat menghapus data popup.'
+            ], 500);
         }
-
-        $popup->delete();
-
-        return response()->json(['success' => true, 'message' => 'Popup deleted successfully!']);
     }
 }

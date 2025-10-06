@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->string('image_popup')->nullable();
+            $table->string('media_popup')->nullable(); // bisa gambar / video
+            $table->enum('media_type', ['image', 'video'])->default('image');
+            $table->enum('display_type', ['popup', 'slider', 'both'])->default('popup');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

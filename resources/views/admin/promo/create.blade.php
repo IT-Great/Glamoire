@@ -374,7 +374,7 @@
                                                         mewakili produk Anda. Ini akan menjadi gambar utama yang
                                                         ditampilkan dalam hasil pencarian. Untuk format file,
                                                         gunakan JPG, JPEG, atau PNG, dan pastikan ukurannya tidak
-                                                        lebih dari 2MB. Ukuran gambar harus 2560x2560dpx.
+                                                        lebih dari 2MB. Ukuran gambar harus 1920x800px.
                                                     </small>
                                                 @endif
                                             </div>
@@ -386,7 +386,7 @@
 
                         <div class="card">
                             <div class="card-header ">
-                                <h4>Product List</h4>
+                                <h4>Daftar Produk</h4>
                             </div>
                             <div class="card-body">
                                 <div class="mb-4">

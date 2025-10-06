@@ -4,7 +4,305 @@
 <head>
     @include('user.layouts.header')
 
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
+        .modal-content {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            padding: 30px 30px 0;
+            position: relative;
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .modal-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .benefits-section {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .benefit-item {
+            text-align: center;
+            flex: 1;
+            max-width: 120px;
+        }
+
+        .benefit-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .benefit-text {
+            font-size: 0.85rem;
+            color: #333;
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background-color: #fff;
+        }
+
+        .form-control:focus {
+            border-color: #ff6b6b;
+            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        }
+
+        .input-group .form-control {
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            padding: 12px 16px;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .password-container .form-control {
+            padding-right: 45px;
+        }
+
+        .password-toggle-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+
+        .password-toggle-icon:hover {
+            color: #333;
+        }
+
+        .btn-primary {
+            background: #183018;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #145015;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-login {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .social-divider {
+            color: #999;
+            font-size: 0.9rem;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .social-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: #e9ecef;
+            z-index: 1;
+        }
+
+        .social-divider span {
+            background-color: white;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .btn-social {
+            flex: 1;
+            max-width: 150px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background-color: white;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-social:hover {
+            border-color: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-social i {
+            font-size: 1.1rem;
+        }
+
+        .btn-social.facebook i {
+            color: #4267B2;
+        }
+
+        .btn-social.google i {
+            color: #EA4335;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .terms-text {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: center;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        .terms-text a {
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        .modal-dialog {
+            width: 90%;
+            max-width: 400px;
+            margin: 1.75rem auto;
+        }
+
+        @media (min-width: 768px) {
+            .modal-dialog {
+                max-width: 500px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .modal-dialog {
+                max-width: 600px;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .benefits-section {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+
+            .benefit-item {
+                max-width: 200px;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+
+            .btn-social {
+                max-width: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -88,16 +386,11 @@
 
                 <div class="modal-body px-4 pb-4">
                     <!-- Logo -->
-                    <div class="text-center mb-3">
-                        <img src="{{ asset('images/new-logo.png') }}" alt="Logo" style="max-height: 60px;" />
-                    </div>
-
-                    <h2 class="modal-title text-center">Masuk atau Buat Akun</h2>
+                    <h4 class="modal-title text-center">Masuk atau Buat Akun</h4>
                     <p class="modal-subtitle text-center text-muted">Masukkan email dan password Anda untuk memulai</p>
 
                     <form method="POST" action="" class="mb-4" id="login-user-form">
                         @csrf
-
                         <!-- Email -->
                         <div class="mb-3">
                             <label for="login_email" class="form-label">Email <span style="color: red">*</span></label>
@@ -305,21 +598,16 @@
 
     {{-- MODAL SIGN UP BARU --}}
     <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        {{-- <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"> --}}
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
+                <h2 class="modal-title">Masuk atau Buat Akun</h2>
 
-                <div class="modal-body px-4 pb-4">
-                    <!-- Logo -->
-                    <div class="text-center mb-3">
-                        <img src="{{ asset('images/new-logo.png') }}" alt="Logo" style="max-height: 60px;" />
-                    </div>
-
-                    <h2 class="modal-title">Masuk atau Buat Akun</h2>
+                <div class="modal-body px-4 pb-6">
                     <p class="modal-subtitle">Masukkan nama, email, dan kata sandi untuk daftar akun</p>
-
                     <form id="register-user-form">
                         <!-- Nama Lengkap -->
                         <div class="mb-3">
@@ -347,7 +635,26 @@
                                 <i class="fa fa-eye-slash password-toggle-icon" data-target="register_password"></i>
                             </div>
                             <div id="validationPasswordRegister" class="form-text text-danger"
-                                style="display: none;">
+                                style="display: none;"></div>
+                        </div>
+
+                        <!-- Bagian tambahan -->
+                        <div class="benefits text-center mb-4">
+                            <h3 style="font-weight: 600; font-size: 1.5rem; margin-bottom: 0.5rem;">Buat Akun</h3>
+                            <p style="color: #555; margin-bottom: 1rem;">
+                                Anda dapat melacak pesanan, mengedit info pengiriman, mendapatkan penawaran eksklusif,
+                                dan masih banyak lagi!
+                            </p>
+
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <div style="color: #a855f7; font-size: 2rem; margin-bottom: 0.25rem;">🎟️</div>
+                                    <div style="font-weight: 600;">Diskon 10% untuk pesanan pertama</div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="color: #a855f7; font-size: 2rem; margin-bottom: 0.25rem;">🚚</div>
+                                    <div style="font-weight: 600;">Lacak pesanan Anda</div>
+                                </div>
                             </div>
                         </div>
 
@@ -373,16 +680,16 @@
                         <div class="social-buttons">
                             <button type="button" class="btn btn-social google">
                                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
-                                    style="height:20px; vertical-align:middle; margin-right:8px;">
+                                    style="height:20px; vertical-align:middle;">
                                 Google
                             </button>
                         </div>
                     </div>
 
                     <!-- Syarat dan Ketentuan -->
-                    <div class="terms-text mt-3">
-                        Dengan menekan button "Selanjutnya" atau Google, saya menyatakan bahwa saya telah membaca
-                        dan menyetujui
+                    <div class="terms-text mt-3 mb-3">
+                        Dengan menekan button "Selanjutnya" atau Google, saya menyatakan bahwa saya telah membaca dan
+                        menyetujui
                         <a href="#" class="terms-link" style="color: #183018; font-weight: bold">Syarat &
                             Ketentuan</a> serta
                         <a href="#" class="privacy-link" style="color: #183018; font-weight: bold">Kebijakan
@@ -396,7 +703,7 @@
 
 
     <!-- Modal Forgot Password -->
-    <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
+    {{-- <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="background-color: #183018">
                 <div class="modal-header border-none">
@@ -440,7 +747,60 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+
+    <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <h2 class="modal-title">Lupa Kata Sandi</h2>
+
+                <div class="modal-body px-4 pb-4">
+                    <p class="modal-subtitle">
+                        Masukkan email Anda untuk menerima link pengaturan ulang kata sandi.
+                    </p>
+
+                    <form class="px-2" id="forgot-password-form">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="forgot_password_email" class="form-label">Email <span
+                                    style="color:red;">*</span></label>
+                            <input type="email" class="form-control" id="forgot_password_email"
+                                placeholder="Masukkan email" required>
+                            <div id="validationEmailForgot" class="form-text text-danger" style="display:none;">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100" type="submit" id="forgot-btn">
+                            Dapatkan Link
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <span>Sudah ingat akunmu? </span>
+                        <a href="#" class="switch-to-login" data-bs-toggle="modal"
+                            data-bs-target="#loginUser1" data-bs-dismiss="modal"
+                            style="color: #183018; font-weight: bold">
+                            Masuk Sekarang
+                        </a>
+                    </div>
+
+                    <div class="terms-text mt-3 mb-3">
+                        Dengan menekan tombol <b>Dapatkan Link</b>, saya menyatakan bahwa saya telah membaca dan
+                        menyetujui
+                        <a href="#" class="terms-link" style="color: #183018; font-weight: bold">Syarat &
+                            Ketentuan</a> serta
+                        <a href="#" class="privacy-link" style="color: #183018; font-weight: bold">Kebijakan
+                            Privasi</a>.
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
 
     <div class="content">
         @yield('content')
@@ -599,59 +959,59 @@
             },
         });
 
-      var swiperCorousel = new Swiper(".mySwiperCarousel", {
-        slidesPerView: 1,
-        spaceBetween: 10,
-        centeredSlides: true,
-        autoplay: {
-          delay: 2000,
-          disableOnInteraction: false,
-        },
-        pagination: {
-          el: ".swiper-pagination",
-          clickable: true,
-        },
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-      });
-      
-      var swiperReview = new Swiper(".mySwiperReview", {
-        slidesPerView: 2,
-        spaceBetween: 5,
-        cssMode: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-      });
-      
-      var swiperDetail = new Swiper(".mySwiperProduct", {
-        loop: true,
-        spaceBetween: 10,
-        slidesPerView: 4,
-        freeMode: true,
-        watchSlidesProgress: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        
-      });
-      
-      // UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT
-      var swiperShow = new Swiper('.mySwiperShow', {
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-        pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-        },
-        loop: true,
-      });
+        var swiperCorousel = new Swiper(".mySwiperCarousel", {
+            slidesPerView: 1,
+            spaceBetween: 10,
+            centeredSlides: true,
+            autoplay: {
+                delay: 2000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+
+        var swiperReview = new Swiper(".mySwiperReview", {
+            slidesPerView: 2,
+            spaceBetween: 5,
+            cssMode: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+
+        var swiperDetail = new Swiper(".mySwiperProduct", {
+            loop: true,
+            spaceBetween: 10,
+            slidesPerView: 4,
+            freeMode: true,
+            watchSlidesProgress: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+
+        });
+
+        // UNTUK MENGATUR SWIPER CARD PADA HALAMAN DETAIL PRODUCT
+        var swiperShow = new Swiper('.mySwiperShow', {
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            loop: true,
+        });
 
         var swiperNewest = new Swiper(".mySwiperNewest", {
             slidesPerView: 5,
@@ -698,140 +1058,140 @@
             },
         });
 
-      var swiperTop = new Swiper(".mySwiperTop", {
-        slidesPerView: 5,
-        spaceBetween: 15,
-        cssMode: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          2560: {
-            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1440: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1024: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          // Tablet
-          768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-          },
-          425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          // Mobile
-          320: {
-            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
-            spaceBetween: 5,  // Menyusun jarak antar slide
-            navigation: false,
-          },
-        },
-      });
-      
-      var swiperVoucher = new Swiper(".mySwiperVoucher", {
-        slidesPerView: 5,
-        spaceBetween: 15,
-        cssMode: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          2560: {
-            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1440: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1024: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          // Tablet
-          768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-          },
-          425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          // Mobile
-          320: {
-            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
-            spaceBetween: 5,  // Menyusun jarak antar slide
-            navigation: false,
-          },
-        },
-      });
-      
-      var swiperPromo = new Swiper(".mySwiperPromo", {
-        slidesPerView: 5,
-        spaceBetween: 15,
-        cssMode: true,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          2560: {
-            slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1440: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          1024: {
-            slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 10, // Menyusun jarak antar slide
-          },
-          // Tablet
-          768: {
-            slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-          },
-          425: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          375: {
-            slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-            spaceBetween: 5, // Menyusun jarak antar slide
-            navigation: false,
-          },
-          // Mobile
-          320: {
-            slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
-            spaceBetween: 5,  // Menyusun jarak antar slide
-            navigation: false,
-          },
-        },
-      });
+        var swiperTop = new Swiper(".mySwiperTop", {
+            slidesPerView: 5,
+            spaceBetween: 15,
+            cssMode: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                2560: {
+                    slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1440: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1024: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                // Tablet
+                768: {
+                    slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                },
+                425: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                375: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                // Mobile
+                320: {
+                    slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+            },
+        });
+
+        var swiperVoucher = new Swiper(".mySwiperVoucher", {
+            slidesPerView: 5,
+            spaceBetween: 15,
+            cssMode: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                2560: {
+                    slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1440: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1024: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                // Tablet
+                768: {
+                    slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                },
+                425: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                375: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                // Mobile
+                320: {
+                    slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+            },
+        });
+
+        var swiperPromo = new Swiper(".mySwiperPromo", {
+            slidesPerView: 5,
+            spaceBetween: 15,
+            cssMode: true,
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+            breakpoints: {
+                2560: {
+                    slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1440: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                1024: {
+                    slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 10, // Menyusun jarak antar slide
+                },
+                // Tablet
+                768: {
+                    slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                },
+                425: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                375: {
+                    slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+                // Mobile
+                320: {
+                    slidesPerView: 2, // Untuk layar dengan lebar 480px atau lebih besar
+                    spaceBetween: 5, // Menyusun jarak antar slide
+                    navigation: false,
+                },
+            },
+        });
     </script>
 
     <!-- UNTUK MENGATUR RANGE DI FILTER SHOP -->

@@ -108,8 +108,6 @@ class FormController extends Controller
         }
     }
 
-
-
     public function files(Request $request)
     {
         try {
@@ -127,40 +125,25 @@ class FormController extends Controller
                 ]);
             }
 
-            if ($request->hasFile('file_bpom')) {
-                // Simpan file ke direktori penyimpanan
-                $fileBpom = $request->file('file_bpom');
-                $fileBpomName = time() . '_' . $fileBpom->getClientOriginalName();
-                $fileBpomPath = $fileBpom->storeAs('uploads', $fileBpomName, 'public'); // Menyimpan di storage/app/public/uploads
-
-                // Simpan informasi file di database
-                $bpomFile = File::create([
-                    'file_name' => $fileBpomName,
-                    'file_path' => $fileBpomPath,
-                    'type' => 'bpom', // Pastikan type diisi
-                ]);
-            }
-
             Partner::create([
                 'fullname'          => $request->partner_fullname,
                 'handphone'         => $request->partner_handphone,
                 'email'             => $request->partner_email,
                 'company_name'      => $request->company,
                 'description'       => $request->description,
-                'bpom'              => $request->bpom == "yes" ? TRUE : FALSE,
                 'distributor'       => $request->distributor == "yes" ? TRUE : FALSE,
                 'reached_email'     => $request->receive_email == "yes" ? TRUE : FALSE,
                 'category_product'  => $request->category_product,
                 'file_company'      => isset($companyFile) ? $companyFile->id : null,
-                'file_bpom'         => isset($bpomFile) ? $bpomFile->id : null,
             ]);
 
             session()->flash('send_success');
-            return redirect()->back()->with('success', 'File berhasil diupload');
+            return redirect()->back()->with('success', 'Data Berhasil Dikirim');
         } catch (Exception $err) {
             dd($err);
         }
     }
+
 
     public function comment(Request $request)
     {
