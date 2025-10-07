@@ -26,6 +26,8 @@ class Order extends Model
         'status',
         'kurir',
         'resi',
+        'destination_area',
+        'origin_area',
     ];
     
     public function shippingAddress()

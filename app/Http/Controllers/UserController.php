@@ -132,6 +132,7 @@ class UserController extends Controller
                 'id_province'    => $request->province,
                 'id_regency'     => $request->regency,
                 'id_district'    => $request->district,
+                'id_subdistrict' => $request->subdistrict,
             ];
 
             session()->put('guest_information', $information);
@@ -589,6 +590,7 @@ class UserController extends Controller
 
     public function updateShippingAddress(Request $request)
     {
+        dd($request);
         $address = Shipping_address::find($request->input('address-id'));
 
         if (!$address) {
@@ -614,11 +616,13 @@ class UserController extends Controller
                 'province'       => $request->province_name,
                 'regency'        => $request->regency_name,
                 'district'       => $request->district_name,
+                'subdistrict'    => $request->subdistrict_name,
                 'address'        => $request->address,
                 'benchmark'      => $request->benchmark,
                 'id_province'    => $request->province,
                 'id_regency'     => $request->regency,
                 'id_district'    => $request->district,
+                'id_subdistrict' => $request->subdistrict,
             ];
 
             session()->put('guest_information', $information);

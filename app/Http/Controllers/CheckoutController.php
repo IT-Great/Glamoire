@@ -37,589 +37,6 @@ use PDO;
 
 class CheckoutController extends Controller
 {
-    // API RAJAONGKIR
-    // public function index(Request $request)
-    // {
-    //     try {
-    //         $userId = session('id_user');
-    //         $date = now()->format('Y-m-d');
-
-    //         if ($userId) {
-    //             $user = Auth::user();
-
-    //             // Check if user is verified
-    //             if (!$user->hasVerifiedEmail()) {
-    //                 return redirect('/' . $userId . '_account');
-    //             }
-
-    //             $data = Cart::where('user_id', $userId)
-    //                 ->with('cartItems')
-    //                 ->get();
-
-    //             // HANDLE VOUCHER USER
-    //             $checkVoucherUsage = Order::where('user_id', $userId)
-    //                 ->where(function ($query) {
-    //                     $query->whereNotNull('voucher_promo')
-    //                         ->orWhereNotNull('voucher_ongkir');
-    //                 })
-    //                 ->select('voucher_promo', 'voucher_ongkir')
-    //                 ->get()
-    //                 ->flatMap(function ($order) {
-    //                     return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
-    //                 })
-    //                 ->unique()
-    //                 ->values()
-    //                 ->toArray();
-
-
-    //                 // dd($checkVoucherUsage);
-    //                 // Check if there are any used vouchers
-                    
-    //                 $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
-    //                     ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
-    //                     ->when('product voucher' === 'product voucher', function($query) {
-    //                         return $query->with('products');
-    //                     })
-    //                     ->when('type' === 'brand voucher', function($query) {
-    //                         return $query->with('products');
-    //                     })
-    //                     ->whereNotIn('promo_code', $checkVoucherUsage)
-    //                     ->whereColumn('total_used', '<', 'usage_quota')
-    //                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-    //                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-    //                     ->select(
-    //                         'brands.name as brand_name',  // Nama brand
-    //                         'promos.*'                   // Data promo
-    //                     )
-    //                     ->distinct()  // Menghindari duplikasi
-    //                     ->get();
-
-    //                 // dd($vouchers);
-    //                 $productVouchers = $vouchers->filter(function ($voucher) {
-    //                     return $voucher->type === 'product voucher';
-    //                 });
-                    
-    //                 $brandVouchers = $vouchers->filter(function ($voucher) {
-    //                     return $voucher->type === 'brand voucher';
-    //                 });
-                    
-    //                 $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
-    //                     return $voucher->promoProducts->pluck('product_id');
-    //                 })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
-
-    //                 $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
-    //                     return $voucher->promoProducts->pluck('product_id');
-    //                 })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
-                    
-    //                 // dd($productVoucherIds);
-    //             // END HANDLE VOUCHER USER
-
-
-    //             // AMBIL SELURUH DATA ALAMAT PENGIRIMAN USER
-    //             $address = Shipping_address::where('user_id', session('id_user'))
-    //                 ->orderBy('is_main', 'DESC')
-    //                 ->get();
-    //             // END ALL SHIPPING ADDRESS USER
-
-    //             // AMBIL DATA ALAMAT PENGIRIMAN YANG DIGUNAKAN
-    //             $shippingAddressId = Shipping_address::where('user_id', session('id_user'))
-    //                 ->where('is_use', 1)
-    //                 ->value('id');
-    //             $province = Shipping_address::where('user_id', session('id_user'))
-    //                 ->where('is_use', 1)
-    //                 ->value('province');
-    //             $regency = Shipping_address::where('user_id', session('id_user'))
-    //                 ->where('is_use', 1)
-    //                 ->value('regency');
-    //             // END GET DATA USE SHIPPING
-
-
-    //             // MENGAMBIL PRODUK YANG DIBELI MELALUI KERANJANG
-    //             $cartId = Cart::where('user_id', session('id_user'))->value('id');
-
-    //             $cartItems = Cart_item::where('cart_id', $cartId)
-    //                 ->leftJoin('products', 'products.id', '=', 'cart_items.product_id')
-    //                 ->leftJoin('brands', 'brands.id', '=', 'products.brand_id')
-    //                 ->where('is_choose', true)
-    //                 ->whereHas('product', function ($query) {
-    //                     $query->where('stock_quantity', '!=', 0);
-    //                 })
-    //                 ->with(['product' => function ($query) {
-    //                     $query->with(['promos' => function ($query) {
-    //                         $query->select('promos.*')
-    //                             ->with(['tiers'])
-    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
-    //                     }]);
-    //                 }, 'productVariant'])
-    //                 ->select(
-    //                     'cart_items.*',        // Semua kolom dari tabel cart_items
-    //                     'products.brand_id',   // brand_id dari tabel products
-    //                     'brands.id as brand_id' // id dari tabel brands
-    //                 )
-    //                 ->get();
-            
-    //                 foreach ($cartItems as $item) {
-    //                     if ($item->product && $item->product->promos) {
-    //                         foreach ($item->product->promos as $promo) {
-    //                             if ($promo->tiers) {
-    //                                 foreach ($promo->tiers as $tier) {
-    //                                     switch ($tier->discount_type) {
-    //                                         case 'percentage':
-    //                                             // Contoh logika untuk diskon persentase
-    //                                             if ($item->quantity == $tier->min_quantity) {
-    //                                                 $discountedPrice = $item->total * ((100 - $tier->discount_value) / 100);
-    //                                                 $item->bundle_price = $discountedPrice;
-    //                                                 $item->total = $discountedPrice;
-    //                                             }
-    //                                             break;
-                    
-    //                                         case 'nominal':
-    //                                             // Contoh logika untuk diskon nominal
-    //                                             if ($item->quantity == $tier->min_quantity) {
-    //                                                 $discountedPrice = $item->total - $tier->discount_value;
-    //                                                 $item->bundle_price = $discountedPrice;
-    //                                                 $item->total = $discountedPrice;
-    //                                             }
-    //                                             break;
-                    
-    //                                         case 'package':
-    //                                             if ($item->quantity == $tier->min_quantity) {
-    //                                                 $item->bundle_price = $tier->package_price; // Tetapkan harga paket
-    //                                                 $item->total = $tier->package_price;
-    //                                             }
-    //                                             break;
-                    
-    //                                         default:
-    //                                             // Logika default jika tidak ada kasus yang cocok
-    //                                             $item->discounted_price = $item->product->price;
-    //                                             break;
-    //                                         }
-    //                                     }
-    //                                 }
-    //                         }
-    //                     }
-    //                 }
-                    
-    //             $voucherDisabled = false; // Default awal
-    //             // dd($cartItems);
-    //             foreach ($cartItems as $prod) {
-    //                 $activePromo = $prod->product->promos->first();
-    //                 $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-    //                 $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
-                    
-    //                 if($promoTiers == ""){
-    //                     $promoTiers = null;
-    //                 }
-                    
-    //                 $di = [
-    //                     "discountedPrice" => $discountedPrice,
-    //                     "promoTier"       => $promoTiers,
-    //                 ];
-
-    //                 if ($discountedPrice !== null || $promoTiers !== null) {
-    //                     $voucherDisabled = true;
-    //                     break; 
-    //                 }
-    //             }
-
-    //             // dd($voucherDisabled);
-
-    //             $totalItem = $cartItems->count();
-    //             $totalWeight = $cartItems->sum(function ($cartItem) {
-    //                 return ($cartItem->product->weight_product ?? 0) * $cartItem->quantity; // Multiply weight by quantity
-    //             });
-    //             if (count($cartItems) == 0) {
-    //                 return redirect('/');
-    //             }
-    //             foreach ($cartItems as $item) {
-    //                 if ($item->product->stock_quantity == 0) {
-    //                     return redirect('/cart')->with('stock_empty', 'Stok produk ' . $item->product->product_name . ' kosong');
-    //                 }
-    //             }
-    //             $totalProduct = $cartItems->sum('quantity');
-    //             $totalPrice = $cartItems->sum('total');
-    //             // END PRODUK ITEM
-
-    //             // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
-    //             $provinceId = null;
-    //             $provinces = Province::get();
-    //             foreach ($provinces as $resprov) {
-    //                 if (strtolower($resprov['province']) === strtolower($province)) {
-    //                     $provinceId = $resprov['province_id'];
-    //                     break; // Berhenti setelah ditemukan
-    //                 }
-    //             }
-
-    //             // $responseProvince = Http::withHeaders([
-    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             // ])->get('https://rajaongkir.komerce.id/api/v1/destination/province');  
-
-    //             // Log::info('provinsi:', [
-    //             //     'status' => $responseProvince->body(),
-    //             // ]);
-    //             // // dd('provinsi:', $responseProvince->json());
-    //             // if ($responseProvince->successful()) {
-    //             //     $provinces = $responseProvince->json()['data'];
-
-    //             //     foreach ($provinces as $resprov) {
-    //             //         if (strtolower($resprov['name']) === strtolower($province)) {
-    //             //             $provinceId = $resprov['id'];
-    //             //             break; // Berhenti setelah ditemukan
-    //             //         }
-    //             //     }
-    //             //     foreach ($provinces as $resprov) {
-    //             //         Province::updateOrCreate(
-    //             //             ['province_id' => $resprov['id']], // Check for uniqueness by province_id
-    //             //             ['province' => $resprov['name']]
-    //             //         );
-    //             //     }
-    //             // } else {
-    //             //     Log::error('Failed to fetch provinces: ' . $responseProvince->status());
-    //             // }
-         
-
-    //             // dd($regency);
-
-    //             // foreach ($provinces as $resprov) {
-    //             //     $responseCities = Http::withHeaders([
-    //             //         'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             //     ])->get('https://rajaongkir.komerce.id/api/v1/destination/city/'.$resprov->province_id, );
-
-                    
-    //             //     if ($responseCities->successful()) {
-    //             //         $cities = $responseCities->json()['data'];
-    //             //         dd($cities);
-    //             //         foreach ($cities as $rescit) {
-    //             //             if (strtolower($rescit['name']) === strtolower($regency)) {
-    //             //                 $cityId = $rescit['id'];
-    //             //                 break; // Berhenti setelah ditemukan
-    //             //             }
-    //             //         }
-    
-    //             //         foreach ($cities as $rescity) {
-    //             //             // Insert or update city data if it doesn't exist
-    //             //             City::updateOrCreate(
-    //             //                 ['city_id' => $rescity['city_id']], // Unique constraint on city_id
-    //             //                 [
-    //             //                     'province_id' => $rescity['province_id'],
-    //             //                     'province' => $rescity['province'],
-    //             //                     'type' => $rescity['type'],
-    //             //                     'city_name' => $rescity['city_name'],
-    //             //                     'postal_code' => $rescity['postal_code']
-    //             //                 ]
-    //             //             );
-    //             //         }
-    //             //     } else {
-    //             //         Log::error('Failed to fetch cities: ' . $responseCities->status());
-    //             //     }
-    //             // }
-
-    //             $cityId = null;
-    //             $cities = City::where('province_id', $provinceId)->get();
-    //             $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
-    //             foreach ($cities as $rescit) {
-    //                 if (strtolower($rescit['city_name']) === strtolower($regency)) {
-    //                     $cityId = $rescit['city_id'];
-    //                     break; // Berhenti setelah ditemukan
-    //                 }
-    //             }
-
-    //             // dd($cityId);
-
-    //             // $responseShipping = Http::withHeaders([
-    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             // ])->post('https://api.rajaongkir.com/starter/cost', [
-    //             //     'origin' => 114,
-    //             //     'destination' => $cityId,
-    //             //     'weight' => $totalWeight,
-    //             //     'courier' => 'jne',
-    //             // ]);
-
-                
-    //             // $responseShipping = Http::withHeaders([
-    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             // ])->get('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost');
-    //             $responseShipping = Http::asForm()->withHeaders([
-    //                 'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
-    //                 'origin'      => 1391,
-    //                 'destination' => 1376,
-    //                 'weight'      => 1000,
-    //                 'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
-    //                 'price'       => 'lowest',
-    //             ]);
-
-    //             // dd($responseShipping->body());
-
-    //             // $responseShipping = Http::withHeaders([
-    //             //     'accept' => 'application/json',
-    //             //     'content-type' => 'application/json',
-    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
-    //             //     // isi body JSON request di sini, misalnya:
-    //             //     // 'origin' => '501', 
-    //             //     // 'destination' => '114',
-    //             //     // 'weight' => 1700,
-    //             //     // 'courier' => 'jne',
-    //             // ]);
-
-    //             // Log::info('tes:', [
-    //             //     'status' => $responseShipping->status(),
-    //             //     'body'   => $responseShipping->body(),
-    //             // ]);
-
-
-    //             // $responseShipping = Http::asForm()->withHeaders([
-    //             //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-    //             // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
-    //             //     'origin'      => 1391,
-    //             //     'destination' => 1376,
-    //             //     'weight'      => 1000,
-    //             //     'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
-    //             //     'price'       => 'lowest',
-    //             // ]);
-
-    //             Log::info('RajaOngkir Response:', [
-    //                 'status' => $responseShipping->status(),
-    //                 'body'   => $responseShipping->json(), // langsung decode ke array
-    //             ]);
-
-    //             // dd($responseShipping->json());
-
-    //             $sfee = [];
-    //             if ($responseShipping->successful()) {
-    //                 $shippingFee = $responseShipping->json()['data'];
-
-    //                 foreach ($shippingFee as $index => $sf) {
-    //                     $sfee[$index] = [
-    //                         'id' => $index,
-    //                         'description' => $sf['description'],
-    //                         'value' => $sf['cost'],
-    //                         'etd' => $sf['etd'],
-    //                     ];
-    //                 }
-    //                 // foreach ($shippingFee[0]['costs'] as $service) {
-    //                 //     ShippingFee::create([
-    //                 //         'code' => $shippingFee[0]['code'],
-    //                 //         'name' => $shippingFee[0]['name'],
-    //                 //         'service' => $service['service'],
-    //                 //         'description' => $service['description'],
-    //                 //         'cost_value' => $service['cost'][0]['value'],
-    //                 //         'etd' => $service['cost'][0]['etd'],
-    //                 //         'note' => $service['cost'][0]['note'] ?? '',
-    //                 //     ]);
-    //                 // }
-    //             } else {
-    //                 Log::error('Failed to fetch shipping: ' . $responseShipping->status());
-    //             }
-
-    //             // ONGKIR
-    //             $ongkir = null;
-    //             if ($request->service) {
-    //                 foreach ($sfee as $service) {
-    //                     if (trim($service['id']) === trim($request->service)) {
-    //                         $ongkir = $service['value'];
-    //                         break;
-    //                     }
-    //                 }
-    //                 return response()->json([
-    //                     'success' => true,
-    //                     'service' => $request->service,
-    //                     'ongkir'   => $ongkir,
-    //                 ]);
-    //             }
-    //             // END ONGKIR
-
-    //             // dd($vouchers);
-    //             // dd($voucherDisabled);
-    //             $groupedVouchers = $vouchers->groupBy('type');
-    //             $data = [
-    //                 'address'       => $address,
-    //                 'shippingAddressId' => $shippingAddressId,
-    //                 'shippingFee'   => $sfee,
-    //                 'province'     => $province,
-    //                 'regency'       => $regency,
-    //                 'cartItems'     => $cartItems,
-    //                 'totalProduct'  => $totalProduct,
-    //                 'totalPrice'    => $totalPrice,
-    //                 'vouchers'      => $vouchers,
-    //                 'totalItem'     => $totalItem,
-    //                 'ongkir'        => $ongkir,
-    //                 'weight'        => $totalWeight,
-    //                 'productVoucherIds' => $productVoucherIds,
-    //                 'brandVoucherIds' => $brandVoucherIds,
-    //                 'voucherDisabled' => $voucherDisabled,
-    //             ];
-
-    //             $productIds = $data['cartItems']->pluck('product_id');
-
-    //             // dd($productIds->intersect($data['productVoucherIds'])->isNotEmpty());
-    //             // dd($data['cartItems']->pluck('product_id'));
-    //             $brandIds = $cartItems->pluck('brand_id'); // Ambil semua brand_id dari cartItems
-    //             $productIds = $cartItems->pluck('product_id');
-
-
-    //             $unusableVouchers = $vouchers->filter(function ($voucher) use ($data, $brandIds, $productIds) {
-    //                 // Voucher unusable jika salah satu kondisi tidak terpenuhi
-    //                 return
-    //                     $data['totalPrice'] < $voucher->min_transaction ||
-    //                     $data['totalItem'] > $voucher->max_quantity_buyer ||
-    //                     !$brandIds->contains($voucher->brand_id) ||
-    //                     $productIds->intersect($data['productVoucherIds'])->isEmpty();
-    //             });
-
-    //             // dd($unusableVouchers);
-    //             // dd($groupedVouchers);
-    //             return view('user.component.checkout', [
-    //                 'groupedVouchers' => $groupedVouchers,
-    //             ])->with('data', $data);
-    //         } else {
-    //             // Guest
-    //             $guestCart = session('guest_cart', []);
-    //             $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
-
-    //             if (empty($productIds)) {
-    //                 return redirect('/'); // Tidak ada produk di cart
-    //             }
-
-    //             $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
-    //                 ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
-    //                 ->when('product voucher' === 'product voucher', function($query) {
-    //                     return $query->with('products');
-    //                 })
-    //                 ->when('type' === 'brand voucher', function($query) {
-    //                     return $query->with('products');
-    //                 })
-    //                 ->whereColumn('total_used', '<', 'usage_quota')
-    //                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-    //                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-    //                 ->select(
-    //                     'brands.name as brand_name',  // Nama brand
-    //                     'promos.*'                   // Data promo
-    //                 )
-    //                 ->distinct()  // Menghindari duplikasi
-    //                 ->get();
-
-    //             $productVouchers = $vouchers->filter(function ($voucher) {
-    //                 return $voucher->type === 'product voucher';
-    //             });
-                
-    //             $brandVouchers = $vouchers->filter(function ($voucher) {
-    //                 return $voucher->type === 'brand voucher';
-    //             });
-                
-    //             $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
-    //                 return $voucher->promoProducts->pluck('product_id');
-    //             })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
-
-    //             $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
-    //                 return $voucher->promoProducts->pluck('product_id');
-    //             })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
-
-    //             // Ambil data produk (dan varian jika perlu)
-    //             $products = Product::whereIn('id', $productIds)
-    //                 ->with([
-    //                     'brand',
-    //                     'promos' => function ($query) {
-    //                         $query->select('promos.*')
-    //                             ->with('tiers')
-    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-    //                             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
-    //                     }
-    //                 ])
-    //                 ->get()
-    //                 ->keyBy('id');
-
-    //             $cartItems = [];
-
-    //             foreach ($guestCart as $item) {
-    //                 $productId = $item['product_id'];
-    //                 $quantity = $item['quantity'];
-    //                 $product = $products[$productId] ?? null;
-
-    //                 if (!$product || $product->stock_quantity == 0) {
-    //                     return redirect('/cart')->with('stock_empty', 'Stok produk tidak tersedia');
-    //                 }
-
-    //                 $price = $item['price'];
-
-    //                 // Cek apakah ada promo aktif
-    //                 $promo = $product->promos->first();
-    //                 $tierPrice = null;
-
-    //                 if ($promo) {
-    //                     foreach ($promo->tiers as $tier) {
-    //                         if ($quantity == $tier->min_quantity) {
-    //                             if ($tier->discount_type == 'percentage') {
-    //                                 $tierPrice = $price * ((100 - $tier->discount_value) / 100);
-    //                             } elseif ($tier->discount_type == 'nominal') {
-    //                                 $tierPrice = $price - $tier->discount_value;
-    //                             } elseif ($tier->discount_type == 'package') {
-    //                                 $tierPrice = $tier->package_price;
-    //                             }
-    //                             break;
-    //                         }
-    //                     }
-    //                 }
-
-    //                 $finalPrice = $tierPrice ?? $price;
-    //                 $total = $finalPrice * $quantity;
-
-    //                 $cartItems[] = [
-    //                     'product' => $product,
-    //                     'quantity' => $quantity,
-    //                     'price' => $finalPrice,
-    //                     'total' => $total,
-    //                     'bundle_price' => $tierPrice ?? null,
-    //                 ];
-    //             }
-
-    //             // Hitung total keseluruhan
-    //             $totalPrice = collect($cartItems)->sum('total');
-    //             $totalProduct = collect($cartItems)->sum('quantity');
-    //             $totalItem = count($cartItems);
-    //             $totalWeight = collect($cartItems)->sum(function ($item) {
-    //                 return ($item['product']->weight_product ?? 0) * $item['quantity'];
-    //             });
-
-    //             // Ganti dengan logic shipping guest jika diperlukan
-    //             $sfee = [];
-    //             $ongkir = null;
-    //             $province = null;
-    //             $regency = null;
-
-    //             // dd(session());
-    //             $information = session('guest_information') ?? [];
-                
-    //             $data = [
-    //                 'shippingFee'   => $sfee,
-    //                 'province'      => $province,
-    //                 'regency'       => $regency,
-    //                 'cartItems'     => $cartItems,
-    //                 'totalProduct'  => $totalProduct,
-    //                 'totalPrice'    => $totalPrice,
-    //                 'totalItem'     => $totalItem,
-    //                 'ongkir'        => $ongkir,
-    //                 'weight'        => $totalWeight,
-    //                 'voucherDisabled' => false, // Default untuk guest
-    //                 'information'   => $information,
-    //                 'vouchers'      => $vouchers,
-    //                 'productVoucherIds' => $productVoucherIds,
-    //                 'brandVoucherIds' => $brandVoucherIds,
-    //             ];
-
-    //             // dd(session());
-    //             return view('user.component.checkout-guest', [
-    //                 'groupedVouchers' => [], // Kosong karena guest tidak pakai voucher
-    //             ])->with('data', $data);
-                
-    //         }
-    //     } catch (Exception $err) {
-    //         dd($err);
-    //     }
-    // }
-
     // API BITESHIP
     public function index(Request $request)
     {
@@ -791,7 +208,7 @@ class CheckoutController extends Controller
                     }
                     
                 $voucherDisabled = false; // Default awal
-                // dd($cartItems);
+
                 foreach ($cartItems as $prod) {
                     $activePromo = $prod->product->promos->first();
                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
@@ -812,7 +229,7 @@ class CheckoutController extends Controller
                     }
                 }
 
-                // dd($voucherDisabled);
+                // dd($cartItems);
 
                 $totalItem = $cartItems->count();
                 $totalWeight = $cartItems->sum(function ($cartItem) {
@@ -830,56 +247,6 @@ class CheckoutController extends Controller
                 $totalPrice = $cartItems->sum('total');
                 // END PRODUK ITEM
 
-                // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
-                $provinceId = null;
-                $provinces = Province::get();
-                foreach ($provinces as $resprov) {
-                    if (strtolower($resprov['province']) === strtolower($province)) {
-                        $provinceId = $resprov['province_id'];
-                        break; // Berhenti setelah ditemukan
-                    }
-                }
-
-                // AMBIL DATA PROVINSI DARI CARIKODEPOS.ID
-
-                // $provinceId = "cmc3dhj4a0003108tos1y4h7h";
-
-                // cek detail provinsi
-                // $responseProvince = Http::get('https://carikodepos.id/api/cities/');
-                // $responseCities = Http::get("https://carikodepos.id/api/provinces/".$provinceId."/cities");
-
-                // Log::info('provinsi:', [
-                //     'status' => $responseProvince,
-                // ]);
-
-                // $getProvinceId = DB::connection('mysql2')
-                //     ->table('provinces')
-                //     ->where('prov_name', 'LIKE', '%' . $province . '%')
-                //     ->value('prov_id');
-                // dd($getProvinceId);
-                
-                
-                // $getCities = DB::connection('mysql2')
-                //     ->table('cities')
-                //     ->where('city_name', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
-                //     ->where('prov_id', $getProvinceId)
-                //     ->value('city_id');
-
-                // $getDistricts = DB::connection('mysql2')
-                //     ->table('districts')
-                //     ->where('dis_name', 'LIKE', '%' . $district . '%')
-                //     ->where('city_id', $getCities)
-                //     ->value('dis_id');
-
-                // $getSubdistricts = DB::connection('mysql2')
-                //     ->table('subdistricts')
-                //     ->where('dis_id', $getDistricts)
-                //     ->pluck('subdis_id')
-                //     ->toArray();
-
-                // dd($getSubdistricts);
-                // dd($province);
-
                 $getPostalCode = Area::where('province', 'LIKE', '%' . $province . '%')
                     ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
                     ->where('district', 'LIKE', '%' . $district . '%')
@@ -892,123 +259,8 @@ class CheckoutController extends Controller
                     ->where('subdistrict', '=', ucwords(strtolower('Pradah kali kendal')))
                     ->value('postal_code');
 
-                // dd($postalCodeGCS);
                 
-                // $getPostal = prov_id,city_id,dis_id,subdis_id;
-
-                // dd($responseProvince->json());
-                // dd('provinsi:', $responseProvince->json());
-                // if ($responseProvince->successful()) {
-                //     $provinces = $responseProvince->json()['data'];
-
-                //     foreach ($provinces as $resprov) {
-                //         if (strtolower($resprov['name']) === strtolower($province)) {
-                //             $provinceId = $resprov['id'];
-                //             break; // Berhenti setelah ditemukan
-                //         }
-                //     }
-                //     foreach ($provinces as $resprov) {
-                //         Province::updateOrCreate(
-                //             ['province_id' => $resprov['id']], // Check for uniqueness by province_id
-                //             ['province' => $resprov['name']]
-                //         );
-                //     }
-                // } else {
-                //     Log::error('Failed to fetch provinces: ' . $responseProvince->status());
-                // }
-         
-
-                // dd($regency);
-
-                // foreach ($provinces as $resprov) {
-                //     $responseCities = Http::withHeaders([
-                //         'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                //     ])->get('https://rajaongkir.komerce.id/api/v1/destination/city/'.$resprov->province_id, );
-
-                    
-                //     if ($responseCities->successful()) {
-                //         $cities = $responseCities->json()['data'];
-                //         dd($cities);
-                //         foreach ($cities as $rescit) {
-                //             if (strtolower($rescit['name']) === strtolower($regency)) {
-                //                 $cityId = $rescit['id'];
-                //                 break; // Berhenti setelah ditemukan
-                //             }
-                //         }
-    
-                //         foreach ($cities as $rescity) {
-                //             // Insert or update city data if it doesn't exist
-                //             City::updateOrCreate(
-                //                 ['city_id' => $rescity['city_id']], // Unique constraint on city_id
-                //                 [
-                //                     'province_id' => $rescity['province_id'],
-                //                     'province' => $rescity['province'],
-                //                     'type' => $rescity['type'],
-                //                     'city_name' => $rescity['city_name'],
-                //                     'postal_code' => $rescity['postal_code']
-                //                 ]
-                //             );
-                //         }
-                //     } else {
-                //         Log::error('Failed to fetch cities: ' . $responseCities->status());
-                //     }
-                // }
-
-                // $cityId = null;
-                // $cities = City::where('province_id', $provinceId)->get();
-                // $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
-                // foreach ($cities as $rescit) {
-                //     if (strtolower($rescit['city_name']) === strtolower($regency)) {
-                //         $cityId = $rescit['city_id'];
-                //         break; // Berhenti setelah ditemukan
-                //     }
-                // }
-
-                // dd($cityId);
-
-                // $responseShipping = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->post('https://api.rajaongkir.com/starter/cost', [
-                //     'origin' => 114,
-                //     'destination' => $cityId,
-                //     'weight' => $totalWeight,
-                //     'courier' => 'jne',
-                // ]);
-
-                
-                // $responseShipping = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->get('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost');
-
-                // $responseShipping = Http::asForm()->withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
-                //     'origin'      => 1391,
-                //     'destination' => 1376,
-                //     'weight'      => 1000,
-                //     'courier'     => 'jne:sicepat:ide:sap:jnt:ninja:tiki:lion:anteraja:pos:ncs:rex:rpx:sentral:star:wahana:dse',
-                //     'price'       => 'lowest',
-                // ]);
-
-                // dd($responseShipping->body());
-
-                // $responseShipping = Http::withHeaders([
-                //     'accept' => 'application/json',
-                //     'content-type' => 'application/json',
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->post('https://rajaongkir.komerce.id/api/v1/calculate/district/domestic-cost', [
-                //     // isi body JSON request di sini, misalnya:
-                //     // 'origin' => '501', 
-                //     // 'destination' => '114',
-                //     // 'weight' => 1700,
-                //     // 'courier' => 'jne',
-                // ]);
-
-                // Log::info('tes:', [
-                //     'status' => $responseShipping->status(),
-                //     'body'   => $responseShipping->body(),
-                // ]);
-
+                // AMBIL DATA AREA PENGIRIMAN GUDANG GLAMOIRE (TITIK PENGAMBILAN)
                 $shippingStart = Http::withHeaders([
                     'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
                 ])->get('https://api.biteship.com/v1/maps/areas', [
@@ -1020,6 +272,7 @@ class CheckoutController extends Controller
                     $areaIdStart = $rs['id'];
                 }
 
+                // AMBIL DATA AREA PENGIRIMAN PELANGGAN
                 $responseShipping = Http::withHeaders([
                     'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
                 ])->get('https://api.biteship.com/v1/maps/areas', [
@@ -1027,19 +280,25 @@ class CheckoutController extends Controller
                     'input'     => $getPostalCode, // misalnya "Jakarta Selatan" atau "12190"
                     'type'      => 'single',
                 ]);
-            
-                // dd($responseShipping->json());
                 foreach($responseShipping['areas'] as $rs){
                     $areaId = $rs['id'];
                 }
 
-                // Log::info('RajaOngkir Response:', [
-                //     'status' => $responseShipping->status(),
-                //     'body'   => $responseShipping->json(), // langsung decode ke array
-                // ]);
+                // AMBIL BIAYA PENGIRIMAN DARI BITESHIP
+                $items = $cartItems->map(function ($item) {
+                    $dimensions = json_decode($item->product->dimensions ?? '{}', true);
+                    return [
+                        "name"        => $item->product->product_name ?? 'Unknown Product',
+                        "description" => $item->product->description ?? '',
+                        "value"       => $item->product->regular_price ?? 0,
+                        "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
+                        "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
+                        "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
+                        "weight"      => $item->product->weight_product ?? 0,
+                        "quantity"    => $item->quantity ?? 1,
+                    ];
+                })->toArray();
 
-
-                // dd($responseShipping->json());
                 $courierRates = Http::withHeaders([
                     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
                     'Content-Type'  => 'application/json',
@@ -1047,65 +306,44 @@ class CheckoutController extends Controller
                     "origin_area_id"      => $areaIdStart,  // area ID asal
                     "destination_area_id" => $areaId,  // area ID tujuan
                     "couriers"            => "paxel,jne,sicepat",
-                    "items" => [
-                        [
-                            "name"        => "Shoes",
-                            "description" => "Black colored size 45",
-                            "value"       => 199000,
-                            "length"      => 30,
-                            "width"       => 15,
-                            "height"      => 20,
-                            "weight"      => 200,
-                            "quantity"    => 2
-                        ]
-                    ]
+                    "items"               => $items,
                 ]);
+
+                // dd($address);
                 
                 // $createOrder = Http::withHeaders([
                 //     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
                 //     'Content-Type'  => 'application/json',
                 // ])->post('https://api.biteship.com/v1/orders', [
-                //     "shipper_contact_name" => "Amir",
-                //     "shipper_contact_phone" => "088888888888",
-                //     "shipper_contact_email" => "biteship@test.com",
-                //     "shipper_organization" => "Biteship Org Test",
-                //     "origin_contact_name" => "Amir",
-                //     "origin_contact_phone" => "088888888888",
-                //     "origin_address" => "Plaza Senayan, Jalan Asia Afrik...",
-                //     "origin_note" => "Deket pintu masuk STC",
-                //     "origin_postal_code" => 12440,
-                //     "destination_contact_name" => "John Doe",
-                //     "destination_contact_phone" => "088888888888",
+                //     "shipper_contact_name" => "", 
+                //     "shipper_contact_phone" => "",
+                //     "shipper_contact_email" => "",
+                //     "shipper_organization" => "",
+                //     "origin_contact_name" => "Glamoire", //
+                //     "origin_contact_phone" => "08979243010", //
+                //     "origin_address" => "Jl Wijaya Kusuma no. 57, Surabaya", //
+                //     "origin_note" => "",
+                //     "origin_postal_code" => $areaIdStart, // 
+                //     "destination_contact_name" => "John Doe", //
+                //     "destination_contact_phone" => "088888888888", //
                 //     "destination_contact_email" => "jon@test.com",
-                //     "destination_address" => "Lebak Bulus MRT...",
-                //     "destination_postal_code" => 12950,
+                //     "destination_address" => "Lebak Bulus MRT...", //
+                //     "destination_postal_code" => 12950, //
                 //     "destination_note" => "Near the gas station",
-                //     "courier_company" => "jne",
-                //     "courier_type" => "reg",
-                //     "courier_insurance" => 500000,
-                //     "delivery_type" => "now",
-                //     "order_note" => "Please be careful",
+                //     "courier_company" => "", //
+                //     "courier_type" => "", //
+                //     "courier_insurance" => "",
+                //     "delivery_type" => "", //
+                //     "order_note" => "",
                 //     "metadata" => [],
-                //     "items" => [
-                //         [
-                //         "name" => "Black L",
-                //         "description" => "White Shirt",
-                //         "category" => "fashion",
-                //         "value" => 165000,
-                //         "quantity" => 1,
-                //         "height" => 10,
-                //         "length" => 10,
-                //         "weight" => 200,
-                //         "width" => 10
-                //         ]
-                //     ]
+                //     "items" => $items,
                 // ]);
 
                 // dd($createOrder->json());
 
-                Log::info('RajaOngkir Response:', [
-                    'order' => $createOrder->json(),
-                ]);
+                // Log::info('Response Kurir:', [
+                //     'order' => $createOrder,
+                // ]);
 
                 $sfee = [];
                 if ($responseShipping->successful()) {
@@ -1120,27 +358,20 @@ class CheckoutController extends Controller
                             'etd' => $sf['duration'],
                         ];
                     }
-                    // foreach ($shippingFee[0]['costs'] as $service) {
-                    //     ShippingFee::create([
-                    //         'code' => $shippingFee[0]['code'],
-                    //         'name' => $shippingFee[0]['name'],
-                    //         'service' => $service['service'],
-                    //         'description' => $service['description'],
-                    //         'cost_value' => $service['cost'][0]['value'],
-                    //         'etd' => $service['cost'][0]['etd'],
-                    //         'note' => $service['cost'][0]['note'] ?? '',
-                    //     ]);
-                    // }
                 } else {
                     Log::error('Failed to fetch shipping: ' . $responseShipping->status());
                 }
 
+                // dd($sfee);
                 // ONGKIR
                 $ongkir = null;
                 if ($request->service !== null) {
                     foreach ($sfee as $service) {
                         if (trim($service['id']) === trim($request->service)) {
                             $ongkir = $service['value'];
+                            $courier = $service['name'];
+                            $etd = $service['etd'];
+                            $description = $service['description'];
                             break;
                         }
                     }
@@ -1148,9 +379,12 @@ class CheckoutController extends Controller
                     Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
 
                     return response()->json([
-                        'success' => true,
-                        'service' => $request->service,
-                        'ongkir'   => $ongkir,
+                        'success'       => true,
+                        'service'       => $request->service,
+                        'ongkir'        => $ongkir,
+                        'courier'       => $courier,
+                        'etd'           => $etd,
+                        'description'   => $description,
                     ]);
                 }
                 else{
@@ -1177,6 +411,8 @@ class CheckoutController extends Controller
                     'productVoucherIds' => $productVoucherIds,
                     'brandVoucherIds' => $brandVoucherIds,
                     'voucherDisabled' => $voucherDisabled,
+                    'destinationArea' => $areaId,
+                    'originArea' => $areaIdStart,
                 ];
 
                 $productIds = $data['cartItems']->pluck('product_id');
@@ -1201,8 +437,11 @@ class CheckoutController extends Controller
                 return view('user.component.checkout', [
                     'groupedVouchers' => $groupedVouchers,
                 ])->with('data', $data);
+
+            
             } else {
-                // Guest
+                // GUEST CHECKOUT
+
                 $guestCart = session('guest_cart', []);
                 $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
 
@@ -1310,15 +549,126 @@ class CheckoutController extends Controller
                     return ($item['product']->weight_product ?? 0) * $item['quantity'];
                 });
 
+                $province = session('guest_information.province');
+                $regency = session('guest_information.regency');
+                $district = session('guest_information.district');
+                $subdistrict = session('guest_information.subdistrict');
+
+                $getPostalCode = Area::where('province', 'LIKE', '%' . $province . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
+                    ->where('district', 'LIKE', '%' . $district . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower($subdistrict)))
+                    ->value('postal_code');
+
+                $postalCodeGCS = Area::where('province', 'LIKE', '%' . "Jawa Timur" . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', 'Surabaya') . '%')
+                    ->where('district', 'LIKE', '%' . 'Dukuh pakis' . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower('Pradah kali kendal')))
+                    ->value('postal_code');
+                
+                // AMBIL DATA AREA PENGIRIMAN GUDANG GLAMOIRE (TITIK PENGAMBILAN)
+                $shippingStart = Http::withHeaders([
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $postalCodeGCS, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+                foreach($shippingStart['areas'] as $rs){
+                    $areaIdStart = $rs['id'];
+                }
+
+                // AMBIL DATA AREA PENGIRIMAN PELANGGAN
+                $responseShipping = Http::withHeaders([
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $getPostalCode, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+                foreach($responseShipping['areas'] as $rs){
+                    $areaId = $rs['id'];
+                }
+
+                // AMBIL BIAYA PENGIRIMAN DARI BITESHIP
+                $items = collect($cartItems)->map(function ($item) {
+                    $product = $item['product'];
+                    $dimensions = json_decode($product->dimensions ?? '{}', true);
+
+                    return [
+                        "name"        => $product->product_name ?? 'Unknown Product',
+                        "description" => $product->description ?? '',
+                        "value"       => $product->regular_price ?? 0,
+                        "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
+                        "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
+                        "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
+                        "weight"      => $product->weight_product ?? 0,
+                        "quantity"    => (int) ($item['quantity'] ?? 1),
+                    ];
+                })->toArray();
+
+                $courierRates = Http::withHeaders([
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Content-Type'  => 'application/json',
+                ])->post('https://api.biteship.com/v1/rates/couriers', [
+                    "origin_area_id"      => $areaIdStart,  // area ID asal
+                    "destination_area_id" => $areaId,  // area ID tujuan
+                    "couriers"            => "paxel,jne,sicepat",
+                    "items"               => $items,
+                ]);
+
                 // Ganti dengan logic shipping guest jika diperlukan
                 $sfee = [];
+
+                if ($responseShipping->successful()) {
+                    $shippingFee = $courierRates->json()['pricing'];
+
+                    foreach ($shippingFee as $index => $sf) {
+                        $sfee[$index] = [
+                            'id' => $index,
+                            'name' => $sf['courier_name'],
+                            'description' => $sf['description'],
+                            'value' => $sf['price'],
+                            'etd' => $sf['duration'],
+                        ];
+                    }
+                } else {
+                    Log::error('Failed to fetch shipping: ' . $responseShipping->status());
+                }
+
+                // dd($sfee);
+                // ONGKIR
                 $ongkir = null;
-                $province = null;
-                $regency = null;
+                if ($request->service !== null) {
+                    foreach ($sfee as $service) {
+                        if (trim($service['id']) === trim($request->service)) {
+                            $ongkir = $service['value'];
+                            $courier = $service['name'];
+                            $etd = $service['etd'];
+                            $description = $service['description'];
+                            break;
+                        }
+                    }
+
+                    Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
+
+                    return response()->json([
+                        'success'       => true,
+                        'service'       => $request->service,
+                        'ongkir'        => $ongkir,
+                        'courier'       => $courier,
+                        'etd'           => $etd,
+                        'description'   => $description,
+                    ]);
+                }
+                else{
+                    Log::info(['service : '. $request->service]);
+                }
+                // END ONGKIR
 
                 // dd(session());
                 $information = session('guest_information') ?? [];
-                
+                // dd($information);
                 $data = [
                     'shippingFee'   => $sfee,
                     'province'      => $province,
@@ -1334,6 +684,8 @@ class CheckoutController extends Controller
                     'vouchers'      => $vouchers,
                     'productVoucherIds' => $productVoucherIds,
                     'brandVoucherIds' => $brandVoucherIds,
+                    'destinationArea' => $areaId,
+                    'originArea' => $areaIdStart,
                 ];
 
                 // dd(session());
@@ -1366,69 +718,69 @@ class CheckoutController extends Controller
                     ->get();
 
                 // HANDLE VOUCHER USER
-                    $checkVoucherUsage = Order::where('user_id', $userId)
-                        ->where(function ($query) {
-                            $query->whereNotNull('voucher_promo')
-                                ->orWhereNotNull('voucher_ongkir');
-                        })
-                        ->select('voucher_promo', 'voucher_ongkir')
-                        ->get()
-                        ->flatMap(function ($order) {
-                            return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
-                        })
-                        ->unique()
-                        ->values()
-                        ->toArray();
-    
+                $checkVoucherUsage = Order::where('user_id', $userId)
+                    ->where(function ($query) {
+                        $query->whereNotNull('voucher_promo')
+                            ->orWhereNotNull('voucher_ongkir');
+                    })
+                    ->select('voucher_promo', 'voucher_ongkir')
+                    ->get()
+                    ->flatMap(function ($order) {
+                        return array_filter([$order->voucher_promo, $order->voucher_ongkir]);
+                    })
+                    ->unique()
+                    ->values()
+                    ->toArray();
 
-                    // dd($checkVoucherUsage);
-                    // Check if there are any used vouchers
-                    
-                    $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
-                        ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
-                        ->when('product voucher' === 'product voucher', function($query) {
-                            return $query->with('products');
-                        })
-                        ->when('type' === 'brand voucher', function($query) {
-                            return $query->with('products');
-                        })
-                        ->whereNotIn('promo_code', $checkVoucherUsage)
-                        ->whereColumn('total_used', '<', 'usage_quota')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                        ->select(
-                            'brands.name as brand_name',  // Nama brand
-                            'promos.*'                   // Data promo
-                        )
-                        ->distinct()  // Menghindari duplikasi
-                        ->get();
 
-                    // dd($vouchers);
-                    $productVouchers = $vouchers->filter(function ($voucher) {
-                        return $voucher->type === 'product voucher';
-                    });
-                    
-                    $brandVouchers = $vouchers->filter(function ($voucher) {
-                        return $voucher->type === 'brand voucher';
-                    });
-                    
-                    $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
-                        return $voucher->promoProducts->pluck('product_id');
-                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                // dd($checkVoucherUsage);
+                // Check if there are any used vouchers
+                
+                $vouchers = Promo::whereIn('type', ['limited voucher', 'ongkir voucher', 'brand voucher', 'product voucher'])
+                    ->leftJoin('brands', 'brands.id', '=', 'promos.brand_id')
+                    ->when('product voucher' === 'product voucher', function($query) {
+                        return $query->with('products');
+                    })
+                    ->when('type' === 'brand voucher', function($query) {
+                        return $query->with('products');
+                    })
+                    ->whereNotIn('promo_code', $checkVoucherUsage)
+                    ->whereColumn('total_used', '<', 'usage_quota')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                    ->select(
+                        'brands.name as brand_name',  // Nama brand
+                        'promos.*'                   // Data promo
+                    )
+                    ->distinct()  // Menghindari duplikasi
+                    ->get();
 
-                    $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
-                        return $voucher->promoProducts->pluck('product_id');
-                    })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+                // dd($vouchers);
+                $productVouchers = $vouchers->filter(function ($voucher) {
+                    return $voucher->type === 'product voucher';
+                });
+                
+                $brandVouchers = $vouchers->filter(function ($voucher) {
+                    return $voucher->type === 'brand voucher';
+                });
+                
+                $productVoucherIds = $productVouchers->flatMap(function ($voucher) {
+                    return $voucher->promoProducts->pluck('product_id');
+                })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
+
+                $brandVoucherIds = $brandVouchers->flatMap(function ($voucher) {
+                    return $voucher->promoProducts->pluck('product_id');
+                })->unique(); // Mengambil semua product_id terkait dan menghilangkan duplikasi
                     
                     // dd($productVoucherIds);
                 // END HANDLE VOUCHER USER
-
 
                 // AMBIL SELURUH DATA ALAMAT PENGIRIMAN USER
                 $address = Shipping_address::where('user_id', session('id_user'))
                     ->orderBy('is_main', 'DESC')
                     ->get();
-                
+                // END ALL SHIPPING ADDRESS USER
+
                 // AMBIL DATA ALAMAT PENGIRIMAN YANG DIGUNAKAN
                 $shippingAddressId = Shipping_address::where('user_id', session('id_user'))
                     ->where('is_use', 1)
@@ -1439,6 +791,12 @@ class CheckoutController extends Controller
                 $regency = Shipping_address::where('user_id', session('id_user'))
                     ->where('is_use', 1)
                     ->value('regency');
+                $district = Shipping_address::where('user_id', session('id_user'))
+                    ->where('is_use', 1)
+                    ->value('district');
+                $subdistrict = Shipping_address::where('user_id', session('id_user'))
+                    ->where('is_use', 1)
+                    ->value('subdistrict');
                 // END GET DATA USE SHIPPING
 
 
@@ -1547,132 +905,112 @@ class CheckoutController extends Controller
 
 
                 // dd($cartItems);
-                // AMBIL METODE PENGIRIMAN DARI API RAJAONGKIR
-                $provinceId = null;
-                $provinces = Province::get();
-                foreach ($provinces as $resprov) {
-                    if (strtolower($resprov['province']) === strtolower($province)) {
-                        $provinceId = $resprov['province_id'];
-                        break; // Berhenti setelah ditemukan
-                    }
+                $getPostalCode = Area::where('province', 'LIKE', '%' . $province . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
+                    ->where('district', 'LIKE', '%' . $district . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower($subdistrict)))
+                    ->value('postal_code');
+
+                $postalCodeGCS = Area::where('province', 'LIKE', '%' . "Jawa Timur" . '%')
+                    ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', 'Surabaya') . '%')
+                    ->where('district', 'LIKE', '%' . 'Dukuh pakis' . '%')
+                    ->where('subdistrict', '=', ucwords(strtolower('Pradah kali kendal')))
+                    ->value('postal_code');
+
+                
+                // AMBIL DATA AREA PENGIRIMAN GUDANG GLAMOIRE (TITIK PENGAMBILAN)
+                $shippingStart = Http::withHeaders([
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $postalCodeGCS, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+                foreach($shippingStart['areas'] as $rs){
+                    $areaIdStart = $rs['id'];
                 }
 
-                // $responseProvince = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->get('https://api.rajaongkir.com/starter/province');            
-                // if ($responseProvince->successful()) {
-                //     $provinces = $responseProvince->json()['rajaongkir']['results'];
-
-                //     foreach ($provinces as $resprov) {
-                //         if (strtolower($resprov['province']) === strtolower($province)) {
-                //             $provinceId = $resprov['province_id'];
-                //             break; // Berhenti setelah ditemukan
-                //         }
-                //     }
-                //     foreach ($provinces as $resprov) {
-                //         Province::updateOrCreate(
-                //             ['province_id' => $resprov['province_id']], // Check for uniqueness by province_id
-                //             ['province' => $resprov['province']]
-                //         );
-                //     }
-                // } else {
-                //     Log::error('Failed to fetch provinces: ' . $responseProvince->status());
-                // }
-
-                // dd($regency);
-
-                // $responseCities = Http::withHeaders([
-                //     'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                // ])->get('https://api.rajaongkir.com/starter/city', );
-                // if ($responseCities->successful()) {
-                //     $cities = $responseCities->json()['rajaongkir']['results'];
-
-                //     foreach ($cities as $rescit) {
-                //         if (strtolower($rescit['city_name']) === strtolower($regency)) {
-                //             $cityId = $rescit['city_id'];
-                //             break; // Berhenti setelah ditemukan
-                //         }
-                //     }
-
-                //     foreach ($cities as $rescity) {
-                //         // Insert or update city data if it doesn't exist
-                //         City::updateOrCreate(
-                //             ['city_id' => $rescity['city_id']], // Unique constraint on city_id
-                //             [
-                //                 'province_id' => $rescity['province_id'],
-                //                 'province' => $rescity['province'],
-                //                 'type' => $rescity['type'],
-                //                 'city_name' => $rescity['city_name'],
-                //                 'postal_code' => $rescity['postal_code']
-                //             ]
-                //         );
-                //     }
-                // } else {
-                //     Log::error('Failed to fetch cities: ' . $responseCities->status());
-                // }
-
-                $cityId = null;
-                $cities = City::where('province_id', $provinceId)->get();
-                $regency = str_replace(['KOTA ', 'KABUPATEN '], '', $regency);
-                foreach ($cities as $rescit) {
-                    if (strtolower($rescit['city_name']) === strtolower($regency)) {
-                        $cityId = $rescit['city_id'];
-                        break; // Berhenti setelah ditemukan
-                    }
-                }
-
-                // dd($cityId);
-
+                // AMBIL DATA AREA PENGIRIMAN PELANGGAN
                 $responseShipping = Http::withHeaders([
-                    'key' => '8bdc162da0cd0ac8b70ac07d40f43963',
-                ])->post('https://api.rajaongkir.com/starter/cost', [
-                    'origin' => 114,
-                    'destination' => $cityId,
-                    'weight' => $totalWeight,
-                    'courier' => 'jne',
+                    'Authorization' => 'Bearer biteship_live.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoidGVzIiwidXNlcklkIjoiNjg3ODU5MGZkYTZiNTcwMDEzZjk2YTI3IiwiaWF0IjoxNzU3NDgxMjk4fQ.hnbbZMSuhfCE3WF_93UZDXynEg-OI8dgQWfNP-2hPGI',
+                ])->get('https://api.biteship.com/v1/maps/areas', [
+                    'countries' => 'ID',
+                    'input'     => $getPostalCode, // misalnya "Jakarta Selatan" atau "12190"
+                    'type'      => 'single',
+                ]);
+                foreach($responseShipping['areas'] as $rs){
+                    $areaId = $rs['id'];
+                }
+
+                // AMBIL BIAYA PENGIRIMAN DARI BITESHIP
+                $items = $cartItems->map(function ($item) {
+                    $dimensions = json_decode($item->product->dimensions ?? '{}', true);
+                    return [
+                        "name"        => $item->product->product_name ?? 'Unknown Product',
+                        "description" => $item->product->description ?? '',
+                        "value"       => $item->product->regular_price ?? 0,
+                        "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
+                        "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
+                        "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
+                        "weight"      => $item->product->weight_product ?? 0,
+                        "quantity"    => $item->quantity ?? 1,
+                    ];
+                })->toArray();
+
+                $courierRates = Http::withHeaders([
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Content-Type'  => 'application/json',
+                ])->post('https://api.biteship.com/v1/rates/couriers', [
+                    "origin_area_id"      => $areaIdStart,  // area ID asal
+                    "destination_area_id" => $areaId,  // area ID tujuan
+                    "couriers"            => "paxel,jne,sicepat",
+                    "items"               => $items,
                 ]);
 
                 $sfee = [];
                 if ($responseShipping->successful()) {
-                    $shippingFee = $responseShipping->json()['rajaongkir']['results'];
+                    $shippingFee = $courierRates->json()['pricing'];
 
-                    foreach ($shippingFee[0]['costs'] as $index => $sf) {
+                    foreach ($shippingFee as $index => $sf) {
                         $sfee[$index] = [
-                            'id' => $sf['service'],
+                            'id' => $index,
+                            'name' => $sf['courier_name'],
                             'description' => $sf['description'],
-                            'value' => $sf['cost'][0]['value'],
-                            'etd' => $sf['cost'][0]['etd']
+                            'value' => $sf['price'],
+                            'etd' => $sf['duration'],
                         ];
                     }
-                    // foreach ($shippingFee[0]['costs'] as $service) {
-                    //     ShippingFee::create([
-                    //         'code' => $shippingFee[0]['code'],
-                    //         'name' => $shippingFee[0]['name'],
-                    //         'service' => $service['service'],
-                    //         'description' => $service['description'],
-                    //         'cost_value' => $service['cost'][0]['value'],
-                    //         'etd' => $service['cost'][0]['etd'],
-                    //         'note' => $service['cost'][0]['note'] ?? '',
-                    //     ]);
-                    // }
                 } else {
                     Log::error('Failed to fetch shipping: ' . $responseShipping->status());
                 }
 
+                // dd($sfee);
                 // ONGKIR
                 $ongkir = null;
-                if ($request->service) {
+                if ($request->service !== null) {
                     foreach ($sfee as $service) {
                         if (trim($service['id']) === trim($request->service)) {
                             $ongkir = $service['value'];
+                            $courier = $service['name'];
+                            $etd = $service['etd'];
+                            $description = $service['description'];
                             break;
                         }
                     }
+
+                    // Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
+
                     return response()->json([
-                        'success' => true,
-                        'service' => $request->service,
-                        'ongkir'   => $ongkir,
+                        'success'       => true,
+                        'service'       => $request->service,
+                        'ongkir'        => $ongkir,
+                        'courier'       => $courier,
+                        'etd'           => $etd,
+                        'description'   => $description,
                     ]);
+                }
+                else{
+                    Log::info(['service : '. $request->service]);
                 }
                 // END ONGKIR
 
@@ -2948,6 +2286,10 @@ class CheckoutController extends Controller
             'discount_amount'     => $request->discount_amount,
             'discount_ongkir'     => $request->discount_ongkir,
             'total_amount'        => $request->subtotal,
+            'postal_code'         => $request->subtotal,
+            'total_amount'        => $request->subtotal,
+            // 'destination_area'     => $request->destiantionArea,
+            // 'origin_area'          => $request->originArea,
             'order_date'          => now(),
         ]);
 
@@ -3249,96 +2591,96 @@ class CheckoutController extends Controller
         // return redirect("/{$userId}_account");
     }
 
-    public function orderPaymentDOKU(Request $request)
-    {
-        $userId = session('id_user');
-        $shipping_cost = 20000;
+    // public function orderPaymentDOKU(Request $request)
+    // {
+    //     $userId = session('id_user');
+    //     $shipping_cost = 20000;
 
-        // Generate the invoice number logic remains the same
-        $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
-        $invoiceNumber = $lastInvoice ? ((int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1) + 1) : 1;
-        $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', date('d'), date('m'), date('Y'), $invoiceNumber);
+    //     // Generate the invoice number logic remains the same
+    //     $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+    //     $invoiceNumber = $lastInvoice ? ((int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1) + 1) : 1;
+    //     $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', date('d'), date('m'), date('Y'), $invoiceNumber);
 
-        $invoiceCreate = Invoice::create(['no_invoice' => $formattedInvoice]);
+    //     $invoiceCreate = Invoice::create(['no_invoice' => $formattedInvoice]);
 
-        // Order creation remains the same
-        $order = Order::create([
-            'user_id' => $userId,
-            'invoice_id' => $invoiceCreate->id,
-            'shipping_address_id' => $request->shipping_address_id,
-            'total_item' => $request->total_item,
-            'total_item_price' => $request->total_item_price,
-            'shipping_cost' => $shipping_cost,
-            'voucher_promo' => $request->code_coupont ?? $request->code_voucher,
-            'voucher_ongkir' => $request->code_ongkir,
-            'discount_amount' => $request->discount_amount,
-            'discount_ongkir' => $request->discount_ongkir,
-            'total_amount' => $request->subtotal,
-            'order_date' => now(),
-        ]);
+    //     // Order creation remains the same
+    //     $order = Order::create([
+    //         'user_id' => $userId,
+    //         'invoice_id' => $invoiceCreate->id,
+    //         'shipping_address_id' => $request->shipping_address_id,
+    //         'total_item' => $request->total_item,
+    //         'total_item_price' => $request->total_item_price,
+    //         'shipping_cost' => $shipping_cost,
+    //         'voucher_promo' => $request->code_coupont ?? $request->code_voucher,
+    //         'voucher_ongkir' => $request->code_ongkir,
+    //         'discount_amount' => $request->discount_amount,
+    //         'discount_ongkir' => $request->discount_ongkir,
+    //         'total_amount' => $request->subtotal,
+    //         'order_date' => now(),
+    //     ]);
 
-        // Prepare the request payload
-        $payload = [
-            "order" => [
-                "amount" => $request->subtotal, // total order amount
-                "invoice_number" => $formattedInvoice
-            ],
-            "payment" => [
-                "payment_due_date" => 60 // Payment due in minutes
-            ]
-        ];
+    //     // Prepare the request payload
+    //     $payload = [
+    //         "order" => [
+    //             "amount" => $request->subtotal, // total order amount
+    //             "invoice_number" => $formattedInvoice
+    //         ],
+    //         "payment" => [
+    //             "payment_due_date" => 60 // Payment due in minutes
+    //         ]
+    //     ];
 
-        $clientId = env('DOKU_CLIENT_ID');
-        $requestId = uniqid();
-        $requestTimestamp = now()->utc()->format('Y-m-d\TH:i:s.v\Z');
-        $requestTarget = '/doku-virtual-account/v2/payment-code';
-        $secretKey = env('DOKU_SIGNATURE_KEY');
+    //     $clientId = env('DOKU_CLIENT_ID');
+    //     $requestId = uniqid();
+    //     $requestTimestamp = now()->utc()->format('Y-m-d\TH:i:s.v\Z');
+    //     $requestTarget = '/doku-virtual-account/v2/payment-code';
+    //     $secretKey = env('DOKU_SIGNATURE_KEY');
 
-        // Payload dan Digest
-        $payloadJson = json_encode($payload);
-        $digest = base64_encode(hash('sha256', $payloadJson, true));
+    //     // Payload dan Digest
+    //     $payloadJson = json_encode($payload);
+    //     $digest = base64_encode(hash('sha256', $payloadJson, true));
 
-        // String yang akan di-sign
-        $stringToSign = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$requestTimestamp\nRequest-Target:$requestTarget\nDigest:$digest";
+    //     // String yang akan di-sign
+    //     $stringToSign = "Client-Id:$clientId\nRequest-Id:$requestId\nRequest-Timestamp:$requestTimestamp\nRequest-Target:$requestTarget\nDigest:$digest";
 
-        // Hasilkan signature dengan HMAC-SHA256
-        $signature = base64_encode(hash_hmac('sha256', $stringToSign, $secretKey, true));
+    //     // Hasilkan signature dengan HMAC-SHA256
+    //     $signature = base64_encode(hash_hmac('sha256', $stringToSign, $secretKey, true));
 
-        // Kirim permintaan dengan header
-        $response = Http::withHeaders([
-            'Client-Id' => $clientId,
-            'Request-Id' => $requestId,
-            'Request-Timestamp' => $requestTimestamp,
-            'Request-Target' => $requestTarget,
-            'Digest' => $digest,
-            'Signature' => "HMACSHA256=$signature=",
-            'Content-Type' => 'application/json',
-        ])->POST('https://api-sandbox.doku.com/checkout/v1/payment', json_encode($payload));
+    //     // Kirim permintaan dengan header
+    //     $response = Http::withHeaders([
+    //         'Client-Id' => $clientId,
+    //         'Request-Id' => $requestId,
+    //         'Request-Timestamp' => $requestTimestamp,
+    //         'Request-Target' => $requestTarget,
+    //         'Digest' => $digest,
+    //         'Signature' => "HMACSHA256=$signature=",
+    //         'Content-Type' => 'application/json',
+    //     ])->POST('https://api-sandbox.doku.com/checkout/v1/payment', json_encode($payload));
 
-        dd($response->json());
+    //     dd($response->json());
 
 
-        if ($response->successful()) {
-            // Process successful response, e.g., storing payment URL if returned
-            $paymentUrl = $response->json('payment.url');
+    //     if ($response->successful()) {
+    //         // Process successful response, e.g., storing payment URL if returned
+    //         $paymentUrl = $response->json('payment.url');
 
-            // Proceed with order, order items, payment entries as usual here
-            Payment::create([
-                'user_id' => $userId,
-                'order_id' => $order->id,
-                'payment_method' => "DOKU",
-                'transaction_id' => $formattedInvoice,
-                'status' => 'pending',
-                'amount' => $request->subtotal,
-                'payment_date' => now(),
-            ]);
+    //         // Proceed with order, order items, payment entries as usual here
+    //         Payment::create([
+    //             'user_id' => $userId,
+    //             'order_id' => $order->id,
+    //             'payment_method' => "DOKU",
+    //             'transaction_id' => $formattedInvoice,
+    //             'status' => 'pending',
+    //             'amount' => $request->subtotal,
+    //             'payment_date' => now(),
+    //         ]);
 
-            return redirect()->back()->with(['response' => $paymentUrl]); // Redirect user to DOKU payment page
-        } else {
-            // Handle failure case
-            return redirect()->back()->withErrors(['payment' => 'Payment initiation failed, please try again.']);
-        }
-    }
+    //         return redirect()->back()->with(['response' => $paymentUrl]); // Redirect user to DOKU payment page
+    //     } else {
+    //         // Handle failure case
+    //         return redirect()->back()->withErrors(['payment' => 'Payment initiation failed, please try again.']);
+    //     }
+    // }
 
     // SHIPPING
     public function getProvinces()

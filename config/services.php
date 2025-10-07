@@ -49,7 +49,7 @@ return [
         'mac' => env('PRISMALINK_MAC'),
         'frontend_callback' => env('PRISMALINK_FRONTEND_CALLBACK'),
         'backend_callback' => env('PRISMALINK_BACKEND_CALLBACK'),
-        'transaction_api' => env('PRISMALINK_TRANSACTION_API', 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/submit-trx'),
+        'transaction_api' => env('PRISMALINK_TRANSACTION_API'),
     ],
 
 ];

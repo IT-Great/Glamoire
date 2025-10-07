@@ -28,9 +28,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <!-- Customized Bootstrap Stylesheet -->
-<!-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> -->
-<!-- <link rel="stylesheet" href="css/app.css"> -->
-<link href="css/app.css" rel="stylesheet">
+<link href="{{ asset('css/app.css') }}" rel="stylesheet">
+{{-- <link rel="stylesheet" href="css/app.css">
+<link href="css/app.css" rel="stylesheet"> --}}
 
 {{-- <script src="https://cdn.tailwindcss.com"></script> --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -55,115 +55,131 @@
                         <h1 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[12px] xl:text-[13px]" id="exampleModalLabel">Tambahkan Alamat Baru</h1>
                     </div>
 
-                                <div class="modal-body overflow-y-auto" style="max-height:100vh;">
-                                    <form method="POST" action="{{ route('add.shipping.address') }}"
-                                        id="add-address-form-null">
-                                        @csrf
-                                        <div class="grid gap-1 gap-md-2">
-                                            <div class="grid md:flex">
-                                                <div class="col-md-6">
-                                                    <div class="col-12 p-0">
-                                                        <label for="label"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
-                                                        <input type="text"
-                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            name="label" placeholder="Masukkan Nama Label Untuk Alamatmu"
-                                                            required>
-                                                    </div>
-                                                    <div class="col-12 p-0">
-                                                        <label for="receiver"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
-                                                            Penerima</label>
-                                                        <input type="text"
-                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            name="recipient_name" placeholder="Masukkan Nama Penerima"
-                                                            required>
-                                                    </div>
-                                                    <div class="col-12 p-0">
-                                                        <label for="handphone"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
-                                                        <div class="input-group">
-                                                            <span
-                                                                class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                                id="basic-addon1">+62</span>
-                                                            <input type="number"
-                                                                class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                                name="handphone" placeholder="Contoh : 8979254301"
-                                                                pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
-                                                        </div>
-                                                    </div>
-                                                    <!-- ALAMAT -->
-                                                    <div class="col-12 p-0">
-                                                        <label for="alamat"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
-                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
-                                                            rows="3" placeholder="Masukkan Alamatmu" required></textarea>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6">
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="provinsi"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Provinsi" name="province" id="checkout_province">
-                                                            <option
-                                                                class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Provinsi</option>
-                                                        </select>
-                                                        <input type="hidden" name="province_name"
-                                                            id="checkout_province_name">
-                                                    </div>
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="kabupaten/kota"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Kabupaten/Kota" name="regency"
-                                                            id="checkout_regency">
-                                                            <option
-                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Kabupaten/Kota</option>
-                                                        </select>
-                                                        <input type="hidden" name="regency_name"
-                                                            id="checkout_regency_name">
-                                                    </div>
-
-                                                    <div class="col-12 p-0">
-                                                        <label for="kecamatan"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
-                                                        <select
-                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                            aria-label="Kecamatan" name="district"
-                                                            id="checkout_district">
-                                                            <option
-                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
-                                                                Pilih Kecamatan</option>
-                                                        </select>
-                                                        <input type="hidden" name="district_name"
-                                                            id="checkout_district_name">
-                                                    </div>
-                                                    <!-- PATOKAN -->
-                                                    <div class="col-12 p-0">
-                                                        <label for="patokan"
-                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
-                                                            (Opsional)</label>
-                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
-                                                            rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
-                                                    </div>
-                                                </div>
+                    <div class="modal-body overflow-y-auto" style="max-height:100vh;">
+                        <form method="POST" action="{{ route('add.shipping.address') }}"
+                            id="add-address-form-null">
+                            @csrf
+                            <div class="grid gap-1 gap-md-2">
+                                <div class="grid md:flex">
+                                    <div class="col-md-6">
+                                        <div class="col-12 p-0">
+                                            <label for="label"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Label</label>
+                                            <input type="text"
+                                                class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                name="label" placeholder="Masukkan Nama Label Untuk Alamatmu"
+                                                required>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <label for="receiver"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Nama
+                                                Penerima</label>
+                                            <input type="text"
+                                                class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                name="recipient_name" placeholder="Masukkan Nama Penerima"
+                                                required>
+                                        </div>
+                                        <div class="col-12 p-0">
+                                            <label for="handphone"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Handphone</label>
+                                            <div class="input-group">
+                                                <span
+                                                    class="input-group-text bg-[#183018] text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    id="basic-addon1">+62</span>
+                                                <input type="number"
+                                                    class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    name="handphone" placeholder="Contoh : 8979254301"
+                                                    pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
                                             </div>
+                                        </div>
+                                        <!-- ALAMAT -->
+                                        <div class="col-12 p-0">
+                                            <label for="alamat"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Alamat</label>
+                                            <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="address"
+                                                rows="3" placeholder="Masukkan Alamatmu" required></textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <div class="col-12 p-0">
+                                            <label for="provinsi"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
+                                            <select
+                                                class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                aria-label="Provinsi" name="province" id="checkout_province">
+                                                <option
+                                                    class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                    Pilih Provinsi</option>
+                                            </select>
+                                            <input type="hidden" name="province_name"
+                                                id="checkout_province_name">
+                                        </div>
+
+                                        <div class="col-12 p-0">
+                                            <label for="kabupaten/kota"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kabupaten/Kota</label>
+                                            <select
+                                                class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                aria-label="Kabupaten/Kota" name="regency"
+                                                id="checkout_regency">
+                                                <option
+                                                    class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                    Pilih Kabupaten/Kota</option>
+                                            </select>
+                                            <input type="hidden" name="regency_name"
+                                                id="checkout_regency_name">
+                                        </div>
+
+                                        <div class="col-12 p-0">
+                                            <label for="kecamatan"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Kecamatan</label>
+                                            <select
+                                                class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                aria-label="Kecamatan" name="district"
+                                                id="checkout_district">
+                                                <option
+                                                    class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                    Pilih Kecamatan</option>
+                                            </select>
+                                            <input type="hidden" name="district_name"
+                                                id="checkout_district_name">
+                                        </div>
+
+                                        <div class="col-12 p-0">
+                                            <label for="village"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                            <select
+                                                class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                aria-label="village" name="subdistrict">
+                                                <option
+                                                    class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                    Pilih Desa/Kelurahan</option>
+                                            </select>
+                                            <input type="hidden" name="subdistrict_name"
+                                                id="checkout_subdistrict_name">
+                                        </div>
+
+
+                                        <!-- PATOKAN -->
+                                        <div class="col-12 p-0">
+                                            <label for="patokan"
+                                                class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Patokan
+                                                (Opsional)</label>
+                                            <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" name="benchmark"
+                                                rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
 
                             <!-- BUTTON SUBMIT -->
                             <div class="col-12 p-0">
-                            <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
+                                <button class="btn btn-primary w-full rounded-sm text-white text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px] bg-[#183018] hover:bg-neutral-900" type="submit">Tambahkan</button>
                             </div>
 
-                                        </div>
-                                    </form>
+                        </div>
+                    </form>
 
                     </div>
                     </div>
@@ -918,9 +934,9 @@
                     location.reload(); // Redirect ke halaman utama atau halaman lain
                 });
             },
-            complete: function() {
-                $('.loading-container').hide(); // Show the spinner
-            },
+            // complete: function() {
+            //     $('.loading-container').hide(); // Show the spinner
+            // },
             error: function(xhr) {
                 Toast.fire({
                     icon: "error",
@@ -1262,7 +1278,7 @@
                     
                     <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $address->recipient_name }}</p>
                     <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">{{ $address->handphone }}</p>
-                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->Province }}</p>
+                    <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->district }}, {{ $address->regency }}, {{ $address->province }}</p>
                     <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">{{ $address->address }}</p>
                     @if ($address->benchmark)
                         <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Patokan ({{ $address->benchmark }})</p>
@@ -1412,6 +1428,19 @@
                                         </select>
                                         <input type="hidden" name="district_name" id="add_checkout_district_name">
                                     </div>
+
+                                    <div class="col-12 p-0">
+                                        <label for="village"
+                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Desa/Kelurahan</label>
+                                        <select
+                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                            aria-label="village" name="subdistrict" id="add_checkout_subdistrict">
+                                            <option class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Pilih
+                                                Desa/Kelurahan</option>
+                                        </select>
+                                        <input type="hidden" name="subdistrict_name" id="add_checkout_subdistrict_name">
+                                    </div>
+
                                     <!-- PATOKAN -->
                                     <div class="col-12 p-0">
                                         <label for="patokan"
@@ -1798,6 +1827,73 @@
             }
         });
 
+    document
+        .getElementById("add_checkout_district")
+        .addEventListener("change", function() {
+            const districtId = this.value;
+            const districtName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_district_name").value =
+                districtName; // Save name in hidden input
+
+            const subdistrictSelect = document.getElementById("add_checkout_subdistrict");
+            subdistrictSelect.innerHTML =
+                '<option value="">Pilih Desa/Kelurahan</option>';
+            document.getElementById("add_checkout_subdistrict_name").value = ""; // Clear previous regency name
+
+            // GET DATA DISTRICT FROM REGENCY
+            if (districtId) {
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
+                    )
+                    .then((response) => response.json())
+                    .then((subdistricts) => {
+                        subdistricts.forEach((subdistrict) => {
+                            let option = document.createElement("option");
+                            option.value = subdistrict.id;
+                            option.text = subdistrict.name;
+                            subdistrictSelect.appendChild(option);
+                        });
+                    })
+                    .catch((error) =>
+                        console.error("Error fetching districts:", error)
+                    );
+            }
+        });
+
+    document
+        .getElementById("address_district")
+        .addEventListener("change", function() {
+            const districtId = this.value;
+            const districtName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("address_subdistrict_name").value =
+                districtName; // Save name in hidden input
+
+            const subdistrictSelect = document.getElementById("address_subdistrict");
+            subdistrictSelect.innerHTML =
+                '<option value="">Pilih Desa/Kelurahan</option>';
+            document.getElementById("address_subdistrict_name").value = ""; // Clear previous district name
+
+            // GET DATA DISTRICT FROM REGENCY
+            if (districtId) {
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
+                    )
+                    .then((response) => response.json())
+                    .then((subdistricts) => {
+                        subdistricts.forEach((subdistrict) => {
+                            let option = document.createElement("option");
+                            option.value = subdistrict.id;
+                            option.text = subdistrict.name;
+                            subdistrictSelect.appendChild(option);
+                        });
+                    })
+                    .catch((error) =>
+                        console.error("Error fetching districts:", error)
+                    );
+            }
+        });
+
+
     // Event listener for regency selection
     document
         .getElementById("add_checkout_regency")
@@ -1813,6 +1909,14 @@
             const districtName = this.options[this.selectedIndex].text; // Get the name
             document.getElementById("add_checkout_district_name").value =
                 districtName; // Save name in hidden input
+        });
+
+    document
+        .getElementById("add_checkout_subdistrict")
+        .addEventListener("change", function() {
+            const subdistrictName = this.options[this.selectedIndex].text; // Get the name
+            document.getElementById("add_checkout_subdistrict_name").value =
+                subdistrictName; // Save name in hidden input
         });
     // END API WILAYAH REGISTER
 </script>

@@ -162,7 +162,8 @@
                                                 <div class="d-flex align-items-center">
                                                     <p
                                                         class="text-white mb-0 text-[10px] md:text-11px] lg:text-[13px] xl:text-[15px]">
-                                                        {{ $sa->label }}</p>
+                                                        {{ $sa->label }}
+                                                    </p>
                                                     <span
                                                         class="badge bg-[#ffffff] text-[#183018] d-flex align-items-center justify-content-center ml-auto text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Utama</span>
                                                 </div>
@@ -172,7 +173,7 @@
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
                                                     {{ $sa->handphone }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
-                                                    {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
+                                                    {{ $sa->subdistrict }}, {{ $sa->district }}, {{ $sa->regency }}, {{ $sa->province }}</p>
                                                 <p class="text-[9px] md:text-[9px] lg:text-[11px] xl:text-[13px] text-white">
                                                     {{ $sa->address }}</p>
                                                 @if ($sa->benchmark)
@@ -243,8 +244,8 @@
 
 
                                                     <!-- <button data-id="{{ $sa->id }}" name="deleteAddress" type="submit" class="btn border w-fit rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" style="background-color: #ffffff">
-                                <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
-                            </button> -->
+                                                        <i aria-hidden="true" class="fas fa-solid fa-trash" title="Hapus Alamat"></i>
+                                                    </button> -->
                                                 </div>
                                             </div>
                                         </div>
@@ -270,118 +271,124 @@
                                                             class="form-control d-none rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
                                                             name="address-id" value="{{ $sa->id }}">
                                                         <div class="grid gap-1 gap-md-2">
-                                                            <div class="col-12 p-0">
-                                                                <label for="label"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
-                                                                <input type="text"
-                                                                    class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    placeholder="Masukkan Nama Label Untuk Alamatmu"
-                                                                    name="label" value="{{ $sa->label }}">
-                                                            </div>
-                                                            <div class="col-12 p-0">
-                                                                <label for="receiver"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama
-                                                                    Penerima</label>
-                                                                <input type="text"
-                                                                    class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    placeholder="Masukkan Nama Penerima" name="recipient_name"
-                                                                    value="{{ $sa->recipient_name }}">
-                                                            </div>
-                                                            <div class="col-12 p-0">
-                                                                <label for="handphone"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
-                                                                <div class="input-group">
-                                                                    <span
-                                                                        class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                        id="basic-addon1">+62</span>
-                                                                    <input type="number"
-                                                                        class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                        placeholder="Contoh : 8979254301"
-                                                                        pattern="[0]{1}[8]{1}[0-9]{9,10}" name="handphone"
-                                                                        value="{{ $sa->handphone }}">
+                                                            <div class="grid md:flex">
+                                                                <div class="col-md-6">
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="label"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Label</label>
+                                                                        <input type="text"
+                                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            placeholder="Masukkan Nama Label Untuk Alamatmu"
+                                                                            name="label" value="{{ $sa->label }}">
+                                                                    </div>
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="receiver"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Nama
+                                                                            Penerima</label>
+                                                                        <input type="text"
+                                                                            class="form-control rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            placeholder="Masukkan Nama Penerima" name="recipient_name"
+                                                                            value="{{ $sa->recipient_name }}">
+                                                                    </div>
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="handphone"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Handphone</label>
+                                                                        <div class="input-group">
+                                                                            <span
+                                                                                class="input-group-text text-red-700 text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                                id="basic-addon1">+62</span>
+                                                                            <input type="number"
+                                                                                class="form-control rounded-end text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                                placeholder="Contoh : 8979254301"
+                                                                                pattern="[0]{1}[8]{1}[0-9]{9,10}" name="handphone"
+                                                                                value="{{ $sa->handphone }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <!-- ALAMAT -->
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="alamat"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Alamat</label>
+                                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address"
+                                                                            rows="3" placeholder="Masukkan Alamatmu">{{ $sa->address }}</textarea>
+                                                                    </div>
+
+                                                                    <!-- PATOKAN -->
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="patokan"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan
+                                                                            (Opsional)</label>
+                                                                        <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="benchmark"
+                                                                            rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang">{{ $sa->benchmark }}</textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="provinsi"
+                                                                            class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
+                                                                        <select id="province_change_{{ $sa->id }}"
+                                                                            class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            aria-label="Provinsi" name="province_change">
+                                                                            <option value="{{ $sa->id_province }}" selected>
+                                                                                {{ $sa->province }}</option>
+                                                                            <option
+                                                                                class="text-primary text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                                Pilih Provinsi</option>
+                                                                        </select>
+                                                                        <input type="hidden" name="province_name"
+                                                                            id="change_province_name_{{$sa->id}}">
+                                                                    </div>
+
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="kabupaten/kota"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
+                                                                        <select id="regency_change_{{ $sa->id }}"
+                                                                            class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            aria-label="Kabupaten/Kota" name="regency_change">
+                                                                            <option value="{{ $sa->regency }}" selected>
+                                                                                {{ $sa->regency }}</option>
+                                                                            <option
+                                                                                class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                                Pilih Kabupaten/Kota</option>
+                                                                        </select>
+                                                                        <input type="hidden" name="regency_name"
+                                                                            id="change_regency_name_{{$sa->id}}">
+                                                                    </div>
+
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="kecamatan" 
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
+                                                                        <select id="district_change_{{ $sa->id }}"
+                                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            aria-label="Kecamatan" name="district_change">
+                                                                            <option value="{{ $sa->district }}" selected>
+                                                                                {{ $sa->district }}</option>
+                                                                            <option
+                                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                                Pilih Kecamatan</option>
+                                                                        </select>
+                                                                        <input type="hidden" name="district_name"
+                                                                            id="change_district_name_{{$sa->id}}">
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-12 p-0">
+                                                                        <label for="village"
+                                                                            class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
+                                                                        <select id="subdistrict_change_{{ $sa->id }}"
+                                                                            class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
+                                                                            aria-label="village" name="subdistrict_change">
+                                                                            <option value="{{ $sa->subdistrict }}" selected>
+                                                                                {{ $sa->subdistrict }}</option>
+                                                                            <option
+                                                                                class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
+                                                                                Pilih Desa/Kelurahan</option>
+                                                                        </select>
+                                                                        <input type="hidden" name="subdistrict_name"
+                                                                            id="change_subdistrict_name_{{$sa->id}}">
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
-                                                            <div class="col-12 p-0">
-                                                                <label for="provinsi"
-                                                                    class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
-                                                                <select
-                                                                    class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    aria-label="Provinsi" name="province_change">
-                                                                    <option value="{{ $sa->id_province }}" selected>
-                                                                        {{ strtolower(ucwords($sa->province)) }}</option>
-                                                                    <option
-                                                                        class="text-primary text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                        Pilih Provinsi</option>
-                                                                </select>
-                                                                <input type="hidden" name="province_name"
-                                                                    id="change_province_name_{{$sa->id}}">
-                                                            </div>
-
-                                                            <div class="col-12 p-0">
-                                                                <label for="kabupaten/kota"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kabupaten/Kota</label>
-                                                                <select
-                                                                    class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    aria-label="Kabupaten/Kota" name="regency_change">
-                                                                    <option value="{{ $sa->regency }}" selected>
-                                                                        {{ strtolower(ucwords($sa->regency)) }}</option>
-                                                                    <option
-                                                                        class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                        Pilih Kabupaten/Kota</option>
-                                                                </select>
-                                                                <input type="hidden" name="regency_name"
-                                                                    id="change_regency_name_{{$sa->id}}">
-                                                            </div>
-
-                                                            <div class="col-12 p-0">
-                                                                <label for="kecamatan"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Kecamatan</label>
-                                                                <select
-                                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    aria-label="Kecamatan" name="district_change">
-                                                                    <option value="{{ $sa->district }}" selected>
-                                                                        {{ strtolower($sa->district) }}</option>
-                                                                    <option
-                                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                        Pilih Kecamatan</option>
-                                                                </select>
-                                                                <input type="hidden" name="district_name"
-                                                                    id="change_district_name_{{$sa->id}}">
-                                                            </div>
                                                             
-                                                            <div class="col-12 p-0">
-                                                                <label for="village"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Desa/Kelurahan</label>
-                                                                <select
-                                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                                                    aria-label="village" name="subdistrict_change">
-                                                                    <option value="{{ $sa->subdistrict }}" selected>
-                                                                        {{ strtolower($sa->subdistrict) }}</option>
-                                                                    <option
-                                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                                        Pilih Desa/Kelurahan</option>
-                                                                </select>
-                                                                <input type="hidden" name="subdistrict_name"
-                                                                    id="change_subdistrict_name_{{$sa->id}}">
-                                                            </div>
-
-                                                            <!-- ALAMAT -->
-                                                            <div class="col-12 p-0">
-                                                                <label for="alamat"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Alamat</label>
-                                                                <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="address"
-                                                                    rows="3" placeholder="Masukkan Alamatmu">{{ $sa->address }}</textarea>
-                                                            </div>
-
-                                                            <!-- PATOKAN -->
-                                                            <div class="col-12 p-0">
-                                                                <label for="patokan"
-                                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Patokan
-                                                                    (Opsional)</label>
-                                                                <textarea class="form-control rounded-lg text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]" name="benchmark"
-                                                                    rows="3" placeholder="Contoh : Depan Warung Soto Ayam Jepang">{{ $sa->benchmark }}</textarea>
-                                                            </div>
 
                                                             <!-- BUTTON SUBMIT -->
                                                             <div class="col-12 p-0">
@@ -2248,7 +2255,6 @@
         });
     </script>
 
-
     <!-- UNTUK CEK TAB ACCOUNT -->
     <script>
         $(document).ready(function() {
@@ -2375,7 +2381,7 @@
                 }
             });
         
-            document
+        document
             .getElementById("address_district")
             .addEventListener("change", function() {
                 const districtId = this.value;
@@ -2645,4 +2651,128 @@
             window.location.href = "/invoice-user_" + invoiceId;
         }
     </script>
+
+    {{-- API UBAH ALAMAT --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const shippingAddresses = @json($shippingAddresses);
+
+            shippingAddresses.forEach(sa => {
+                const addressId = sa.id;
+                const provinceSelect = document.getElementById(`province_change_${addressId}`);
+                const regencySelect = document.getElementById(`regency_change_${addressId}`);
+                const districtSelect = document.getElementById(`district_change_${addressId}`);
+                const subdistrictSelect = document.getElementById(`subdistrict_change_${addressId}`);
+
+                const provinceNameInput = document.getElementById(`province_name_change_${addressId}`);
+                const regencyNameInput = document.getElementById(`regency_name_change_${addressId}`);
+                const districtNameInput = document.getElementById(`district_name_change_${addressId}`);
+                const subdistrictNameInput = document.getElementById(`subdistrict_name_change_${addressId}`);
+
+                const selectedProvince = sa.id_province;
+                const selectedRegency = sa.regency;
+                const selectedDistrict = sa.district;
+                const selectedSubdistrict = sa.subdistrict;
+
+                // 🔹 1️⃣ Ambil semua provinsi
+                fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+                    .then(res => res.json())
+                    .then(provinces => {
+                        provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+                        provinces.forEach(p => {
+                            const selected = (p.id == selectedProvince) ? 'selected' : '';
+                            provinceSelect.innerHTML += `<option value="${p.id}" ${selected}>${p.name}</option>`;
+                            if (p.id == selectedProvince) {
+                                provinceNameInput.value = p.name;
+                            }
+                        });
+                        if (selectedProvince) loadRegencies(selectedProvince);
+                    });
+
+                // 🔹 2️⃣ Ketika Provinsi berubah → ambil kabupaten
+                provinceSelect.addEventListener('change', e => {
+                    const provinceId = e.target.value;
+                    provinceNameInput.value = e.target.options[e.target.selectedIndex].text;
+                    regencySelect.innerHTML = '<option value="">Memuat kabupaten...</option>';
+                    districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                    subdistrictSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+                    loadRegencies(provinceId);
+                });
+
+                function loadRegencies(provinceId) {
+                    if (!provinceId) return;
+                    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`)
+                        .then(res => res.json())
+                        .then(regencies => {
+                            regencySelect.innerHTML = '<option value="">Pilih Kabupaten/Kota</option>';
+                            regencies.forEach(r => {
+                                const selected = (r.name.toLowerCase() == selectedRegency?.toLowerCase()) ? 'selected' : '';
+                                regencySelect.innerHTML += `<option value="${r.id}" ${selected}>${r.name}</option>`;
+                                if (r.id == selectedRegency) regencyNameInput.value = r.name;
+                            });
+                            if (selectedRegency) {
+                                const regency = regencies.find(r => r.name.toLowerCase() == selectedRegency.toLowerCase());
+                                if (regency) loadDistricts(regency.id);
+                            }
+                        });
+                }
+
+                // 🔹 3️⃣ Ketika Kabupaten berubah → ambil kecamatan
+                regencySelect.addEventListener('change', e => {
+                    const regencyId = e.target.value;
+                    regencyNameInput.value = e.target.options[e.target.selectedIndex].text;
+                    districtSelect.innerHTML = '<option value="">Memuat kecamatan...</option>';
+                    subdistrictSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+                    loadDistricts(regencyId);
+                });
+
+                function loadDistricts(regencyId) {
+                    if (!regencyId) return;
+                    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regencyId}.json`)
+                        .then(res => res.json())
+                        .then(districts => {
+                            districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+                            districts.forEach(d => {
+                                const selected = (d.name.toLowerCase() == selectedDistrict?.toLowerCase()) ? 'selected' : '';
+                                districtSelect.innerHTML += `<option value="${d.id}" ${selected}>${d.name}</option>`;
+                                if (d.id == selectedDistrict) districtNameInput.value = d.name;
+                            });
+                            if (selectedDistrict) {
+                                const district = districts.find(d => d.name.toLowerCase() == selectedDistrict.toLowerCase());
+                                if (district) loadVillages(district.id);
+                            }
+                        });
+                }
+
+                // 🔹 4️⃣ Ketika Kecamatan berubah → ambil desa
+                districtSelect.addEventListener('change', e => {
+                    const districtId = e.target.value;
+                    districtNameInput.value = e.target.options[e.target.selectedIndex].text;
+                    subdistrictSelect.innerHTML = '<option value="">Memuat desa...</option>';
+                    loadVillages(districtId);
+                });
+
+                function loadVillages(districtId) {
+                    if (!districtId) return;
+                    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`)
+                        .then(res => res.json())
+                        .then(villages => {
+                            subdistrictSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+                            villages.forEach(v => {
+                                const selected = (v.name.toLowerCase() == selectedSubdistrict?.toLowerCase()) ? 'selected' : '';
+                                subdistrictSelect.innerHTML += `<option value="${v.id}" ${selected}>${v.name}</option>`;
+                                if (v.id == selectedSubdistrict) subdistrictNameInput.value = v.name;
+                            });
+                        });
+                }
+
+                // 🔹 5️⃣ Ketika Desa berubah → simpan nama ke input tersembunyi
+                subdistrictSelect.addEventListener('change', e => {
+                    subdistrictNameInput.value = e.target.options[e.target.selectedIndex].text;
+                });
+            });
+        });
+    </script>
+
+
 @endsection

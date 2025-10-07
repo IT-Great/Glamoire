@@ -212,6 +212,21 @@
                                                 <input type="hidden" name="district_name"
                                                     id="checkout_district_name">
                                             </div>
+
+                                            <div class="col-12 p-0">
+                                                <label for="village"
+                                                    class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Desa/Kelurahan</label>
+                                                <select
+                                                    class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                                    aria-label="village" name="subdistrict"
+                                                    id="checkout_subdistrict">
+                                                    <option
+                                                        class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                                        Pilih Desa/Kelurahan</option>
+                                                </select>
+                                                <input type="hidden" name="subdistrict_name"
+                                                    id="checkout_subdistrict_name">
+                                            </div>
                                             <!-- PATOKAN -->
                                             <div class="col-12 p-0">
                                                 <label for="patokan"
@@ -533,13 +548,28 @@
                                     <select
                                         class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
                                         aria-label="Kecamatan" name="district"
-                                        id="checkout_district_selected">
+                                        id="checkout_district_selected" onchange="onDistrictChanged(this)">
                                         <option
                                             class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                             Pilih Kecamatan</option>
                                     </select>
                                     <input type="hidden" name="district_name"
                                         id="checkout_district_name_selected">
+                                </div>
+                                
+                                <div class="col-12 p-0">
+                                    <label for="village"
+                                        class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Desa/Kelurahan</label>
+                                    <select
+                                        class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
+                                        aria-label="village" name="subdistrict"
+                                        id="checkout_subdistrict_selected">
+                                        <option
+                                            class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
+                                            Pilih Desa/Kelurahan</option>
+                                    </select>
+                                    <input type="hidden" name="subdistrict_name"
+                                        id="checkout_subdistrict_name_selected">
                                 </div>
                                 <!-- PATOKAN -->
                                 <div class="col-12 p-0">
@@ -600,7 +630,7 @@
 <!-- END MODAL RINCIAN PENGIRIMAN -->
 
 <script>    
-    let ongkir = 50000;
+    let ongkir = null;
     let productItems = {!! json_encode($data['cartItems']) !!};
     let productIds = [];
     let productVariantIds = {};
@@ -625,6 +655,9 @@
 
     let formattedData = {}; // Objek hasil akhir
 
+    let destinationArea = {!! json_encode($data['destinationArea']) !!};    
+    let originArea      = {!! json_encode($data['originArea']) !!};
+
     productItems.forEach((product, index) => {
         formattedData[index] = {
             product_id: product.product_id,
@@ -634,93 +667,96 @@
         };
     });
     
-    // const shippingFee = document.getElementById("choose_shipping_fee");
+    const shippingFee = document.getElementById("choose_shipping_fee");
 
     // Event listener for shipping option change
-    // shippingFee.addEventListener("change", function() {
-    //     updateOngkir(); // Update 'ongkir' when shipping option changes
-    // });
+    shippingFee.addEventListener("change", function() {
+        updateOngkir(); // Update 'ongkir' when shipping option changes
+    });
 
     // Initialize 'ongkir' on page load if an option is selected
-    // if (shippingFee) {
-    //     updateOngkir();
-    // }
+    if (shippingFee) {
+        updateOngkir();
+    }
     // Output example
-    // console.log(formattedData);
+    console.log(formattedData);
 
 
     // ONGKIR - Shipping
 
     // Function to fetch and update 'ongkir' based on selected shipping service
-    // function updateOngkir() {
-    //     const selectedService = shippingFee.value.trim();
+    function updateOngkir() {
+        const selectedService = shippingFee.value.trim();
 
-    //     if (selectedService) {
-    //         $.ajax({
-    //             url: '/checkout', 
-    //             type: 'GET',
-    //             data: { service: selectedService },
-    //             beforeSend: function() {
-    //                 $('.loading-container').show();
-    //             },
-    //             success: function(response) {
-    //                 ongkir = response.ongkir;
-    //                 // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
+        if (selectedService) {
+            $.ajax({
+                url: '/checkout', 
+                type: 'GET',
+                data: { service: selectedService },
+                beforeSend: function() {
+                    $('.loading-container').show();
+                },
+                success: function(response) {
+                    ongkir = response.ongkir;
+                    courier = response.courier;
+                    description = response.description;
+                    etd = response.etd;
+                    // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
-    //                 restoreOriginalValues();
+                    restoreOriginalValues();
 
-    //                 shippingDiscountAmount = 0;
-    //                 shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
+                    shippingDiscountAmount = 0;
+                    shippingDiscount = Math.min(ongkir, shippingDiscountAmount);
 
-    //                 $(".input-code").removeClass("d-none").addClass("d-flex");
-    //                 $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
-    //                 $("#choose-voucher").removeClass("text-success").addClass("text-dark");
+                    $(".input-code").removeClass("d-none").addClass("d-flex");
+                    $("#choose-voucher").text("Pilih Voucher").addClass("text-dark").show();
+                    $("#choose-voucher").removeClass("text-success").addClass("text-dark");
     
-    //                 // Update displayed prices with the latest values
-    //                 resetVoucherOngkir();
-    //                 updateOngkirDisplay();
-    //                 updateThriftyDisplay();
-    //             },
-    //             complete: function() {
-    //                 $('.loading-container').hide();
-    //             },
-    //             error: function(error) {
-    //                 console.error("Failed to fetch ongkir:", error);
-    //             }
-    //         });
-    //     }
-    // }
+                    // Update displayed prices with the latest values
+                    resetVoucherOngkir();
+                    updateOngkirDisplay();
+                    updateThriftyDisplay();
+                },
+                complete: function() {
+                    $('.loading-container').hide();
+                },
+                error: function(error) {
+                    console.error("Failed to fetch ongkir:", error);
+                }
+            });
+        }
+    }
 
     // Reset voucher ongkir saat pilih jenis pengiriman
-    // function resetVoucherOngkir() {
-    //     currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
-    //     if (currentlySelectedElement) {
-    //         currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
-    //         currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
-    //         currentlySelectedElement.classList.remove('selected');
-    //         // $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
-    //     }
-    // }
+    function resetVoucherOngkir() {
+        currentlySelectedElement = document.querySelector('.promo-item.selected.ongkir-voucher');
+        if (currentlySelectedElement) {
+            currentlySelectedElement.querySelector('.grid').classList.remove('border', 'border-dark');
+            currentlySelectedElement.querySelector('.fas.fa-check').classList.add('hidden');
+            currentlySelectedElement.classList.remove('selected');
+            // $("#choose-voucher").text("Voucher digunakan").removeClass("text-dark").addClass("text-success").show();
+        }
+    }
 
     // Function to update display or calculations that use 'ongkir'
-    // function updateOngkirDisplay() {
-    //     if (ongkir !== null) {
-    //         $("#shipping_price").text("Rp" + formatRupiah(ongkir));
-    //         $("#ongkir-user").text("Rp" + formatRupiah(ongkir));
+    function updateOngkirDisplay() {
+        if (ongkir !== null) {
+            $("#shipping_price").text("Rp" + formatRupiah(ongkir));
+            $("#ongkir-user").text("Rp" + formatRupiah(ongkir));
 
-    //         // Calculate the subtotal based on `ongkir`, promo discount, and shipping discount
-    //         subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
-    //         $("#total-shopping").text("Rp" + formatRupiah(subTotal));
+            // Calculate the subtotal based on `ongkir`, promo discount, and shipping discount
+            subTotal = totalPrice + ongkir - discountAmount - shippingDiscount;
+            $("#total-shopping").text("Rp" + formatRupiah(subTotal));
 
-    //         // Display the shipping discount if applied
-    //         if (shippingDiscount > 0) {
-    //             $("#ongkir").text("-Rp" + formatRupiah(shippingDiscount));
-    //             $("#ongkir-use").removeClass("d-none").addClass("d-flex");
-    //         } else {
-    //             $("#ongkir-use").removeClass("d-flex").addClass("d-none");
-    //         }
-    //     }
-    // }
+            // Display the shipping discount if applied
+            if (shippingDiscount > 0) {
+                $("#ongkir").text("-Rp" + formatRupiah(shippingDiscount));
+                $("#ongkir-use").removeClass("d-none").addClass("d-flex");
+            } else {
+                $("#ongkir-use").removeClass("d-flex").addClass("d-none");
+            }
+        }
+    }
 
     // Format numbers to Indonesian Rupiah
     function formatRupiah(number) {
@@ -1180,6 +1216,39 @@
                 }
             });
 
+        document
+            .getElementById("checkout_district")
+            .addEventListener("change", function() {
+                const districtId = this.value;
+                const districtName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_subdistrict_name").value =
+                    districtName; // Save name in hidden input
+
+                const subdistrictSelect = document.getElementById("checkout_subdistrict");
+                subdistrictSelect.innerHTML =
+                    '<option value="">Pilih Desa/Kelurahan</option>';
+                document.getElementById("checkout_subdistrict_name").value = ""; // Clear previous regency name
+
+                // GET DATA DISTRICT FROM REGENCY
+                if (districtId) {
+                    fetch(
+                            `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
+                        )
+                        .then((response) => response.json())
+                        .then((subdistricts) => {
+                            subdistricts.forEach((subdistrict) => {
+                                let option = document.createElement("option");
+                                option.value = subdistrict.id;
+                                option.text = subdistrict.name;
+                                subdistrictSelect.appendChild(option);
+                            });
+                        })
+                        .catch((error) =>
+                            console.error("Error fetching subdistricts:", error)
+                        );
+                }
+            });
+
         // Event listener for regency selection
         document
             .getElementById("checkout_regency")
@@ -1196,6 +1265,14 @@
                 document.getElementById("checkout_district_name").value =
                     districtName; // Save name in hidden input
             });
+
+        document
+                .getElementById("checkout_subdistrict")
+                .addEventListener("change", function() {
+                    const subdistrictName = this.options[this.selectedIndex].text; // Get the name
+                    document.getElementById("checkout_subdistrict_name").value =
+                        subdistrictName; // Save name in hidden input
+                });
         // END API WILAYAH REGISTER
     </script>
 @endif
@@ -1642,6 +1719,7 @@
         // Event listener for province selection
         // PILIH PROVINSI
         function onProvinceChanged(selectElement) {
+            console.log('✅ Province changed');
             const provinceId = selectElement.value;
             const provinceName = selectElement.options[selectElement.selectedIndex].text; // Get the name
             document.getElementById("checkout_province_name_selected").value = provinceName;
@@ -1680,21 +1758,18 @@
         };
 
         function onRegencyChanged(selectElement){
+            console.log('✅ Regency changed');
             const regenciesId = selectElement.value;
-            const regenciesName = selectElement.options[selectElement.selectedIndex].text; // Get the name
-            document.getElementById("checkout_regency_name_selected").value =
-                regenciesName; // Save name in hidden input
+            const regenciesName = selectElement.options[selectElement.selectedIndex].text;
+            document.getElementById("checkout_regency_name_selected").value = regenciesName;
 
             const districtSelect = document.getElementById("checkout_district_selected");
-            districtSelect.innerHTML =
-                '<option value="">Pilih Kecamatan</option>';
-            document.getElementById("checkout_district_name_selected").value = ""; // Clear previous regency name
+            districtSelect.innerHTML = '<option value="">Pilih Kecamatan</option>';
+            document.getElementById("checkout_district_name_selected").value = "";
 
             // GET DATA DISTRICT FROM REGENCY
             if (regenciesId) {
-                fetch(
-                        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`
-                    )
+                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regenciesId}.json`)
                     .then((response) => response.json())
                     .then((districts) => {
                         const districtSelected = "{{ $data['information']['district'] ?? '' }}";
@@ -1707,12 +1782,56 @@
                                 option.selected = true;
                             }
                         });
+
+                        // ✅ Tambahkan ini agar otomatis load subdistricts kalau ada data lama
+                        if (districtSelected !== "") {
+                            onDistrictChanged(districtSelect);
+                        }
                     })
-                    .catch((error) =>
-                        console.error("Error fetching districts:", error)
-                    );
+                    .catch((error) => console.error("Error fetching districts:", error));
             }
         }
+
+        function onDistrictChanged(selectElement){
+            console.log('✅ District changed');
+
+            const districtId = selectElement.value;
+            const districtName = selectElement.options[selectElement.selectedIndex].text;
+            document.getElementById("checkout_district_name_selected").value = districtName;
+
+            const subdistrictSelect = document.getElementById("checkout_subdistrict_selected");
+            subdistrictSelect.innerHTML = '<option value="">Pilih Desa/Kelurahan</option>';
+            document.getElementById("checkout_subdistrict_name_selected").value = "";
+
+            if (districtId) {
+                console.log(`Fetching subdistricts for districtId: ${districtId}`);
+                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        return response.json();
+                    })
+                    .then(subdistricts => {
+                        const subdistrictSelected = @json($data['information']['subdistrict'] ?? '');
+                        subdistricts.forEach(subdistrict => {
+                            let option = document.createElement("option");
+                            option.value = subdistrict.id;
+                            option.text = subdistrict.name;
+                            subdistrictSelect.appendChild(option);
+                            if (subdistrict.name === subdistrictSelected) {
+                                option.selected = true;
+                            }
+                        });
+
+                        if (subdistrictSelected !== "") {
+                            document.getElementById("checkout_subdistrict_name_selected").value = subdistrictSelected;
+                        }
+                    })
+                    .catch(error => console.error("Error fetching subdistricts:", error));
+            }
+        }
+
+
+
 
         // Event listener for district selection
         document
@@ -1721,6 +1840,14 @@
                 const districtName = this.options[this.selectedIndex].text; // Get the name
                 document.getElementById("checkout_district_name_selected").value =
                     districtName; // Save name in hidden input
+            });
+
+        document
+            .getElementById("checkout_subdistrict_selected")
+            .addEventListener("change", function() {
+                const subdistrictName = this.options[this.selectedIndex].text; // Get the name
+                document.getElementById("checkout_subdistrict_name_selected").value =
+                    subdistrictName; // Save name in hidden input
             });
         // END API WILAYAH REGISTER
     </script>
@@ -1829,6 +1956,11 @@
                     voucher_promo: selectedPromoCode,
                     voucher_ongkir: selectedOngkirCode,
                     condition: "standard",
+                    destinationArea: destinationArea,
+                    originArea: originArea,
+                    courier: courier,
+                    etd: etd,
+                    description: description,
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
