@@ -231,7 +231,7 @@
                             <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" aria-label="chooseShippingFee" name="shipping_fee" id="choose_shipping_fee">
                                 <option value="" selected>Pilih Jasa Kirim Yang Tersedia</option>                                    
                                 @foreach ($data['shippingFee'] as $sp)
-                                    <option value="{{ $sp['id'] }}">{{ $sp['description'] }} - Rp{{ number_format($sp['value'], 0, ',', '.') }} (estimasi {{ $sp['etd'] }} hari)</option>                                    
+                                    <option value="{{ $sp['id'] }}">{{$sp['name']}} | {{ $sp['description'] }} - Rp{{ number_format($sp['value'], 0, ',', '.') }} (estimasi {{ $sp['etd'] }} hari)</option>                                    
                                 @endforeach
                             </select>
                         </div>
@@ -402,6 +402,9 @@
     let subTotal = 0;
     let totalItemPrice = {{ $data['totalPrice'] }};
     let originalTotalShopping = null;
+    let courier = null;
+    let description = null;
+    let etd = null;
 
     // Voucher-related variables
     let selectedPromoCode = null; // Discount voucher code
@@ -413,6 +416,10 @@
     let shippingDiscount = 0; 
 
     let formattedData = {}; // Objek hasil akhir
+
+    let destinationArea = {!! json_encode($data['destinationArea']) !!};    
+    let originArea      = {!! json_encode($data['originArea']) !!};
+
 
     productItems.forEach((product, index) => {
         formattedData[index] = {
@@ -433,7 +440,7 @@
     // Function to fetch and update 'ongkir' based on selected shipping service
     function updateOngkir() {
         const selectedService = shippingFee.value.trim();
-        console.log(selectedService);
+        // console.log(selectedService);
 
         if (selectedService) {
             $.ajax({
@@ -445,6 +452,9 @@
                 },
                 success: function(response) {
                     ongkir = response.ongkir;
+                    courier = response.courier;
+                    description = response.description;
+                    etd = response.etd;
                     // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
                     // restoreOriginalValues();
@@ -943,148 +953,6 @@
         });
     });
 
-    
-    // $(document).on('click', '#paynow', function(e) { 
-    //     e.preventDefault();
-    
-    //     $.ajax({
-    //         url: "{{ route('order.payment') }}",
-    //         type: 'POST',
-    //         data: {
-    //             products: formattedData,
-    //             subtotal: subTotal,          // Removed the colon inside the key
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //             _token: '{{ csrf_token() }}'
-    //         },
-    //         beforeSend: function() {
-    //             $('.loading-container').show(); // Show the spinner
-    //         },
-    //         success: function(response) {
-    //             Toast.fire({
-    //                 icon: "success",
-    //                 text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-    //                 title: "Pembayaranmu Berhasil",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             }).then(function () {
-    //                 location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-    //             });
-    //         },
-    //         complete: function() {
-    //             $('.loading-container').hide(); // Show the spinner
-    //         },
-    //         error: function(xhr) {
-    //             Toast.fire({
-    //                 icon: "error",
-    //                 text: "Kesalahan Sistem",
-    //                 title: "Oops..",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             });
-    //         }
-    //     });
-    // });
-
-    // Add DOKU payment modal HTML
-    $('body').append(`
-        <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color: #183018">
-                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[16px] xl:text-[16px]" id="dokuPaymentModalLabel">Informasi Pembayaran</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="dokuPaymentContainer">
-                        <div class="text-center" id="loadingPayment">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">Mempersiapkan pembayaran...</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `);
-
-    // Handle payment button click
-    // $('#paynow').click(function(e) {
-    //     e.preventDefault();
-
-    //     $('#paynow').prop('disabled', true);
-    //     $('#dokuPaymentModal').modal('show');
-
-    //     // Make AJAX request
-    //     $.ajax({
-    //         url: '/initiate-doku-payment',
-    //         method: 'POST',
-    //         data: {
-    //             total_amount: subTotal,
-    //             products: formattedData,
-    //             subtotal: subTotal,         
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //         },
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         success: function(response) {
-    //             if (response.success && response.payment_url) {
-    //                 // Load DOKU payment iframe
-    //                 console.log({
-    //                     paymentUrl:response.payment_url,
-    //                     result:response.tes,
-    //                 });
-    //                 $('#dokuPaymentContainer').html(`
-    //                     <iframe 
-    //                         src="${response.payment_url}"
-    //                         frameborder="0"
-    //                         width="100%"
-    //                         height="600px"
-    //                         style="overflow: hidden;">
-    //                     </iframe>
-    //                 `);
-    //             } else {
-    //                 throw new Error('Invalid payment URL');
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Show error message
-    //             $('#dokuPaymentContainer').html(`
-    //         <div class="alert alert-danger">
-    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
-    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-    //         </div>
-    //     `);
-    //             console.error('Payment error:', error);
-    //         },
-    //         complete: function() {
-    //             $('#paynow').prop('disabled', false);
-    //         }
-    //     });
-    // });
-
 </script>
 
     <!-- JIKA ALAMAT KOSONG FOR API WILAYAH-->
@@ -1201,7 +1069,7 @@
                                 });
                             })
                             .catch((error) =>
-                                console.error("Error fetching districts:", error)
+                                console.error("Error fetching subdistricts:", error)
                             );
                     }
                 });
@@ -1223,7 +1091,7 @@
                         districtName; // Save name in hidden input
                 });
             
-                document
+            document
                 .getElementById("checkout_subdistrict")
                 .addEventListener("change", function() {
                     const subdistrictName = this.options[this.selectedIndex].text; // Get the name
@@ -1339,6 +1207,7 @@
             <div class="col-12 mb-2 p-0 shipping-fee-detail" id="shipping-fee-{{ $sp['id'] }}" onclick="selectShipping(this)">
                 <div class="p-2 rounded-sm custom-shadow">
                     
+                    <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $sp['name'] }}</p>
                     <p class="text-[10px] md:text-[12px] lg:text-[12px] xl:text-[13px] text-black">{{ $sp['description'] }}</p>
                     <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px]">Rp{{ number_format($sp['value'], 0, ',', '.') }}</p>
                     <p class="text-[10px] md:text-[9px] lg:text-[11px] xl:text-[13px] ">Estimasi {{ $sp['etd'] }} hari</p>
@@ -1978,7 +1847,7 @@
 <script>
     $('#paynow').click(function(e) {
         e.preventDefault();
-        console.log(ongkir);
+        // console.log(ongkir);
         if(ongkir == null){
             Toast.fire({
                 icon: "error",
@@ -2016,6 +1885,11 @@
                     voucher_promo: selectedPromoCode,
                     voucher_ongkir: selectedOngkirCode,
                     condition: "standard",
+                    destinationArea: destinationArea,
+                    originArea: originArea,
+                    courier: courier,
+                    etd: etd,
+                    description: description,
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -2089,5 +1963,152 @@
         }
 
     });
+
+     // $(document).on('click', '#paynow', function(e) { 
+    //     e.preventDefault();
+    
+    //     $.ajax({
+    //         url: "{{ route('order.payment') }}",
+    //         type: 'POST',
+    //         data: {
+    //             products: formattedData,
+    //             subtotal: subTotal,          // Removed the colon inside the key
+    //             shipping_cost: ongkir,
+    //             shipping_address_id: shippingAddressId,
+    //             total_item: totalItem,
+    //             total_item_price: totalItemPrice,
+    //             discount_amount: discountAmount,
+    //             discount_ongkir: shippingDiscount,
+    //             voucher_promo: selectedPromoCode,
+    //             voucher_ongkir: selectedOngkirCode,
+    //             _token: '{{ csrf_token() }}'
+    //         },
+    //         beforeSend: function() {
+    //             $('.loading-container').show(); // Show the spinner
+    //         },
+    //         success: function(response) {
+    //             Toast.fire({
+    //                 icon: "success",
+    //                 text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
+    //                 title: "Pembayaranmu Berhasil",
+    //                 willOpen: () => {
+    //                     const title = document.querySelector('.swal2-title');
+    //                     const content = document.querySelector('.swal2-html-container');
+    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
+    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    //                 }
+    //             }).then(function () {
+    //                 location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
+    //             });
+    //         },
+    //         complete: function() {
+    //             $('.loading-container').hide(); // Show the spinner
+    //         },
+    //         error: function(xhr) {
+    //             Toast.fire({
+    //                 icon: "error",
+    //                 text: "Kesalahan Sistem",
+    //                 title: "Oops..",
+    //                 willOpen: () => {
+    //                     const title = document.querySelector('.swal2-title');
+    //                     const content = document.querySelector('.swal2-html-container');
+    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
+    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
+    //                 }
+    //             });
+    //         }
+    //     });
+    // });
+
+    // Add DOKU payment modal HTML
+    $('body').append(`
+        <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #183018">
+                        <h5 class="modal-title text-white text-[12px] md:text-[12px] lg:text-[16px] xl:text-[16px]" id="dokuPaymentModalLabel">Informasi Pembayaran</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="dokuPaymentContainer">
+                        <div class="text-center" id="loadingPayment">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Mempersiapkan pembayaran...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+
+    // Handle payment button click
+    // $('#paynow').click(function(e) {
+    //     e.preventDefault();
+
+    //     $('#paynow').prop('disabled', true);
+    //     $('#dokuPaymentModal').modal('show');
+
+    //     // Make AJAX request
+    //     $.ajax({
+    //         url: '/initiate-doku-payment',
+    //         method: 'POST',
+    //         data: {
+    //             total_amount: subTotal,
+    //             products: formattedData,
+    //             subtotal: subTotal,         
+    //             shipping_cost: ongkir,
+    //             shipping_address_id: shippingAddressId,
+    //             total_item: totalItem,
+    //             total_item_price: totalItemPrice,
+    //             discount_amount: discountAmount,
+    //             discount_ongkir: shippingDiscount,
+    //             voucher_promo: selectedPromoCode,
+    //             voucher_ongkir: selectedOngkirCode,
+    //         },
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         success: function(response) {
+    //             if (response.success && response.payment_url) {
+    //                 // Load DOKU payment iframe
+    //                 console.log({
+    //                     paymentUrl:response.payment_url,
+    //                     result:response.tes,
+    //                 });
+    //                 $('#dokuPaymentContainer').html(`
+    //                     <iframe 
+    //                         src="${response.payment_url}"
+    //                         frameborder="0"
+    //                         width="100%"
+    //                         height="600px"
+    //                         style="overflow: hidden;">
+    //                     </iframe>
+    //                 `);
+    //             } else {
+    //                 throw new Error('Invalid payment URL');
+    //             }
+    //         },
+    //         error: function(xhr, status, error) {
+    //             // Show error message
+    //             $('#dokuPaymentContainer').html(`
+    //         <div class="alert alert-danger">
+    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
+    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+    //         </div>
+    //     `);
+    //             console.error('Payment error:', error);
+    //         },
+    //         complete: function() {
+    //             $('#paynow').prop('disabled', false);
+    //         }
+    //     });
+    // });
 </script>
+
+
 @endsection
+
+
+
+

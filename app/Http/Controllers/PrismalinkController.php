@@ -34,15 +34,27 @@ class PrismalinkController extends Controller
     private $frontendCallbackUrl;
     private $secretKey;
     private $transactionUrl;
+    private $status;
 
     public function __construct()
     {
-        $this->merchantKeyId = env('PRISMALINK_MERCH_KEY_ID', '8f0f43c38c0e456faa3340077b84e42e');
-        $this->merchantId = env('PRISMALINK_MERCH_ID', '001746361612626'); 
-        $this->backendCallbackUrl = env('PRISMALINK_BACKEND_CALLBACK', 'http://127.0.0.1:8000/callback-payment');
-        $this->frontendCallbackUrl = env('PRISMALINK_FRONTEND_CALLBACK', 'http://127.0.0.1:8000/callback-payment');
-        $this->secretKey = env('PRISMALINK_SECRET_KEY', '21b8b5e7f47f0d53756a6cf7');
-        $this->transactionUrl = env('PRISMALINK_TRANSACTION_API', 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/submit-trx');
+        $this->status = config('app.env');
+        if($this->status == 'local'){
+            $this->merchantKeyId = config('services.prismalink.merch_key_id');
+            $this->merchantId = config('services.prismalink.merch_id'); 
+            $this->backendCallbackUrl = config('services.prismalink.backend_callback');
+            $this->frontendCallbackUrl = config('services.prismalink.frontend_callback');
+            $this->secretKey = config('services.prismalink.secret_key');
+            $this->transactionUrl = config('services.prismalink.transaction_api');
+        }
+        else{
+            $this->merchantKeyId = config('services.prismalink.merch_key_id');
+            $this->merchantId = config('services.prismalink.merch_id'); 
+            $this->backendCallbackUrl = config('services.prismalink.backend_callback');
+            $this->frontendCallbackUrl = config('services.prismalink.frontend_callback');
+            $this->secretKey = config('services.prismalink.secret_key');
+            $this->transactionUrl = config('services.prismalink.transaction_api');
+        }
     }
 
     public function viewsSubmitPayment()
@@ -52,7 +64,6 @@ class PrismalinkController extends Controller
 
     public function submitPayment(Request $request)
     {
-
         $uniq = uniqid();
         $userId = session('id_user');
         $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -121,7 +132,6 @@ class PrismalinkController extends Controller
                         "item_title" => $productName,
                         "quantity" => $request->products[0]['quantity'],
                         "total" => $request->products[0]['price'],
-                        "currency" => "IDR",
                     ]
                 ]),
                 "va_name" => "$username",
@@ -186,9 +196,7 @@ class PrismalinkController extends Controller
             ];
         }
 
-        // Log the request body for debugging
-        Log::info(['Data Order Buynow :' => $request->all()]);
-
+        
         // Konversi body ke JSON string exact seperti yang akan dikirim ke API
         $jsonBody = json_encode($body);
 
@@ -210,6 +218,9 @@ class PrismalinkController extends Controller
             'Content-Type' => 'application/json',
         ])->post($url, $body);
 
+        Log::info(['Body :' => $body, 'Secret Key :' => $this->secretKey, 'HMAC :' => $mac]);
+        Log::info(['ambil response :' => $response]);
+
         // Cek apakah response berhasil
         if ($response->successful()) {
             $data = $response->json();
@@ -225,7 +236,14 @@ class PrismalinkController extends Controller
 
             if (isset($data['payment_page_url'])) {
                 // Base URL untuk halaman pembayaran Prismalink
-                $paymentBaseUrl = 'https://secure2-staging.plink.co.id';
+
+
+                if($this->status == 'local'){
+                    $paymentBaseUrl = 'https://secure2-staging.plink.co.id';
+                }
+                else{
+                    $paymentBaseUrl = 'https://secure3.plink.co.id';
+                }
 
                 // Dapatkan payment_page_url dari respons
                 $paymentPagePath = $data['payment_page_url'];
@@ -251,11 +269,16 @@ class PrismalinkController extends Controller
                 $totalItemPrice = $request->total_item_price;
                 $voucherPromo = $request->voucher_promo;
                 $voucherOngkir = $request->voucher_ongkir;
+                $destinationArea = $request->destinationArea;
+                $originArea = $request->originArea;
+                $courier = $request->courier;
+                $etd = $request->etd;
+                $description = $request->description;
                 
-                $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir);
+                $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description);
                 session(['order_data' => $orderData]);
                 
-                Log::info(['Request : ' => $request]);
+                // Log::info(['Request : ' => $request]);
 
                 $deadline = Carbon::parse($data['validity']);
 
@@ -276,7 +299,7 @@ class PrismalinkController extends Controller
             return back()->with('error', 'Response received, but no payment page URL was found.');
         } else {
             // Log error detail
-            Log::error('Prismalink Response Error', [
+            Log::error('Prismalink Response Error :', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
@@ -309,13 +332,64 @@ class PrismalinkController extends Controller
                 session(['activeTab' => '#my-order']);
                 session()->flash('payment_success');
                 $this->createNewOrder(session('order_data'));
+                $orderData = session('order_data');
+                $order_id = session('order_id');
+
+                $items = Order::where('id', $order_id)->with('orderItems.product')->first();
+
+                Log::info('Order Details after Payment Success:', [
+                    'oder_data' => $orderData,
+                    'order_id' => $order_id,
+                    'items' => $items,
+                ]);
+
+                // Create ORDER To BITESHIP
+                // $createOrder = Http::withHeaders([
+                //     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                //     'Content-Type'  => 'application/json',
+                // ])->post('https://api.biteship.com/v1/orders', [
+                //     "shipper_contact_name" => "Amir",
+                //     "shipper_contact_phone" => "088888888888",
+                //     "shipper_contact_email" => "biteship@test.com",
+                //     "shipper_organization" => "Biteship Org Test",
+                //     "origin_contact_name" => "Amir",
+                //     "origin_contact_phone" => "088888888888",
+                //     "origin_address" => "Plaza Senayan, Jalan Asia Afrik...",
+                //     "origin_note" => "Deket pintu masuk STC",
+                //     "origin_postal_code" => 12440,
+                //     "destination_contact_name" => "John Doe",
+                //     "destination_contact_phone" => "088888888888",
+                //     "destination_contact_email" => "jon@test.com",
+                //     "destination_address" => "Lebak Bulus MRT...",
+                //     "destination_postal_code" => 12950,
+                //     "destination_note" => "Near the gas station",
+                //     "courier_company" => "jne",
+                //     "courier_type" => "reg",
+                //     "courier_insurance" => 500000,
+                //     "delivery_type" => "now",
+                //     "order_note" => "Please be careful",
+                //     "metadata" => [],
+                //     "items" => [
+                //         [
+                //         "name" => "Black L",
+                //         "description" => "White Shirt",
+                //         "category" => "fashion",
+                //         "value" => 165000,
+                //         "quantity" => 1,
+                //         "height" => 10,
+                //         "length" => 10,
+                //         "weight" => 200,
+                //         "width" => 10
+                //         ]
+                //     ]
+                // ]);
+                
                 return redirect()->route('account', ['user' => session('id_user')]);
             } else {
                 // Log error detail
                 Log::error('Prismalink Response Error :', [
                     'status' => $payment_status['response_code'],
                 ]);
-
                 return back()->with('error', 'Payment request failed: ' . $payment_status['response_code']);
             }
             
@@ -342,7 +416,7 @@ class PrismalinkController extends Controller
 
     private function createNewOrder(array $orderData)
     {
-        Log::info(['Callback Success : ', $orderData]);
+        // Log::info(['Callback Success : ', $orderData]);
         $getInvoiceId = Invoice::where('no_invoice', session('merchant_ref_no'))->value('id');
 
         if(session('condition') == 'standard'){
@@ -359,7 +433,11 @@ class PrismalinkController extends Controller
                 'order_date' => now(),
                 'total_item' => $orderData['totalItem'],
                 'total_item_price' => $orderData['totalItemPrice'],
+                'destination_area' => $orderData['destiantionArea'],
+                'origin_area' => $orderData['originArea'],
             ]);
+
+            session(['order_id' => $order->id]);
     
             $cartId = Cart::where('user_id', session('id_user'))->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)
@@ -408,7 +486,7 @@ class PrismalinkController extends Controller
                     }
     
                     OrderItem::create([
-                        'order_id'      => $order->id,
+                        'order_id'   => $order->id,
                         'product_id' => $item->product_id,
                         'product_variant_id' => $item->product_variant_id,
                         'quantity' => $item->quantity,
@@ -433,6 +511,8 @@ class PrismalinkController extends Controller
                 'order_date' => now(),
                 'total_item' => $orderData['totalItem'],
                 'total_item_price' => $orderData['totalItemPrice'],
+                'destination_area' => $orderData['destiantionArea'],
+                'origin_area' => $orderData['originArea'],
             ]);
 
             $cartItems = Buynow::where('user_id', session('id_user'))
@@ -599,7 +679,7 @@ class PrismalinkController extends Controller
         return $order;
     }
 
-    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir){
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description){
         $data = [
             'orderId' => $orderId,
             'totalAmount' => $totalAmount,
@@ -611,6 +691,11 @@ class PrismalinkController extends Controller
             'totalItemPrice' => $totalItemPrice,
             'voucherPromo' => $voucherPromo,
             'voucherOngkir' => $voucherOngkir,
+            'destiantionArea' => $destinationArea,
+            'originArea' => $originArea,
+            'courier' => $courier,
+            'etd' => $etd,
+            'description' => $description,
         ];
 
         return $data;

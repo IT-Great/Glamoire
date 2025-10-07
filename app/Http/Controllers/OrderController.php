@@ -86,8 +86,6 @@ class OrderController extends Controller
         return view('admin.order.need-sent', compact('orders'));
     }
 
-
-
     // start resi sendiri
     public function generateShippingLabel($id)
     {
@@ -494,6 +492,15 @@ class OrderController extends Controller
                 'success' => false,
                 'message' => 'Failed to change order status: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+
+    // CREATE ORDER KE BITESHIP
+    public function updateShippingStatus($id)
+    {
+        try {
+            
         }
     }
 }
