@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\sendMailNotifyMe;
 use App\Http\Controllers\Controller;
+use App\Models\Article;
 use App\Models\Brand;
 use App\Models\CategoryProduct;
 use App\Models\Product;
@@ -100,11 +101,41 @@ class ProductController extends Controller
                     }
                 }
 
+                $categories = CategoryProduct::with(['products' => function ($query) {
+                    $query->select('id', 'category_product_id', 'main_image', 'product_name')
+                        ->whereNotNull('main_image')
+                        ->limit(1);
+                }])
+                    ->whereHas('products') // Hanya kategori yang punya produk
+                    ->get();
+
+                $articles = Article::with('categoryArticle')
+                    ->latest()
+                    ->take(10)
+                    ->get();
+
                 $date = now()->format('Y-m-d');
                 $promos = Promo::where('type', '=', 'promo')
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
                     ->get();
+
+                // Ambil promo dengan type 'diskon' (untuk sisi kiri - tampil max 2)
+                $promosDiskon = Promo::where('type', '=', 'discount')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(2)
+                    ->get();
+
+                // Ambil promo dengan type 'promo' (untuk sisi kanan - tampil max 2)
+                $promosBanner = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(2)
+                    ->get();
+
 
                 $mainPromo = Promo::where('type', 'promo')
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
@@ -125,8 +156,12 @@ class ProductController extends Controller
                     'promos'    => $promos,
                     'promoModal' => $promoModal,
                     'topsell' => $topsell,
-                    'new'     => $new,
-                    'popups'    => $popups, // ⬅️ kirim ke view
+                    'new' => $new,
+                    'popups' => $popups, // ⬅️ kirim ke view
+                    'categories' => $categories, // TAMBAHKAN INI
+                    'articles' => $articles, // 🔄 ubah dari produk jadi artikel
+                    'promosBanner' => $promosBanner, // 🔄 ubah dari produk jadi artikel
+                    'promosDiskon' => $promosDiskon, // 🔄 ubah dari produk jadi artikel
 
                 ];
 
@@ -198,10 +233,38 @@ class ProductController extends Controller
                     }
                 }
 
+                $categories = CategoryProduct::with(['products' => function ($query) {
+                    $query->select('id', 'category_product_id', 'main_image', 'product_name')
+                        ->whereNotNull('main_image')
+                        ->limit(1);
+                }])
+                    ->whereHas('products')
+                    ->get();
+
+                $articles = Article::with('categoryArticle')
+                    ->latest()
+                    ->take(10)
+                    ->get();
+
                 $date = now()->format('Y-m-d');
                 $promos = Promo::where('type', '=', 'promo')
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->get();
+
+                $promosBanner = Promo::where('type', '=', 'promo')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(2)
+                    ->get();
+
+                // Ambil promo dengan type 'diskon' (untuk sisi kiri - tampil max 2)
+                $promosDiskon = Promo::where('type', '=', 'discount')
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
+                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
+                    ->orderBy('created_at', 'desc')
+                    ->limit(2)
                     ->get();
 
                 // Ambil data popup untuk slider
@@ -216,6 +279,10 @@ class ProductController extends Controller
                     'promos'  => $promos,
                     'popup'   => $popupVoucherNewUser,
                     'popups'    => $popups, // ⬅️ kirim ke view
+                    'categories' => $categories, // TAMBAHKAN INI
+                    'articles' => $articles, // TAMBAHKAN INI
+                    'promosBanner'  => $promosBanner,  // Promo tipe diskon (sisi kiri)
+                    'promosDiskon'  => $promosDiskon,  // Promo tipe diskon (sisi kiri)
 
                 ];
 
