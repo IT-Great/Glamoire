@@ -926,7 +926,8 @@
                     <div class="col-12">
                         <div class="page-title">
                             <h3 class="mb-2">Slider & Pop Up</h3>
-                            <p>Halaman ini digunakan untuk mengelola banner informasi slider & pop-up yang akan ditampilkan
+                            <p>Halaman ini digunakan untuk mengelola banner informasi slider & pop-up yang akan
+                                ditampilkan
                                 kepada pengguna, termasuk pengaturan konten, gambar, video, dan periode tayang.</p>
                         </div>
                     </div>
@@ -1064,7 +1065,7 @@
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="categoryModalLabel">Tambah Pop Up Baru</h4>
+                            <h4 class="modal-title" id="categoryModalLabel">Tambah Slider/Pop Up Baru</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
@@ -1075,11 +1076,12 @@
                             <div class="modal-body">
                                 <!-- Category Name Input -->
                                 <div class="form-group">
-                                    <label for="categoryName">Nama Pop Up <span class="text-danger">*</span></label>
+                                    <label for="categoryName">Nama Slider/Pop Up <span
+                                            class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="categoryName" name="name"
                                         placeholder="Masukkan Nama Pop Up" required>
                                     <small class="text-muted" style="font-size: 14px;">
-                                        Silakan isi dengan nama Pop Up yang ingin ditampilkan pada halaman
+                                        Silakan isi dengan nama Slider/Pop Up yang ingin ditampilkan pada halaman
                                     </small>
 
                                 </div>
@@ -1097,7 +1099,7 @@
                                 <!-- Category Image Upload -->
                                 <!-- Media Upload -->
                                 <div class="form-group upload-container">
-                                    <label for="mediaPopup" class="mb-2">Media Pop Up <span
+                                    <label for="mediaPopup" class="mb-2">Media Slider/Pop Up <span
                                             class="text-danger">*</span></label>
 
                                     <div class="upload-zone" id="upload-zone">
@@ -1134,7 +1136,7 @@
                                             </div>
                                             <div class="preview-details">
                                                 <div class="preview-filename" id="preview-filename"></div>
-                                                <div class="preview-meta">Media pop up yang akan diunggah</div>
+                                                <div class="preview-meta">Media Slider/Pop up yang akan diunggah</div>
                                             </div>
                                             <button type="button" class="remove-button" onclick="removeUpload()">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -1149,7 +1151,6 @@
                                     </div>
                                 </div>
 
-
                                 <!-- Pilihan Display Type -->
                                 <div class="form-group mt-3">
                                     <label for="displayType">Tampilkan di <span class="text-danger">*</span></label>
@@ -1158,6 +1159,12 @@
                                         <option value="slider">Hanya Slider</option>
                                         <option value="both">Pop Up & Slider</option>
                                     </select>
+                                    <small class="form-text text-muted mt-1" style="font-size: 11px;">
+                                        ⚠️ Untuk <strong>media video</strong> disarankan tampil di
+                                        <strong>Slider</strong> saja.<br>
+                                        📷 Untuk <strong>media gambar</strong> dapat ditampilkan di <strong>Pop
+                                            Up,</strong> atau <strong>Slider</strong>, atau <strong>Keduanya</strong>.
+                                    </small>
                                 </div>
 
 
@@ -1173,14 +1180,12 @@
                 </div>
             </div>
 
-
-
             <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="popupModalLabel">Detail Pop Up</h4>
+                            <h4 class="modal-title" id="popupModalLabel">Detail Slider/Pop Up</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>

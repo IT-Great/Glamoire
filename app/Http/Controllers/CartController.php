@@ -52,7 +52,6 @@ class CartController extends Controller
                     }
                 // END
 
-
                 // UPDATE PRICE DISKON KETIKA ADA PROMO BARU
                     $promoDiscProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
@@ -182,75 +181,75 @@ class CartController extends Controller
             }
             else {
                 // dd(session());
-                $guestCart = session('guest_cart', []);
-                $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
+                // $guestCart = session('guest_cart', []);
+                // $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
 
-                $expiredPromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') < ?", [Carbon::today()])
-                    ->with(['products' => function ($query) {
-                        $query->wherePivot('discounted_price', '>', 0);
-                    }])
-                    ->get()
-                    ->pluck('products.*.id')
-                    ->flatten()
-                    ->intersect($productIds); // hanya yang ada di cart guest
+                // $expiredPromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') < ?", [Carbon::today()])
+                //     ->with(['products' => function ($query) {
+                //         $query->wherePivot('discounted_price', '>', 0);
+                //     }])
+                //     ->get()
+                //     ->pluck('products.*.id')
+                //     ->flatten()
+                //     ->intersect($productIds); // hanya yang ada di cart guest
 
-                $regularPrices = Product::whereIn('id', $expiredPromoProductIds)
-                    ->pluck('regular_price', 'id');
+                // $regularPrices = Product::whereIn('id', $expiredPromoProductIds)
+                //     ->pluck('regular_price', 'id');
 
 
-                $activePromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                    ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                    ->where('status', 'Active')
-                    ->with(['products' => function ($query) {
-                        $query->wherePivot('discounted_price', '>', 0);
-                    }])
-                    ->get()
-                    ->pluck('products.*.id')
-                    ->flatten()
-                    ->intersect($productIds);
+                // $activePromoProductIds = Promo::whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                //     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                //     ->where('status', 'Active')
+                //     ->with(['products' => function ($query) {
+                //         $query->wherePivot('discounted_price', '>', 0);
+                //     }])
+                //     ->get()
+                //     ->pluck('products.*.id')
+                //     ->flatten()
+                //     ->intersect($productIds);
 
-                $discountedPrices = Product::whereIn('id', $activePromoProductIds)
-                    ->with(['promos' => function ($query) {
-                        $query->select('promos.*', 'promo_products.discounted_price')
-                            ->wherePivot('discounted_price', '>', 0)
-                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
-                    }])
-                    ->get()
-                    ->mapWithKeys(function ($product) {
-                        $discounted = $product->promos->first()->pivot->discounted_price ?? $product->regular_price;
-                        return [$product->id => $discounted];
-                    });
+                // $discountedPrices = Product::whereIn('id', $activePromoProductIds)
+                //     ->with(['promos' => function ($query) {
+                //         $query->select('promos.*', 'promo_products.discounted_price')
+                //             ->wherePivot('discounted_price', '>', 0)
+                //             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                //             ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()]);
+                //     }])
+                //     ->get()
+                //     ->mapWithKeys(function ($product) {
+                //         $discounted = $product->promos->first()->pivot->discounted_price ?? $product->regular_price;
+                //         return [$product->id => $discounted];
+                //     });
 
-                $updatedGuestCart = [];
+                // $updatedGuestCart = [];
 
-                foreach ($guestCart as $item) {
-                    $productId = $item['product_id'];
-                    $quantity = $item['quantity'];
+                // foreach ($guestCart as $item) {
+                //     $productId = $item['product_id'];
+                //     $quantity = $item['quantity'];
 
-                    // Tentukan harga
-                    if (isset($discountedPrices[$productId])) {
-                        $price = $discountedPrices[$productId];
-                    } elseif (isset($regularPrices[$productId])) {
-                        $price = $regularPrices[$productId];
-                    } else {
-                        // fallback ke harga sekarang dari produk
-                        $price = Product::find($productId)->regular_price ?? 0;
-                    }
+                //     // Tentukan harga
+                //     if (isset($discountedPrices[$productId])) {
+                //         $price = $discountedPrices[$productId];
+                //     } elseif (isset($regularPrices[$productId])) {
+                //         $price = $regularPrices[$productId];
+                //     } else {
+                //         // fallback ke harga sekarang dari produk
+                //         $price = Product::find($productId)->regular_price ?? 0;
+                //     }
 
-                    $updatedGuestCart[] = [
-                        'product_id' => $productId,
-                        'quantity' => $quantity,
-                        'price' => $price,
-                        'total' => $price * $quantity
-                    ];
-                }
+                //     $updatedGuestCart[] = [
+                //         'product_id' => $productId,
+                //         'quantity' => $quantity,
+                //         'price' => $price,
+                //         'total' => $price * $quantity
+                //     ];
+                // }
 
-                session()->put('guest_cart', $updatedGuestCart);
-                return view('user.component.cart-guest');
+                // session()->put('guest_cart', $updatedGuestCart);
+                // return view('user.component.cart-guest');
                 
-                // session()->flash('register_or_login_first');
-                // return redirect()->back();
+                session()->flash('register_or_login_first');
+                return redirect()->back();
             }
         } catch (Exception $err) {
             dd($err);

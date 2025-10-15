@@ -335,7 +335,7 @@
                                                                                 Pilih Provinsi</option>
                                                                         </select>
                                                                         <input type="hidden" name="province_name"
-                                                                            id="change_province_name_{{$sa->id}}">
+                                                                            id="change_province_name_{{$sa->id}}" required>
                                                                     </div>
 
                                                                     <div class="col-12 p-0">
@@ -680,7 +680,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -688,7 +688,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -696,7 +696,7 @@
                                                                             Diambil Kurir</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{$order->status == 'delivery' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{$order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-truck"></i>
                                                                         </span>
                                                                         <span
@@ -963,7 +963,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'pending' || $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -971,7 +971,7 @@
                                                                             Dikonfirmasi</span>
                                                                     </div>
                                                                     <div
-                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-user"></i>
                                                                         </span>
                                                                         <span
@@ -1434,11 +1434,11 @@
                                 <label for="provinsi"
                                     class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
                                 <select class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                    aria-label="Provinsi" name="province" id="address_province">
+                                    aria-label="Provinsi" name="province" id="address_province" required>
                                     <option class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                         Pilih Provinsi</option>
                                 </select>
-                                <input type="hidden" name="province_name" id="address_province_name">
+                                <input type="hidden" name="province_name" id="address_province_name" required>
                             </div>
 
                             <div class="col-12 p-0">
@@ -1559,19 +1559,10 @@
                                 <label for="provinsi"
                                     class="form-label text-black text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px]">Provinsi</label>
                                 <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]"
-                                    aria-label="Provinsi" name="province">
+                                    aria-label="Provinsi" name="province" required>
                                     <option value="" id="provinceSelect"></option>
                                     <option class="text-primary text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
                                         Pilih Provinsi</option>
-                                    <option value="Jawa Barat"
-                                        class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jawa Barat
-                                    </option>
-                                    <option value="Jawa Tengah"
-                                        class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jawa Tengah
-                                    </option>
-                                    <option value="Jawa Timur"
-                                        class="text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Jawa Timur
-                                    </option>
                                 </select>
                             </div>
 
@@ -2664,10 +2655,10 @@
                 const districtSelect = document.getElementById(`district_change_${addressId}`);
                 const subdistrictSelect = document.getElementById(`subdistrict_change_${addressId}`);
 
-                const provinceNameInput = document.getElementById(`province_name_change_${addressId}`);
-                const regencyNameInput = document.getElementById(`regency_name_change_${addressId}`);
-                const districtNameInput = document.getElementById(`district_name_change_${addressId}`);
-                const subdistrictNameInput = document.getElementById(`subdistrict_name_change_${addressId}`);
+                const provinceNameInput = document.getElementById(`change_province_name_${addressId}`);
+                const regencyNameInput = document.getElementById(`change_regency_name_${addressId}`);
+                const districtNameInput = document.getElementById(`change_district_name_${addressId}`);
+                const subdistrictNameInput = document.getElementById(`change_subdistrict_name_${addressId}`);
 
                 const selectedProvince = sa.id_province;
                 const selectedRegency = sa.regency;

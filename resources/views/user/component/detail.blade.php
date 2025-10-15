@@ -1003,8 +1003,6 @@
         });
 
     });
-
-
 </script>
 
 @endsection

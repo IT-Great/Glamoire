@@ -10993,7 +10993,7 @@ a.text-dark:focus {
     height: auto;
     object-fit: cover;
     aspect-ratio: 1 / 1; 
-    border-radius: 8px;
+    /* border-radius: 8px; */
 }
 
 .product-image-wrapper {
@@ -11001,7 +11001,7 @@ a.text-dark:focus {
     width: 100%;
     padding-top: 100%; /* Rasio 1:1 (kotak) */
     overflow: hidden;
-    border-radius: 8px;
+    /* border-radius: 8px; */
 }
 
 .product-image {

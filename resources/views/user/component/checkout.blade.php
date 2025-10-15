@@ -419,6 +419,7 @@
 
     let destinationArea = {!! json_encode($data['destinationArea']) !!};    
     let originArea      = {!! json_encode($data['originArea']) !!};
+    let destinationPostalCode = {!! json_encode($data['destinationPostalCode']) !!};
 
 
     productItems.forEach((product, index) => {
@@ -1890,6 +1891,7 @@
                     courier: courier,
                     etd: etd,
                     description: description,
+                    destinationPostalCode: destinationPostalCode,
                 },
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1945,15 +1947,20 @@
                     }
                 },
                 error: function(xhr, status, error) {
-                    // console.log(xhr);
-                    // console.log(status);
-                    // console.log(error);
-                    $('#dokuPaymentContainer').html(`
-                <div class="alert alert-danger">
-                    <p>Terjadi kesalahan saat memproses pembayaran:</p>
-                    <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-                </div>
-            `);
+                    Toast.fire({
+                        icon: "error",
+                        text: "Kesalahan Sistem, ulangi lagi",
+                        title: "Oops..",
+                        showConfirmButton: false,
+                        timer: 4500,
+                        timerProgressBar: true,
+                        willOpen: () => {
+                            const title = document.querySelector('.swal2-title');
+                            const content = document.querySelector('.swal2-html-container');
+                            if (title) title.style.color = '#ffffff';
+                            if (content) content.style.color = '#ffffff';
+                        }
+                    });
                     console.error('Payment error:', error);
                 },
                 complete: function() {

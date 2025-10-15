@@ -43,6 +43,9 @@ class CheckoutController extends Controller
         try {
             $userId = session('id_user');
             $date = now()->format('Y-m-d');
+            $dataUser = User::with(['useAddress'])->where('id', $userId)->first();
+
+            // dd($dataUser);
 
             if ($userId) {
                 $user = Auth::user();
@@ -284,6 +287,8 @@ class CheckoutController extends Controller
                     $areaId = $rs['id'];
                 }
 
+                // dd(['$areaIdStart' => $areaIdStart, '$areaId' => $areaId, '$getPostalCode' => $getPostalCode, '$postalCodeGCS' => $postalCodeGCS, 'responseShipping' => $responseShipping]);
+
                 // AMBIL BIAYA PENGIRIMAN DARI BITESHIP
                 $items = $cartItems->map(function ($item) {
                     $dimensions = json_decode($item->product->dimensions ?? '{}', true);
@@ -299,8 +304,11 @@ class CheckoutController extends Controller
                     ];
                 })->toArray();
 
+                // dd($items);
+
+
                 $courierRates = Http::withHeaders([
-                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2xhbW9pcmUiLCJ1c2VySWQiOiI2OGRjZTlkNzg5YTA1NDAwMTFiZGEzNzUiLCJpYXQiOjE3NjAwNjAxOTJ9.2VtwWzkXucZXCNoFmBBAYIXjL0Wb3fo7Wnci6unUmMg',
                     'Content-Type'  => 'application/json',
                 ])->post('https://api.biteship.com/v1/rates/couriers', [
                     "origin_area_id"      => $areaIdStart,  // area ID asal
@@ -309,10 +317,12 @@ class CheckoutController extends Controller
                     "items"               => $items,
                 ]);
 
-                // dd($address);
+                // dd($courierRates->json());
+
+                // dd($dataUser->name
                 
                 // $createOrder = Http::withHeaders([
-                //     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                //     'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2xhbW9pcmUiLCJ1c2VySWQiOiI2OGRjZTlkNzg5YTA1NDAwMTFiZGEzNzUiLCJpYXQiOjE3NjAwNjAxOTJ9.2VtwWzkXucZXCNoFmBBAYIXjL0Wb3fo7Wnci6unUmMg',
                 //     'Content-Type'  => 'application/json',
                 // ])->post('https://api.biteship.com/v1/orders', [
                 //     "shipper_contact_name" => "", 
@@ -323,17 +333,17 @@ class CheckoutController extends Controller
                 //     "origin_contact_phone" => "08979243010", //
                 //     "origin_address" => "Jl Wijaya Kusuma no. 57, Surabaya", //
                 //     "origin_note" => "",
-                //     "origin_postal_code" => $areaIdStart, // 
-                //     "destination_contact_name" => "John Doe", //
-                //     "destination_contact_phone" => "088888888888", //
-                //     "destination_contact_email" => "jon@test.com",
-                //     "destination_address" => "Lebak Bulus MRT...", //
-                //     "destination_postal_code" => 12950, //
-                //     "destination_note" => "Near the gas station",
-                //     "courier_company" => "", //
-                //     "courier_type" => "", //
-                //     "courier_insurance" => "",
-                //     "delivery_type" => "", //
+                //     "origin_postal_code" => $postalCodeGCS, // 
+                //     "destination_contact_name" => $dataUser->useAddress['recipient_name'], //
+                //     "destination_contact_phone" => $dataUser->useAddress['handphone'], //
+                //     "destination_contact_email" => $dataUser['email'],
+                //     "destination_address" => $dataUser->useAddress['address'], //
+                //     "destination_postal_code" => $getPostalCode, //
+                //     "destination_note" => $dataUser->useAddress['benchmark'],
+                //     "courier_company" => "jne", //
+                //     "courier_type" => "reg", //
+                //     "courier_insurance" => 50000,
+                //     "delivery_type" => "now", //
                 //     "order_note" => "",
                 //     "metadata" => [],
                 //     "items" => $items,
@@ -341,7 +351,7 @@ class CheckoutController extends Controller
 
                 // dd($createOrder->json());
 
-                // Log::info('Response Kurir:', [
+                // Log::info('Create Order:', [
                 //     'order' => $createOrder,
                 // ]);
 
@@ -376,7 +386,7 @@ class CheckoutController extends Controller
                         }
                     }
 
-                    Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
+                    // Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
 
                     return response()->json([
                         'success'       => true,
@@ -388,7 +398,7 @@ class CheckoutController extends Controller
                     ]);
                 }
                 else{
-                    Log::info(['service : '. $request->service]);
+                    // Log::info(['service : '. $request->service]);
                 }
                 // END ONGKIR
 
@@ -413,6 +423,7 @@ class CheckoutController extends Controller
                     'voucherDisabled' => $voucherDisabled,
                     'destinationArea' => $areaId,
                     'originArea' => $areaIdStart,
+                    'destinationPostalCode' => $getPostalCode,
                 ];
 
                 $productIds = $data['cartItems']->pluck('product_id');
@@ -438,10 +449,8 @@ class CheckoutController extends Controller
                     'groupedVouchers' => $groupedVouchers,
                 ])->with('data', $data);
 
-            
+            // GUEST GAJADI
             } else {
-                // GUEST CHECKOUT
-
                 $guestCart = session('guest_cart', []);
                 $productIds = collect($guestCart)->pluck('product_id')->unique()->toArray();
 
@@ -608,7 +617,7 @@ class CheckoutController extends Controller
                 })->toArray();
 
                 $courierRates = Http::withHeaders([
-                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2xhbW9pcmUiLCJ1c2VySWQiOiI2OGRjZTlkNzg5YTA1NDAwMTFiZGEzNzUiLCJpYXQiOjE3NjAwNjAxOTJ9.2VtwWzkXucZXCNoFmBBAYIXjL0Wb3fo7Wnci6unUmMg',
                     'Content-Type'  => 'application/json',
                 ])->post('https://api.biteship.com/v1/rates/couriers', [
                     "origin_area_id"      => $areaIdStart,  // area ID asal
@@ -650,7 +659,7 @@ class CheckoutController extends Controller
                         }
                     }
 
-                    Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
+                    // Log::info(['ongkir : '. $ongkir, 'service : '. $request->service]);
 
                     return response()->json([
                         'success'       => true,
@@ -662,7 +671,7 @@ class CheckoutController extends Controller
                     ]);
                 }
                 else{
-                    Log::info(['service : '. $request->service]);
+                    // Log::info(['service : '. $request->service]);
                 }
                 // END ONGKIR
 
@@ -958,7 +967,7 @@ class CheckoutController extends Controller
                 })->toArray();
 
                 $courierRates = Http::withHeaders([
-                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiZ2xhbW9pcmUiLCJ1c2VySWQiOiI2ODc4NTkwZmRhNmI1NzAwMTNmOTZhMjciLCJpYXQiOjE3NTc2NjU4ODd9.VdpAhb1SCDzIr9oL68IJ40i1wESDOVq-5S13tfQPI-Q',
+                    'Authorization' => 'biteship_test.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2xhbW9pcmUiLCJ1c2VySWQiOiI2OGRjZTlkNzg5YTA1NDAwMTFiZGEzNzUiLCJpYXQiOjE3NjAwNjAxOTJ9.2VtwWzkXucZXCNoFmBBAYIXjL0Wb3fo7Wnci6unUmMg',
                     'Content-Type'  => 'application/json',
                 ])->post('https://api.biteship.com/v1/rates/couriers', [
                     "origin_area_id"      => $areaIdStart,  // area ID asal
@@ -1010,7 +1019,7 @@ class CheckoutController extends Controller
                     ]);
                 }
                 else{
-                    Log::info(['service : '. $request->service]);
+                    // Log::info(['service : '. $request->service]);
                 }
                 // END ONGKIR
 
@@ -1032,6 +1041,9 @@ class CheckoutController extends Controller
                     'productVoucherIds' => $productVoucherIds,
                     'brandVoucherIds' => $brandVoucherIds,
                     'voucherDisabled' => $voucherDisabled,
+                    'destinationArea' => $areaId,
+                    'originArea' => $areaIdStart,
+                    'destinationPostalCode' => $getPostalCode,
                 ];
 
                 $productIds = $data['cartItems']->pluck('product_id');

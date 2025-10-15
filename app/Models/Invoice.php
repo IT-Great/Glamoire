@@ -9,9 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'no_invoice',
-    ];
+    protected $guarded = ['id'];
 
     public function order()
     {
