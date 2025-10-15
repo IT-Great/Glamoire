@@ -9,6 +9,7 @@ use App\Http\Controllers\AffiliateController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\BiteshipController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
@@ -50,6 +51,10 @@ Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
 // Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
 // Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
+
+// BITESHIP ROUTE WEBHOOK
+Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback'])->name('callback.biteship');
+
 
 
 // VERIFIKASI EMAIL REGISTER
@@ -156,6 +161,7 @@ Route::post('/notify-me', function (Request $request) {
             }
         }
     }
+    
     return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
 })->name('notify.me');
 
@@ -417,8 +423,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/order-detail/{id}', [OrderController::class, 'detailOrder'])->name('detail-admin-order');
 
     Route::post('/admin/order/{id}/change-status', [OrderController::class, 'changeOrderStatus'])->name('change-order-status');
+    Route::post('/admin/order/{id}/pick-up', [OrderController::class, 'pickUpBiteship'])->name('pick-up-biteship');
     Route::post('/orders/{orderId}/complete', [OrderController::class, 'changeDeliveryStatusOrder'])->name('orders.complete');
     Route::post('/orders/{orderId}/confirm-shipping', [OrderController::class, 'confirmShipping'])->name('orders.confirm-shipping');
+
 
     // GENERATE LABEL RESI BUAT SENDIRI
     Route::get('/orders/{id}/generate-shipping-label', [App\Http\Controllers\OrderController::class, 'generateShippingLabel'])->name('generate-shipping-label');
