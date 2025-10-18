@@ -52,4 +52,9 @@ return [
         'transaction_api' => env('PRISMALINK_TRANSACTION_API'),
     ],
 
+    'biteship' => [
+        'api_key' => env('BITESHIP_API_KEY'),   
+        'base_url' => env('BITESHIP_BASE_URL'),
+    ]
+
 ];

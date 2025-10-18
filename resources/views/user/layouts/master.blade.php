@@ -2029,8 +2029,8 @@
     <!-- AMBIL TOTAL CART ITEMS -->
     @php
       $user = session('id_user');
-      $cartGuest = session('guest_cart', []); // Ambil cart dari session
-      $totalItem = collect($cartGuest)->sum('quantity'); // Jumlah semua qty
+    //   $cartGuest = session('guest_cart', []); // Ambil cart dari session
+    //   $totalItem = collect($cartGuest)->sum('quantity'); // Jumlah semua qty
     @endphp
 
     @if ($user !== null)
@@ -2049,7 +2049,7 @@
           });
         });
       </script>
-    @else
+    {{-- @else
       <script>
         $(document).ready(function() {
           // Update jumlah cart items di dalam elemen dengan ID total_cart_items
@@ -2057,7 +2057,7 @@
     
           $('#total_cart_items').text(totalItem);
         });
-      </script>
+      </script> --}}
     @endif
 
     @if (session('register_or_login_first'))

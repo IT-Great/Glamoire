@@ -394,36 +394,37 @@ class UserController extends Controller
             }
             // GUEST
             else {
-                $productId   = $request->product_id;
-                $quantity    = $request->quantity;
-                $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
+                // $productId   = $request->product_id;
+                // $quantity    = $request->quantity;
+                // $maxQuantity = Product::where('id', $productId)->value('stock_quantity');
 
-                $guestCart = session()->get('guest_cart', []);
+                // $guestCart = session()->get('guest_cart', []);
 
-                // Cek apakah produk sudah ada di cart
-                $index = collect($guestCart)->search(function ($item) use ($productId) {
-                    return $item['product_id'] == $productId;
-                });
+                // // Cek apakah produk sudah ada di cart
+                // $index = collect($guestCart)->search(function ($item) use ($productId) {
+                //     return $item['product_id'] == $productId;
+                // });
 
-                if ($index !== false) {
-                    // Produk sudah ada → update jumlah)
-                    $guestCart[$index]['quantity'] += $quantity;
-                    if($guestCart[$index]['quantity'] >= $maxQuantity){
-                        $guestCart[$index]['quantity'] = $maxQuantity-1;
-                    }
-                } else {
-                    // Produk belum ada → tambah baru
-                    $guestCart[] = [
-                        'product_id' => $productId,
-                        'product_variant_id' => null,
-                        'quantity' => $quantity,
-                    ];
-                }
+                // if ($index !== false) {
+                //     // Produk sudah ada → update jumlah)
+                //     $guestCart[$index]['quantity'] += $quantity;
+                //     if($guestCart[$index]['quantity'] >= $maxQuantity){
+                //         $guestCart[$index]['quantity'] = $maxQuantity-1;
+                //     }
+                // } else {
+                //     // Produk belum ada → tambah baru
+                //     $guestCart[] = [
+                //         'product_id' => $productId,
+                //         'product_variant_id' => null,
+                //         'quantity' => $quantity,
+                //     ];
+                // }
 
                 // Simpan kembali ke session
-                session()->put('guest_cart', $guestCart);
+                // session()->put('guest_cart', $guestCart);
 
-                return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
+                // return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);\
+                return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
             }   
 
 
@@ -592,6 +593,8 @@ class UserController extends Controller
     {
         dd($request);
         $address = Shipping_address::find($request->input('address-id'));
+
+        // dd($address);
 
         if (!$address) {
             return response()->json(['success' => false, 'message' => 'Address not found.']);

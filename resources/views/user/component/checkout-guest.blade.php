@@ -174,7 +174,7 @@
                                                     class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
                                                 <select
                                                     class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                                    aria-label="Provinsi" name="province" id="checkout_province">
+                                                    aria-label="Provinsi" name="province" id="checkout_province" required>
                                                     <option
                                                         class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                                         Pilih Provinsi</option>
@@ -519,7 +519,7 @@
                                         class="form-label text-black text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">Provinsi</label>
                                     <select
                                         class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
-                                        aria-label="Provinsi" name="province" id="checkout_province_selected" onchange="onProvinceChanged(this)">
+                                        aria-label="Provinsi" name="province" id="checkout_province_selected" onchange="onProvinceChanged(this)" required>
                                         <option
                                             class="text-primary text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                             Pilih Provinsi</option>
@@ -533,7 +533,7 @@
                                     <select
                                         class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
                                         aria-label="Kabupaten/Kota" name="regency"
-                                        id="checkout_regency_selected" onchange="onRegencyChanged(this)">
+                                        id="checkout_regency_selected" onchange="onRegencyChanged(this)" required>
                                         <option
                                             class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                             Pilih Kabupaten/Kota</option>
@@ -548,7 +548,7 @@
                                     <select
                                         class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
                                         aria-label="Kecamatan" name="district"
-                                        id="checkout_district_selected" onchange="onDistrictChanged(this)">
+                                        id="checkout_district_selected" onchange="onDistrictChanged(this)" required>
                                         <option
                                             class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                             Pilih Kecamatan</option>
@@ -563,7 +563,7 @@
                                     <select
                                         class="form-select text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]"
                                         aria-label="village" name="subdistrict"
-                                        id="checkout_subdistrict_selected">
+                                        id="checkout_subdistrict_selected" required>
                                         <option
                                             class="text-[12px] md:text-[10px] lg:text-[12px] xl:text-[13px]">
                                             Pilih Desa/Kelurahan</option>
@@ -658,12 +658,15 @@
     let destinationArea = {!! json_encode($data['destinationArea']) !!};    
     let originArea      = {!! json_encode($data['originArea']) !!};
 
+    // console.log(productItems);
+
     productItems.forEach((product, index) => {
         formattedData[index] = {
-            product_id: product.product_id,
+            item_code: product.product.id,
+            item_title: product.product.product_name,
             quantity: product.quantity,
-            price: product.price,
-            product_variant_id: product.product_variant_id || null // Gunakan null jika product_variant_id tidak ada
+            total: product.price,
+            product_variant_id: product.product.product_variant_id || null // Gunakan null jika product_variant_id tidak ada
         };
     });
     
@@ -679,7 +682,7 @@
         updateOngkir();
     }
     // Output example
-    console.log(formattedData);
+    // console.log(formattedData);
 
 
     // ONGKIR - Shipping
@@ -1003,7 +1006,7 @@
                 $('.loading-container').show(); // Show the spinner
             },
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 if (response.success) {
                     saveOriginalValues(response); // Save values for later restoration
                     updateTotals(response); // Update totals based on the response
@@ -1719,7 +1722,7 @@
         // Event listener for province selection
         // PILIH PROVINSI
         function onProvinceChanged(selectElement) {
-            console.log('✅ Province changed');
+            // console.log('✅ Province changed');
             const provinceId = selectElement.value;
             const provinceName = selectElement.options[selectElement.selectedIndex].text; // Get the name
             document.getElementById("checkout_province_name_selected").value = provinceName;
@@ -1758,7 +1761,7 @@
         };
 
         function onRegencyChanged(selectElement){
-            console.log('✅ Regency changed');
+            // console.log('✅ Regency changed');
             const regenciesId = selectElement.value;
             const regenciesName = selectElement.options[selectElement.selectedIndex].text;
             document.getElementById("checkout_regency_name_selected").value = regenciesName;
@@ -1793,7 +1796,7 @@
         }
 
         function onDistrictChanged(selectElement){
-            console.log('✅ District changed');
+            // console.log('✅ District changed');
 
             const districtId = selectElement.value;
             const districtName = selectElement.options[selectElement.selectedIndex].text;
@@ -1804,7 +1807,7 @@
             document.getElementById("checkout_subdistrict_name_selected").value = "";
 
             if (districtId) {
-                console.log(`Fetching subdistricts for districtId: ${districtId}`);
+                // console.log(`Fetching subdistricts for districtId: ${districtId}`);
                 fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`)
                     .then(response => {
                         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -1955,7 +1958,7 @@
                     discount_ongkir: shippingDiscount,
                     voucher_promo: selectedPromoCode,
                     voucher_ongkir: selectedOngkirCode,
-                    condition: "standard",
+                    condition: "guest",
                     destinationArea: destinationArea,
                     originArea: originArea,
                     courier: courier,
