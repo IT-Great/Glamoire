@@ -294,7 +294,7 @@ class CheckoutController extends Controller
                     $dimensions = json_decode($item->product->dimensions ?? '{}', true);
                     return [
                         "name"        => $item->product->product_name ?? 'Unknown Product',
-                        "description" => $item->product->description ?? '',
+                        // "description" => $item->product->description ?? '',
                         "value"       => $item->product->regular_price ?? 0,
                         "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
                         "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
@@ -351,9 +351,17 @@ class CheckoutController extends Controller
 
                 // dd($createOrder->json());
 
-                // Log::info('Create Order:', [
-                //     'order' => $createOrder,
-                // ]);
+                Log::info('Courier:', [
+                    'body' => [
+                        "origin_area_id"      => $areaIdStart,  // area ID asal
+                        "destination_area_id" => $areaId,  // area ID tujuan
+                        "couriers"            => "paxel,jne,sicepat",
+                        "items"               => $items,
+                    ],
+                    'order' => $courierRates,
+                ]);
+
+
 
                 $sfee = [];
                 if ($responseShipping->successful()) {
@@ -956,7 +964,7 @@ class CheckoutController extends Controller
                     $dimensions = json_decode($item->product->dimensions ?? '{}', true);
                     return [
                         "name"        => $item->product->product_name ?? 'Unknown Product',
-                        "description" => $item->product->description ?? '',
+                        // "description" => $item->product->description ?? '',
                         "value"       => $item->product->regular_price ?? 0,
                         "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
                         "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,

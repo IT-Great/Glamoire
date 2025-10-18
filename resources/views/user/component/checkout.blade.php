@@ -1898,49 +1898,48 @@
                 },
                 success: function(response) {
                     if (response.success && response.payment_url) {
-                        $('#dokuPaymentContainer').html(`
-                            <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
-                                    </svg>
-                                    <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
-                                </div>
-                                <p class="text-sm text-gray-700">
-                                    Silakan selesaikan pembayaran sebelum:
-                                </p>
-                                <div class="mt-2 text-xl font-bold text-red-600">
-                                    ${response.deadline}
-                                </div>
-                                 <p class="mt-2 text-sm text-gray-700">
-                                    Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
-                                </p>
+                        // $('#dokuPaymentContainer').html(`
+                        //     <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
+                        //         <div class="flex items-center gap-3 mb-2">
+                        //             <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        //                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                        //                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
+                        //             </svg>
+                        //             <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
+                        //         </div>
+                        //         <p class="text-sm text-gray-700">
+                        //             Silakan selesaikan pembayaran sebelum:
+                        //         </p>
+                        //         <div class="mt-2 text-xl font-bold text-red-600">
+                        //             ${response.deadline}
+                        //         </div>
+                        //          <p class="mt-2 text-sm text-gray-700">
+                        //             Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
+                        //         </p>
     
-                                <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
-                                <ol class="text-gray-700 text-sm">
-                                    <li>1. Pilih metode pembayaran</li>
-                                    <li>2. Lakukan transaksi sebelum batas waktu</li>
-                                    <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
-                                    <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
-                                </ol>
-                                <p class="mt-2 text-sm text-gray-700">
-                                    Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
-                                </p>
-                                <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
-                                    Selesai
-                                </a>
-                            </div>
-                        `);
-    
-                        if (window.innerWidth <= 455){
-                            // console.log(window.innerWidth)
-                            window.location.href = response.payment_url;
-                        }
-                        else{
-                            // console.log(window.innerWidth)
-                            window.open(response.payment_url, '_blank', 'width=800,height=600');
-                        }
+                        //         <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
+                        //         <ol class="text-gray-700 text-sm">
+                        //             <li>1. Pilih metode pembayaran</li>
+                        //             <li>2. Lakukan transaksi sebelum batas waktu</li>
+                        //             <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
+                        //             <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
+                        //         </ol>
+                        //         <p class="mt-2 text-sm text-gray-700">
+                        //             Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
+                        //         </p>
+                        //         <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
+                        //             Selesai
+                        //         </a>
+                        //     </div>
+                        // `);
+                        
+                        window.location.href = response.payment_url;
+                        // if (window.innerWidth <= 455){
+                        //     // console.log(window.innerWidth)
+                        // }
+                        // else{
+                        //     window.open(response.payment_url, '_blank', 'width=800,height=600');
+                        // }
     
                     } else {
                         throw new Error('Invalid payment URL');

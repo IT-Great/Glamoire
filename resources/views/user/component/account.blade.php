@@ -680,7 +680,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span
@@ -963,7 +963,7 @@
                                                                     Riwayat Pengiriman</p>
                                                                 <div class="track">
                                                                     <div
-                                                                        class="step {{ $order->status == 'processing' || $order->status == 'completed' ? 'active' : '' }}">
+                                                                        class="step {{ $order->status == 'processing' || $order->status == 'delivery' || $order->status == 'completed' ? 'active' : '' }}">
                                                                         <span class="icon"> <i class="fa fa-check"></i>
                                                                         </span>
                                                                         <span

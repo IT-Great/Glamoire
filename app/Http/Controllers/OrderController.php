@@ -552,7 +552,7 @@ class OrderController extends Controller
                     $dimensions = json_decode($item->product->dimensions ?? '{}', true);
                     return [
                         "name"        => $item->product->product_name ?? 'Unknown Product',
-                        "description" => $item->product->description ?? '',
+                        // "description" => $item->product->description ?? '',
                         "value"       => $item->product->regular_price ?? 0,
                         "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
                         "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,

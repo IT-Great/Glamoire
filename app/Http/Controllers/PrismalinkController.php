@@ -267,7 +267,7 @@ class PrismalinkController extends Controller
         // Cek apakah response berhasil
         if ($status['response_code'] == "PL000") {
             $data = $response->json();
-            Log::info('Hasil Post Pembayaran :', $data);
+            // Log::info('Hasil Post Pembayaran :', $data);
 
             $saveCheckStatus = $this->checkStatus($invoiceCreate->no_invoice, $data['plink_ref_no'], $data['timestamp']);
             
@@ -302,7 +302,7 @@ class PrismalinkController extends Controller
                 // return redirect()->away($fullPaymentPageUrl);
 
                 // SIMPAN DATA ORDERAN SEMENTARA
-                Log::info(['Request Data :' => $request]);
+                // Log::info(['Request Data :' => $request]);
 
                 $orderId = 'ORDER-' . time() . '-' . Str::random(5);
                 $shippingAddressId = $request->shipping_address_id;
@@ -361,9 +361,9 @@ class PrismalinkController extends Controller
         try {
             $payment_status = $this->getPaymentStatus();
 
-            //  Log::info('Payment status setelah callback', [
-            //     'payment' => $payment_status
-            // ]);
+             Log::info('Payment status setelah callback', [
+                'payment' => $payment_status
+            ]);
 
             if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
                 return $payment_status; // Redirect ke route checkout
@@ -385,8 +385,6 @@ class PrismalinkController extends Controller
                 $orderData = session('order_data');
                 $order_id = session('order_id');
 
-
-
                 $items = Order::where('id', $order_id)->with('orderItems.product')->first();
 
                 Log::info('Order Details after Payment Success:', [
@@ -397,6 +395,8 @@ class PrismalinkController extends Controller
                 
                 return redirect()->route('account', ['user' => session('id_user')]);
             } else {
+                Invoice::where('no_invoice', session('merchant_ref_no'))->delete();
+
                 Log::error('Prismalink Response Error :', [
                     'status' => $payment_status['response_code'],
                 ]);
