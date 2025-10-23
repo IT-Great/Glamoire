@@ -10,21 +10,13 @@ class BiteshipController extends Controller
     public function callback(Request $request)
     {
         try {
-            // Log request body (untuk debugging awal)
-            Log::info('Biteship Callback Received:', [
-                'headers' => $request->headers->all(),
-                'body' => $request->getContent(),
-            ]);
+            Log::info('Biteship Callback:', $request->all());
 
-            // Selalu balas dengan "ok" saat instalasi
             return response('ok', 200)
                 ->header('Content-Type', 'text/plain');
         } catch (\Exception $e) {
             Log::error('Biteship Callback Error: ' . $e->getMessage());
-            return response('error', 500)
-                ->header('Content-Type', 'text/plain');
+            return response('error', 500);
         }
     }
-
-
 }
