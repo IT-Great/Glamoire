@@ -53,8 +53,7 @@ Route::get('/callback-backend-create-new-order', [PrismalinkController::class, '
 // Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
 
 // BITESHIP ROUTE WEBHOOK
-Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback'])->name('callback.biteship');
-
+Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback']);
 
 
 // VERIFIKASI EMAIL REGISTER
