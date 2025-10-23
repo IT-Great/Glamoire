@@ -10,8 +10,6 @@ class BiteshipController extends Controller
     public function callback(Request $request)
     {
         try {
-            // Saat instalasi webhook, Biteship mengirim request kosong
-            // Jadi cukup kembalikan "ok" string agar dianggap valid
             return response('ok', 200)
                     ->header('Content-Type', 'text/plain');
         } catch (\Exception $e) {

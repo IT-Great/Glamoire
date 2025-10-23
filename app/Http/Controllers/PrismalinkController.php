@@ -333,6 +333,8 @@ class PrismalinkController extends Controller
                 
                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
 
+                Log::info("Request payment | User ID :" . session('id_user') .  "| Payment page :" . $fullPaymentPageUrl . " | Deadline:" . $formattedDeadline);
+
                 return response()->json([
                     'success' => true,
                     'payment_url' => $fullPaymentPageUrl,
@@ -345,10 +347,14 @@ class PrismalinkController extends Controller
             return back()->with('error', 'Response received, but no payment page URL was found.');
         } else {
             // Log error detail
-            Log::error('Prismalink Response Error :', [
+            Log::error('User', session('id_user'), 'failed request payment, redirecting to payment page :', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+            // Log::error('Prismalink Response Error :', [
+            //     'status' => $response->status(),
+            //     'body' => $response->body(),
+            // ]);
 
             return response()->json([
                 'success' => false,
@@ -361,9 +367,9 @@ class PrismalinkController extends Controller
         try {
             $payment_status = $this->getPaymentStatus();
 
-             Log::info('Payment status setelah callback', [
-                'payment' => $payment_status
-            ]);
+            // Log::info('Payment status setelah callback', [
+            // 'payment' => $payment_status
+            // ]);
 
             if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
                 return $payment_status; // Redirect ke route checkout
@@ -373,6 +379,9 @@ class PrismalinkController extends Controller
                 return redirect()->route('checkout')->with('error', 'Payment status not found.');
             }
 
+            Log::info("Payment callback received | User ID: " . session('id_user') . " | status:" . $payment_status['transaction_status']);
+
+
             // PEMBAYARAN BERHASIL 
             if ($payment_status['transaction_status'] == 'SETLD') {
                 $data = $payment_status;
@@ -380,26 +389,29 @@ class PrismalinkController extends Controller
                 
                 session(['activeTab' => '#my-order']);
                 session()->flash('payment_success');
-                Log::info(['Isi Session Order Data :', session('order_data')]);
+                // Log::info(['Isi Session Order Data :', session('order_data')]);
                 $this->createNewOrder(session('order_data'));
                 $orderData = session('order_data');
                 $order_id = session('order_id');
 
                 $items = Order::where('id', $order_id)->with('orderItems.product')->first();
 
-                Log::info('Order Details after Payment Success:', [
-                    'oder_data' => $orderData,
-                    'order_id' => $order_id,
-                    'items' => $items,
-                ]);
+                // Log::info('Order Details after Payment Success:', [
+                //     'oder_data' => $orderData,
+                //     'order_id' => $order_id,
+                //     'items' => $items,
+                // ]);
                 
+                // Log::info(['User', session('id_user'), 'success payment for invoice :', session('merchant_ref_no')]);
+                Log::info("Successfully Payment Order | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | Order ID: " . $order_id . " | Amount: " . $items->total_amount);
                 return redirect()->route('account', ['user' => session('id_user')]);
             } else {
                 Invoice::where('no_invoice', session('merchant_ref_no'))->delete();
+                Log::info("Payment callback error | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | status:" . $payment_status['transaction_status']);
+                // Log::error('Prismalink Response Error :', [
+                //     'status' => $payment_status['response_code'],
+                // ]);
 
-                Log::error('Prismalink Response Error :', [
-                    'status' => $payment_status['response_code'],
-                ]);
                 return back()->with('error', 'Payment request failed: ' . $payment_status['response_code']);
             }
             
@@ -505,14 +517,14 @@ class PrismalinkController extends Controller
                         }
                     }
     
-                    Log::info(['Bayar Item Checkout :' => [
-                        'product_id' => $item->product_id,
-                        'product_variant_id' => $item->product_variant_id,
-                        'quantity' => $item->quantity,
-                        'price' => $item->price,
-                        'is_tier' => $item->bundle_price,
-                        'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                    ]]);
+                    // Log::info(['Bayar Item Checkout :' => [
+                    //     'product_id' => $item->product_id,
+                    //     'product_variant_id' => $item->product_variant_id,
+                    //     'quantity' => $item->quantity,
+                    //     'price' => $item->price,
+                    //     'is_tier' => $item->bundle_price,
+                    //     'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+                    // ]]);
 
                     OrderItem::create([
                         'order_id'   => $order->id,
@@ -593,14 +605,14 @@ class PrismalinkController extends Controller
                             }
                         }
     
-                        Log::info(['Bayar Item Buy Now :' => [
-                            'product_id' => $item->product_id,
-                            'product_variant_id' => $item->product_variant_id,
-                            'quantity' => $item->quantity,
-                            'price' => $item->price,
-                            'is_tier' => $item->bundle_price,
-                            'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                        ]]);
+                        // Log::info(['Bayar Item Buy Now :' => [
+                        //     'product_id' => $item->product_id,
+                        //     'product_variant_id' => $item->product_variant_id,
+                        //     'quantity' => $item->quantity,
+                        //     'price' => $item->price,
+                        //     'is_tier' => $item->bundle_price,
+                        //     'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+                        // ]]);
 
                         OrderItem::create([
                             'order_id'   => $order->id,
@@ -760,14 +772,14 @@ class PrismalinkController extends Controller
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
             
-            Log::info('Body Check Status : ', $body);
+            // Log::info('Body Check Status : ', $body);
             $response = Http::withHeaders([
                 'mac' => $mac,
                 'Content-Type' => 'application/json',
             ])->post($url, $body);
     
             $result = json_decode($response->getBody(), true);
-            Log::info('Hasil Pembayaran : ', $result);
+            // Log::info('Hasil Pembayaran : ', $result);
             return $result;
         }
         catch(Exception $err){

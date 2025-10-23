@@ -564,8 +564,8 @@ class OrderController extends Controller
 
             // Log::info('Order Items for Biteship:', $items);
             // Log::info(['Postal Code GCS:', $postalCodeGCS]);
-            Log::info(['Address:', $address['recipient_name'], $address['handphone'], $address['address'], $address['benchmark'], $getPostalCode]);
-            Log::info(['apiKey', $this->apiKey]);
+            // Log::info(['Address:', $address['recipient_name'], $address['handphone'], $address['address'], $address['benchmark'], $getPostalCode]);
+            // Log::info(['apiKey', $this->apiKey]);
             
             // ORDER
             $createOrder = Http::withHeaders([
@@ -619,29 +619,39 @@ class OrderController extends Controller
             //     "items" => $items,
             // ]);
 
-            Log::info(['Biteship Request :' => 
-                [
-                'origin_contact_name' => "Glamoire",
-                'origin_contact_phone' => "08979243010",
-                'origin_address' => "Jl. Wijaya Kusuma no. 57, Surabaya",
-                'origin_postal_code' => $postalCodeGCS,
-                'destination_contact_name' => $address['recipient_name'],
-                'destination_contact_phone' => $address['handphone'],
-                "destination_contact_email" => $user['email'],
-                'destination_address' => $address['address'],
-                'destination_postal_code' => $getPostalCode,
-                'items' => $items,
-                ]
-            ]);
+            // Log::info(['Biteship Request :' => 
+            //     [
+            //     'origin_contact_name' => "Glamoire",
+            //     'origin_contact_phone' => "08979243010",
+            //     'origin_address' => "Jl. Wijaya Kusuma no. 57, Surabaya",
+            //     'origin_postal_code' => $postalCodeGCS,
+            //     'destination_contact_name' => $address['recipient_name'],
+            //     'destination_contact_phone' => $address['handphone'],
+            //     "destination_contact_email" => $user['email'],
+            //     'destination_address' => $address['address'],
+            //     'destination_postal_code' => $getPostalCode,
+            //     'items' => $items,
+            //     ]
+            // ]);
+
             Log::info('Biteship Response:', ['response' => $createOrder->json()]);
 
+
+
             $status = $createOrder->json();
+
+         
             if($status['success'] == true){
-                $order->update(['status' => 'delivery']); // Update status to 'delivery'
+                $order->update([
+                    'resi' => $status['courier']['waybill_id'],
+                    'tracking' => $status['courier']['link'],
+                    'status' => 'delivery'
+                ]); // Update status to 'delivery'
+
                 return response()->json([
-                'success' => true,
-                'message' => 'Pick Up Biteship initiated successfully!'
-            ]);
+                    'success' => true,
+                    'message' => 'Pick Up Biteship initiated successfully!'
+                ]);
             }
             else{
                 return response()->json([
