@@ -60,13 +60,22 @@
                                         <small class="text-muted">Transaction Date:
                                             {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y') }}
                                         </small>
+
                                         <div>
+                                            @if ( $order->status === 'delivery')
+                                            <a href="{{$order->tracking}}" type="button"
+                                                class="btn btn-success btn-sm d-inline-flex align-items-center gap-1"
+                                                style="border-radius: 8px;">
+                                                <i class="bi bi-eye"></i> Track Order
+                                            </a>
+                                            @endif
                                             <button type="button"
                                                 class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1"
                                                 style="border-radius: 8px;" id="printButton">
                                                 <i class="bi bi-printer-fill"></i> Print
                                             </button>
                                         </div>
+                                        
                                     </div>
                                 </div>
 
@@ -104,9 +113,9 @@
                                                             </h5>
                                                             <div class="text-muted">
                                                                 <p class="mb-2"><strong>Province :</strong>
-                                                                    {{ $order->shippingAddress->province }}</p>
+                                                                    {{ ucwords(strtolower($order->shippingAddress->province)) }}</p>
                                                                 <p class="mb-2"><strong>City :</strong>
-                                                                    {{ $order->shippingAddress->regency }}</p>
+                                                                    {{ ucwords(strtolower($order->shippingAddress->regency)) }}</p>
                                                                 <p class="mb-0"><strong>Address :</strong>
                                                                     {{ $order->shippingAddress->address }}</p>
                                                             </div>
@@ -135,6 +144,25 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
+                                                    @if ( $order->status === 'delivery')
+                                                    <div class="col-md-4 pt-2">
+                                                        <div class="border rounded p-3 h-100">
+                                                            <h5 class="mb-3">
+                                                                <i class="bi bi-truck me-2 text-primary"></i>Shipping
+                                                                Information
+                                                            </h5>
+                                                            <div class="text-muted">
+                                                                <p class="mb-2"><strong>Kurir :</strong>
+                                                                    {{ ucwords(strtolower($order->kurir)) }} - {{ ucwords(strtolower($order->layanan)) }}</p>
+                                                                <p class="mb-2"><strong>Resi :</strong>
+                                                                    {{ ucwords(strtolower($order->resi)) }}</p>
+                                                                <p class="mb-0"><strong>ETD :</strong>
+                                                                    {{ $order->etd }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                 </div>
 
                                                 <div class="row" id="table-head">

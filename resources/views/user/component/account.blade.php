@@ -658,7 +658,7 @@
                                 <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}"
                                     tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}"
                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
+                                    <div class="modal-dialog modal-sm">
                                         <div class="modal-content overflow-y-auto" style="max-height:90vh;">
 
                                             <div class="modal-header">
@@ -996,6 +996,11 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                            @if ($order->tracking !== null)
+                                                                <div class="col-12">
+                                                                    <a href="{{$order->tracking}}">Track your packet</a>
+                                                                </div>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>

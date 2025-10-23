@@ -351,15 +351,15 @@ class CheckoutController extends Controller
 
                 // dd($createOrder->json());
 
-                Log::info('Courier:', [
-                    'body' => [
-                        "origin_area_id"      => $areaIdStart,  // area ID asal
-                        "destination_area_id" => $areaId,  // area ID tujuan
-                        "couriers"            => "paxel,jne,sicepat",
-                        "items"               => $items,
-                    ],
-                    'order' => $courierRates,
-                ]);
+                // Log::info('Courier:', [
+                //     'body' => [
+                //         "origin_area_id"      => $areaIdStart,  // area ID asal
+                //         "destination_area_id" => $areaId,  // area ID tujuan
+                //         "couriers"            => "paxel,jne,sicepat",
+                //         "items"               => $items,
+                //     ],
+                //     'order' => $courierRates,
+                // ]);
 
 
 
