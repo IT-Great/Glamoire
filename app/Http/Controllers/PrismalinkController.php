@@ -161,42 +161,82 @@ class PrismalinkController extends Controller
         }
         // KERANJANG -> BUY
         elseif($request->condition == "standard"){
-            $body = [
-                "merchant_key_id" => $this->merchantKeyId,
-                "merchant_id" => $this->merchantId,
-                "merchant_ref_no" => "$invoiceCreate->no_invoice",
-                "backend_callback_url" => $this->backendCallbackUrl,
-                "frontend_callback_url" => $this->frontendCallbackUrl,
-                "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
-                "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
-                "transaction_currency" => "IDR",
-                "transaction_amount" => $request->total_amount,
-                "product_details" => json_encode($cartItems),
-                "va_name" => "$username",
-                "user_name" => "$username",
-                "user_email" => "",
-                "user_phone_number" => "+$handphone",
-                "user_id" => "",
-                "remarks" => "",
-                "user_device_id" => $request->header('User-Agent'),
-                "user_ip_address" => $request->ip(),
-                "shipping_details" => '',
-                "payment_method" => "",
-                // "payment_method" => "DD",
-                "other_bills" => json_encode([
-                    [
-                        "title" => "Ongkos kirim",
-                        "value" => $request->shipping_cost,
-                    ]
-                ]),
-                "invoice_number" => "$invoiceCreate->no_invoice",
-                "integration_type" => "01",
-                // "integration_type" => "03",
-                "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
-                "external_id" => "$invoiceCreate->no_invoice",
-                "bank_id" => ""
-                // "bank_id" => "022"
-            ];
+            if($request->total_amount == 0){
+                $body = [
+                    "merchant_key_id" => $this->merchantKeyId,
+                    "merchant_id" => $this->merchantId,
+                    "merchant_ref_no" => "$invoiceCreate->no_invoice",
+                    "backend_callback_url" => $this->backendCallbackUrl,
+                    "frontend_callback_url" => $this->frontendCallbackUrl,
+                    "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
+                    "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
+                    "transaction_currency" => "IDR",
+                    "transaction_amount" => 1,
+                    "product_details" => json_encode($cartItems),
+                    "va_name" => "$username",
+                    "user_name" => "$username",
+                    "user_email" => "",
+                    "user_phone_number" => "+$handphone",
+                    "user_id" => "",
+                    "remarks" => "",
+                    "user_device_id" => $request->header('User-Agent'),
+                    "user_ip_address" => $request->ip(),
+                    "shipping_details" => '',
+                    "payment_method" => "",
+                    // "payment_method" => "DD",
+                    "other_bills" => json_encode([
+                        [
+                            "title" => "Ongkos kirim",
+                            "value" => $request->shipping_cost,
+                        ]
+                    ]),
+                    "invoice_number" => "$invoiceCreate->no_invoice",
+                    "integration_type" => "01",
+                    // "integration_type" => "03",
+                    "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
+                    "external_id" => "$invoiceCreate->no_invoice",
+                    "bank_id" => ""
+                    // "bank_id" => "022"
+                ];
+            }else{
+                $body = [
+                    "merchant_key_id" => $this->merchantKeyId,
+                    "merchant_id" => $this->merchantId,
+                    "merchant_ref_no" => "$invoiceCreate->no_invoice",
+                    "backend_callback_url" => $this->backendCallbackUrl,
+                    "frontend_callback_url" => $this->frontendCallbackUrl,
+                    "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
+                    "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
+                    "transaction_currency" => "IDR",
+                    "transaction_amount" => $request->total_amount,
+                    "product_details" => json_encode($cartItems),
+                    "va_name" => "$username",
+                    "user_name" => "$username",
+                    "user_email" => "",
+                    "user_phone_number" => "+$handphone",
+                    "user_id" => "",
+                    "remarks" => "",
+                    "user_device_id" => $request->header('User-Agent'),
+                    "user_ip_address" => $request->ip(),
+                    "shipping_details" => '',
+                    "payment_method" => "",
+                    // "payment_method" => "DD",
+                    "other_bills" => json_encode([
+                        [
+                            "title" => "Ongkos kirim",
+                            "value" => $request->shipping_cost,
+                        ]
+                    ]),
+                    "invoice_number" => "$invoiceCreate->no_invoice",
+                    "integration_type" => "01",
+                    // "integration_type" => "03",
+                    "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
+                    "external_id" => "$invoiceCreate->no_invoice",
+                    "bank_id" => ""
+                    // "bank_id" => "022"
+                ];
+                
+            }
         }
         // elseif($request->condition == "guest"){
         //    $body = [
@@ -259,7 +299,7 @@ class PrismalinkController extends Controller
             'Content-Type' => 'application/json',
         ])->post($url, $body);
 
-        // Log::info(['Body :' => $body, 'Secret Key :' => $this->secretKey, 'HMAC :' => $mac]);
+        Log::info(['Body :' => $body]);
         // Log::info(['ambil response :' => $response->json()]);
 
         $status = $response->json();
