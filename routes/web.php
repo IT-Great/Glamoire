@@ -48,6 +48,7 @@ use App\Models\AboutUs;
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
 Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
 Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
+Route::get('/callback-payment/frontend', [PrismalinkController::class, 'callbackFrontend'])->name('callback');
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
 // Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
 // Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
