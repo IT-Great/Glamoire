@@ -407,34 +407,6 @@ class PrismalinkController extends Controller
         try {
             $payment_status = $this->getPaymentStatus();
 
-            if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
-                return $payment_status; // Redirect ke route checkout
-            }
-
-            if (is_null($payment_status)) {
-                return redirect()->route('checkout')->with('error', 'Payment status not found.');
-            }
-
-            Log::info("Payment callback received | User ID: " . session('id_user') . " | status:" . $payment_status['transaction_status']);
-
-
-            // PEMBAYARAN BERHASIL 
-            if ($payment_status['transaction_status'] == 'SETLD') {
-                return response()->json(['status' => 'OK'], 200);
-            } else {
-                return response()->json(['status' => 'FAILED'], 400);
-            }
-            
-        } catch (\Exception $e) {
-            return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()], 500);
-        }
-    }
-
-    public function callbackFrontend()
-    {
-        try{
-            $payment_status = $this->getPaymentStatus();
-
             // Log::info('Payment status setelah callback', [
             // 'payment' => $payment_status
             // ]);
@@ -448,6 +420,7 @@ class PrismalinkController extends Controller
             }
 
             Log::info("Payment callback received | User ID: " . session('id_user') . " | status:" . $payment_status['transaction_status']);
+
 
             // PEMBAYARAN BERHASIL 
             if ($payment_status['transaction_status'] == 'SETLD') {
@@ -472,7 +445,13 @@ class PrismalinkController extends Controller
                 // Log::info(['User', session('id_user'), 'success payment for invoice :', session('merchant_ref_no')]);
                 Log::info("Successfully Payment Order | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | Order ID: " . $order_id . " | Amount: " . $items->total_amount);
                 // return response()->json(['status' => 'OK'], 200);
-                return redirect()->route('account', ['user' => session('id_user')]);
+
+                if($this->status == 'local'){
+                    return redirect()->route('account', ['user' => session('id_user')]);
+                }
+                else{
+                    return redirect('https://glamoire.co.id/'. session('id_user'));
+                }
             } else {
                 Invoice::where('no_invoice', session('merchant_ref_no'))->delete();
                 Log::info("Payment callback error | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | status:" . $payment_status['transaction_status']);
@@ -482,12 +461,14 @@ class PrismalinkController extends Controller
                 // return response()->json(['status' => 'FAILED'], 400);
                 return back()->with('error', 'Payment request failed: ' . $payment_status['response_code']);
             }
-        }
-        catch(\Exception $e){
-            Log::error('Prismalink Frontend Callback Error: ' . $e->getMessage());
+            
+        } catch (\Exception $e) {
+            Log::error('Prismalink Callback Error: ' . $e->getMessage());
+            // return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()], 500);
             return redirect()->route('checkout')->with('error', 'An error occurred during payment processing.');
-        } 
+        }
     }
+
     public function callbackCreateOrder()
     {
         $this->createNewOrder(session('order_data'));
