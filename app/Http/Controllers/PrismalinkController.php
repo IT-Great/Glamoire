@@ -463,9 +463,9 @@ class PrismalinkController extends Controller
             }
             
         } catch (\Exception $e) {
-            Log::error('Prismalink Callback Error: ' . $e->getMessage());
+            Log::info('Prismalink Callback Error: ' . $e->getMessage());
             // return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()], 500);
-            return redirect()->route('checkout')->with('error', 'An error occurred during payment processing.');
+            return redirect('https://glamoire.co.id/'. session('id_user'));
         }
     }
 
