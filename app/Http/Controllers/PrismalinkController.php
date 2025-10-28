@@ -725,7 +725,7 @@ class PrismalinkController extends Controller
             ])->post($url, $body);
     
             $result = json_decode($response->getBody(), true);
-            Log::info('Hasil Pembayaran getPaymentStatus : ', $result);
+            Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
             return $result;
         }
         catch(Exception $err){
