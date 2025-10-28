@@ -9,19 +9,11 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'order_id',
-        'payment_method',
-        'transaction_id',
-        'amount',
-        'status',
-        'payment_date',
-    ];
+    protected $guarded = ['id'];
 
     public function order()
     {
-        return $this->belongsTo(Order::class, 'order_id');
+        return $this->belongsTo(Order::class);
     }
 
     public function user()

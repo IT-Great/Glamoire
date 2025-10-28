@@ -35,10 +35,18 @@ class PrismalinkController extends Controller
     private $secretKey;
     private $transactionUrl;
     private $status;
+    private $merchant_ref_no;
+    private $plink_ref_no;
+    private $trasmission_date_time;
+    private $order_data;
+    private $id_user;
+    private $condition;
+    private $order_id;
 
     public function __construct()
     {
         $this->status = config('app.env');
+        $this->id_user = session('id_user');
         if($this->status == 'local'){
             $this->merchantKeyId = config('services.prismalink.merch_key_id');
             $this->merchantId = config('services.prismalink.merch_id'); 
@@ -55,11 +63,6 @@ class PrismalinkController extends Controller
             $this->secretKey = config('services.prismalink.secret_key');
             $this->transactionUrl = config('services.prismalink.transaction_api');
         }
-    }
-
-    public function viewsSubmitPayment()
-    {
-        return view('user.component.test-payment');
     }
 
     public function submitPayment(Request $request)
@@ -113,8 +116,9 @@ class PrismalinkController extends Controller
         ]);
 
         $username = session('username');
-        $handphone = User::where('id', session('id_user'))->value('handphone');
-        session(['condition' => $request->condition]);
+        $handphone = User::where('id', $this->id_user)->value('handphone');
+        // session(['condition' => $request->condition]);
+        $this->condition = $request->condition;
 
         if($request->condition == "buynow"){
             $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
@@ -235,48 +239,8 @@ class PrismalinkController extends Controller
                     "bank_id" => ""
                     // "bank_id" => "022"
                 ];
-                
             }
         }
-        // elseif($request->condition == "guest"){
-        //    $body = [
-        //         "merchant_key_id" => $this->merchantKeyId,
-        //         "merchant_id" => $this->merchantId,
-        //         "merchant_ref_no" => "$invoiceCreate->no_invoice",
-        //         "backend_callback_url" => $this->backendCallbackUrl,
-        //         "frontend_callback_url" => $this->frontendCallbackUrl,
-        //         "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transaction_currency" => "IDR",
-        //         "transaction_amount" => $request->total_amount,
-        //         "product_details" => json_encode($request->products),
-        //         "va_name" => "$username",
-        //         "user_name" => "$username",
-        //         "user_email" => "",
-        //         "user_phone_number" => "+$handphone",
-        //         "user_id" => "",
-        //         "remarks" => "",
-        //         "user_device_id" => $request->header('User-Agent'),
-        //         "user_ip_address" => $request->ip(),
-        //         "shipping_details" => '',
-        //         "payment_method" => "",
-        //         // "payment_method" => "DD",
-        //         "other_bills" => json_encode([
-        //             [
-        //                 "title" => "Ongkos kirim",
-        //                 "value" => $request->shipping_cost,
-        //             ]
-        //         ]),
-        //         "invoice_number" => "$invoiceCreate->no_invoice",
-        //         "integration_type" => "01",
-        //         // "integration_type" => "03",
-        //         "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
-        //         "external_id" => "$invoiceCreate->no_invoice",
-        //         "bank_id" => ""
-        //         // "bank_id" => "022"
-        //     ];
-        // }
-
         
         // Konversi body ke JSON string exact seperti yang akan dikirim ke API
         $jsonBody = json_encode($body);
@@ -310,17 +274,12 @@ class PrismalinkController extends Controller
             // Log::info('Hasil Post Pembayaran :', $data);
 
             $saveCheckStatus = $this->checkStatus($invoiceCreate->no_invoice, $data['plink_ref_no'], $data['timestamp']);
-            
-            session(['merchant_ref_no' => $invoiceCreate->no_invoice]);
-            session(['plink_ref_no' => $data['plink_ref_no']]);
-            session(['transmission_date_time' => $data['validity']]);
-
-            // Log::info('Response Session Setelah Submit Transaksi', session()->all());
+            $this->merchant_ref_no = $invoiceCreate->no_invoice;
+            $this->plink_ref_no = $data['plink_ref_no'];
+            $this->trasmission_date_time =$data ['validity'];
 
             if (isset($data['payment_page_url'])) {
                 // Base URL untuk halaman pembayaran Prismalink
-
-
                 if($this->status == 'local'){
                     $paymentBaseUrl = 'https://secure2-staging.plink.co.id';
                 }
@@ -362,7 +321,9 @@ class PrismalinkController extends Controller
                 $destinationPostalCode = $request->destinationPostalCode;
                 
                 $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode);
-                session(['order_data' => $orderData]);
+                $this->order_data = $orderData;
+                // session(['order_data' => $orderData]);
+                $this->createNewOrder($this->order_data);
                 
                 // Log::info(['Request : ' => $request]);
 
@@ -373,7 +334,7 @@ class PrismalinkController extends Controller
                 
                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
 
-                Log::info("Request payment | User ID :" . session('id_user') .  "| Payment page :" . $fullPaymentPageUrl . " | Deadline:" . $formattedDeadline);
+                Log::info("Request payment | User ID :" . $this->id_user .  "| Payment page :" . $fullPaymentPageUrl . " | Deadline:" . $formattedDeadline);
 
                 return response()->json([
                     'success' => true,
@@ -387,7 +348,7 @@ class PrismalinkController extends Controller
             return back()->with('error', 'Response received, but no payment page URL was found.');
         } else {
             // Log error detail
-            Log::error('User', session('id_user'), 'failed request payment, redirecting to payment page :', [
+            Log::error('User', $this->id_user, 'failed request payment, redirecting to payment page :', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
@@ -405,73 +366,18 @@ class PrismalinkController extends Controller
     public function callback()
     {
         try {
-            $payment_status = $this->getPaymentStatus();
-
-            // Log::info('Payment status setelah callback', [
-            // 'payment' => $payment_status
-            // ]);
-
-            if ($payment_status instanceof \Illuminate\Http\RedirectResponse) {
-                return $payment_status; // Redirect ke route checkout
+            if($this->status == 'local'){
+                return redirect()->route('account');
             }
-
-            if (is_null($payment_status)) {
-                return redirect()->route('checkout')->with('error', 'Payment status not found.');
-            }
-
-            Log::info("Payment callback received | User ID: " . session('id_user') . " | status:" . $payment_status['transaction_status']);
-
-
-            // PEMBAYARAN BERHASIL 
-            if ($payment_status['transaction_status'] == 'SETLD') {
-                $data = $payment_status;
-                // Log::info('Callback Success : ', $data);
-                
-                session(['activeTab' => '#my-order']);
-                session()->flash('payment_success');
-                // Log::info(['Isi Session Order Data :', session('order_data')]);
-                $this->createNewOrder(session('order_data'));
-                $orderData = session('order_data');
-                $order_id = session('order_id');
-
-                $items = Order::where('id', $order_id)->with('orderItems.product')->first();
-
-                // Log::info('Order Details after Payment Success:', [
-                //     'oder_data' => $orderData,
-                //     'order_id' => $order_id,
-                //     'items' => $items,
-                // ]);
-                
-                // Log::info(['User', session('id_user'), 'success payment for invoice :', session('merchant_ref_no')]);
-                Log::info("Successfully Payment Order | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | Order ID: " . $order_id . " | Amount: " . $items->total_amount);
-                // return response()->json(['status' => 'OK'], 200);
-
-                if($this->status == 'local'){
-                    return redirect()->route('account', ['user' => session('id_user')]);
-                }
-                else{
-                    return redirect('https://glamoire.co.id/'. session('id_user'));
-                }
-            } else {
-                Invoice::where('no_invoice', session('merchant_ref_no'))->delete();
-                Log::info("Payment callback error | User ID: " . session('id_user') . " | invoice:" . session('merchant_ref_no') . " | status:" . $payment_status['transaction_status']);
-                // Log::error('Prismalink Response Error :', [
-                //     'status' => $payment_status['response_code'],
-                // ]);
-                // return response()->json(['status' => 'FAILED'], 400);
-                return back()->with('error', 'Payment request failed: ' . $payment_status['response_code']);
+            else{
+                return redirect('https://glamoire.co.id/account');
             }
             
         } catch (\Exception $e) {
             Log::info('Prismalink Callback Error: ' . $e->getMessage());
             // return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()], 500);
-            return redirect('https://glamoire.co.id/'. session('id_user'));
+            return redirect('https://glamoire.co.id/account')->with('error', 'An error occurred during payment processing: ' . $e->getMessage());
         }
-    }
-
-    public function callbackCreateOrder()
-    {
-        $this->createNewOrder(session('order_data'));
     }
 
     private function checkStatus($merchant_ref_no, $plink_ref_no, $transmission_date_time){
@@ -487,15 +393,15 @@ class PrismalinkController extends Controller
     private function createNewOrder(array $orderData)
     {
         // Log::info(['Callback Success : ', $orderData]);
-        $getInvoiceId = Invoice::where('no_invoice', session('merchant_ref_no'))->value('id');
+        $getInvoiceId = Invoice::where('no_invoice', $this->merchant_ref_no)->value('id');
 
         // Update Invoice Saat pembayaran berhasil
         Invoice::where('id', $getInvoiceId)->update([
-            'plink_ref_no' => session('plink_ref_no'),
-            'transmission_date_time' => session('transmission_date_time'),
+            'plink_ref_no' => $this->plink_ref_no,
+            'transmission_date_time' => $this->trasmission_date_time,
         ]);
 
-        if(session('condition') == 'standard'){
+        if($this->condition == 'standard'){
             $order = Order::create([
                 'invoice_id' => $getInvoiceId,
                 'user_id' => auth()->id(), 
@@ -517,9 +423,9 @@ class PrismalinkController extends Controller
                 'postal_code_customer' => $orderData['destinationPostalCode'],
             ]);
 
-            session(['order_id' => $order->id]);
+            $this->order_id = $order->id;
     
-            $cartId = Cart::where('user_id', session('id_user'))->value('id');
+            $cartId = Cart::where('user_id', $this->id_user)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)
                 ->where('is_choose', true)
                 ->with(['product.brand'])
@@ -564,15 +470,6 @@ class PrismalinkController extends Controller
                             }
                         }
                     }
-    
-                    // Log::info(['Bayar Item Checkout :' => [
-                    //     'product_id' => $item->product_id,
-                    //     'product_variant_id' => $item->product_variant_id,
-                    //     'quantity' => $item->quantity,
-                    //     'price' => $item->price,
-                    //     'is_tier' => $item->bundle_price,
-                    //     'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                    // ]]);
 
                     OrderItem::create([
                         'order_id'   => $order->id,
@@ -586,7 +483,7 @@ class PrismalinkController extends Controller
                 }
             }
         }
-        elseif(session('condition') == 'buynow'){
+        elseif($this->condition == 'buynow'){
             $order = Order::create([
                 'invoice_id' => $getInvoiceId,
                 'user_id' => auth()->id(), 
@@ -608,7 +505,7 @@ class PrismalinkController extends Controller
                 'postal_code_customer' => $orderData['destinationPostalCode'],
             ]);
 
-            $cartItems = Buynow::where('user_id', session('id_user'))
+            $cartItems = Buynow::where('user_id', $this->id_user)
                 ->where('is_buy', false)
                 ->with(['product.brand'])
                 ->get();
@@ -652,15 +549,6 @@ class PrismalinkController extends Controller
                                 }
                             }
                         }
-    
-                        // Log::info(['Bayar Item Buy Now :' => [
-                        //     'product_id' => $item->product_id,
-                        //     'product_variant_id' => $item->product_variant_id,
-                        //     'quantity' => $item->quantity,
-                        //     'price' => $item->price,
-                        //     'is_tier' => $item->bundle_price,
-                        //     'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                        // ]]);
 
                         OrderItem::create([
                             'order_id'   => $order->id,
@@ -675,7 +563,7 @@ class PrismalinkController extends Controller
             }
         }
 
-        $userId = session('id_user');
+        $userId = $this->id_user;
 
         $payment_status = $this->getPaymentStatus();
 
@@ -688,16 +576,15 @@ class PrismalinkController extends Controller
         $payment = Payment::create([
             'user_id'        => $userId,
             'order_id'       => $order->id,
-            'payment_method' => $payment_status['payment_method'],
-            'transaction_id' => $payment_status['transaction_status'],
-            'status'         => $statusMap[$payment_status['transaction_status']],
-            'amount'         => $payment_status['transaction_amount'],
-            'payment_date'   => now(),
+            'payment_method' => "",
+            'transaction_id' => "",
+            'status'         => $statusMap['PNDNG'],
+            'amount'         => $orderData['totalAmount'],
         ]);
 
-        Order::where('id', $order->id)->update([
-            'payment_id' => $payment->id,
-        ]);
+        // Order::where('id', $order->id)->update([
+        //     'payment_id' => $payment->id,
+        // ]);
 
         // Update status voucher jika digunakan
         $useVoucherNewUser = VoucherNewUser::where('user_id', $userId)
@@ -740,18 +627,18 @@ class PrismalinkController extends Controller
             foreach($cartItems as $product){
                 // Temukan produk berdasarkan ID\
                 if($product['product_variant_id'] !== null){
-                    $productVariant = ProductVariations::find($product['product_variant_id']);
-                    $getProductId = ProductVariations::where('id', $product['product_variant_id'])->value('product_id');
-                    $productMain = Product::find($getProductId);
+                    // $productVariant = ProductVariations::find($product['product_variant_id']);
+                    // $getProductId = ProductVariations::where('id', $product['product_variant_id'])->value('product_id');
+                    // $productMain = Product::find($getProductId);
 
                     // Jika produk ditemukan, lakukan update stok
-                    if ($productVariant) {
-                        $productVariant->variant_stock -= $product['quantity'];
-                        $productVariant->save();
+                    // if ($productVariant) {
+                    //     $productVariant->variant_stock -= $product['quantity'];
+                    //     $productVariant->save();
 
-                        $productMain->sale += $product['quantity'];
-                        $productMain->save();
-                    }
+                    //     $productMain->sale += $product['quantity'];
+                    //     $productMain->save();
+                    // }
         
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
@@ -759,14 +646,14 @@ class PrismalinkController extends Controller
                         ->delete();
                 }
                 else{
-                    $products = Product::find($product['product_id']);
+                    // $products = Product::find($product['product_id']);
                     
                     // Jika produk ditemukan, lakukan update stok
-                    if ($products) {
-                        $products->stock_quantity -= $product['quantity'];
-                        $products->sale += $product['quantity'];
-                        $products->save();
-                    }
+                    // if ($products) {
+                    //     $products->stock_quantity -= $product['quantity'];
+                    //     $products->sale += $product['quantity'];
+                    //     $products->save();
+                    // }
         
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
@@ -806,6 +693,11 @@ class PrismalinkController extends Controller
 
     private function getPaymentStatus(){
         try{
+            Log::info([
+                'getPaymentStatus Merchant_ref_no :' => $this->merchant_ref_no,
+                'getPaymentStatus Plink_ref_no :' => $this->plink_ref_no,
+                'getPaymentStatus Transmission_date_time :' => $this->trasmission_date_time,
+            ]);
 
             if($this->status == 'local'){
                 $url = 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
@@ -817,8 +709,8 @@ class PrismalinkController extends Controller
             $body = [
                 "merchant_key_id" => $this->merchantKeyId,
                 "merchant_id" => $this->merchantId,
-                "merchant_ref_no" => session('merchant_ref_no'),
-                "plink_ref_no" => session('plink_ref_no'),
+                "merchant_ref_no" => $this->merchant_ref_no,
+                "plink_ref_no" => $this->plink_ref_no,
                 "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
             ];
     
@@ -826,14 +718,14 @@ class PrismalinkController extends Controller
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
             
-            // Log::info('Body Check Status : ', $body);
+            Log::info(['Body Check Status PrismalinkController getPaymentStatus :' => $body]);
             $response = Http::withHeaders([
                 'mac' => $mac,
                 'Content-Type' => 'application/json',
             ])->post($url, $body);
     
             $result = json_decode($response->getBody(), true);
-            // Log::info('Hasil Pembayaran : ', $result);
+            Log::info('Hasil Pembayaran getPaymentStatus : ', $result);
             return $result;
         }
         catch(Exception $err){

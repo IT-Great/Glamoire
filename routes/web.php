@@ -61,8 +61,7 @@ Route::get('/callback-backend-create-new-order', [PrismalinkController::class, '
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
 Route::get('/', [ProductController::class, 'index'])->name('home.glamoire');
 
-Route::get('/{user}_account', [UserController::class, 'account'])
-    ->name('account');
+Route::get('/account', [UserController::class, 'account'])->name('account');
 
 // Rute untuk memverifikasi email
 Route::get('/email-verify', function () {
