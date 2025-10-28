@@ -11,10 +11,15 @@ use App\Models\Cart_item;
 use App\Models\OrderItem;
 use App\Models\Wishlist;
 use App\Models\Buynow;
+use App\Models\Invoice;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\RatingAndReview;
 use App\Models\ProductVariations;
+use App\Models\Payment;
+use App\Models\Promo;
+use App\Models\VoucherNewUser;
+
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 
@@ -23,60 +28,200 @@ use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
 {
-    // Mengambil data User
-    public function account($user)
+    private $merchantKeyId;
+    private $merchantId;
+    private $secretKey;
+    private $merchant_ref_no;
+    private $plink_ref_no;
+    private $status;
+
+    public function __construct()
+    {
+        $this->merchantKeyId = config('services.prismalink.merch_key_id');
+        $this->merchantId = config('services.prismalink.merch_id'); 
+        $this->secretKey = config('services.prismalink.secret_key');
+        $this->status = config('app.env');
+    }
+
+    public function account()
     {
         try {
             // dd(session()->all());
             $id      = session('id_user');
-            $profile = User::with([
-                'shippingAddress' => function ($query) {
-                    $query->orderBy('is_main', 'DESC'); // Mengurutkan shippingAddress berdasarkan is_main
-                },
-                'wishlist.product',
-                'cart.cartItems',
-                'orders.items.product.brand',
-                'orders.invoice',
-                'orders.items.productVariant',
-                'orders.ratingAndReviews'
-            ])->where('id', $id)
-                ->with(['orders' => function ($query) {
-                    $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
-                }])->first();
+            if($id !== null) {
+                $profile = User::with([
+                    'shippingAddress' => function ($query) {
+                        $query->orderBy('is_main', 'DESC'); // Mengurutkan shippingAddress berdasarkan is_main
+                    },
+                    'wishlist.product',
+                    'cart.cartItems',
+                    'orders.items.product.brand',
+                    'orders.invoice',
+                    'orders.items.productVariant',
+                    'orders.ratingAndReviews',
+                    'orders.payment',
+                ])->where('id', $id)
+                    ->with(['orders' => function ($query) {
+                        $query->orderBy('created_at', 'DESC'); // Mengurutkan orders berdasarkan tanggal terbaru
+                    }])->first();
 
 
-            $getWishlist = Wishlist::where('user_id', $id)->pluck('product_id');
-            $getProductWishlist  = Product::whereIn('id', $getWishlist)
-                ->with(['promos'  => function ($query) {
-                    $query->select('promos.*', 'promo_products.discounted_price')
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
-                        ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
-                        ->wherePivot('discounted_price', '>', 0);
-                }])
-                ->get();
-
-            foreach ($getProductWishlist as $prod) {
-                $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
-
-                if ($variationPrices->count() > 1) {
-                    // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
-                } elseif ($variationPrices->count() == 0) {
-                    $prod->priceVariation = null;
-                } else {
-                    // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                // CEK PEMBAYARAN USER
+                foreach ($profile->orders as $order) {
+                    if ($order->payment['status'] !== 'completed') {
+                        session(['activeTab' => '#my-order']);
+                        session()->flash('payment_success');
+                        $payment_status = $this->getPaymentStatus($order->id);
+    
+                        // JIKA ORDERAN BERHASIL DIBAYAR
+                        if ($payment_status['transaction_status'] == 'SETLD') {
+                            $data = $payment_status;
+    
+                            $statusMap = [
+                                'SETLD' => 'completed',
+                                'REJEC' => 'failed',
+                                'PNDNG' => 'pending'
+                            ];
+    
+                            Payment::where('order_id', $order->id)->update([
+                                'payment_method' => $data['payment_method'],
+                                'transaction_id' => $payment_status['transaction_status'],
+                                'status'         => $statusMap[$payment_status['transaction_status']],
+                                'amount'         => $data['transaction_amount'],
+                                'payment_date'   => Carbon::parse($data['payment_date'])->format('Y-m-d H:i:s'),
+                            ]);
+    
+                            // Update status voucher jika digunakan
+                            $orderData = Order::where('id', $order->id)->first();
+    
+                            $useVoucherNewUser = VoucherNewUser::where('user_id', $id)
+                                ->where('code', $orderData['voucherPromo'])
+                                ->first();
+                            
+                            if ($useVoucherNewUser) {
+                                $useVoucherNewUser->is_use = 1;
+                                $useVoucherNewUser->save();
+                            }
+    
+                            if($useVoucherNewUser == NULL){
+                                $voucherUsed = Promo::where('promo_code', $orderData['voucherPromo'])->first();
+                            }
+                            else {
+                                $voucherUsed = NULL;
+                            }
+    
+                            if ($orderData['voucherOngkir'] !== null) {
+                                $ongkirUsed = Promo::where('promo_code', $orderData['voucherOngkir'])->first();
+                            }
+    
+                            $payment = Payment::where('order_id', $order->id)->first();
+                            // dd($payment);
+    
+                            // Jika pembayaran selesai
+                            if ($payment->status == "completed") {
+                                $cartId = Cart::where('user_id', $id)->value('id');
+                                
+                                if ($voucherUsed !== NULL) {
+                                    $voucherUsed->total_used += 1;
+                                    $voucherUsed->save();
+                                }
+    
+                                if ($orderData['voucherOngkir'] !== null) {
+                                    if ($ongkirUsed) {
+                                        $ongkirUsed->total_used += 1;
+                                        $ongkirUsed->save();
+                                    }
+                                }
+    
+                                $orderItems = OrderItem::where('order_id', $order->id)->get();
+    
+                                foreach($orderItems as $product){
+                                    // Temukan produk berdasarkan ID
+                                    if($product['product_variant_id'] !== null){
+                                        $productVariant = ProductVariations::find($product['product_variant_id']);
+                                        $getProductId = ProductVariations::where('id', $product['product_variant_id'])->value('product_id');
+                                        $productMain = Product::find($getProductId);
+    
+                                        // Jika produk ditemukan, lakukan update stok
+                                        if ($productVariant) {
+                                            $productVariant->variant_stock -= $product['quantity'];
+                                            $productVariant->save();
+    
+                                            $productMain->sale += $product['quantity'];
+                                            $productMain->save();
+                                        }
+                            
+                                        // Hapus item dari cart berdasarkan cart_id dan product_id
+                                        Cart_item::where('cart_id', $cartId)
+                                            ->where('product_variant_id', $product['product_variant_id'])
+                                            ->delete();
+                                    }
+                                    else{
+                                        $products = Product::find($product['product_id']);
+                                        
+                                        // Jika produk ditemukan, lakukan update stok
+                                        if ($products) {
+                                            $products->stock_quantity -= $product['quantity'];
+                                            $products->sale += $product['quantity'];
+                                            $products->save();
+                                        }
+                            
+                                        // Hapus item dari cart berdasarkan cart_id dan product_id
+                                        Cart_item::where('cart_id', $cartId)
+                                            ->where('product_id', $product['product_id'])
+                                            ->delete();
+                                    }
+                                    
+                                    session(['activeTab' => '#my-order']);
+                                }
+                            }
+    
+                        } else {
+                            // HAPUS ORDERAN YANG GAGAL
+                            Order::where('id', $order->id)->delete();
+                            OrderItem::where('order_id', $order->id)->delete();
+                            Invoice::where('no_invoice', $payment_status['invoice_number'])->delete();
+                            Log::info("Order ID {$order->id} has been deleted due");
+                        }
+                    }
                 }
-            }
 
-            return view('user.component.account', [
-                'profile' => $profile,
-                'wishlists' => $getProductWishlist,
-            ]);
+                $getWishlist = Wishlist::where('user_id', $id)->pluck('product_id');
+                $getProductWishlist  = Product::whereIn('id', $getWishlist)
+                    ->with(['promos'  => function ($query) {
+                        $query->select('promos.*', 'promo_products.discounted_price')
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
+                            ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [Carbon::today()])
+                            ->wherePivot('discounted_price', '>', 0);
+                    }])
+                    ->get();
+    
+                foreach ($getProductWishlist as $prod) {
+                    $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
+    
+                    if ($variationPrices->count() > 1) {
+                        // Jika ada lebih dari satu harga unik, buat rentang harga
+                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
+                            . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    } elseif ($variationPrices->count() == 0) {
+                        $prod->priceVariation = null;
+                    } else {
+                        // Jika semua harga variasi sama, cukup tampilkan satu harga
+                        $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    }
+                }
+    
+                return view('user.component.account', [
+                    'profile' => $profile,
+                    'wishlists' => $getProductWishlist,
+                ]);
+            } else {
+                return redirect()->route('home.glamoire');
+            }
         } catch (Exception $err) {
             dd($err);
         }
@@ -143,7 +288,6 @@ class UserController extends Controller
             dd($err);
         }
     }
-
 
     public function addToChart(Request $request)
     {
@@ -317,7 +461,6 @@ class UserController extends Controller
             'outOfStock' => $productOutOfStock,
         ]);
     }
-
 
     public function addToChartWithQuantity(Request $request)
     {
@@ -591,7 +734,7 @@ class UserController extends Controller
 
     public function updateShippingAddress(Request $request)
     {
-        dd($request);
+        // dd($request);
         $address = Shipping_address::find($request->input('address-id'));
 
         // dd($address);
@@ -865,7 +1008,6 @@ class UserController extends Controller
         return view('admin.user.index', compact('users'));
     }
 
-
     public function detailUserAdmin($id)
     {
         $user = User::findOrFail($id);
@@ -887,8 +1029,6 @@ class UserController extends Controller
         return view('admin.user.index-password', compact('adminUsers', 'normalUsers'));
     }
 
-
-
     public function changePasswordUserAdmin(Request $request)
     {
         $request->validate([
@@ -904,5 +1044,55 @@ class UserController extends Controller
             'success' => true,
             'message' => 'Password successfully updated.'
         ]);
+    }
+
+    private function getPaymentStatus($orderId){
+        try{
+            if($this->status == 'local'){
+                $url = 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
+            }
+            else{
+                $url = 'https://secure3.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
+            }
+
+            $invoiceId = Order::where('id',$orderId)->value('invoice_id');
+
+            $this->merchant_ref_no  = Invoice::where('id', $invoiceId)->value('no_invoice'); 
+            $this->plink_ref_no     = Invoice::where('id', $invoiceId)->value('plink_ref_no');
+            $transmission_date_time = Invoice::where('id', $invoiceId)->value('transmission_date_time');
+
+            $body = [
+                "merchant_key_id" => $this->merchantKeyId,
+                "merchant_id" => $this->merchantId,
+                "merchant_ref_no" => $this->merchant_ref_no,
+                "plink_ref_no" => $this->plink_ref_no,
+                "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
+            ];
+    
+            $jsonBody = json_encode($body);
+            $secretKey = $this->secretKey;
+            $mac = hash_hmac('sha256', $jsonBody, $secretKey);
+            
+            Log::info(['Body Check Status getPaymentStatus' => $body]);
+            Log::info(['mac Check Status getPaymentStatus : ' => $mac]);
+            Log::info(['secretkey Check Status getPaymentStatus : ' => $this->secretKey]);
+
+            $response = Http::withHeaders([
+                'mac' => $mac,
+                'Content-Type' => 'application/json',
+            ])->post($url, $body);
+    
+            $result = json_decode($response->getBody(), true);
+            Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
+            return $result;
+        }
+        catch(Exception $err){
+            dd($err->getMessage());
+            Log::error('Error getPaymentStatus: ' . $err->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error occurred while getting payment status.',
+            ]);
+        }
     }
 }
