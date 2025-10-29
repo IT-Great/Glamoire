@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
         // Cek apakah email terdaftar di database
         $user = User::where('email', $credentials['email'])->first();
 
@@ -40,13 +40,23 @@ class AuthController extends Controller
                     'username' => $user['fullname'],
                 ]);
 
+                // LOG AKTIVITAS LOGIN
+                // Log::info('User logged in', [
+                //     'user_id' => $user->id,
+                //     'email'   => $user->email,
+                // ]);
+
+                Log::info("Login Success | user_id: " . session('id_user') . " | email: " . $user->email);
+                
                 return response()->json(['success' => true, 'message' => 'Login Berhasil']);
             } else {
                 // Jika password salah
+                Log::info("Wrong Password | email: " . $user->email);
                 return response()->json(['error' => true, 'message' => 'Password Salah']);
             }
         } else {
             // Jika email tidak ditemukan
+            Log::info("User Not Found | email: " . $user->email);
             return response()->json(['error' => true, 'message' => 'Oops Email Belum Terdaftar']);
         }
     }
@@ -206,6 +216,9 @@ class AuthController extends Controller
                         'user_id' => $userLogin->id,
                     ]);
 
+                    Log::info("New user registered without new voucher | user ID: " . $userLogin->id . " | email: " . $userLogin->email);
+
+
                     return response()->json([
                         'success' => true,
                         'message' => 'Registrasi berhasil, silakan cek email untuk verifikasi'
@@ -235,6 +248,14 @@ class AuthController extends Controller
                         'id_user'  => $user->id,
                         'username' => $user->fullname,
                     ]);
+
+                    Log::info('New user registered with voucher', [
+                        'user_id' => $userLogin->id,
+                        'email'   => $userLogin->email,
+                        'voucher' => $codeUser,
+                    ]);
+
+                    Log::info("New user registered with voucher | user ID: " . $userLogin->id . " | email: " . $userLogin->email . " | voucher: " . $codeUser);
 
                     return response()->json([
                         'success' => true,
@@ -281,6 +302,7 @@ class AuthController extends Controller
     {
         try {
             Auth::logout();
+            Log::info("User logged out | user ID: " . session('id_user') . " | email: " . User::where('id', session('id_user'))->value('email'));
             session()->flush(); // Untuk menghapus semua session
             return response()->json(['success' => true, 'message' => 'Logout berhasil']);
         } catch (Exception $err) {

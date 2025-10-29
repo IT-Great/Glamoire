@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Area;
+use App\Models\User;
+use App\Models\Shipping_address;
 use App\Services\BerduApiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,9 +15,20 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
+    private $apiKey;
+    private $baseUrl;
+
+    public function __construct()
+    {
+        $this->apiKey = config('services.biteship.api_key');
+        $this->baseUrl = config('services.biteship.base_url');
+    }
+
     public function indexOrder()
     {
         $orders = Order::with([
@@ -470,7 +485,7 @@ class OrderController extends Controller
     public function detailOrder($id)
     {
         $order = Order::with('orderItems.product', 'user')->findOrFail($id);
-
+        // dd($order->payment);
         return view('admin.order.detail', compact('order'));
     }
 
@@ -495,12 +510,161 @@ class OrderController extends Controller
         }
     }
 
-
+    
+    
     // CREATE ORDER KE BITESHIP
-    public function updateShippingStatus($id)
+    public function pickUpBiteship($id)
     {
         try {
+            $order = Order::findOrFail($id);
+            $orderItems = OrderItem::where('order_id', $order->id)->with('product')->get();
+
+            $user = User::findOrFail($order->user_id);
+
+            $address = Shipping_address::where('user_id', $order->user_id)
+                ->where('is_use', 1)
+                ->orderBy('is_main', 'DESC')
+                ->first();
+            $province = Shipping_address::where('user_id', $order->user_id)
+                ->where('is_use', 1)
+                ->value('province');
+            $regency = Shipping_address::where('user_id', $order->user_id)
+                ->where('is_use', 1)
+                ->value('regency');
+            $district = Shipping_address::where('user_id', $order->user_id)
+                ->where('is_use', 1)
+                ->value('district');
+            $subdistrict = Shipping_address::where('user_id', $order->user_id)
+                ->where('is_use', 1)
+                ->value('subdistrict');
+            $postalCodeGCS = Area::where('province', 'LIKE', '%' . "Jawa Timur" . '%')
+                ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', 'Surabaya') . '%')
+                ->where('district', 'LIKE', '%' . 'Dukuh pakis' . '%')
+                ->where('subdistrict', '=', ucwords(strtolower('Pradah kali kendal')))
+                ->value('postal_code');
+            $getPostalCode = Area::where('province', 'LIKE', '%' . $province . '%')
+                ->where('city', 'LIKE', '%' . str_replace(['KOTA ', 'KABUPATEN '], '', $regency) . '%')
+                ->where('district', 'LIKE', '%' . $district . '%')
+                ->where('subdistrict', '=', ucwords(strtolower($subdistrict)))
+                ->value('postal_code');
+
+            $items = $orderItems->map(function ($item) {
+                    $dimensions = json_decode($item->product->dimensions ?? '{}', true);
+                    return [
+                        "name"        => $item->product->product_name ?? 'Unknown Product',
+                        // "description" => $item->product->description ?? '',
+                        "value"       => $item->product->regular_price ?? 0,
+                        "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
+                        "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
+                        "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
+                        "weight"      => $item->product->weight_product ?? 0,
+                        "quantity"    => $item->quantity ?? 1,
+                    ];
+                })->toArray();
+
+            // Log::info('Order Items for Biteship:', $items);
+            // Log::info(['Postal Code GCS:', $postalCodeGCS]);
+            // Log::info(['Address:', $address['recipient_name'], $address['handphone'], $address['address'], $address['benchmark'], $getPostalCode]);
+            // Log::info(['apiKey', $this->apiKey]);
             
+            // ORDER
+            $createOrder = Http::withHeaders([
+                'Authorization' => $this->apiKey,
+                'Content-Type'  => 'application/json',
+            ])->post('https://api.biteship.com/v1/orders', [
+                "shipper_contact_name" => "", 
+                "shipper_contact_phone" => "",
+                "shipper_contact_email" => "",
+                "shipper_organization" => "",
+                "origin_contact_name" => "Glamoire", //
+                "origin_contact_phone" => "08979243010", //
+                "origin_address" => "Jl Wijaya Kusuma no. 57, Surabaya", //
+                "origin_note" => "",
+                "origin_postal_code" => $postalCodeGCS, // 
+                "destination_contact_name" => $address['recipient_name'], //
+                "destination_contact_phone" => $address['handphone'], //
+                "destination_contact_email" => $address['email'],
+                "destination_address" => $address['address'], //
+                "destination_postal_code" => $getPostalCode, //
+                "destination_note" => $address['benchmark'],
+                "courier_company" => $order->kurir, //
+                "courier_type" => "reg", //
+                "courier_insurance" => "",
+                "delivery_type" => "now", //
+                "order_note" => "",
+                "metadata" => [],
+                "items" => $items,
+            ]);
+
+            // DRAFT ORDER
+            // $createOrder = Http::withHeaders([
+            //     'Authorization' => $this->apiKey,
+            //     'Content-Type'  => 'application/json',
+            // ])->post('https://api.biteship.com/v1/draft_orders', [
+            //     "origin_contact_name" => "Glamoire",
+            //     "origin_contact_phone" => "08979243010",
+            //     "origin_address" => "Jl. Wijaya Kusuma no. 57, Surabaya",
+            //     "origin_note" => "",
+            //     "origin_postal_code" => $postalCodeGCS,
+            //     "destination_contact_name" => $address['recipient_name'], //
+            //     "destination_contact_phone" => $address['handphone'], //
+            //     "destination_contact_email" => $user['email'],
+            //     "destination_address" => $address['address'], //
+            //     "destination_postal_code" => $getPostalCode, //
+            //     "destination_note" => $address['benchmark'],
+            //     "courier_company" => $order['kurir'],
+            //     "courier_type" => "reg",
+            //     "delivery_type" => "now",
+            //     "order_note" => "Tes Draft Order" . $order->id,
+            //     "items" => $items,
+            // ]);
+
+            // Log::info(['Biteship Request :' => 
+            //     [
+            //     'origin_contact_name' => "Glamoire",
+            //     'origin_contact_phone' => "08979243010",
+            //     'origin_address' => "Jl. Wijaya Kusuma no. 57, Surabaya",
+            //     'origin_postal_code' => $postalCodeGCS,
+            //     'destination_contact_name' => $address['recipient_name'],
+            //     'destination_contact_phone' => $address['handphone'],
+            //     "destination_contact_email" => $user['email'],
+            //     'destination_address' => $address['address'],
+            //     'destination_postal_code' => $getPostalCode,
+            //     'items' => $items,
+            //     ]
+            // ]);
+
+            Log::info('Biteship Response:', ['response' => $createOrder->json()]);
+
+
+
+            $status = $createOrder->json();
+
+         
+            if($status['success'] == true){
+                $order->update([
+                    'resi' => $status['courier']['waybill_id'],
+                    'tracking' => $status['courier']['link'],
+                    'status' => 'delivery'
+                ]); // Update status to 'delivery'
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pick Up Biteship initiated successfully!'
+                ]);
+            }
+            else{
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to create order in Biteship: ' . json_encode($createOrder->json())
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to change order status: ' . $e->getMessage()
+            ], 500);
         }
     }
+    
 }

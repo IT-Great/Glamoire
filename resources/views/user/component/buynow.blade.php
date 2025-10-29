@@ -228,6 +228,7 @@
                         <div id="shipping-fee" class="shipping">
                             <!-- SHIPPING -->
                             <select class="form-select text-[10px] md:text-[10px] lg:text-[12px] xl:text-[13px]" aria-label="chooseShippingFee" name="shipping_fee" id="choose_shipping_fee">
+                                 <option value="" selected>Pilih Jasa Kirim Yang Tersedia</option>                                    
                                 @foreach ($data['shippingFee'] as $sp)
                                     <option value="{{ $sp['id'] }}">{{ $sp['description'] }} - Rp{{ number_format($sp['value'], 0, ',', '.') }} (estimasi {{ $sp['etd'] }} hari)</option>                                    
                                 @endforeach
@@ -396,6 +397,9 @@
     let subTotal = 0;
     let totalItemPrice = {{ $data['totalPrice'] }};
     let originalTotalShopping = null;
+    let courier = null;
+    let description = null;
+    let etd = null;
 
     // Voucher-related variables
     let selectedPromoCode = null; // Discount voucher code
@@ -407,6 +411,10 @@
     let shippingDiscount = 0; 
 
     let formattedData = {}; // Objek hasil akhir
+
+    let destinationArea = {!! json_encode($data['destinationArea']) !!};    
+    let originArea      = {!! json_encode($data['originArea']) !!};
+    let destinationPostalCode = {!! json_encode($data['destinationPostalCode']) !!};
 
     productItems.forEach((product, index) => {
         formattedData[index] = {
@@ -438,6 +446,9 @@
                 },
                 success: function(response) {
                     ongkir = response.ongkir;
+                    courier = response.courier;
+                    description = response.description;
+                    etd = response.etd;
                     // Update `shippingDiscount` based on current `ongkir` and `shippingDiscountAmount`
                    
                     restoreOriginalValues();
@@ -953,63 +964,6 @@
         });
     });
 
-    
-    // $(document).on('click', '#paynow', function(e) { 
-    //     e.preventDefault();
-    
-    //     $.ajax({
-    //         url: "{{ route('order.payment') }}",
-    //         type: 'POST',
-    //         data: {
-    //             products: formattedData,
-    //             subtotal: subTotal,          // Removed the colon inside the key
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //             _token: '{{ csrf_token() }}'
-    //         },
-    //         beforeSend: function() {
-    //             $('.loading-container').show(); // Show the spinner
-    //         },
-    //         success: function(response) {
-    //             Toast.fire({
-    //                 icon: "success",
-    //                 text: "Silahkan cek orderanku di bagian profile saya untuk detail orderanmu",
-    //                 title: "Pembayaranmu Berhasil",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             }).then(function () {
-    //                 location.href = response.user_id+"_account"; // Redirect ke halaman utama atau halaman lain
-    //             });
-    //         },
-    //         complete: function() {
-    //             $('.loading-container').hide(); // Show the spinner
-    //         },
-    //         error: function(xhr) {
-    //             Toast.fire({
-    //                 icon: "error",
-    //                 text: "Kesalahan Sistem",
-    //                 title: "Oops..",
-    //                 willOpen: () => {
-    //                     const title = document.querySelector('.swal2-title');
-    //                     const content = document.querySelector('.swal2-html-container');
-    //                     if (title) title.style.color = '#ffffff'; // Ubah warna judul
-    //                     if (content) content.style.color = '#ffffff'; // Ubah warna konten
-    //                 }
-    //             });
-    //         }
-    //     });
-    // });
-
     // Add DOKU payment modal HTML
     $('body').append(`
         <div class="modal fade" id="dokuPaymentModal" tabindex="-1" aria-labelledby="dokuPaymentModalLabel" aria-hidden="true">
@@ -1031,74 +985,6 @@
             </div>
         </div>
     `);
-
-    // Handle payment button click
-    // $('#paynow').click(function(e) {
-    //     // console.log(subTotal);
-    //     e.preventDefault();
-
-    //     // Show loading state
-    //     $('#paynow').prop('disabled', true);
-    //     $('#dokuPaymentModal').modal('show');
-
-    //     // Prepare form data
-    //     // const formData = {
-    //     //     total_amount: subTotal,
-    //     // };
-
-    //     // Make AJAX request
-    //     $.ajax({
-    //         url: '/initiate-doku-payment',
-    //         method: 'POST',
-    //         data: {
-    //             total_amount: subTotal,
-    //             products: formattedData,
-    //             subtotal: subTotal,          // Removed the colon inside the key
-    //             shipping_cost: ongkir,
-    //             shipping_address_id: shippingAddressId,
-    //             total_item: totalItem,
-    //             total_item_price: totalItemPrice,
-    //             discount_amount: discountAmount,
-    //             discount_ongkir: shippingDiscount,
-    //             voucher_promo: selectedPromoCode,
-    //             voucher_ongkir: selectedOngkirCode,
-    //         },
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         success: function(response) {
-    //             if (response.success && response.payment_url) {
-    //                 // console.log(response.payment_url);
-    //                 // Load DOKU payment iframe
-    //                 $('#dokuPaymentContainer').html(`
-    //             <iframe 
-    //                 src="${response.payment_url}"
-    //                 frameborder="0"
-    //                 width="100%"
-    //                 height="600px"
-    //                 style="overflow: hidden;">
-    //             </iframe>
-    //         `);
-    //             } else {
-    //                 throw new Error('Invalid payment URL');
-    //             }
-    //         },
-    //         error: function(xhr, status, error) {
-    //             // Show error message
-    //             $('#dokuPaymentContainer').html(`
-    //         <div class="alert alert-danger">
-    //             <p>Terjadi kesalahan saat memproses pembayaran:</p>
-    //             <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-    //         </div>
-    //     `);
-    //             console.error('Payment error:', error);
-    //         },
-    //         complete: function() {
-    //             $('#paynow').prop('disabled', false);
-    //         }
-    //     });
-    // });
-
 </script>
 
     <!-- JIKA ALAMAT KOSONG FOR API WILAYAH-->
@@ -1860,40 +1746,6 @@
             }
         });
 
-    document
-        .getElementById("address_district")
-        .addEventListener("change", function() {
-            const districtId = this.value;
-            const districtName = this.options[this.selectedIndex].text; // Get the name
-            document.getElementById("address_subdistrict_name").value =
-                districtName; // Save name in hidden input
-
-            const subdistrictSelect = document.getElementById("address_subdistrict");
-            subdistrictSelect.innerHTML =
-                '<option value="">Pilih Desa/Kelurahan</option>';
-            document.getElementById("address_subdistrict_name").value = ""; // Clear previous district name
-
-            // GET DATA DISTRICT FROM REGENCY
-            if (districtId) {
-                fetch(
-                        `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`
-                    )
-                    .then((response) => response.json())
-                    .then((subdistricts) => {
-                        subdistricts.forEach((subdistrict) => {
-                            let option = document.createElement("option");
-                            option.value = subdistrict.id;
-                            option.text = subdistrict.name;
-                            subdistrictSelect.appendChild(option);
-                        });
-                    })
-                    .catch((error) =>
-                        console.error("Error fetching districts:", error)
-                    );
-            }
-        });
-
-
     // Event listener for regency selection
     document
         .getElementById("add_checkout_regency")
@@ -1955,97 +1807,117 @@
 <script>
     $('#paynow').click(function(e) {
         e.preventDefault();
-
-        $('#paynow').prop('disabled', true);
-        $('#dokuPaymentModal').modal('show');
-
         // Make AJAX request
-        $.ajax({
-            url: '/payment/submit',
-            method: 'POST',
-            data: {
-                total_amount: subTotal,
-                products: formattedData,
-                subtotal: subTotal,         
-                shipping_cost: ongkir,
-                shipping_address_id: shippingAddressId,
-                total_item: totalItem,
-                total_item_price: totalItemPrice,
-                discount_amount: discountAmount,
-                discount_ongkir: shippingDiscount,
-                voucher_promo: selectedPromoCode,
-                voucher_ongkir: selectedOngkirCode,
-                total_amount: subTotal,
-                total_amount: subTotal,
-                condition: "buynow",
-            },
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                if (response.success && response.payment_url) {
-                    $('#dokuPaymentContainer').html(`
-                        <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
-                            <div class="flex items-center gap-3 mb-2">
-                                <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
-                                </svg>
-                                <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
-                            </div>
-                            <p class="text-sm text-gray-700">
-                                Silakan selesaikan pembayaran sebelum:
-                            </p>
-                            <div class="mt-2 text-xl font-bold text-red-600">
-                                ${response.deadline}
-                            </div>
-                             <p class="mt-2 text-sm text-gray-700">
-                                Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
-                            </p>
-
-                            <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
-                            <ol class="text-gray-700 text-sm">
-                                <li>1. Pilih metode pembayaran</li>
-                                <li>2. Lakukan transaksi sebelum batas waktu</li>
-                                <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
-                                <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
-                            </ol>
-                            <p class="mt-2 text-sm text-gray-700">
-                                Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
-                            </p>
-                            <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
-                                Selesai
-                            </a>
-                        </div>
-                    `);
-                    if (window.innerWidth <= 455){
-                        // console.log(window.innerWidth)
-                        window.location.href = response.payment_url;
-                    }
-                    else{
-                        // console.log(window.innerWidth)
-                        window.open(response.payment_url, '_blank', 'width=800,height=600');
-                    }
-                } else {
-                    throw new Error('Invalid payment URL');
+         if(ongkir == null){
+            Toast.fire({
+                icon: "error",
+                text: "Pilih Dulu Jasa Pengirimannya",
+                title: "Oops",
+                showConfirmButton: false,
+                timer: 4500,
+                timerProgressBar: true,
+                willOpen: () => {
+                    const title = document.querySelector('.swal2-title');
+                    const content = document.querySelector('.swal2-html-container');
+                    if (title) title.style.color = '#ffffff';
+                    if (content) content.style.color = '#ffffff';
                 }
-            },
-            error: function(xhr, status, error) {
-                // console.log(xhr);
-                // console.log(status);
-                // console.log(error);
-                $('#dokuPaymentContainer').html(`
-            <div class="alert alert-danger">
-                <p>Terjadi kesalahan saat memproses pembayaran:</p>
-                <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
-            </div>
-        `);
-                console.error('Payment error:', error);
-            },
-            complete: function() {
-                $('#paynow').prop('disabled', false);
-            }
-        });
+            });
+        }
+        else{
+            $('#paynow').prop('disabled', true);
+            $('#dokuPaymentModal').modal('show');
+            $.ajax({
+                url: '/payment/submit',
+                method: 'POST',
+                data: {
+                    total_amount: subTotal,
+                    products: formattedData,
+                    subtotal: subTotal,         
+                    shipping_cost: ongkir,
+                    shipping_address_id: shippingAddressId,
+                    total_item: totalItem,
+                    total_item_price: totalItemPrice,
+                    discount_amount: discountAmount,
+                    discount_ongkir: shippingDiscount,
+                    voucher_promo: selectedPromoCode,
+                    voucher_ongkir: selectedOngkirCode,
+                    condition: "buynow",
+                    destinationArea: destinationArea,
+                    originArea: originArea,
+                    courier: courier,
+                    etd: etd,
+                    description: description,
+                    destinationPostalCode: destinationPostalCode,
+                    
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    if (response.success == true) {
+                        // if(response.payment_url){
+                            // $('#dokuPaymentContainer').html(`
+                            //     <div class="p-4 rounded-xl border border-yellow-400 bg-yellow-50 shadow-md">
+                            //         <div class="flex items-center gap-3 mb-2">
+                            //             <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            //                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"></path>
+                            //                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C6.48 22 2 17.52 2 12S6.48 2 12 2s10 4.48 10 10-4.48 10-10 10z"></path>
+                            //             </svg>
+                            //             <h5 class="text-xl font-semibold text-yellow-700">Batas Waktu Pembayaran</h5>
+                            //         </div>
+                            //         <p class="text-sm text-gray-700">
+                            //             Silakan selesaikan pembayaran sebelum:
+                            //         </p>
+                            //         <div class="mt-2 text-xl font-bold text-red-600">
+                            //             ${response.deadline}
+                            //         </div>
+                            //          <p class="mt-2 text-sm text-gray-700">
+                            //             Apabila anda belum melakukan pembayaran sebelum batas waktu, ulangi kembali proses transaksi.
+                            //         </p>
+        
+                            //         <p class="mt-3 fw-semibold text-gray-700">Langkah-langkah Pembayaran:</p>
+                            //         <ol class="text-gray-700 text-sm">
+                            //             <li>1. Pilih metode pembayaran</li>
+                            //             <li>2. Lakukan transaksi sebelum batas waktu</li>
+                            //             <li>3. Klik <strong>Check Status</strong> untuk melihat status transaksi</li>
+                            //             <li>4. Klik Konfirmasi pembayaran jika status transaksi terbayar</li>
+                            //         </ol>
+                            //         <p class="mt-2 text-sm text-gray-700">
+                            //             Hubungi admin glamoire apabila kamu mengalami kendala ketika transaksi.
+                            //         </p>
+                            //         <a href="/{{session('id_user')}}_account" class="justify-content-start btn btn-sm btn-success rounded-sm mt-2">
+                            //             Selesai
+                            //         </a>
+                            //     </div>
+                            // `);
+                        //     if (window.innerWidth <= 455){
+                        //         // console.log(window.innerWidth)
+                        //         window.location.href = response.payment_url;
+                        //     }
+                        // }
+                        // else{
+                        //     window.open(response.payment_url, '_blank', 'width=800,height=600');
+                        // }
+                        window.location.href = response.payment_url;
+                    } else {
+                       alert('Invalid payment URL');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    $('#dokuPaymentContainer').html(`
+                <div class="alert alert-danger">
+                    <p>Terjadi kesalahan saat memproses pembayaran:</p>
+                    <p>${xhr.responseJSON?.message || 'Silakan coba lagi beberapa saat lagi.'}</p>
+                </div>
+            `);
+                    console.error('Payment error:', error);
+                },
+                complete: function() {
+                    $('#paynow').prop('disabled', false);
+                }
+            });
+        }
     });
 </script>
 

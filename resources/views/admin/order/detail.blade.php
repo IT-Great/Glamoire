@@ -60,13 +60,22 @@
                                         <small class="text-muted">Transaction Date:
                                             {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y') }}
                                         </small>
+
                                         <div>
+                                            @if ( $order->status === 'delivery')
+                                            <a href="{{$order->tracking}}" type="button"
+                                                class="btn btn-success btn-sm d-inline-flex align-items-center gap-1"
+                                                style="border-radius: 8px;">
+                                                <i class="bi bi-eye"></i> Track Order
+                                            </a>
+                                            @endif
                                             <button type="button"
                                                 class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1"
                                                 style="border-radius: 8px;" id="printButton">
                                                 <i class="bi bi-printer-fill"></i> Print
                                             </button>
                                         </div>
+                                        
                                     </div>
                                 </div>
 
@@ -104,9 +113,9 @@
                                                             </h5>
                                                             <div class="text-muted">
                                                                 <p class="mb-2"><strong>Province :</strong>
-                                                                    {{ $order->shippingAddress->province }}</p>
+                                                                    {{ ucwords(strtolower($order->shippingAddress->province)) }}</p>
                                                                 <p class="mb-2"><strong>City :</strong>
-                                                                    {{ $order->shippingAddress->regency }}</p>
+                                                                    {{ ucwords(strtolower($order->shippingAddress->regency)) }}</p>
                                                                 <p class="mb-0"><strong>Address :</strong>
                                                                     {{ $order->shippingAddress->address }}</p>
                                                             </div>
@@ -123,11 +132,11 @@
                                                             </h5>
                                                             <div class="text-muted">
                                                                 <p class="mb-2"><strong>Method :</strong>
-                                                                    {{ $order->payment_method }}</p>
+                                                                    {{ $order->payment->payment_method }}</p>
                                                                 <p class="mb-2"><strong>Status :</strong>
                                                                     <span
-                                                                        class="badge bg-{{ $order->payment_status == 'Paid' ? 'success' : 'warning' }}">
-                                                                        {{ $order->payment_status }}
+                                                                        class="badge bg-{{ $order->payment->status == 'completed' ? 'success' : 'warning' }}">
+                                                                        {{ $order->payment->status }}
                                                                     </span>
                                                                 </p>
                                                                 <p class="mb-0"><strong>Invoice :</strong>
@@ -135,6 +144,25 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    
+                                                    @if ( $order->status === 'delivery')
+                                                    <div class="col-md-4 pt-2">
+                                                        <div class="border rounded p-3 h-100">
+                                                            <h5 class="mb-3">
+                                                                <i class="bi bi-truck me-2 text-primary"></i>Shipping
+                                                                Information
+                                                            </h5>
+                                                            <div class="text-muted">
+                                                                <p class="mb-2"><strong>Kurir :</strong>
+                                                                    {{ ucwords(strtolower($order->kurir)) }} - {{ ucwords(strtolower($order->layanan)) }}</p>
+                                                                <p class="mb-2"><strong>Resi :</strong>
+                                                                    {{ ucwords(strtolower($order->resi)) }}</p>
+                                                                <p class="mb-0"><strong>ETD :</strong>
+                                                                    {{ $order->etd }}</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @endif
                                                 </div>
 
                                                 <div class="row" id="table-head">
@@ -175,6 +203,14 @@
                                                                             <tr>
                                                                                 <td colspan="4" class="text-end"
                                                                                     style="font-weight: bold;">
+                                                                                    Ongkir</td>
+                                                                                <td class="fw-bold">Rp.
+                                                                                    {{ number_format($order->shipping_cost, 0, ',', '.') }}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="4" class="text-end"
+                                                                                    style="font-weight: bold;">
                                                                                     Subtotal</td>
                                                                                 <td class="fw-bold">Rp.
                                                                                     {{ number_format($order->total_amount, 0, ',', '.') }}
@@ -199,17 +235,19 @@
                                                                         Kembali
                                                                     </a>
 
-                                                                    <button type="button"
-                                                                        class="btn btn-success btn-sm d-inline-flex align-items-center gap-1 me-2"><i
-                                                                            class="bi bi-check-circle"></i>
-                                                                        Konfirmasi
-                                                                        Pemesanan</button>
+                                                                    @if ($order->status == "pending")
+                                                                        <button type="button"
+                                                                            class="btn btn-success btn-sm d-inline-flex align-items-center gap-1 me-2"><i
+                                                                                class="bi bi-check-circle"></i>
+                                                                            Konfirmasi Pemesanan</button>
+                                                                    @endif
 
-                                                                    {{-- <button type="button"
-                                                                        class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1 me-2"><i
-                                                                            class="bi bi-truck"></i>
-                                                                        Pesanan
-                                                                        Dikirim</button> --}}
+                                                                    @if($order->status == "processing")
+                                                                        <button type="button"
+                                                                            class="btn btn-warning btn-sm d-inline-flex align-items-center gap-1 me-2"><i
+                                                                                class="bi bi-truck"></i>
+                                                                            Pick Up Biteship</button>
+                                                                    @endif
                                                                         
                                                                     {{-- <button type="button"
                                                                         class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 me-2"><i
@@ -242,77 +280,156 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const confirmOrderBtn = document.querySelector('.btn-success');
+            const status = "{{ $order['status'] }}";
 
-            confirmOrderBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                // Dapatkan ID pesanan dari tampilan
-                const orderId = "{{ $order->id }}";
-
-                // SweetAlert2 confirmation dialog
-                Swal.fire({
-                    title: 'Konfirmasi Pesanan',
-                    text: 'Apakah Anda yakin ingin mengubah status pesanan menjadi Processing?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, Konfirmasi',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Kirim permintaan AJAX untuk mengubah status pesanan
-                        fetch(`/admin/order/${orderId}/change-status`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector(
-                                        'meta[name="csrf-token"]').getAttribute('content')
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    // Tampilkan pesan berhasil dalam bahasa Indonesia
+            // Konfirmasi Pemesanan
+            if(status == "pending"){
+                const confirmOrderBtn = document.querySelector('.btn-success');
+                confirmOrderBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+    
+                    // Dapatkan ID pesanan dari tampilan
+                    const orderId = "{{ $order->id }}";
+    
+                    // SweetAlert2 confirmation dialog
+                    Swal.fire({
+                        title: 'Konfirmasi Pesanan',
+                        text: 'Apakah Anda yakin ingin mengubah status pesanan menjadi Processing?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Konfirmasi',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Kirim permintaan AJAX untuk mengubah status pesanan
+                            fetch(`/admin/order/${orderId}/change-status`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector(
+                                            'meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Tampilkan pesan berhasil dalam bahasa Indonesia
+                                        Swal.fire({
+                                            title: 'Berhasil!',
+                                            text: 'Status pesanan berhasil diubah menjadi Processing.',
+                                            icon: 'success',
+                                            timer: 3000, // Auto-close alert after 1.8 seconds
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
+                                        }).then(() => {
+                                            // Reload halaman atau perbarui UI jika diperlukan
+                                            location.reload();
+                                        });
+                                    } else {
+                                        // Tampilkan pesan gagal dalam bahasa Indonesia
+                                        Swal.fire({
+                                            title: 'Gagal!',
+                                            text: data.message,
+                                            icon: 'error',
+                                            timer: 3000,
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    // Tampilkan pesan error dalam bahasa Indonesia
                                     Swal.fire({
-                                        title: 'Berhasil!',
-                                        text: 'Status pesanan berhasil diubah menjadi Processing.',
-                                        icon: 'success',
-                                        timer: 3000, // Auto-close alert after 1.8 seconds
-                                        timerProgressBar: true,
-                                        showConfirmButton: true
-                                    }).then(() => {
-                                        // Reload halaman atau perbarui UI jika diperlukan
-                                        location.reload();
-                                    });
-                                } else {
-                                    // Tampilkan pesan gagal dalam bahasa Indonesia
-                                    Swal.fire({
-                                        title: 'Gagal!',
-                                        text: data.message,
+                                        title: 'Error!',
+                                        text: 'Terjadi kesalahan dalam mengubah status pesanan.',
                                         icon: 'error',
                                         timer: 3000,
                                         timerProgressBar: true,
                                         showConfirmButton: true
                                     });
-                                }
-                            })
-                            .catch(error => {
-                                // Tampilkan pesan error dalam bahasa Indonesia
-                                Swal.fire({
-                                    title: 'Error!',
-                                    text: 'Terjadi kesalahan dalam mengubah status pesanan.',
-                                    icon: 'error',
-                                    timer: 3000,
-                                    timerProgressBar: true,
-                                    showConfirmButton: true
+                                    console.error('Error:', error);
                                 });
-                                console.error('Error:', error);
-                            });
-                    }
+                        }
+                    });
                 });
-            });
+            }
+            
+            // Pick Up Biteship
+
+            if(status == "processing"){
+                const pickUpBtn = document.querySelector('.btn-warning');
+                pickUpBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+    
+                    // Dapatkan ID pesanan dari tampilan
+                    const orderId = "{{ $order->id }}";
+    
+                    // SweetAlert2 confirmation dialog
+                    Swal.fire({
+                        title: 'Pick Up Biteship',
+                        text: 'Pastikan pesanan sudah siap untuk di-pick up oleh Biteship. Lanjutkan?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Konfirmasi',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Kirim permintaan AJAX untuk mengubah status pesanan
+                            fetch(`/admin/order/${orderId}/pick-up`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector(
+                                            'meta[name="csrf-token"]').getAttribute('content')
+                                    }
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        // Tampilkan pesan berhasil dalam bahasa Indonesia
+                                        Swal.fire({
+                                            title: 'Berhasil!',
+                                            text: 'Berhasil mengirim pick up pesanan ke biteship. <br> check dashboard biteshipmu sekarang',
+                                            icon: 'success',
+                                            timer: 3000, // Auto-close alert after 1.8 seconds
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
+                                        }).then(() => {
+                                            // Reload halaman atau perbarui UI jika diperlukan
+                                            location.reload();
+                                        });
+                                    } else {
+                                        // Tampilkan pesan gagal dalam bahasa Indonesia
+                                        Swal.fire({
+                                            title: 'Gagal!',
+                                            text: data.message,
+                                            icon: 'error',
+                                            timer: 3000,
+                                            timerProgressBar: true,
+                                            showConfirmButton: true
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    // Tampilkan pesan error dalam bahasa Indonesia
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Terjadi kesalahan dalam mengubah status pesanan.',
+                                        icon: 'error',
+                                        timer: 3000,
+                                        timerProgressBar: true,
+                                        showConfirmButton: true
+                                    });
+                                    console.error('Error:', error);
+                                });
+                        }
+                    });
+                });
+            }
         });
     </script>
 

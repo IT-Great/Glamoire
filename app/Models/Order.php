@@ -9,26 +9,7 @@ class Order extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'payment_id',
-        'invoice_id',
-        'shipping_address_id',
-        'total_item',
-        'total_item_price',
-        'shipping_cost',
-        'voucher_promo',
-        'voucher_ongkir',
-        'discount_ongkir',
-        'discount_amount',
-        'total_amount',
-        'order_date',
-        'status',
-        'kurir',
-        'resi',
-        'destination_area',
-        'origin_area',
-    ];
+    protected $guarded = ['id'];
     
     public function shippingAddress()
     {
@@ -47,7 +28,7 @@ class Order extends Model
 
     public function payment()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Payment::class, 'id', 'order_id');
     }
 
     public function invoice()
