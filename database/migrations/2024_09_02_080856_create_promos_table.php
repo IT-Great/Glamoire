@@ -34,6 +34,7 @@ return new class extends Migration
             $table->string('image')->nullable();  
             $table->integer('total_used')->nullable()->default(0);
             $table->string('status')->default('Active');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

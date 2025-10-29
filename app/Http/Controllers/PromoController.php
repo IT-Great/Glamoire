@@ -9,6 +9,8 @@ use App\Models\Promo;
 use App\Models\PromoProduct;
 use App\Models\Cart;
 use App\Models\Cart_item;
+use App\Models\PromoGiftProduct;
+use App\Models\PromoGiftProducts;
 use App\Models\PromoTier;
 use App\Models\Wishlist;
 use Carbon\Carbon;
@@ -233,6 +235,9 @@ class PromoController extends Controller
         // hitung total promo discount
         $activeDiscounts = Promo::where('type', 'discount')->count();
 
+        // hitung total promo gift
+        $activeGifts = Promo::where('type', 'gift')->where('status', 'Active')->count();
+
         $products = Product::with(['promos' => function ($query) {
             $query->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%d/%m/%Y') <= CURDATE()")
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%d/%m/%Y') >= CURDATE()");
@@ -246,6 +251,7 @@ class PromoController extends Controller
             'activePromos' => $activePromos,
             'activeVouchers' => $activeVouchers,
             'activeDiscounts' => $activeDiscounts,
+            'activeGifts' => $activeGifts,
         ]);
     }
 
@@ -575,6 +581,44 @@ class PromoController extends Controller
     }
 
 
+    public function detailPromo($id)
+    {
+        $promo = promo::find($id);
+
+        if (!$promo) {
+            return redirect()->route('index-promo')->with('error', 'Promo not found');
+        }
+
+        return view('admin.promo.review', [
+            'promo' => $promo,
+        ]);
+    }
+
+
+    public function deletePromo($id)
+    {
+        $promo = Promo::find($id);
+
+        if (!$promo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo not found.'
+            ]);
+        }
+
+        // Hapus gambar utama dari folder storage
+        if (!empty($promo->image) && Storage::disk('public')->exists($promo->image)) {
+            Storage::disk('public')->delete($promo->image);
+        }
+
+        // Hapus promo dari database
+        $promo->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Promo deleted successfully.'
+        ]);
+    }
 
 
 
@@ -624,6 +668,9 @@ class PromoController extends Controller
 
         $activePromos = $promos->filter(fn($item) => $item->isActive)->count();
 
+        // hitung total promo gift
+        $activeGifts = Promo::where('type', 'gift')->where('status', 'Active')->count();
+
         // discount
         $activeDiscounts = Promo::where('type', 'discount')->count();
 
@@ -635,6 +682,7 @@ class PromoController extends Controller
             'activePromos' => $activePromos,
             'activeVouchers' => $activeVouchers,
             'activeDiscounts' => $activeDiscounts,
+            'activeGifts' => $activeGifts,
         ]);
     }
 
@@ -824,96 +872,6 @@ class PromoController extends Controller
         $products = Product::all(); // Pastikan kamu menggunakan model Product
         return view('admin.promo.voucher.create-voucher-product', compact('products'));
     }
-
-    // public function storePromoProductVoucher(Request $request)
-    // {
-    //     try {
-    //         $request->validate([
-    //             'promo_name' => 'required|string|max:255',
-    //             'date_range' => 'required|string|max:255',
-    //             'min_transaction' => 'required',
-    //             'usage_quota' => 'required',
-    //             'max_quantity_buyer' => 'required',
-    //             'promo_code' => 'required',
-    //             'discount' => 'required|numeric',
-    //             'global_discount_type' => 'required|in:nominal,percentage',
-    //             'product_ids' => 'required|array',
-    //             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-    //             'limit_stock' => 'array',
-    //         ]);
-
-    //         // Simpan data diskon
-    //         $discount = $request->input('discount');
-    //         $discountType = $request->input('global_discount_type');
-
-    //         // Hapus format angka dengan titik dan koma jika ada, lalu konversi ke angka
-    //         $discount = str_replace(['.', ','], '', $discount); // Menghapus titik dan koma
-
-    //         // Hapus format rupiah dari min_transaction
-    //         $minTransaction = str_replace(['Rp. ', '.'], '', $request->min_transaction);
-
-    //         // Generate kode promo otomatis
-    //         $randomCode = strtoupper(substr(str_shuffle('abcdefghijklmnopqrstuvwxyz123456789'), 0, 5));
-    //         $promoCode = 'Glamo' . $randomCode;
-
-    //         // Simpan single image
-    //         $imagePath = null;
-    //         if ($request->hasFile('image')) {
-    //             $image = $request->file('image');
-    //             $imageName = time() . '_' . $image->getClientOriginalName();
-    //             $imagePath = $image->storeAs('promo', $imageName, 'public');
-    //         }
-
-    //         // Simpan data promo
-    //         $promo = Promo::create([
-    //             'promo_name' => $request->promo_name,
-    //             'date_range' => $request->date_range,
-    //             'min_transaction' => $minTransaction,
-    //             'promo_code' => $promoCode,
-    //             'usage_quota' => $request->usage_quota,
-    //             'max_quantity_buyer' => $request->max_quantity_buyer,
-    //             'discount' => $discount,
-    //             'discount_type' => $discountType,
-    //             'image' => $imagePath ?? null,
-    //             'type' => $request->type,
-    //         ]);
-
-    //         // Loop melalui produk terpilih untuk simpan diskon dan limit stock per produk
-    //         $productAttachData = [];
-    //         foreach ($request->product_ids as $productId) {
-    //             // Ambil diskon per produk
-    //             $discountProduct = $request->product_discount[$productId] ?? null;
-
-    //             // Hapus format titik dan koma dari input diskon
-    //             $discountProduct = str_replace(['.', ','], '', $discountProduct);
-
-    //             // Ambil tipe diskon (nominal atau percentage)
-    //             $discountType = $request->input('product_discount_type')[$productId] ?? $promo->discount_type;
-
-    //             // Ambil limit stock per produk
-    //             $limitStock = $request->limit_stock[$productId] ?? null;
-
-    //             // Tambah data untuk attach
-    //             $productAttachData[$productId] = [
-    //                 'discount_product_voucher_item' => $discountProduct ?: $promo->discount,
-    //                 'limit_stock' => $limitStock,
-    //                 'discount_type' => $discountType,
-    //                 'discounted_price' => $request->discounted_price[$productId] ?? null,
-    //             ];
-    //         }
-
-    //         // Attach produk dengan data tambahan
-    //         $promo->products()->attach($productAttachData);
-
-    //         // Redirect dengan pesan sukses
-    //         return redirect()->route('index-promo-voucher')->with('success', 'Promo Product Voucher created successfully!');
-    //     } catch (\Illuminate\Validation\ValidationException $e) {
-    //         return redirect()->back()->withErrors($e->errors())->withInput();
-    //     } catch (\Exception $e) {
-    //         Log::error('Error creating Voucher', ['exception' => $e->getMessage()]);
-    //         return redirect()->back()->withErrors(['error' => 'An error occurred while creating the Voucher: ' . $e->getMessage()])->withInput();
-    //     }
-    // }
 
     public function storePromoProductVoucher(Request $request)
     {
@@ -1459,44 +1417,6 @@ class PromoController extends Controller
 
 
 
-    public function detailPromo($id)
-    {
-        $promo = promo::find($id);
-
-        if (!$promo) {
-            return redirect()->route('index-promo')->with('error', 'Promo not found');
-        }
-
-        return view('admin.promo.review', [
-            'promo' => $promo,
-        ]);
-    }
-
-
-    public function deletePromo($id)
-    {
-        $promo = Promo::find($id);
-
-        if (!$promo) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Promo not found.'
-            ]);
-        }
-
-        // Hapus gambar utama dari folder storage
-        if (!empty($promo->image) && Storage::disk('public')->exists($promo->image)) {
-            Storage::disk('public')->delete($promo->image);
-        }
-
-        // Hapus promo dari database
-        $promo->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Promo deleted successfully.'
-        ]);
-    }
 
 
 
@@ -1550,6 +1470,8 @@ class PromoController extends Controller
         // hitung total promo discount
         $activeDiscounts = Promo::where('type', 'discount')->count();
 
+        // hitung total promo gift
+        $activeGifts = Promo::where('type', 'gift')->where('status', 'Active')->count();
 
         return view('admin.promo.diskon.index', [
             'promodiscount' => $promodiscount,
@@ -1560,6 +1482,7 @@ class PromoController extends Controller
             'activePromos' => $activePromos,
             'activeVouchers' => $activeVouchers,
             'activeDiscounts' => $activeDiscounts,
+            'activeGifts' => $activeGifts,
 
         ]);
     }
@@ -1872,5 +1795,212 @@ class PromoController extends Controller
             Log::error('Error updating Voucher', ['exception' => $e->getMessage()]);
             return redirect()->back()->withErrors(['error' => 'An error occurred while updating the Voucher: ' . $e->getMessage()])->withInput();
         }
+    }
+
+
+
+    // PROMO GIFT
+    public function indexPromoGift()
+    {
+        $promosGift = Promo::where('type', 'gift')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->isActive = $item->date_range
+                    ? now()->lte(\Carbon\Carbon::parse(explode(' - ', $item->date_range)[1] ?? $item->date_range))
+                    : false;
+                return $item;
+            });
+
+
+        $promodiscount = Promo::where('type', 'gift')->with('tiers')
+            ->orderBy('created_at', 'desc') // Mengurutkan berdasarkan waktu pembuatan
+            ->get()
+            ->map(function ($item) {
+                // Set status berdasarkan end_date
+                $item->isActive = $item->end_date
+                    ? \Carbon\Carbon::parse($item->end_date)->isFuture()
+                    : false;
+                return $item;
+            });
+
+
+        // promo
+        $promos = Promo::where('type', 'promo')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($item) {
+                $item->isActive = $item->end_date
+                    ? \Carbon\Carbon::parse($item->end_date)->isFuture()
+                    : false;
+                return $item;
+            });
+
+        $activePromos = $promos->filter(fn($item) => $item->isActive)->count();
+
+        $products = Product::all();
+        $brands = Brand::all();
+
+        // hitung total promo aktif
+        $activePromos = $promos->filter(function ($item) {
+            return $item->isActive;
+        })->count();
+
+        // Hitung total voucher aktif
+        $activeVouchers = Promo::whereIn('type', [
+            'product voucher',
+            'brand voucher',
+            'limited voucher',
+            'new user voucher'
+        ])->where('status', 'Active')->count();
+
+        // hitung total promo discount
+        $activeDiscounts = Promo::where('type', 'discount')->count();
+
+        // hitung total promo gift
+        $activeGifts = Promo::where('type', 'gift')->where('status', 'Active')->count();
+
+        return view('admin.promo.gift.index', [
+            'promosGift' => $promosGift,
+            'promodiscount' => $promodiscount,
+            'promo' => $promos,
+            'products' => $products,
+            'brands' => $brands,
+            'activePromos' => $activePromos,
+            'activePromos' => $activePromos,
+            'activeVouchers' => $activeVouchers,
+            'activeDiscounts' => $activeDiscounts,
+            'activeGifts' => $activeGifts,
+
+        ]);
+    }
+
+
+
+    public function createPromoGift()
+    {
+        $products = Product::all(); // Pastikan kamu menggunakan model Product
+        return view('admin.promo.gift.create', compact('products'));
+    }
+
+    public function storePromoGift(Request $request)
+    {
+        $request->validate([
+            'promo_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date_range' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'main_product_id' => 'required|exists:products,id',
+            'main_product_quantity' => 'required|integer|min:1',
+            'gift_product_ids' => 'required|array|min:1',
+            'gift_product_ids.*' => 'exists:products,id',
+            'gift_quantities' => 'required|array',
+            'gift_quantities.*' => 'integer|min:1',
+            'gift_limits' => 'nullable|array',
+            'gift_limits.*' => 'integer|min:1',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // upload image
+            $imagePath = $request->file('image')->store('promo-gifts', 'public');
+
+            // buat promo
+            $promo = Promo::create([
+                'promo_name'          => $request->promo_name,
+                'type'                => 'gift',
+                'date_range'          => $request->date_range,
+                'image'               => $imagePath,
+                'status'              => 'Active',
+                'description'         => $request->description,
+                'product_id'          => $request->main_product_id,
+            ]);
+
+            // buat detail promo gift
+            foreach ($request->gift_product_ids as $giftProductId) {
+                PromoGiftProducts::create([
+                    'promo_id'             => $promo->id,
+                    'main_product_id'      => $request->main_product_id,
+                    'gift_product_id'      => $giftProductId,
+                    'main_product_quantity' => $request->main_product_quantity,
+                    'gift_product_quantity' => $request->gift_quantities[$giftProductId],
+                    'limit_stock'          => $request->gift_limits[$giftProductId],
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('index-promo-gift')
+                ->with('success', 'Promo gift berhasil dibuat!');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors('Gagal membuat promo: ' . $e->getMessage())->withInput();
+        }
+    }
+
+    // public function detailGift($id)
+    // {
+    //     $promo = promo::find($id);
+
+    //     if (!$promo) {
+    //         return redirect()->route('index-promo-gift')->with('error', 'Promo gift not found');
+    //     }
+
+    //     return view('admin.promo.gift.detail', [
+    //         'promo' => $promo,
+    //     ]);
+    // }
+
+    public function detailGift($id)
+    {
+        $promo = Promo::with(['promoGiftProducts.giftProduct', 'promoGiftProducts.mainProduct'])->find($id);
+
+        if (!$promo) {
+            return redirect()->route('index-promo-gift')->with('error', 'Promo gift not found');
+        }
+
+        // Ambil semua pasangan produk utama dan hadiah
+        $giftProducts = $promo->promoGiftProducts->map(function ($item) {
+            return [
+                'main' => $item->mainProduct,
+                'gift' => $item->giftProduct,
+                'main_quantity' => $item->main_product_quantity,
+                'gift_quantity' => $item->gift_product_quantity,
+                'limit_stock' => $item->limit_stock,
+            ];
+        });
+
+        return view('admin.promo.gift.detail', [
+            'promo' => $promo,
+            'giftProducts' => $giftProducts,
+        ]);
+    }
+
+
+
+    public function deleteGift($id)
+    {
+        $promo = Promo::find($id);
+
+        if (!$promo) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Promo not found.'
+            ]);
+        }
+
+        // Hapus gambar utama dari folder storage
+        if (!empty($promo->image) && Storage::disk('public')->exists($promo->image)) {
+            Storage::disk('public')->delete($promo->image);
+        }
+
+        // Hapus promo dari database
+        $promo->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Promo deleted successfully.'
+        ]);
     }
 }

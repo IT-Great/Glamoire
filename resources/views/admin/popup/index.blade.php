@@ -1157,7 +1157,11 @@
                                     <select class="form-control" name="display_type" id="displayType" required>
                                         <option value="popup">Hanya Pop Up</option>
                                         <option value="slider">Hanya Slider</option>
-                                        <option value="both">Pop Up & Slider</option>
+                                        <option value="banner">Hanya Banner</option>
+                                        <option value="popup&slider">Pop Up & Slider</option>
+                                        <option value="popup&banner">Pop Up & Banner</option>
+                                        <option value="slider&banner">Slider & Banner</option>
+                                        <option value="both">Pop Up, Slider, Banner(Semua)</option>
                                     </select>
                                     <small class="form-text text-muted mt-1" style="font-size: 11px;">
                                         ⚠️ Untuk <strong>media video</strong> disarankan tampil di
@@ -1256,7 +1260,7 @@
             const file = input.files[0];
             if (!file) return;
 
-            const validTypes = ["image/jpeg", "image/png", "image/jpg", "video/mp4"];
+            const validTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif", "video/mp4"];
             const maxSize = 10 * 1024 * 1024; // 10MB
 
             const errorEl = document.getElementById("upload-error");
@@ -1265,7 +1269,7 @@
             previewContainer.innerHTML = "";
 
             if (!validTypes.includes(file.type)) {
-                errorEl.textContent = "File harus berformat JPG, PNG, JPEG, atau MP4.";
+                errorEl.textContent = "File harus berformat JPG, PNG, JPEG, GIF, atau MP4.";
                 input.value = "";
                 return;
             }

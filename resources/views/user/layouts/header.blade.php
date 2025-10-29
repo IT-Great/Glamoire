@@ -12,6 +12,9 @@
 <!-- Favicon -->
 <link href="logo.png" rel="icon" type="image/x-icon"/>
 
+{{-- bi icon --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 <!-- Google Web Fonts -->
 <link rel="preconnect" href="https://fonts.gstatic.com" />
 <link
