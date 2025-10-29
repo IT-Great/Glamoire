@@ -78,6 +78,8 @@ class UserController extends Controller
                         $payment_status = $this->getPaymentStatus($order->id);
     
                         // JIKA ORDERAN BERHASIL DIBAYAR
+
+                        
                         if ($payment_status['transaction_status'] == 'SETLD') {
                             $data = $payment_status;
     
@@ -1052,7 +1054,7 @@ class UserController extends Controller
                 $url = 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
             }
             else{
-                $url = 'https://secure3.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
+                $url = 'https://api3.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
             }
 
             $invoiceId = Order::where('id',$orderId)->value('invoice_id');
