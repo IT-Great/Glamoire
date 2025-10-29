@@ -11,12 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('popups', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->nullable();
-            $table->string('description')->nullable();
-            $table->string('media_popup')->nullable(); // bisa gambar / video
-            $table->enum('media_type', ['image', 'video'])->default('image');
+        Schema::table('popups', function (Blueprint $table) {
             $table->enum('display_type', [
                 'popup',
                 'slider',
@@ -25,9 +20,7 @@ return new class extends Migration
                 'popup&banner',
                 'slider&banner',
                 'both'
-            ])->default('popup');
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
+            ])->default('popup')->change();
         });
     }
 
@@ -36,6 +29,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('popups');
+        Schema::table('popups', function (Blueprint $table) {
+            $table->enum('display_type', ['popup', 'slider', 'both'])->default('popup')->change();
+        });
     }
 };

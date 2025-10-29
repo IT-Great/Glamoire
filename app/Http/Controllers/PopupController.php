@@ -22,16 +22,17 @@ class PopupController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'media_popup' => 'required|mimes:jpeg,png,jpg,mp4|max:10240', // max 10MB
-            'display_type' => 'required|in:popup,slider,both',
+            'media_popup' => 'required|mimes:jpeg,png,jpg,mp4,gif|max:10240',
+            'display_type' => 'required|in:popup,slider,banner,popup&slider,popup&banner,slider&banner,both',
         ], [
             'name.required' => 'Nama pop-up wajib diisi',
             'description.required' => 'Deskripsi wajib diisi',
             'media_popup.required' => 'File wajib dipilih',
-            'media_popup.mimes' => 'Format harus JPG, PNG, JPEG, atau MP4',
+            'media_popup.mimes' => 'Format harus JPG, PNG, JPEG, GIF, atau MP4',
             'media_popup.max' => 'Ukuran maksimal 10MB',
             'display_type.required' => 'Pilih tipe tampilan',
         ]);
+
 
         $mediaPath = null;
         $mediaType = 'image';
@@ -42,10 +43,12 @@ class PopupController extends Controller
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $mediaPath = $file->storeAs('popup_media', $fileName, 'public');
 
-                // Cek tipe file
-                $extension = $file->getClientOriginalExtension();
-                if (in_array($extension, ['mp4'])) {
+                // 🔹 Deteksi tipe file berdasarkan ekstensi
+                $extension = strtolower($file->getClientOriginalExtension());
+                if ($extension === 'mp4') {
                     $mediaType = 'video';
+                } else {
+                    $mediaType = 'image'; // termasuk GIF di sini
                 }
             }
 

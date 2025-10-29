@@ -174,7 +174,7 @@ class Promo extends Model
     {
         return $this->hasMany(PromoProduct::class, 'promo_id');
     }
-    
+
     public function promoTiers()
     {
         return $this->hasManyThrough(
@@ -184,6 +184,62 @@ class Promo extends Model
             'promo_id',        // Foreign key di tabel promo_tiers
             'id',              // Local key di tabel products
             'id'               // Local key di tabel promos
+        );
+    }
+
+    // New relationship for gift promos
+    public function promoGiftProducts()
+    {
+        return $this->hasMany(PromoGiftProducts::class);
+    }
+
+    // Helper method to check if this is a gift promo
+    public function isGiftPromo()
+    {
+        return $this->type === 'gift';
+    }
+
+    // Get main products for gift promo
+    public function getMainProducts()
+    {
+        if (!$this->isGiftPromo()) {
+            return collect();
+        }
+
+        return Product::whereIn('id', $this->promoGiftProducts->pluck('main_product_id')->unique())->get();
+    }
+
+    // Get gift products for gift promo
+    public function getGiftProducts()
+    {
+        if (!$this->isGiftPromo()) {
+            return collect();
+        }
+
+        return Product::whereIn('id', $this->promoGiftProducts->pluck('gift_product_id')->unique())->get();
+    }
+
+    public function giftProducts()
+    {
+        return $this->hasManyThrough(
+            Product::class, // model akhir yang ingin diambil
+            PromoGiftProducts::class, // model pivot
+            'promo_id', // foreign key di tabel PromoGiftProducts
+            'id', // foreign key di tabel Products
+            'id', // local key di tabel promos
+            'gift_product_id' // local key di tabel PromoGiftProducts
+        );
+    }
+
+    public function mainProducts()
+    {
+        return $this->hasManyThrough(
+            Product::class,
+            PromoGiftProducts::class,
+            'promo_id',          // FK di promo_gift_products → promos.id
+            'id',                // FK di products.id
+            'id',                // promos.id
+            'main_product_id'    // FK di promo_gift_products → products.id
         );
     }
 }

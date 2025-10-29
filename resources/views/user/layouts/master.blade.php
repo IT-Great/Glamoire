@@ -10,296 +10,424 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        .modal-content {
+        /* Sidebar Modal Styles - ONLY for specific modals */
+        #loginUser1.modal.fade .modal-dialog,
+        #registerUser1.modal.fade .modal-dialog,
+        #forgot.modal.fade .modal-dialog {
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+        }
+
+        #loginUser1.modal.show .modal-dialog,
+        #registerUser1.modal.show .modal-dialog,
+        #forgot.modal.show .modal-dialog {
+            transform: translateX(0);
+        }
+
+        #loginUser1 .modal-dialog,
+        #registerUser1 .modal-dialog,
+        #forgot .modal-dialog {
+            position: fixed;
+            right: 0;
+            top: 0;
+            margin: 0 !important;
+            height: 100vh;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* Override any centered or scrollable classes for these specific modals */
+        #loginUser1 .modal-dialog-centered,
+        #loginUser1 .modal-dialog-scrollable,
+        #registerUser1 .modal-dialog-centered,
+        #registerUser1 .modal-dialog-scrollable,
+        #forgot .modal-dialog-centered,
+        #forgot .modal-dialog-scrollable {
+            position: fixed !important;
+            right: 0 !important;
+            top: 0 !important;
+            margin: 0 !important;
+            height: 100vh !important;
+            transform: none !important;
+        }
+
+        #loginUser1 .modal-content,
+        #registerUser1 .modal-content,
+        #forgot .modal-content {
             border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.2);
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        .modal-header {
+        #loginUser1 .modal-header,
+        #registerUser1 .modal-header,
+        #forgot .modal-header {
             border-bottom: none;
-            padding: 30px 30px 0;
-            position: relative;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
         }
 
-        .btn-close {
+        #loginUser1 .btn-close,
+        #registerUser1 .btn-close,
+        #forgot .btn-close {
             position: absolute;
             top: 20px;
             right: 20px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             opacity: 0.6;
             transition: opacity 0.3s;
+            width: 0.8em;
+            height: 0.8em;
         }
 
-        .btn-close:hover {
+        #loginUser1 .btn-close:hover,
+        #registerUser1 .btn-close:hover,
+        #forgot .btn-close:hover {
             opacity: 1;
         }
 
-        .modal-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #333;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .modal-subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 30px;
-        }
-
-        .benefits-section {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 40px;
-            padding: 0 20px;
-        }
-
-        .benefit-item {
-            text-align: center;
-            flex: 1;
-            max-width: 120px;
-        }
-
-        .benefit-icon {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 15px;
-            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-        }
-
-        .benefit-text {
-            font-size: 0.85rem;
-            color: #333;
+        #loginUser1 .modal-title,
+        #registerUser1 .modal-title,
+        #forgot .modal-title {
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: #000;
+            text-align: left;
+            margin-bottom: 5px;
             line-height: 1.3;
-            font-weight: 500;
+            padding: 0 40px;
         }
 
-        .form-label {
+        #loginUser1 .modal-subtitle,
+        #registerUser1 .modal-subtitle,
+        #forgot .modal-subtitle {
+            text-align: left;
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            font-weight: 400;
+            padding: 0 40px;
+        }
+
+        #loginUser1 .modal-body,
+        #registerUser1 .modal-body,
+        #forgot .modal-body {
+            padding: 20px 40px 40px;
+        }
+
+        #loginUser1 .section-title,
+        #registerUser1 .section-title,
+        #forgot .section-title {
+            font-size: 0.95rem;
             font-weight: 600;
-            color: #333;
+            color: #000;
+            margin-bottom: 8px;
+            margin-top: 25px;
+        }
+
+        #loginUser1 .section-subtitle,
+        #registerUser1 .section-subtitle,
+        #forgot .section-subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        #loginUser1 .form-label,
+        #registerUser1 .form-label,
+        #forgot .form-label {
+            font-weight: 400;
+            color: #000;
             margin-bottom: 8px;
             font-size: 0.9rem;
         }
 
-        .form-control {
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
+        #loginUser1 .form-control,
+        #registerUser1 .form-control,
+        #forgot .form-control {
+            border: 1px solid #ddd;
+            border-radius: 0;
             padding: 12px 16px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s;
             background-color: #fff;
         }
 
-        .form-control:focus {
-            border-color: #ff6b6b;
-            box-shadow: 0 0 0 0.2rem rgba(255, 107, 107, 0.25);
+        #loginUser1 .form-control:focus,
+        #registerUser1 .form-control:focus,
+        #forgot .form-control:focus {
+            border-color: #183018;
+            box-shadow: none;
+            outline: 2px solid #183018;
+            outline-offset: -2px;
         }
 
-        .input-group .form-control {
-            border-right: none;
-            border-radius: 12px 0 0 12px;
-        }
-
-        .input-group-text {
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-right: none;
-            border-radius: 12px 0 0 12px;
-            padding: 12px 16px;
-            font-weight: 600;
-            color: #666;
-        }
-
-        .password-container {
+        #loginUser1 .password-container,
+        #registerUser1 .password-container,
+        #forgot .password-container {
             position: relative;
         }
 
-        .password-container .form-control {
+        #loginUser1 .password-container .form-control,
+        #registerUser1 .password-container .form-control,
+        #forgot .password-container .form-control {
             padding-right: 45px;
         }
 
-        .password-toggle-icon {
+        #loginUser1 .password-toggle-icon,
+        #registerUser1 .password-toggle-icon,
+        #forgot .password-toggle-icon {
             position: absolute;
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: #666;
-            font-size: 1.1rem;
+            font-size: 1rem;
             transition: color 0.3s;
         }
 
-        .password-toggle-icon:hover {
-            color: #333;
+        #loginUser1 .password-toggle-icon:hover,
+        #registerUser1 .password-toggle-icon:hover,
+        #forgot .password-toggle-icon:hover {
+            color: #183018;
         }
 
-        .btn-primary {
+        #loginUser1 .btn-primary,
+        #registerUser1 .btn-primary,
+        #forgot .btn-primary {
             background: #183018;
             border: none;
-            border-radius: 12px;
+            border-radius: 0;
             padding: 14px 20px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-primary:hover {
-            background: #145015;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        #loginUser1 .btn-primary:hover,
+        #registerUser1 .btn-primary:hover,
+        #forgot .btn-primary:hover {
+            background: #0f200f;
         }
 
-        .social-login {
-            margin-top: 25px;
+        #loginUser1 .social-login,
+        #registerUser1 .social-login,
+        #forgot .social-login {
+            margin-top: 30px;
+        }
+
+        #loginUser1 .social-divider,
+        #registerUser1 .social-divider,
+        #forgot .social-divider {
+            color: #999;
+            font-size: 0.85rem;
+            margin: 25px 0;
+            position: relative;
             text-align: center;
         }
 
-        .social-divider {
-            color: #999;
-            font-size: 0.9rem;
-            margin: 20px 0;
-            position: relative;
-        }
-
-        .social-divider::before {
+        #loginUser1 .social-divider::before,
+        #registerUser1 .social-divider::before,
+        #forgot .social-divider::before {
             content: '';
             position: absolute;
             top: 50%;
             left: 0;
             right: 0;
             height: 1px;
-            background-color: #e9ecef;
+            background-color: #ddd;
             z-index: 1;
         }
 
-        .social-divider span {
+        #loginUser1 .social-divider span,
+        #registerUser1 .social-divider span,
+        #forgot .social-divider span {
             background-color: white;
-            padding: 0 20px;
+            padding: 0 15px;
             position: relative;
             z-index: 2;
         }
 
-        .social-buttons {
+        #loginUser1 .social-buttons,
+        #registerUser1 .social-buttons,
+        #forgot .social-buttons {
             display: flex;
-            gap: 15px;
-            justify-content: center;
+            gap: 10px;
         }
 
-        .btn-social {
-            flex: 1;
-            max-width: 150px;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
+        #loginUser1 .btn-social,
+        #registerUser1 .btn-social,
+        #forgot .btn-social {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 0;
             padding: 12px 16px;
             background-color: white;
             color: #333;
-            font-weight: 600;
+            font-weight: 500;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 0.9rem;
         }
 
-        .btn-social:hover {
-            border-color: #ff6b6b;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        #loginUser1 .btn-social:hover,
+        #registerUser1 .btn-social:hover,
+        #forgot .btn-social:hover {
+            border-color: #183018;
+            background-color: #f8f9fa;
         }
 
-        .btn-social i {
-            font-size: 1.1rem;
+        #loginUser1 .btn-social img,
+        #registerUser1 .btn-social img,
+        #forgot .btn-social img {
+            height: 18px;
         }
 
-        .btn-social.facebook i {
-            color: #4267B2;
+        #loginUser1 .link-text,
+        #registerUser1 .link-text,
+        #forgot .link-text {
+            text-align: left;
+            margin-top: 20px;
+            color: #000;
+            font-size: 0.9rem;
         }
 
-        .btn-social.google i {
-            color: #EA4335;
+        #loginUser1 .link-text a,
+        #registerUser1 .link-text a,
+        #forgot .link-text a {
+            color: #000;
+            text-decoration: underline;
+            font-weight: 400;
         }
 
-        .login-link {
-            text-align: center;
-            margin-top: 25px;
+        #loginUser1 .link-text a:hover,
+        #registerUser1 .link-text a:hover,
+        #forgot .link-text a:hover {
+            text-decoration: none;
+        }
+
+        #loginUser1 .register-text,
+        #registerUser1 .register-text,
+        #forgot .register-text {
+            text-align: left;
+            margin-top: 20px;
             color: #666;
             font-size: 0.9rem;
         }
 
-        .login-link a {
-            color: #ff6b6b;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .login-link a:hover {
+        #loginUser1 .register-text a,
+        #registerUser1 .register-text a,
+        #forgot .register-text a {
+            color: #000;
             text-decoration: underline;
+            font-weight: 500;
         }
 
-        .terms-text {
-            font-size: 0.8rem;
+        #loginUser1 .register-text a:hover,
+        #registerUser1 .register-text a:hover,
+        #forgot .register-text a:hover {
+            text-decoration: none;
+        }
+
+        #loginUser1 .terms-text,
+        #registerUser1 .terms-text,
+        #forgot .terms-text {
+            font-size: 0.75rem;
             color: #999;
-            text-align: center;
-            margin-top: 20px;
-            line-height: 1.4;
+            text-align: left;
+            margin-top: 25px;
+            line-height: 1.5;
         }
 
-        .terms-text a {
-            color: #ff6b6b;
-            text-decoration: none;
-        }
-
-        .terms-text a:hover {
+        #loginUser1 .terms-text a,
+        #registerUser1 .terms-text a,
+        #forgot .terms-text a {
+            color: #000;
             text-decoration: underline;
         }
 
-        .modal-dialog {
-            width: 90%;
-            max-width: 400px;
-            margin: 1.75rem auto;
+        #loginUser1 .terms-text a:hover,
+        #registerUser1 .terms-text a:hover,
+        #forgot .terms-text a:hover {
+            text-decoration: none;
         }
 
-        @media (min-width: 768px) {
-            .modal-dialog {
-                max-width: 500px;
-            }
+        /* Benefits section for register modal */
+        #registerUser1 .benefits h3 {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #000;
         }
 
-        @media (min-width: 1200px) {
-            .modal-dialog {
-                max-width: 600px;
-            }
+        #registerUser1 .benefits p {
+            color: #666;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
         }
 
+        #registerUser1 .benefits .row {
+            margin-bottom: 1.5rem;
+        }
+
+        #registerUser1 .benefits .col-6 {
+            padding: 0 10px;
+        }
+
+        #registerUser1 .benefits .col-6>div:first-child {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #registerUser1 .benefits .col-6>div:last-child {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #333;
+        }
 
         @media (max-width: 768px) {
-            .benefits-section {
-                flex-direction: column;
-                gap: 20px;
-                align-items: center;
+
+            #loginUser1 .modal-dialog,
+            #registerUser1 .modal-dialog,
+            #forgot .modal-dialog {
+                max-width: 100%;
             }
 
-            .benefit-item {
-                max-width: 200px;
+            #loginUser1 .modal-body,
+            #registerUser1 .modal-body,
+            #forgot .modal-body {
+                padding: 20px 25px 30px;
             }
 
-            .social-buttons {
-                flex-direction: column;
+            #loginUser1 .modal-header,
+            #registerUser1 .modal-header,
+            #forgot .modal-header {
+                padding: 20px 25px;
             }
 
-            .btn-social {
-                max-width: none;
+            #loginUser1 .modal-title,
+            #registerUser1 .modal-title,
+            #forgot .modal-title {
+                font-size: 1.5rem;
+                padding: 0 25px;
+            }
+
+            #loginUser1 .modal-subtitle,
+            #registerUser1 .modal-subtitle,
+            #forgot .modal-subtitle {
+                padding: 0 25px;
             }
         }
     </style>
@@ -383,14 +511,11 @@
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
+                <h4 class="modal-title">Masuk atau Buat Akun</h4>
+                <p class="modal-subtitle">Masukkan email dan password Anda untuk memulai</p>
 
-                <div class="modal-body px-4 pb-4">
-                    <!-- Logo -->
-                    <h4 class="modal-title text-center">Masuk atau Buat Akun</h4>
-                    <p class="modal-subtitle text-center text-muted">Masukkan email dan password Anda untuk memulai</p>
-
-                    <form method="POST" action="" class="mb-4" id="login-user-form">
-                        @csrf
+                <div class="modal-body">
+                    <form method="POST" action="" class="mb-0" id="login-user-form">
                         <!-- Email -->
                         <div class="mb-3">
                             <label for="login_email" class="form-label">Email <span style="color: red">*</span></label>
@@ -412,8 +537,6 @@
                             </div>
                         </div>
 
-
-                        <!-- Tombol Masuk -->
                         <button class="btn btn-primary w-100" type="submit" id="login">
                             Masuk
                         </button>
@@ -443,7 +566,8 @@
                     <!-- Belum punya akun -->
                     <p class="text-center mt-3 text-muted">
                         Belum punya akun?
-                        <a href="#" class="ms-1 switch-to-register"
+                        <a href="#" class="ms-1 switch-to-register" data-bs-toggle="modal"
+                            data-bs-target="#registerUser1" data-bs-dismiss="modal"
                             style="color: #183018; font-weight: bold">Daftar Sekarang</a>
                     </p>
 
@@ -460,6 +584,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Modal Sign Up -->
     {{-- <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true">
@@ -598,16 +724,15 @@
 
     {{-- MODAL SIGN UP BARU --}}
     <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true">
-        {{-- <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"> --}}
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <h2 class="modal-title">Masuk atau Buat Akun</h2>
+                <p class="modal-subtitle">Masukkan nama, email, dan kata sandi untuk daftar akun</p>
 
-                <div class="modal-body px-4 pb-6">
-                    <p class="modal-subtitle">Masukkan nama, email, dan kata sandi untuk daftar akun</p>
+                <div class="modal-body">
                     <form id="register-user-form">
                         <!-- Nama Lengkap -->
                         <div class="mb-3">
@@ -638,56 +763,53 @@
                                 style="display: none;"></div>
                         </div>
 
-                        <!-- Bagian tambahan -->
+                        <!-- Bagian Benefits -->
                         <div class="benefits text-center mb-4">
-                            <h3 style="font-weight: 600; font-size: 1.5rem; margin-bottom: 0.5rem;">Buat Akun</h3>
-                            <p style="color: #555; margin-bottom: 1rem;">
+                            <h3>Buat Akun</h3>
+                            <p>
                                 Anda dapat melacak pesanan, mengedit info pengiriman, mendapatkan penawaran eksklusif,
                                 dan masih banyak lagi!
                             </p>
 
-                            <div class="row mb-3">
+                            <div class="row">
                                 <div class="col-6">
-                                    <div style="color: #a855f7; font-size: 2rem; margin-bottom: 0.25rem;">🎟️</div>
-                                    <div style="font-weight: 600;">Diskon 10% untuk pesanan pertama</div>
+                                    <div>🎟️</div>
+                                    <div>Diskon 10% untuk pesanan pertama</div>
                                 </div>
                                 <div class="col-6">
-                                    <div style="color: #a855f7; font-size: 2rem; margin-bottom: 0.25rem;">🚚</div>
-                                    <div style="font-weight: 600;">Lacak pesanan Anda</div>
+                                    <div>🚚</div>
+                                    <div>Lacak pesanan Anda</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Tombol Submit -->
                         <button class="btn btn-primary w-100" type="submit" id="register">
                             Selanjutnya
                         </button>
                     </form>
 
-                    <!-- Sudah punya akun -->
                     <div class="text-center mt-3">
                         <span>Sudah Memiliki Akun? </span>
-                        <a href="#" class="switch-to-login" style="color: #183018; font-weight: bold">Masuk
-                            Sekarang</a>
+                        <a href="#" class="switch-to-login" data-bs-toggle="modal"
+                            data-bs-target="#loginUser1" data-bs-dismiss="modal"
+                            style="color: #183018; font-weight: bold">Masuk Sekarang</a>
                     </div>
 
                     <!-- Login Sosial -->
-                    <div class="social-login mt-3">
+                    <div class="social-login">
                         <div class="social-divider">
                             <span>ATAU LANJUTKAN DENGAN</span>
                         </div>
 
                         <div class="social-buttons">
                             <button type="button" class="btn btn-social google">
-                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
-                                    style="height:20px; vertical-align:middle;">
+                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
                                 Google
                             </button>
                         </div>
                     </div>
 
-                    <!-- Syarat dan Ketentuan -->
-                    <div class="terms-text mt-3 mb-3">
+                    <div class="terms-text">
                         Dengan menekan button "Selanjutnya" atau Google, saya menyatakan bahwa saya telah membaca dan
                         menyetujui
                         <a href="#" class="terms-link" style="color: #183018; font-weight: bold">Syarat &
@@ -699,6 +821,7 @@
             </div>
         </div>
     </div>
+
 
 
 
@@ -750,21 +873,18 @@
     </div> --}}
 
     <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-
                 <h2 class="modal-title">Lupa Kata Sandi</h2>
+                <p class="modal-subtitle">
+                    Masukkan email Anda untuk menerima link pengaturan ulang kata sandi.
+                </p>
 
-                <div class="modal-body px-4 pb-4">
-                    <p class="modal-subtitle">
-                        Masukkan email Anda untuk menerima link pengaturan ulang kata sandi.
-                    </p>
-
-                    <form class="px-2" id="forgot-password-form">
-                        @csrf
+                <div class="modal-body">
+                    <form id="forgot-password-form">
                         <div class="mb-3">
                             <label for="forgot_password_email" class="form-label">Email <span
                                     style="color:red;">*</span></label>
@@ -788,7 +908,7 @@
                         </a>
                     </div>
 
-                    <div class="terms-text mt-3 mb-3">
+                    <div class="terms-text">
                         Dengan menekan tombol <b>Dapatkan Link</b>, saya menyatakan bahwa saya telah membaca dan
                         menyetujui
                         <a href="#" class="terms-link" style="color: #183018; font-weight: bold">Syarat &

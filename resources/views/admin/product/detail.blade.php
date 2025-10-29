@@ -755,7 +755,6 @@
                                         </div>
                                     </div>
                                 </div>
-s
                                 <hr>
 
                                 <div class="row">
