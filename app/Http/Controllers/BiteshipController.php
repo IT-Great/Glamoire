@@ -10,7 +10,7 @@ class BiteshipController extends Controller
     public function callback(Request $request)
     {
         try {
-            Log::info('Biteship Callback:', $request->all());
+            Log::info('Biteship Webhook orderan:', $request->all());
 
             return response('ok', 200)
                 ->header('Content-Type', 'text/plain');
