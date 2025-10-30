@@ -18,7 +18,7 @@ class BiteshipController extends Controller
                     'status' => 'completed',
                 ]);
 
-                Log::info('Success update order :', $order);
+                Log::info(['Success update order :' => $order]);
             }
 
             return response('ok', 200)
