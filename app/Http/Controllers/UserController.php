@@ -1075,9 +1075,9 @@ class UserController extends Controller
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
             
-            Log::info(['Body Check Status getPaymentStatus' => $body]);
-            Log::info(['mac Check Status getPaymentStatus : ' => $mac]);
-            Log::info(['secretkey Check Status getPaymentStatus : ' => $this->secretKey]);
+            // Log::info(['Body Check Status getPaymentStatus' => $body]);
+            // Log::info(['mac Check Status getPaymentStatus : ' => $mac]);
+            // Log::info(['secretkey Check Status getPaymentStatus : ' => $this->secretKey]);
 
             $response = Http::withHeaders([
                 'mac' => $mac,
@@ -1085,7 +1085,7 @@ class UserController extends Controller
             ])->post($url, $body);
     
             $result = json_decode($response->getBody(), true);
-            Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
+            // Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
             return $result;
         }
         catch(Exception $err){
