@@ -560,155 +560,241 @@
     }
 
     /* Promo Banner Styles */
-    /* Promo Banner Styles - Nature Theme */
-    .promo-banner-top {
-        background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 50%, #81C784 100%);
-        padding: 8px 20px;
-        text-align: center;
+    /* ====== PROMO BANNER ====== */
+    /* ====== PROMO BANNER ====== */
+    .promo-banner {
+        background: linear-gradient(90deg, rgba(244, 163, 64, 0.9) 0%, rgba(246, 196, 92, 0.9) 100%);
         position: relative;
+        padding: 12px 80px;
+        text-align: center;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        z-index: 1;
     }
 
-    .promo-banner-top::before {
-        content: '🌿';
+    /* ====== LEAF PATTERN (yang sudah ada) ====== */
+    .promo-banner::before,
+    .promo-banner::after {
+        content: "";
         position: absolute;
-        left: 5%;
+        /* background: url('/images/leaf-pattern-brown.png') no-repeat; */
+        background-size: contain;
+        width: 240px;
+        height: 140px;
+        opacity: 0.9;
+        pointer-events: none;
+    }
+
+    /* kiri atas */
+    .promo-banner::before {
+        top: 0;
+        left: 0;
+        background-position: top left;
+        transform: rotate(0deg);
+        z-index: 0;
+    }
+
+    /* kanan bawah */
+    .promo-banner::after {
+        bottom: 0;
+        right: 0;
+        background-position: bottom right;
+        transform: rotate(180deg) translate(15px, 10px);
+        transform-origin: bottom right;
+        z-index: 0;
+    }
+
+    /* ====== PATTERN BARU - KIRI ATAS ====== */
+    .promo-banner .pattern-left {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 150px;
+        height: 150px;
+        background: url('/images/pattern-left.png') no-repeat top left;
+        background-size: contain;
+        opacity: 0.85;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ====== PATTERN BARU - KANAN BAWAH ====== */
+    .promo-banner .pattern-right {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 150px;
+        height: 150px;
+        background: url('/images/pattern-right.png') no-repeat bottom right;
+        background-size: contain;
+        opacity: 0.85;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* ====== ICON KIRI (logo daun hijau) ====== */
+    .promo-banner .leaf-icon {
+        position: absolute;
+        left: 25px;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 20px;
-        animation: float 3s ease-in-out infinite;
+        width: 60px;
+        height: 60px;
+        background: url('/images/WEBSITE PRODUK (1).png') no-repeat center center;
+        background-size: contain;
+        opacity: 0.9;
+        z-index: 2;
     }
 
-    .promo-banner-top::after {
-        content: '🍃';
-        position: absolute;
-        right: 5%;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 20px;
-        animation: float 3s ease-in-out infinite 1.5s;
-    }
-
-    @keyframes float {
-
-        0%,
-        100% {
-            transform: translateY(-50%);
-        }
-
-        50% {
-            transform: translateY(-60%);
-        }
-    }
-
+    /* ====== TEKS ====== */
     .promo-text-top {
         font-weight: 700;
-        font-size: 14px;
-        color: #1B5E20;
+        font-size: 13.5px;
+        color: #5D3E12;
         margin: 0;
-        display: inline-block;
+        z-index: 3;
     }
 
     .promo-text-top .highlight {
-        background: linear-gradient(90deg, #2E7D32, #388E3C);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         font-weight: 800;
+        color: #5D3E12;
+        text-transform: uppercase;
     }
 
     .shop-now-btn {
-        background: white;
-        color: #2E7D32;
-        padding: 4px 16px;
+        background: #fff;
+        color: #4A3F2E;
+        padding: 4px 14px;
         border-radius: 20px;
         text-decoration: none;
         font-weight: 700;
-        font-size: 12px;
-        margin-left: 15px;
-        display: inline-block;
-        border: 2px solid #2E7D32;
+        font-size: 11px;
+        margin-left: 10px;
+        border: 2px solid #4A3F2E;
         transition: all 0.3s ease;
     }
 
     .shop-now-btn:hover {
-        background: #2E7D32;
-        color: white;
-    }
-
-    .promo-banner-bottom {
-        background: linear-gradient(90deg, #66BB6A 0%, #4CAF50 100%);
-        padding: 8px 20px;
-        text-align: center;
+        background: #4A3F2E;
+        color: #fff;
     }
 
     .promo-text-bottom {
         font-weight: 700;
-        font-size: 13px;
-        color: white;
+        font-size: 12.5px;
+        color: #9B5C1D;
         margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        z-index: 3;
     }
 
-    .promo-text-bottom::before,
-    .promo-text-bottom::after {
-        content: '🌱';
-        font-size: 16px;
-        animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-
-        0%,
-        100% {
-            transform: scale(1);
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 992px) {
+        .promo-banner {
+            padding: 10px 60px;
         }
 
-        50% {
-            transform: scale(1.2);
+        .promo-banner::before,
+        .promo-banner::after {
+            width: 180px;
+            height: 100px;
+            opacity: 0.8;
         }
-    }
 
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
+        .promo-banner::after {
+            transform: rotate(180deg) translate(5px, 5px);
+        }
+
+        .promo-banner .pattern-left,
+        .promo-banner .pattern-right {
+            width: 120px;
+            height: 120px;
+            opacity: 0.75;
+        }
+
+        .promo-banner .leaf-icon {
+            width: 50px;
+            height: 50px;
+            left: 15px;
+        }
+
         .promo-text-top {
-            font-size: 11px;
+            font-size: 12px;
         }
 
         .shop-now-btn {
             font-size: 10px;
-            padding: 3px 12px;
-            margin-left: 8px;
+            padding: 3px 10px;
         }
 
         .promo-text-bottom {
             font-size: 11px;
         }
+    }
 
-        .promo-banner-top::before,
-        .promo-banner-top::after {
-            font-size: 16px;
+    @media (max-width: 576px) {
+        .promo-banner {
+            padding: 10px 40px;
+        }
+
+        .promo-banner::before,
+        .promo-banner::after {
+            width: 120px;
+            height: 70px;
+            opacity: 0.75;
+        }
+
+        .promo-banner::after {
+            transform: rotate(180deg) translate(0, 0);
+            right: -10px;
+            bottom: -5px;
+        }
+
+        .promo-banner .pattern-left,
+        .promo-banner .pattern-right {
+            width: 90px;
+            height: 90px;
+            opacity: 0.7;
+        }
+
+        .promo-banner .leaf-icon {
+            display: none;
+        }
+
+        .promo-text-top {
+            font-size: 10.5px;
+        }
+
+        .shop-now-btn {
+            font-size: 9px;
+            padding: 3px 8px;
+        }
+
+        .promo-text-bottom {
+            font-size: 9.5px;
         }
     }
 </style>
 
-<!-- TOP PROMO BANNER -->
-<div class="promo-banner-top">
+<!-- ====== PROMO BANNER ====== -->
+<div class="promo-banner">
+    <div class="pattern-left"></div>
+    <div class="pattern-right"></div>
+    <div class="leaf-icon"></div>
     <p class="promo-text-top">
         <span class="highlight">UP TO 70% OFF + VOUCHERS UP TO 550K</span>
         <a href="/promotion" class="shop-now-btn">SHOP NOW</a>
     </p>
-</div>
-
-<!-- BOTTOM PROMO BANNER -->
-<div class="promo-banner-bottom">
     <p class="promo-text-bottom">
-        NO ONGKIR, NO MINIMUM SETIAP HARI, SE-INDONESIA*!
+        NO ONGKIR, NO MINIMUM SETIAP HARI, SE INDONESIA 
     </p>
 </div>
+
 
 <div class="py-2 md:px-20 lg:px-24 xl:px-24 2xl:px-48 position-sticky"
     style="top:-0.1rem;background-color: #183018;z-index: 9;">
