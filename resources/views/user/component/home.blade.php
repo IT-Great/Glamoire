@@ -7,6 +7,77 @@
     @endphp
 
     <style>
+        .popup-banner-container {
+            /* aspect-ratio: 970 / 700; */
+            /* Rasio gambar */
+            overflow: hidden;
+            position: relative;
+            /* border-radius: 0.75rem; */
+            /* optional: biar rounded sedikit */
+            min-height: 250px;
+        }
+
+        .popup-banner-container img,
+        .popup-banner-container video {
+            transition: transform 0.8s ease, filter 0.8s ease;
+            transform-origin: center center;
+        }
+
+        .group:hover .popup-banner-container img,
+        .group:hover .popup-banner-container video {
+            transform: scale(1.1);
+            /* Zoom lebih terasa */
+            filter: brightness(1.05);
+            /* Sedikit lebih terang saat hover */
+        }
+
+        /* Tambahkan jarak bawah untuk konten popup di mobile */
+        .popup-content-wrapper {
+            margin-bottom: 1rem;
+            /* Jarak bawah default untuk mobile */
+        }
+
+
+        /* Responsive tinggi minimum */
+        @media (min-width: 640px) {
+            .popup-banner-container {
+                min-height: 300px;
+            }
+
+            .popup-content-wrapper {
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .popup-banner-container {
+                min-height: 350px;
+            }
+
+            .popup-content-wrapper {
+                margin-bottom: 0;
+                /* Hapus margin di tablet ke atas */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .popup-banner-container {
+                min-height: 400px;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .popup-banner-container {
+                min-height: 450px;
+            }
+        }
+
+        @media (min-width: 1536px) {
+            .popup-banner-container {
+                min-height: 500px;
+            }
+        }
+
         .product-image-container img:hover {
             transform: scale(1.05);
         }
@@ -109,7 +180,18 @@
             flex: 0 0 20%;
             max-width: 250px;
             min-width: 200px;
+            font-family: "Playfair Display", serif;
         }
+
+        .section-left h2 {
+            font-family: 'The Seasons', serif;
+        }
+
+        .section-left p,
+        .section-left a {
+            font-family: 'Poppins', sans-serif;
+        }
+
 
         .section-right {
             flex: 1;
@@ -579,17 +661,33 @@
         }
 
         .promo-cta-slider {
-            display: inline-block;
-            font-size: 0.85rem;
-            color: #000;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #2e7d32, #66bb6a);
+            color: white !important;
             font-weight: 600;
-            text-decoration: underline;
-            transition: color 0.2s ease;
-            align-self: flex-start;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.3);
+            transition: all 0.3s ease;
         }
 
         .promo-cta-slider:hover {
-            color: #666;
+            background: linear-gradient(135deg, #388e3c, #81c784);
+            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .promo-cta-slider i {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .promo-cta-slider:hover i {
+            transform: translateX(4px);
         }
 
         .empty-promo {
@@ -597,6 +695,29 @@
             text-align: center;
             color: #999;
             font-size: 0.9rem;
+        }
+
+        /* === Responsif untuk mobile === */
+        @media (max-width: 768px) {
+            .promo-period {
+                font-size: 0.75rem;
+            }
+
+            .promo-cta-slider {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .promo-period {
+                font-size: 0.7rem;
+            }
+
+            .promo-cta-slider {
+                padding: 0.45rem 0.9rem;
+                font-size: 0.8rem;
+            }
         }
 
         /* Responsive Design */
@@ -676,6 +797,86 @@
             }
         }
 
+        /* === Default (Desktop) === */
+        .promo-section-header h2 {
+            font-family: 'The Seasons', serif;
+            font-size: 1.9rem;
+            color: #2e7d32;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .promo-section-header p {
+            font-size: 1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* === Responsif: Tablet & Mobile === */
+        @media (max-width: 768px) {
+            .promo-section-header {
+                padding: 0 1.5rem;
+            }
+
+            .promo-section-header h2 {
+                font-size: 1.5rem;
+                /* sedikit lebih kecil */
+                line-height: 1.3;
+            }
+
+            .promo-section-header p {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+        }
+
+        /* === Responsif: Mobile Kecil (≤480px) === */
+        @media (max-width: 480px) {
+            .promo-section-header {
+                padding: 0 1rem;
+            }
+
+            .promo-section-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .promo-section-header p {
+                font-size: 0.85rem;
+            }
+        }
+
+        .promo-link-slider {
+            color: #2e7d32;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .promo-link-slider:hover {
+            color: #1b5e20;
+            text-decoration: underline;
+        }
+
+        .promo-link-slider i {
+            font-size: 0.95rem;
+            transition: transform 0.3s ease;
+        }
+
+        .promo-link-slider:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Responsif kecil */
+        @media (max-width: 480px) {
+            .promo-link-slider {
+                font-size: 0.85rem;
+            }
+        }
+
+
         /* untuk bagian category  */
         .hover-lift {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -713,6 +914,178 @@
             .category-icon svg {
                 width: 32px !important;
                 height: 32px !important;
+            }
+        }
+
+        /* FLASH SALE */
+        .swiper-slide-flash-sale {
+            width: 180px !important;
+            /* Sesuaikan dengan lebar card */
+            margin-right: 12px !important;
+            /* Jarak antar card */
+        }
+
+        /* Atau hapus margin auto pada card */
+        .swiper-slide>div {
+            margin: 0 !important;
+            /* Hapus margin: 0 auto */
+        }
+
+        /* Responsive Flash Sale Image */
+        .flash-sale-img {
+            height: 80px;
+            /* Mobile */
+        }
+
+        /* Timer Box Responsive */
+        .timer-box {
+            padding: 8px 12px;
+            /* Mobile */
+        }
+
+        /* Live Badge */
+        .live-badge {
+            padding: 2px 8px;
+            font-size: 8px;
+            margin-bottom: 2px;
+        }
+
+        .ends-text {
+            font-size: 8px;
+        }
+
+        /* Timer Digits */
+        .timer-digit {
+            padding: 4px 6px;
+            font-size: 12px;
+            min-width: 28px;
+        }
+
+        .timer-label {
+            font-size: 7px;
+            margin-top: 2px;
+        }
+
+        .timer-colon {
+            font-size: 14px;
+            margin: 0 2px;
+        }
+
+        /* Timer Divider */
+        .timer-divider {
+            height: 30px;
+        }
+
+        .flash-sale-img {
+            margin-bottom: 20px;
+        }
+
+        .timer-box {
+            margin-bottom: 20px;
+        }
+
+        /* Small Mobile (< 375px) */
+        @media (max-width: 374px) {
+            .flash-sale-img {
+                height: 60px;
+            }
+
+            .timer-digit {
+                padding: 3px 5px;
+                font-size: 10px;
+                min-width: 24px;
+            }
+
+            .timer-colon {
+                font-size: 12px;
+            }
+        }
+
+        /* Tablet */
+        @media (min-width: 768px) {
+            .flash-sale-img {
+                height: 120px;
+            }
+
+            .timer-box {
+                padding: 10px 18px;
+            }
+
+            .live-badge {
+                padding: 3px 10px;
+                font-size: 10px;
+                margin-bottom: 3px;
+            }
+
+            .ends-text {
+                font-size: 10px;
+            }
+
+            .timer-digit {
+                padding: 6px 10px;
+                font-size: 16px;
+                min-width: 40px;
+            }
+
+            .timer-label {
+                font-size: 9px;
+                margin-top: 3px;
+            }
+
+            .timer-colon {
+                font-size: 18px;
+                margin: 0 3px;
+            }
+
+            .timer-divider {
+                height: 35px;
+            }
+        }
+
+        /* Desktop */
+        @media (min-width: 992px) {
+            .flash-sale-img {
+                height: 160px;
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1200px) {
+            .flash-sale-img {
+                height: 190px;
+            }
+        }
+
+        /* Extra Large Desktop */
+        @media (min-width: 1400px) {
+            .flash-sale-img {
+                height: 200px;
+            }
+        }
+
+        /* Default (Desktop) — tanpa jarak berlebih */
+        .flash-sale-img,
+        .timer-box {
+            margin-bottom: 8px;
+        }
+
+        /* Mobile only: tambahkan jarak ekstra agar tidak terlalu rapat */
+        @media (max-width: 768px) {
+
+            .flash-sale-img,
+            .timer-box {
+                margin-bottom: 18px !important;
+            }
+        }
+
+        /* Perbesar gambar Flash Sale khusus di mobile */
+        @media (max-width: 768px) {
+            .flash-sale-header img.flash-sale-img {
+                width: 150px !important;
+                /* perbesar dari ukuran default */
+                height: auto !important;
+                transform: scale(1.1);
+                transition: transform 0.3s ease;
             }
         }
     </style>
@@ -872,7 +1245,6 @@
 
     <!-- TOP SELLING -->
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
-
         <!-- TOP SELLING Start -->
         <div class="container-fluid">
             <!-- Wrapper untuk layout 2 kolom dengan CSS FLEX -->
@@ -880,14 +1252,18 @@
 
                 <!-- Kolom Kiri: Judul dan Deskripsi -->
                 <div class="section-left">
-                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                        New Beauty<br>Thrills
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-success flex items-center gap-2 mb-2"
+                        style="">
+                        <img src="{{ asset('images/WEBSITE PRODUK (1).png') }}" alt="Icon"
+                            class="w-6 h-6 md:w-8 md:h-8 inline-block">
+                        <span>Produk Terlaris</span>
                     </h2>
-                    <p class="text-sm md:text-base text-gray-700 mb-6 leading-relaxed">
-                        Meet the latest limited-edition launches getting the party started.
+                    <p class="text-sm md:text-base text-gray-700 mb-6 leading-relaxed mb-2">
+                        Produk favorit yang paling diminati pelanggan. Jangan sampai kehabisan!
                     </p>
-                    <a href="#" class="text-sm md:text-base font-medium underline hover:no-underline inline-block">
-                        Shop now
+                    <a href="#"
+                        class="text-sm md:text-base font-medium underline hover:no-underline inline-block text-success">
+                        Belanja Sekarang
                     </a>
                 </div>
 
@@ -1077,40 +1453,42 @@
             </div>
         </div>
         <!-- TOP SELLING End -->
-
-
     </div>
     <!-- TOP SELLING END-->
 
     {{-- BANNER PROMO --}}
-    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-24 mb-5"> <!-- Tambah padding atas-bawah -->
+    <div class="px-4 sm:px-8 md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-8 sm:py-12 md:py-16 lg:py-24 mt-4">
         <div class="container-fluid">
             <!-- Two-Column Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10"> <!-- Tambah gap antar kolom -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
                 @foreach ($data['popupsBanner'] as $popup)
-                    <div class="group cursor-pointer">
-                        <div class="relative overflow-hidden h-80 md:h-[28rem]"> <!-- Hilangkan rounded-lg -->
+                    <div class="group cursor-pointer popup-content-wrapper">
+                        <div class="popup-banner-container">
                             @if ($popup->media_type === 'image')
-                                <img class="w-full h-full object-cover transform transition-transform duration-500 group-hover:scale-105"
-                                    src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}">
+                                <img src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}"
+                                    class="absolute top-0 left-0 w-full h-full object-cover">
                             @elseif ($popup->media_type === 'video')
-                                <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                                <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay loop muted
+                                    playsinline>
                                     <source src="{{ Storage::url($popup->media_popup) }}" type="video/mp4">
                                 </video>
                             @endif
                         </div>
-
-                        <div class="mt-6"> <!-- Tambah jarak antara media dan teks -->
-                            <h3 class="text-lg md:text-xl font-semibold mb-1">
+                        <div class="mt-4 sm:mt-5 md:mt-6 pb-4 sm:pb-0">
+                            <h3 class="text-lg sm:text-xl md:text-2xl font-semibold mb-1"
+                                style="font-family: 'The Seasons', serif;">
                                 {{ $popup->name ?? 'Untitled Popup' }}
                             </h3>
-                            <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+                            <p class="text-xs sm:text-sm text-gray-600 mb-2 line-clamp-2"
+                                style="font-family: 'Poppins', sans-serif;">
                                 {{ $popup->description ?? 'No description available.' }}
                             </p>
-                            <a href="#" class="text-blue-600 text-sm font-semibold hover:underline">
+                            <a href="#" class="text-xs sm:text-sm font-semibold hover:underline inline-block"
+                                style="color: #000; text-decoration: underline;">
                                 Shop now
                             </a>
                         </div>
+
                     </div>
                 @endforeach
             </div>
@@ -1119,248 +1497,100 @@
     {{-- BANNER PROMO --}}
 
     <!-- FLASH SALE -->
-    {{-- <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2"> --}}
-    {{-- <div class="container-fluid new-arrival-section">
-            <div class="section-left">
-                <h4 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                    Flash Sale
-                </h4>
-            </div>
+    <div class="container-fluid px-0"
+        style="position: relative; overflow: hidden; padding: 20px 0 0 0; margin-bottom: 0;"> <!-- padding bawah 0 -->
 
-            <div class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    @if (session('id_user'))
-                        @foreach ($data['new'] as $product)
-                            <div class="swiper-slide">
-                                <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit ">
-                                    <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                        <div class="product-image-container">
-                                            <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
-                                                src="{{ Storage::url($product->main_image) }}"
-                                                alt="{{ $product->product_name }}">
-                                        </div>
+        <!-- Decorative Grass/Nature Elements at Bottom -->
+        <div
+            style="position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(to top, rgba(76, 175, 80, 0.3) 0%, transparent 100%);">
+        </div>
 
-                                        <div class="grid text-left p-1 p-md-2">
-                                            <div class="flex gap-1">
-                                                <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"
-                                                    style="color:orange;"></i>
-                                                <p
-                                                    class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">
-                                                    {{ $product->rating }}</p>
-                                                @php
-                                                    $inWishlist = collect($wishlist)->contains(
-                                                        'product_id',
-                                                        $product->id,
-                                                    );
-                                                @endphp
-                                                <i class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red"
-                                                    onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
-                                                </i>
-                                            </div>
-                                            <p
-                                                class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px] overflow-hidden">
-                                                <a href="/{{ $product->product_code }}_product"
-                                                    class="text-decoration-none truncate-ellipsis"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                                    title="{{ $product->product_name }}">
-                                                    {{ $product->product_name }}
-                                                </a>
-                                            </p>
+        <!-- Subtle Cloud/Mist Effects -->
+        <div
+            style="position: absolute; top: 20%; left: 5%; width: 150px; height: 80px; background: radial-gradient(ellipse, rgba(255,255,255,0.6) 0%, transparent 70%); border-radius: 50%;">
+        </div>
+        <div
+            style="position: absolute; top: 30%; right: 10%; width: 120px; height: 60px; background: radial-gradient(ellipse, rgba(255,255,255,0.5) 0%, transparent 70%); border-radius: 50%;">
+        </div>
 
-                                            <div class="flex justify-content-start gap-1">
-                                                @php
-                                                    $activePromo = $product->promos->first();
-                                                    $discountedPrice = $activePromo
-                                                        ? $activePromo->pivot->discounted_price
-                                                        : null;
-                                                @endphp
-
-                                                @if ($product->priceVariation !== null)
-                                                    <p
-                                                        class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                        {{ $product->priceVariation }}
-                                                    </p>
-                                                @else
-                                                    @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                        <p
-                                                            class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                            <del>
-                                                                Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                                            </del>
-                                                        </p>
-                                                        <p
-                                                            class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                            Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                    @else
-                                                        <p
-                                                            class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                                        </p>
-                                                    @endif
-                                                @endif
-                                            </div>
-
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        <!-- MUNCULKAN DATA PRODUK JIKA USER BELUM LOGIN -->
-                    @else
-                        @foreach ($data['new'] as $product)
-                            <div class="swiper-slide">
-                                <div onclick="window.location.href = '/{{ $product->product_code }}_product'"
-                                    class="bg-white rounded-lg shadow-sm overflow-hidden h-fit hover:cursor-pointer">
-                                    <div class="product-image-container">
-                                        <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
-                                            src="{{ Storage::url($product->main_image) }}"
-                                            alt="{{ $product->product_name }}">
-                                    </div>
-
-                                    <div class="grid text-left p-1 p-md-2">
-                                        <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[12px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between"
-                                                style="color:orange;"></i>
-                                            <p
-                                                class="text-decoration-none text-black text-[10px] md:text-[12px] lg:text-[12px] xl:text-[12px]">
-                                                {{ $product->rating }}</p>
-                                            <i class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[12px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red"
-                                                onclick="event.stopPropagation(); addToWishlist({{ $product->id }})">
-                                            </i>
-                                        </div>
-                                        <p
-                                            class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[13px] overflow-hidden">
-                                            <a href="/{{ $product->product_code }}_product"
-                                                class="text-decoration-none truncate-ellipsis" data-bs-toggle="tooltip"
-                                                data-bs-placement="top" title="{{ $product->product_name }}">
-                                                {{ $product->product_name }}
-                                            </a>
-                                        </p>
-
-                                        <div class="flex justify-content-start gap-1">
-                                            @php
-                                                $activePromo = $product->promos->first();
-                                                $discountedPrice = $activePromo
-                                                    ? $activePromo->pivot->discounted_price
-                                                    : null;
-                                            @endphp
-
-                                            @if ($product->priceVariation !== null)
-                                                <p
-                                                    class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                    {{ $product->priceVariation }}
-                                                </p>
-                                            @else
-                                                @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                    <p
-                                                        class="flex justify-content-center text-align-center text-decoration-none text-muted text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                        <del>
-                                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                                        </del>
-                                                    </p>
-                                                    <p
-                                                        class="text-decoration-none text-black text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                        Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                @else
-                                                    <p
-                                                        class="text-decoration-none text-[#183018] text-[9px] md:text-[11px] lg:text-[12px] xl:text-[13px]">
-                                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                                                    </p>
-                                                @endif
-                                            @endif
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
-
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
-            </div>
-        </div> --}}
-
-    <div class="d-flex justify-content-between align-items-start mb-2 mt-4">
-        <div class="section-left">
-            <div class="flash-sale-badge mb-3"
-                style="
-                background: linear-gradient(135deg, #2d5a2d 0%, #4a7c4a 100%);
-                border: 3px solid #90EE90;
-                border-radius: 15px;
-                padding: 25px 60px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-                box-shadow: 0 4px 15px rgba(45, 90, 45, 0.6);
-                min-width: 360px;
-                text-align: center;
-            ">
-
-                <!-- Label atas -->
-                <div
-                    style="
-                    background: #1a4d1a;
-                    color: #90EE90;
-                    font-size: 11px;
-                    font-weight: bold;
-                    padding: 4px 14px;
-                    border-radius: 5px;
-                    position: absolute;
-                    top: -10px;
-                    white-space: nowrap;
-                ">
-                    ONLINE SPECIAL
+        <div class="d-flex justify-content-between align-items-center px-2 px-md-4 position-relative" style="z-index: 2;">
+            <!-- Left Side: Flash Sale Badge & Timer -->
+            <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap">
+                <!-- Flash Sale Logo -->
+                <div class="flash-sale-header">
+                    <img src="{{ asset('images/flash-sale.png') }}" alt="Flash Sale" class="flash-sale-img"
+                        style="width: auto; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.2));">
                 </div>
 
-                <!-- Judul utama -->
-                <h3 class="m-0"
-                    style="
-                    color: #90EE90;
-                    font-size: 40px;
-                    font-weight: 900;
-                    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    line-height: 1;
-                    white-space: nowrap;
-                    margin-top: 10px;
-                ">
-                    <span style="font-size: 42px; transform: translateY(2px);">⚡</span>
-                    <span>FLASH SALE</span>
-                </h3>
+                <!-- Status & Timer Box -->
+                <div class="timer-box"
+                    style="background: white; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.15);">
+                    <div class="d-flex align-items-center gap-2 gap-md-3 flex-wrap flex-md-nowrap">
+
+                        <!-- Now Live Badge -->
+                        <div class="live-badge-section">
+                            <div class="live-badge"
+                                style="background: #C62828; color: white; border-radius: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                                Now Live
+                            </div>
+                            <div class="ends-text" style="color: #666; font-weight: 500;">
+                                Ends in <span style="color: #C62828; font-weight: 700;">11:44:56</span>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="timer-divider d-none d-md-block" style="width: 1px; background: #E0E0E0;"></div>
+
+                        <!-- Timer Display -->
+                        <div class="d-flex align-items-center gap-1 gap-md-2">
+                            <div class="text-center">
+                                <div class="timer-digit"
+                                    style="background: #B71C1C; color: white; border-radius: 6px; font-weight: 700; box-shadow: 0 2px 5px rgba(183,28,28,0.25);">
+                                    00
+                                </div>
+                                <div class="timer-label" style="color: #999; font-weight: 600;">HOUR</div>
+                            </div>
+                            <span class="timer-colon" style="color: #B71C1C; font-weight: bold;">:</span>
+                            <div class="text-center">
+                                <div class="timer-digit"
+                                    style="background: #C62828; color: white; border-radius: 6px; font-weight: 700; box-shadow: 0 2px 5px rgba(198,40,40,0.3);">
+                                    12
+                                </div>
+                                <div class="timer-label" style="color: #999; font-weight: 600;">MIN</div>
+                            </div>
+                            <span class="timer-colon" style="color: #B71C1C; font-weight: bold;">:</span>
+                            <div class="text-center">
+                                <div class="timer-digit"
+                                    style="background: #C62828; color: white; border-radius: 6px; font-weight: 700; box-shadow: 0 2px 5px rgba(198,40,40,0.3);">
+                                    00
+                                </div>
+                                <div class="timer-label" style="color: #999; font-weight: 600;">SEC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
+    <!-- Flash Sale Products Section -->
+    <div class="container-fluid flash-sale-section position-relative"
+        style="background-image: url('{{ asset('images/bg-flash-sale.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 20px 20px 35px 20px; overflow: hidden; margin-top: -15px; position: relative;">
 
-    <div class="container-fluid new-arrival-section position-relative"
-        style="background: linear-gradient(135deg, #183018 0%, #2d5a2d 50%, #1a4d1a 100%); padding: 40px 20px; overflow: hidden; margin-bottom: 40px;">
-
-        <!-- Decorative Elements -->
-        <div class="position-absolute" style="top: 20px; left: 20px; font-size: 60px; opacity: 0.3;">🎃</div>
-        <div class="position-absolute" style="bottom: 20px; right: 20px; font-size: 60px; opacity: 0.3;">🎃</div>
-        <div class="position-absolute" style="top: 50%; left: 10px; font-size: 40px; opacity: 0.2;">🦇</div>
-        <div class="position-absolute" style="top: 30%; right: 50px; font-size: 40px; opacity: 0.2;">🦇</div>
-
-        <!-- Header Section -->
-
+        <!-- OVERLAY DIHAPUS - Background natural tanpa overlay putih -->
 
         <!-- Products Slider -->
-        <div class="swiper mySwiper">
+        <div class="swiper mySwiper position-relative" style="z-index: 2;">
             <div class="swiper-wrapper">
                 @if (session('id_user'))
                     @foreach ($data['new'] as $product)
-                        <div class="swiper-slide">
-                            <div class="bg-white rounded-lg shadow-lg overflow-hidden h-fit position-relative"
-                                style="border: 2px solid #f0f0f0;">
-
+                        <div class="swiper-slide-flash-sale">
+                            <!-- CARD DIPERBAIKI - Border radius lebih melengkung -->
+                            <div class="rounded-4 overflow-hidden h-fit position-relative"
+                                style="background: white; border: none; transition: all 0.3s ease; width: 180px; margin: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px !important;"
                                 @php
-                                    $activePromo = $product->promos->first();
+$activePromo = $product->promos->first();
                                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                     $discountPercent = 0;
                                     if ($discountedPrice && $product->regular_price > 0) {
@@ -1370,130 +1600,103 @@
                                         );
                                     }
                                     $inWishlist = collect($wishlist)->contains('product_id', $product->id);
-
                                     // Tentukan status badge
                                     $statusBadge = '';
                                     $statusColor = '';
+                                    $statusBgColor = '';
                                     if ($product->stock_quantity == 0) {
-                                        $statusBadge = 'FLASH SALE SOLD';
-                                        $statusColor = '#757575';
+                                        $statusBadge = 'Sold Out';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#E91E63';
                                     } elseif ($product->stock_quantity < 100) {
-                                        $statusBadge = 'SALE';
-                                        $statusColor = '#2d5a2d';
+                                        $statusBadge = 'Limited Stock';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#2E7D32';
                                     } else {
-                                        $statusBadge = 'ONLINE ONLY';
-                                        $statusColor = '#4a7c4a';
-                                    }
-                                @endphp
-
-                                <!-- Discount Badge -->
+                                        $statusBadge = 'Available';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#4CAF50';
+                                    } @endphp
+                                <!-- Discount Badge - Border radius lebih melengkung -->
                                 @if ($discountPercent > 0)
                                     <div class="position-absolute"
-                                        style="top: 10px; left: 10px; background: #2d5a2d; color: #90EE90; border-radius: 8px; padding: 5px 10px; font-weight: bold; font-size: 14px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                        style="top: 10px; left: 10px; background: #4CAF50; color: white; border-radius: 8px; padding: 3px 8px; font-weight: bold; font-size: 11px; z-index: 10;">
                                         {{ $discountPercent }}%
                                     </div>
                                 @endif
-
                                 <!-- Wishlist Heart -->
-                                <i class="fas fa-heart position-absolute {{ $inWishlist ? 'text-success' : 'text-secondary' }}"
-                                    style="top: 10px; right: 10px; font-size: 20px; z-index: 10; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"
+                                <i class="fas fa-heart position-absolute {{ $inWishlist ? 'text-danger' : 'text-dark' }}"
+                                    style="top: 10px; right: 10px; font-size: 16px; z-index: 10; cursor: pointer;"
                                     onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
                                 </i>
-
                                 <a href="/{{ $product->product_code }}_product" class="text-decoration-none">
-                                    <!-- Product Image -->
+                                    <!-- Product Image - Border radius top lebih melengkung -->
                                     <div class="product-image-container position-relative"
-                                        style="height: 250px; overflow: hidden;">
-                                        <img class="w-100 h-100 object-fit-cover {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
+                                        style="height: 200px; overflow: hidden; background: white; padding: 15px; border-radius: 16px 16px 0 0;">
+                                        <img class="w-100 h-100 object-fit-contain {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
                                             src="{{ Storage::url($product->main_image) }}"
                                             alt="{{ $product->product_name }}" style="transition: transform 0.3s ease;">
-
-                                        <!-- Status Badge -->
-                                        <div class="position-absolute"
-                                            style="bottom: 10px; left: 50%; transform: translateX(-50%); background: {{ $statusColor }}; color: white; border-radius: 20px; padding: 6px 16px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-                                            {{ $statusBadge }}
-                                        </div>
                                     </div>
-
-                                    <!-- Product Details -->
-                                    <div class="p-3">
-                                        <!-- Stock Badge -->
-                                        @if ($product->stock_quantity > 0 && $product->stock_quantity < 100)
-                                            <div class="mb-2">
-                                                <span class="badge"
-                                                    style="background: #2d5a2d; color: white; font-size: 10px; padding: 4px 12px; border-radius: 12px;">
-                                                    Tersisa {{ $product->stock_quantity }}
-                                                </span>
-                                            </div>
-                                        @elseif ($product->stock_quantity >= 100)
-                                            <div class="mb-2">
-                                                <span class="badge"
-                                                    style="background: #4a7c4a; color: white; font-size: 10px; padding: 4px 12px; border-radius: 12px;">
-                                                    Masih tersedia
-                                                </span>
-                                            </div>
-                                        @endif
-
+                                    <!-- Product Details - Layout sesuai gambar referensi -->
+                                    <div class="p-3" style="background: white; border-radius: 0 0 16px 16px;">
+                                        <!-- Brand/Category -->
+                                        <p class="text-muted mb-2"
+                                            style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                                            FROM THIS ISLAND
+                                        </p>
                                         <!-- Product Name -->
                                         <p class="mb-2"
-                                            style="font-size: 13px; color: #333; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+                                            style="font-size: 13px; color: #333; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 500;">
                                             {{ $product->product_name }}
                                         </p>
-
                                         <!-- Pricing -->
-                                        <div class="mb-3">
+                                        <div class="mb-0">
                                             @if ($product->priceVariation !== null)
                                                 <p class="m-0"
-                                                    style="font-size: 15px; font-weight: 700; color: #2d5a2d;">
-                                                    {{ $product->priceVariation }}
+                                                    style="font-size: 13px; font-weight: 700; color: #E91E63;">
+                                                    ⚡ {{ $product->priceVariation }}
                                                 </p>
                                             @else
-                                                <div class="d-flex align-items-center gap-2">
-                                                    <p class="m-0"
-                                                        style="font-size: 16px; font-weight: 700; color: #2d5a2d;">
-                                                        Rp{{ number_format($discountedPrice ?? $product->regular_price, 0, ',', '.') }}
-                                                    </p>
+                                                <div class="d-flex align-items-center gap-1 flex-wrap">
                                                     @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                        <p class="m-0 text-muted"
-                                                            style="font-size: 12px; text-decoration: line-through;">
-                                                            Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                        <!-- Harga normal dicoret -->
+                                                        <p class="m-0 text-decoration-line-through"
+                                                            style="font-size: 12px; color: #999;">
+                                                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                        </p>
+
+                                                        <!-- Harga promo -->
+                                                        <p class="m-0 fw-bold d-flex align-items-center"
+                                                            style="font-size: 13px; color: #E91E63;">
+                                                            <i class="fas fa-bolt me-1"
+                                                                style="color: #FFC107; font-size: 12px;"></i>
+                                                            Rp {{ number_format($discountedPrice, 0, ',', '.') }}
+                                                        </p>
+                                                    @else
+                                                        <!-- Harga normal (tanpa promo) -->
+                                                        <p class="m-0 fw-bold d-flex align-items-center"
+                                                            style="font-size: 13px; color: #E91E63;">
+                                                            <i class="fas fa-bolt me-1"
+                                                                style="color: #FFC107; font-size: 12px;"></i>
+                                                            Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                                         </p>
                                                     @endif
                                                 </div>
                                             @endif
                                         </div>
+
                                     </div>
                                 </a>
-
-                                <!-- Action Buttons -->
-                                <div class="px-3 pb-3">
-                                    @if ($product->stock_quantity > 0)
-                                        <button class="btn w-100 mb-2"
-                                            style="background: linear-gradient(135deg, #2d5a2d 0%, #4a7c4a 100%); color: white; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Add to bag
-                                        </button>
-                                        <button class="btn w-100"
-                                            style="background: #3d6a3d; color: white; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Quick View
-                                        </button>
-                                    @else
-                                        <button class="btn w-100" disabled
-                                            style="background: #E0E0E0; color: #9E9E9E; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Sold Out
-                                        </button>
-                                    @endif
-                                </div>
                             </div>
                         </div>
                     @endforeach
                 @else
                     <!-- Logged Out View -->
                     @foreach ($data['new'] as $product)
-                        <div class="swiper-slide">
+                        <div class="swiper-slide-flash-sale">
                             <div onclick="window.location.href = '/{{ $product->product_code }}_product'"
-                                class="bg-white rounded-lg shadow-lg overflow-hidden h-fit hover:cursor-pointer position-relative"
-                                style="border: 2px solid #f0f0f0;">
-
+                                class="bg-white rounded-4 overflow-hidden h-fit hover:cursor-pointer position-relative"
+                                style="background: white; border: none; transition: all 0.3s ease; width: 180px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px !important;">
                                 @php
                                     $activePromo = $product->promos->first();
                                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
@@ -1504,132 +1707,116 @@
                                                 100,
                                         );
                                     }
-
                                     $statusBadge = '';
                                     $statusColor = '';
+                                    $statusBgColor = '';
                                     if ($product->stock_quantity == 0) {
-                                        $statusBadge = 'FLASH SALE SOLD';
-                                        $statusColor = '#757575';
+                                        $statusBadge = 'Sold Out';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#E91E63';
                                     } elseif ($product->stock_quantity < 100) {
-                                        $statusBadge = 'SALE';
-                                        $statusColor = '#2d5a2d';
+                                        $statusBadge = 'Limited Stock';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#2E7D32';
                                     } else {
-                                        $statusBadge = 'ONLINE ONLY';
-                                        $statusColor = '#4a7c4a';
+                                        $statusBadge = 'Available';
+                                        $statusColor = 'white';
+                                        $statusBgColor = '#4CAF50';
                                     }
                                 @endphp
-
                                 @if ($discountPercent > 0)
                                     <div class="position-absolute"
-                                        style="top: 10px; left: 10px; background: #2d5a2d; color: #90EE90; border-radius: 8px; padding: 5px 10px; font-weight: bold; font-size: 14px; z-index: 10; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+                                        style="top: 10px; left: 10px; background: #4CAF50; color: white; border-radius: 8px; padding: 3px 8px; font-weight: bold; font-size: 11px; z-index: 10;">
                                         {{ $discountPercent }}%
                                     </div>
                                 @endif
-
-                                <i class="fas fa-heart position-absolute text-secondary"
-                                    style="top: 10px; right: 10px; font-size: 20px; z-index: 10; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"
+                                <i class="fas fa-heart position-absolute text-dark"
+                                    style="top: 10px; right: 10px; font-size: 16px; z-index: 10; cursor: pointer;"
                                     onclick="event.stopPropagation(); addToWishlist({{ $product->id }})">
                                 </i>
-
                                 <div class="product-image-container position-relative"
-                                    style="height: 250px; overflow: hidden;">
-                                    <img class="w-100 h-100 object-fit-cover {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
+                                    style="height: 200px; overflow: hidden; background: white; padding: 15px; border-radius: 16px 16px 0 0;">
+                                    <img class="w-100 h-100 object-fit-contain {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
                                         src="{{ Storage::url($product->main_image) }}"
                                         alt="{{ $product->product_name }}" style="transition: transform 0.3s ease;">
-
-                                    <div class="position-absolute"
-                                        style="bottom: 10px; left: 50%; transform: translateX(-50%); background: {{ $statusColor }}; color: white; border-radius: 20px; padding: 6px 16px; font-size: 11px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
-                                        {{ $statusBadge }}
-                                    </div>
                                 </div>
-
-                                <div class="p-3">
-                                    @if ($product->priceVariation !== null)
-                                        <p class="text-muted mb-2" style="font-size: 11px;">More options available</p>
-                                    @else
-                                        <p class="text-muted mb-2" style="font-size: 11px;">
-                                            {{ $product->volume ?? '50 ml' }}</p>
-                                    @endif
-
-                                    @if ($product->stock_quantity > 0 && $product->stock_quantity < 100)
-                                        <div class="mb-2">
-                                            <span class="badge"
-                                                style="background: #2d5a2d; color: white; font-size: 10px; padding: 4px 12px; border-radius: 12px;">
-                                                Tersisa {{ $product->stock_quantity }}
-                                            </span>
-                                        </div>
-                                    @elseif ($product->stock_quantity >= 100)
-                                        <div class="mb-2">
-                                            <span class="badge"
-                                                style="background: #4a7c4a; color: white; font-size: 10px; padding: 4px 12px; border-radius: 12px;">
-                                                Masih tersedia
-                                            </span>
-                                        </div>
-                                    @endif
-
-                                    <p class="mb-2"
-                                        style="font-size: 13px; color: #333; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
-                                        {{ $product->product_name }}
+                                <div class="p-3" style="background: white; border-radius: 0 0 16px 16px;">
+                                    <p class="text-muted mb-2"
+                                        style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                                        {{ strtoupper($product->brand ? $product->brand->name : 'NO BRAND') }}
                                     </p>
 
-                                    <div class="mb-3">
+                                    <p class="mb-2"
+                                        style="font-size: 13px; color: #333; line-height: 1.4; height: 36px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-weight: 500;">
+                                        {{ $product->product_name }}
+                                    </p>
+                                    <!-- Pricing -->
+                                    <div class="mb-0">
                                         @if ($product->priceVariation !== null)
-                                            <p class="m-0" style="font-size: 15px; font-weight: 700; color: #2d5a2d;">
-                                                {{ $product->priceVariation }}
+                                            <p class="m-0" style="font-size: 13px; font-weight: 700; color: #E91E63;">
+                                                ⚡ {{ $product->priceVariation }}
                                             </p>
                                         @else
-                                            <div class="d-flex align-items-center gap-2">
-                                                <p class="m-0"
-                                                    style="font-size: 16px; font-weight: 700; color: #2d5a2d;">
-                                                    Rp{{ number_format($discountedPrice ?? $product->regular_price, 0, ',', '.') }}
-                                                </p>
+                                            <div class="d-flex align-items-center gap-1 flex-wrap">
                                                 @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                    <p class="m-0 text-muted"
-                                                        style="font-size: 12px; text-decoration: line-through;">
-                                                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    <!-- Harga normal dicoret -->
+                                                    <p class="m-0 text-decoration-line-through"
+                                                        style="font-size: 12px; color: #999;">
+                                                        Rp {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                    </p>
+
+                                                    <!-- Harga promo -->
+                                                    <p class="m-0 fw-bold d-flex align-items-center"
+                                                        style="font-size: 13px; color: #E91E63;">
+                                                        <i class="fas fa-bolt me-1"
+                                                            style="color: #FFC107; font-size: 12px;"></i>
+                                                        Rp {{ number_format($discountedPrice, 0, ',', '.') }}
+                                                    </p>
+                                                @else
+                                                    <!-- Harga normal (tanpa promo) -->
+                                                    <p class="m-0 fw-bold d-flex align-items-center"
+                                                        style="font-size: 13px; color: #E91E63;">
+                                                        <i class="fas fa-bolt me-1"
+                                                            style="color: #FFC107; font-size: 12px;"></i>
+                                                        Rp {{ number_format($product->regular_price, 0, ',', '.') }}
                                                     </p>
                                                 @endif
                                             </div>
                                         @endif
                                     </div>
-                                </div>
 
-                                <div class="px-3 pb-3">
-                                    @if ($product->stock_quantity > 0)
-                                        <button class="btn w-100 mb-2"
-                                            style="background: linear-gradient(135deg, #2d5a2d 0%, #4a7c4a 100%); color: white; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Add to bag
-                                        </button>
-                                        <button class="btn w-100"
-                                            style="background: #3d6a3d; color: white; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Quick View
-                                        </button>
-                                    @else
-                                        <button class="btn w-100" disabled
-                                            style="background: #E0E0E0; color: #9E9E9E; border-radius: 8px; padding: 10px; font-weight: 600; border: none; font-size: 14px;">
-                                            Sold Out
-                                        </button>
-                                    @endif
+
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 @endif
             </div>
+            <!-- Navigation Buttons -->
             <div class="swiper-button-next"
-                style="color: white; background: rgba(45, 90, 45, 0.6); width: 40px; height: 40px; border-radius: 50%;">
+                style="color: white; background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%); width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 3px 10px rgba(46,125,50,0.3);">
             </div>
             <div class="swiper-button-prev"
-                style="color: white; background: rgba(45, 90, 45, 0.6); width: 40px; height: 40px; border-radius: 50%;">
+                style="color: white; background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%); width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 3px 10px rgba(46,125,50,0.3);">
             </div>
         </div>
+
     </div>
-    {{-- </div> --}}
     <!-- FLASH SALE -->
 
     <!-- PROMO SECTION -->
-    <div class="promo-section-wrapper">
-        <div class="promo-section">
+    <div class="promo-section-wrapper" style="padding: 12px 0; background-color: #f9f9f9;">
+        <div class="promo-section container">
+            <div class="promo-section-header text-center mb-4">
+                <h2 class="fw-bold">
+                    Promo Spesial untuk Kamu 🌿
+                </h2>
+                <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
+                    Dapatkan promo menarik untuk melengkapi gaya hidupmu!
+                </p>
+            </div>
+
+
             @if ($data['promos']->count() > 0)
                 <!-- Swiper untuk Promo -->
                 <div class="swiper myPromoSwiper">
@@ -1638,36 +1825,64 @@
                             <div class="swiper-slide">
                                 <div class="promo-card-slider"
                                     onclick="window.location.href='/promo/{{ $promo->id }}'">
+
                                     <div class="promo-banner-container">
-                                        <!-- Class khusus: promo-banner-image -->
                                         <img class="promo-banner-image"
                                             src="{{ $promo->image ? Storage::url($promo->image) : asset('images/no-image.png') }}"
-                                            alt="{{ $promo->promo_name }}" loading="lazy">
+                                            alt="{{ $promo->promo_name }}" loading="lazy"
+                                            style="width: 100%; object-fit: cover;">
                                     </div>
-                                    <div class="promo-content-slider">
-                                        <p class="promo-label">{{ $promo->type }}</p>
-                                        <h3 class="promo-title-slider">{{ $promo->promo_name }}</h3>
-                                        <p class="promo-desc-slider">{{ $promo->description ?? 'Limited time offer' }}</p>
-                                        <a href="/promo/{{ $promo->id }}" class="promo-cta-slider"
-                                            onclick="event.stopPropagation()">Shop now</a>
+
+                                    <div class="promo-content-slider p-3 text-center">
+                                        <p class="promo-label text-uppercase text-success fw-bold mb-1"
+                                            style="font-size: 0.8rem;">
+                                            {{ $promo->type }}
+                                        </p>
+
+                                        <h3 class="promo-title-slider fw-semibold"
+                                            style="font-size: 1.1rem; color: #333;">
+                                            {{ $promo->promo_name }}
+                                        </h3>
+
+                                        <!-- Periode Promo -->
+                                        <div class="promo-period mb-2 text-muted" style="font-size: 0.8rem;">
+                                            <i class="bi bi-calendar-event me-1 text-success"></i>
+                                            @if ($promo->start_date)
+                                                {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d M Y') }}
+                                            @endif
+                                            -
+                                            @if ($promo->end_date)
+                                                {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d M Y') }}
+                                            @endif
+                                        </div>
+
+                                        <p class="promo-desc-slider text-muted" style="font-size: 0.9rem;">
+                                            {{ $promo->description }}
+                                        </p>
+                                        <!-- Ubah tombol menjadi teks -->
+                                        <a href="/promo/{{ $promo->id }}"
+                                            class="promo-link-slider mt-2 d-inline-flex align-items-center justify-content-center"
+                                            onclick="event.stopPropagation()">
+                                            <span>Lihat Detail</span>
+                                            <i class="bi bi-arrow-right ms-2"></i>
+                                        </a>
                                     </div>
+
                                 </div>
                             </div>
                         @endforeach
                     </div>
 
-                    <div class="mb-2">
+                    <div class="mt-3">
                         <!-- Navigation buttons -->
                         <div class="swiper-button-next"></div>
                         <div class="swiper-button-prev"></div>
-
-                        <!-- Pagination -->
-                        {{-- <div class="swiper-pagination p-2"></div> --}}
                     </div>
                 </div>
             @else
-                <div class="empty-promo">Tidak ada promo banner tersedia</div>
+                <div class="empty-promo text-center text-muted py-4">Tidak ada promo banner tersedia</div>
             @endif
+
         </div>
     </div>
     <!-- PROMO SECTION END-->
@@ -1676,15 +1891,22 @@
     <div class="container-fluid">
         <div class="section-wrapper">
             <!-- Kolom Kiri: Judul dan Deskripsi -->
+            <!-- Kolom Kiri: Judul dan Deskripsi -->
             <div class="section-left">
-                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                    Our Top Brands
+                <h2
+                    class="text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-success flex items-center gap-2 mb-2">
+                    <img src="{{ asset('images/WEBSITE PRODUK (1).png') }}" alt="Icon"
+                        class="w-6 h-6 md:w-8 md:h-8 inline-block">
+                    <span>Top Brand</span>
                 </h2>
-                <p class="text-sm md:text-base text-gray-700 mb-6 leading-relaxed">
-                    Discover trusted beauty brands that bring your glow to life.
+                <p class="text-sm md:text-base text-gray-700 mb-6 leading-relaxed mb-2">
+                    Temukan <span class="font-semibold text-success">brand</span> kecantikan terbaik, dari merek ternama
+                    hingga favorit terkini.
                 </p>
-                <a href="#" class="text-sm md:text-base font-medium underline hover:no-underline inline-block">
-                    See all brands
+
+                <a href="#"
+                    class="text-sm md:text-base font-medium underline hover:no-underline inline-block text-success">
+                    Lihat Koleksi Brand
                 </a>
             </div>
 
@@ -1729,10 +1951,15 @@
     <!-- curated for you -->
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
         <div class="container-fluid new-arrival-section">
-            <div class="section-left">
-                <h4 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                    Curated For You
-                </h4>
+            <div class="promo-section-header text-center mb-4">
+                <h2 class="fw-bold">
+                    Produk Spesial yang cocok untuk Kamu 🌿
+                </h2>
+
+                <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
+                    Temukan produk pilihan terbaik yang sesuai dengan gaya dan kebutuhanmu.
+                </p>
+
             </div>
 
             <div class="swiper mySwiper">
@@ -1899,12 +2126,22 @@
                 {{-- Title --}}
                 <div class="col-12 col-md-6 col-lg-3">
                     <div class="d-flex flex-column justify-content-center h-100 pe-lg-4">
-                        <h2 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 3vw, 2.25rem);">Featured Categories</h2>
-                        <p class="text-muted mb-0" style="font-size: clamp(0.875rem, 1.5vw, 1rem);">
-                            From hair to fragrance, and everything in between.
+                        <h2 class="d-flex align-items-center gap-2 font-bold leading-tight text-success mb-2"
+                            style="font-size: clamp(1.5rem, 3vw, 2.25rem); font-family: 'The Seasons', serif;">
+
+                            <img src="{{ asset('images/WEBSITE PRODUK (1).png') }}" alt="Ikon" class="img-fluid"
+                                style="width: 35px; height: 35px; margin-right: 7px;">
+
+                            <span>Kategori Unggulan</span>
+                        </h2>
+
+                        <p class="text-muted mb-0"
+                            style="font-size: clamp(0.875rem, 1.5vw, 1rem); font-family: 'Poppins', sans-serif;">
+                            Dari perawatan rambut hingga wewangian, dan segala sesuatu di antaranya.
                         </p>
                     </div>
                 </div>
+
 
                 {{-- Show only 6 newest categories --}}
                 @foreach ($data['categories']->sortByDesc('created_at')->take(5) as $index => $category)
@@ -1950,11 +2187,15 @@
     {{-- articles --}}
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-2">
         <div class="container-fluid new-arrival-section">
-            <div class="section-left">
-                <h4 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
-                    Articles For You
-                </h4>
+            <div class="promo-section-header text-center mb-4">
+                <h2 class="fw-bold" style="font-family: 'The Seasons', serif;">
+                    Artikel & Berita untuk Kamu 🌿
+                </h2>
+                <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
+                    Kumpulan artikel dan berita terbaru seputar tren kecantikan serta inspirasi gaya hidup untukmu.
+                </p>
             </div>
+
 
             {{-- Featured Article Grid --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-2">
@@ -2080,6 +2321,7 @@
     </div> --}}
     {{-- </div> --}}
 
+    {{-- promo swiper --}}
     <script>
         // Initialize Promo Swiper
         document.addEventListener('DOMContentLoaded', function() {
@@ -2123,7 +2365,7 @@
         });
     </script>
 
-
+    {{-- product swiper --}}
     <script>
         // Initialize Swiper untuk Product Carousel
         document.addEventListener('DOMContentLoaded', function() {
