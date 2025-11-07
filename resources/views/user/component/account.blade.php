@@ -658,7 +658,7 @@
                                 <div class="modal fade" id="transaction-detail-{{ $order->invoice->no_invoice }}"
                                     tabindex="-1" aria-labelledby="transaction-detail-{{ $order->invoice->no_invoice }}"
                                     aria-hidden="true">
-                                    <div class="modal-dialog modal-sm">
+                                    <div class="modal-dialog modal-lg">
                                         <div class="modal-content overflow-y-auto" style="max-height:90vh;">
 
                                             <div class="modal-header">
@@ -957,7 +957,7 @@
                                                     <div class="col-12 col-lg-5 pl-lg-0 d-none d-lg-block">
                                                         <div class="grid p-1 p-md-2 p-lg-3 custom-shadow rounded-sm position-sticky"
                                                             style="top: 0.1rem;">
-                                                            <div class="col-12 p-0 border-bottom">
+                                                            <div class="col-12 p-0">
                                                                 <p
                                                                     class="text-black text-[12px] md:text-[14px] lg:text-[16px] xl:text-[18px]">
                                                                     Riwayat Pengiriman</p>
@@ -998,7 +998,14 @@
                                                             </div>
                                                             @if ($order->tracking !== null)
                                                                 <div class="col-12">
-                                                                    <a href="{{$order->tracking}}">Track your packet</a>
+                                                                    <div class="text-center">
+                                                                        <div class="card-body">
+                                                                        <h6 class="text-muted mb-2">Ingin tahu lokasi paketmu sekarang?</h6>
+                                                                        <a href="{{ $order->tracking }}" target="_blank" class="btn btn-success rounded-pill px-4">
+                                                                            <i class="bi bi-geo-alt"></i> Pantau Paketmu
+                                                                        </a>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             @endif
                                                         </div>

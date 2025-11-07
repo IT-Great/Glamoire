@@ -263,8 +263,8 @@ class PrismalinkController extends Controller
             'Content-Type' => 'application/json',
         ])->post($url, $body);
 
-        Log::info(['Body :' => $body]);
-        // Log::info(['ambil response :' => $response->json()]);
+        Log::info(['Request submit-trx :' => $body]);
+        Log::info(['Response submit-trx :' => $response->json()]);
 
         $status = $response->json();
         
@@ -363,13 +363,15 @@ class PrismalinkController extends Controller
         }
     }
 
-    public function callback()
+    public function callback(Request $request)
     {
         try {
             if($this->status == 'local'){
+                Log::info('Prismalink Callback Data: ', $request->all());
                 return redirect()->route('account');
             }
             else{
+                Log::info('Redirect to https://glamoire.co.id/account');
                 return redirect('https://glamoire.co.id/account');
             }
             
@@ -693,12 +695,6 @@ class PrismalinkController extends Controller
 
     private function getPaymentStatus(){
         try{
-            Log::info([
-                'getPaymentStatus Merchant_ref_no :' => $this->merchant_ref_no,
-                'getPaymentStatus Plink_ref_no :' => $this->plink_ref_no,
-                'getPaymentStatus Transmission_date_time :' => $this->trasmission_date_time,
-            ]);
-
             if($this->status == 'local'){
                 $url = 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
             }
@@ -718,14 +714,12 @@ class PrismalinkController extends Controller
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
             
-            Log::info(['Body Check Status PrismalinkController getPaymentStatus :' => $body]);
             $response = Http::withHeaders([
                 'mac' => $mac,
                 'Content-Type' => 'application/json',
             ])->post($url, $body);
     
             $result = json_decode($response->getBody(), true);
-            Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
             return $result;
         }
         catch(Exception $err){
