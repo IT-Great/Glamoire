@@ -31,6 +31,56 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
+        /* Green card for Vision and Story sections */
+        .elegant-card-green {
+            background: linear-gradient(135deg, #183018, #2d5a2d);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            text-align: justify;
+            color: white;
+        }
+
+        .elegant-card-green .about-section-title {
+            text-align: center;
+            display: block;
+            color: white;
+        }
+
+        .elegant-card-green .about-section-title::after {
+            background: linear-gradient(90deg, #a8d5a8, #76fb76);
+        }
+
+        .elegant-card-green:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .elegant-card-green .text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .elegant-card-green .feature-icon {
+            background: white;
+            display: flex;
+            /* gunakan flexbox untuk center */
+            align-items: center;
+            /* vertical center */
+            justify-content: center;
+            /* horizontal center */
+            border-radius: 50%;
+            margin: 0 auto;
+            /* center lingkaran di parent */
+        }
+
+        .elegant-card-green .feature-icon i {
+            color: #183018;
+            /* hijau untuk icon */
+            font-size: 30px;
+            /* bisa sesuaikan ukuran icon */
+        }
+
+
         .image-container {
             position: relative;
             overflow: hidden;
@@ -156,29 +206,32 @@
     <div class="hero-section position-relative text-white"
         style="background-image: url('{{ Storage::url($data['hero_image']) }}'); background-size: cover; background-position: center; height: 100vh;">
 
-        <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.495);"></div>
+        <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.0);"></div>
 
         <div class="container position-relative z-1 h-100 d-flex align-items-center">
             <div class="col-lg-8">
 
-                {{-- Konten --}}
-                <div class="p-4 shadow" style="background-color: rgba(0, 0, 0, 0.283); border-radius: 1rem;">
-                    {{-- Title --}}
+                   {{-- Title --}}
                     <h1 class="fw-bold mb-3"
                         style="
                           font-size: 2rem; 
-                          color: #4a7c59;
+                          color: #c49f5c;
                           ">
                         {{ $data['hero_title'] }}
                     </h1>
 
+                {{-- Konten --}}
+                <div class="p-4 shadow" style="background-color: rgba(215, 226, 201, 0.6); border-radius: 1rem;">
                     {{-- Description --}}
                     <p class="mb-4"
                         style="
                         font-size: 1rem; 
-                        line-height: 1.6;">
+                        line-height: 1.6; 
+                        color: #2e7d32; 
+                        font-weight: 700;">
                         {{ $data['hero_description'] }}
                     </p>
+
 
                     <div class="mt-4">
                         <a href="/shop" class="btn btn-lg px-4 py-2"
@@ -207,9 +260,9 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="elegant-card rounded-3 p-4 p-lg-5">
-                        <div class="feature-icon mb-3">
+                        {{-- <div class="feature-icon mb-3">
                             <i class="fas fa-hands"></i>
-                        </div>
+                        </div> --}}
                         <h2 class="about-section-title">{{ $data->intro_title }}
                         </h2>
                         <p class="text-muted mb-4" style="line-height: 1.7; font-size: 15px;">
@@ -244,7 +297,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
-                    <div class="elegant-card rounded-3 p-4 p-lg-5">
+                    <div class="elegant-card-green rounded-3 p-4 p-lg-5">
                         <div class="feature-icon mb-3">
                             <i class="fas fa-eye"></i>
                         </div>
@@ -252,15 +305,15 @@
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0 me-3">
                                 <div
-                                    style="width: 4px; height: 40px; background: linear-gradient(to bottom, #183018, #4a7c59); border-radius: 2px;">
+                                    style="width: 4px; height: 40px; background: linear-gradient(to bottom, #a8d5a8, #76fb76); border-radius: 2px;">
                                 </div>
                             </div>
                             <div>
-                                <small class="text-muted font-weight-bold"> {{ $data->vision_description }}
-                                </small>
+                                <small class="text-muted font-weight-bold">{{ $data->vision_description }}</small>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </section>
@@ -314,23 +367,21 @@
                     </div>
                 </div>
                 <div class="col-lg-6 order-lg-1">
-                    <div class="elegant-card rounded-3 p-4 p-lg-5">
+                    <div class="elegant-card-green rounded-3 p-4 p-lg-5">
                         <div class="feature-icon mb-3">
                             <i class="fas fa-book-open"></i>
                         </div>
                         <h2 class="about-section-title">{{ $data->story_title }}</h2>
-
                         <div class="timeline-item mt-4">
                             <div class="d-flex align-items-start">
                                 <div class="flex-shrink-0 me-3">
                                     <div
-                                        style="width: 12px; height: 12px; background: #4a7c59; border-radius: 50%; margin-top: 4px;">
+                                        style="width: 12px; height: 12px; background: #a8d5a8; border-radius: 50%; margin-top: 4px;">
                                     </div>
                                 </div>
                                 <div>
-                                    <h6 class="fw-bold text-dark mb-1">Perjalanan Kami</h6>
-                                    <small class="text-muted"> {{ $data->story_description }}
-                                    </small>
+                                    <h6 class="fw-bold mb-1" style="color: white;">Perjalanan Kami</h6>
+                                    <small class="text-muted">{{ $data->story_description }}</small>
                                 </div>
                             </div>
                         </div>

@@ -17,6 +17,12 @@
             min-height: 250px;
         }
 
+        @media (min-width: 768px) {
+            .grid.md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
         .popup-banner-container img,
         .popup-banner-container video {
             transition: transform 0.8s ease, filter 0.8s ease;
@@ -832,7 +838,7 @@
             }
         }
 
-        /* === Responsif: Mobile Kecil (≤480px) === */
+        /* === Responsif: Mobile Kecil (=480px) === */
         @media (max-width: 480px) {
             .promo-section-header {
                 padding: 0 1rem;
@@ -918,17 +924,24 @@
         }
 
         /* FLASH SALE */
-        .swiper-slide-flash-sale {
+        /* Swiper Slide - GANTI dari swiper-slide-flash-sale */
+        .flash-sale-section .swiper-slide {
             width: 180px !important;
-            /* Sesuaikan dengan lebar card */
             margin-right: 12px !important;
-            /* Jarak antar card */
         }
 
-        /* Atau hapus margin auto pada card */
-        .swiper-slide>div {
+        /* Hapus margin auto pada card */
+        .flash-sale-section .swiper-slide>div {
             margin: 0 !important;
-            /* Hapus margin: 0 auto */
+        }
+
+        /* Pastikan swiper bisa di-touch di mobile */
+        .flash-sale-section .swiper {
+            touch-action: pan-y pinch-zoom;
+            -webkit-user-select: none;
+            user-select: none;
+            padding-left: 5px;
+            padding-right: 5px;
         }
 
         /* Responsive Flash Sale Image */
@@ -976,6 +989,7 @@
             height: 30px;
         }
 
+        /* Default spacing */
         .flash-sale-img {
             margin-bottom: 20px;
         }
@@ -983,6 +997,10 @@
         .timer-box {
             margin-bottom: 20px;
         }
+
+        /* ========================================
+       MEDIA QUERIES
+       ======================================== */
 
         /* Small Mobile (< 375px) */
         @media (max-width: 374px) {
@@ -1001,7 +1019,25 @@
             }
         }
 
-        /* Tablet */
+        /* Mobile (≤ 768px) */
+        @media (max-width: 768px) {
+
+            /* Tambahkan jarak ekstra agar tidak terlalu rapat */
+            .flash-sale-img,
+            .timer-box {
+                margin-bottom: 18px !important;
+            }
+
+            /* Perbesar gambar Flash Sale khusus di mobile */
+            .flash-sale-header img.flash-sale-img {
+                width: 150px !important;
+                height: auto !important;
+                transform: scale(1.1);
+                transition: transform 0.3s ease;
+            }
+        }
+
+        /* Tablet (≥ 768px) */
         @media (min-width: 768px) {
             .flash-sale-img {
                 height: 120px;
@@ -1040,52 +1076,32 @@
             .timer-divider {
                 height: 35px;
             }
+
+            /* Reset margin untuk desktop */
+            .flash-sale-img,
+            .timer-box {
+                margin-bottom: 8px;
+            }
         }
 
-        /* Desktop */
+        /* Desktop (≥ 992px) */
         @media (min-width: 992px) {
             .flash-sale-img {
                 height: 160px;
             }
         }
 
-        /* Large Desktop */
+        /* Large Desktop (≥ 1200px) */
         @media (min-width: 1200px) {
             .flash-sale-img {
                 height: 190px;
             }
         }
 
-        /* Extra Large Desktop */
+        /* Extra Large Desktop (≥ 1400px) */
         @media (min-width: 1400px) {
             .flash-sale-img {
                 height: 200px;
-            }
-        }
-
-        /* Default (Desktop) — tanpa jarak berlebih */
-        .flash-sale-img,
-        .timer-box {
-            margin-bottom: 8px;
-        }
-
-        /* Mobile only: tambahkan jarak ekstra agar tidak terlalu rapat */
-        @media (max-width: 768px) {
-
-            .flash-sale-img,
-            .timer-box {
-                margin-bottom: 18px !important;
-            }
-        }
-
-        /* Perbesar gambar Flash Sale khusus di mobile */
-        @media (max-width: 768px) {
-            .flash-sale-header img.flash-sale-img {
-                width: 150px !important;
-                /* perbesar dari ukuran default */
-                height: auto !important;
-                transform: scale(1.1);
-                transition: transform 0.3s ease;
             }
         }
     </style>
@@ -1288,7 +1304,7 @@
                                                     @if ($product->is_gift)
                                                         <span
                                                             class="absolute top-2 left-2 bg-[#FF4081] text-white text-[10px] md:text-[12px] font-semibold px-2 py-1 rounded-full shadow">
-                                                            🎁 Free Gift
+                                                            ?? Free Gift
                                                         </span>
                                                     @endif
                                                     <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
@@ -1378,7 +1394,7 @@
                                                 @if ($product->is_gift)
                                                     <span
                                                         class="absolute top-2 left-2 bg-[#FF4081] text-white text-[10px] md:text-[12px] font-semibold px-2 py-1 rounded-full shadow">
-                                                        🎁 Free Gift
+                                                        ?? Free Gift
                                                     </span>
                                                 @endif
                                                 <img class="product-img card-img-top product-image-home {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}"
@@ -1457,10 +1473,10 @@
     <!-- TOP SELLING END-->
 
     {{-- BANNER PROMO --}}
-    <div class="px-4 sm:px-8 md:px-20 lg:px-24 xl:px-24 2xl:px-48 py-8 sm:py-12 md:py-16 lg:py-24 mt-4">
+    <div class="px-4 sm:px-8 md:px-20 lg:px-24 xl:px-24 2xl:px-48 mt-4">
         <div class="container-fluid">
             <!-- Two-Column Layout -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-2">
                 @foreach ($data['popupsBanner'] as $popup)
                     <div class="group cursor-pointer popup-content-wrapper">
                         <div class="popup-banner-container">
@@ -1585,12 +1601,12 @@
             <div class="swiper-wrapper">
                 @if (session('id_user'))
                     @foreach ($data['new'] as $product)
-                        <div class="swiper-slide-flash-sale">
+                        <div class="swiper-slide">
                             <!-- CARD DIPERBAIKI - Border radius lebih melengkung -->
                             <div class="rounded-4 overflow-hidden h-fit position-relative"
                                 style="background: white; border: none; transition: all 0.3s ease; width: 180px; margin: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px !important;"
                                 @php
-$activePromo = $product->promos->first();
+                                    $activePromo = $product->promos->first();
                                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
                                     $discountPercent = 0;
                                     if ($discountedPrice && $product->regular_price > 0) {
@@ -1654,7 +1670,7 @@ $activePromo = $product->promos->first();
                                             @if ($product->priceVariation !== null)
                                                 <p class="m-0"
                                                     style="font-size: 13px; font-weight: 700; color: #E91E63;">
-                                                    ⚡ {{ $product->priceVariation }}
+                                                    ? {{ $product->priceVariation }}
                                                 </p>
                                             @else
                                                 <div class="d-flex align-items-center gap-1 flex-wrap">
@@ -1693,10 +1709,11 @@ $activePromo = $product->promos->first();
                 @else
                     <!-- Logged Out View -->
                     @foreach ($data['new'] as $product)
-                        <div class="swiper-slide-flash-sale">
+                        <div class="swiper-slide">
                             <div onclick="window.location.href = '/{{ $product->product_code }}_product'"
-                                class="bg-white rounded-4 overflow-hidden h-fit hover:cursor-pointer position-relative"
-                                style="background: white; border: none; transition: all 0.3s ease; width: 180px; margin: 0 auto; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px !important;">
+                                class="rounded-4 overflow-hidden h-fit position-relative"
+                                style="background: white; border: none; transition: all 0.3s ease; width: 180px; margin: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 10px !important;">
+
                                 @php
                                     $activePromo = $product->promos->first();
                                     $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
@@ -1754,7 +1771,7 @@ $activePromo = $product->promos->first();
                                     <div class="mb-0">
                                         @if ($product->priceVariation !== null)
                                             <p class="m-0" style="font-size: 13px; font-weight: 700; color: #E91E63;">
-                                                ⚡ {{ $product->priceVariation }}
+                                                ? {{ $product->priceVariation }}
                                             </p>
                                         @else
                                             <div class="d-flex align-items-center gap-1 flex-wrap">
@@ -1809,7 +1826,7 @@ $activePromo = $product->promos->first();
         <div class="promo-section container">
             <div class="promo-section-header text-center mb-4">
                 <h2 class="fw-bold">
-                    Promo Spesial untuk Kamu 🌿
+                    Promo Spesial untuk Kamu ??
                 </h2>
                 <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
                     Dapatkan promo menarik untuk melengkapi gaya hidupmu!
@@ -1953,7 +1970,7 @@ $activePromo = $product->promos->first();
         <div class="container-fluid new-arrival-section">
             <div class="promo-section-header text-center mb-4">
                 <h2 class="fw-bold">
-                    Produk Spesial yang cocok untuk Kamu 🌿
+                    Produk Spesial yang cocok untuk Kamu ??
                 </h2>
 
                 <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
@@ -2189,7 +2206,7 @@ $activePromo = $product->promos->first();
         <div class="container-fluid new-arrival-section">
             <div class="promo-section-header text-center mb-4">
                 <h2 class="fw-bold" style="font-family: 'The Seasons', serif;">
-                    Artikel & Berita untuk Kamu 🌿
+                    Artikel & Berita untuk Kamu ??
                 </h2>
                 <p style="font-family: 'Poppins', sans-serif; color: #555; max-width: 900px; margin: 0 auto;">
                     Kumpulan artikel dan berita terbaru seputar tren kecantikan serta inspirasi gaya hidup untukmu.
