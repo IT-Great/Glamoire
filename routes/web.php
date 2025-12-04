@@ -160,7 +160,7 @@ Route::post('/notify-me', function (Request $request) {
             }
         }
     }
-    
+
     return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu Yaa']);
 })->name('notify.me');
 
@@ -360,6 +360,12 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/store-product', [ProductController::class, 'storeProductAdmin'])->name('store-product-admin');
     Route::get('/product-admin-edit/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
     Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
+    Route::post('/upload-temp-image', [ProductController::class, 'uploadTempImage'])->name('upload-temp-image');
+    Route::post('/upload-temp-image', [ProductController::class, 'uploadTempImage'])->name('upload-temp-image');
+    Route::post('/delete-temp-image', [ProductController::class, 'deleteTempImage'])->name('delete-temp-image');
+    // Routes untuk Main Image Temporary Upload
+    Route::post('/upload-temp-main-image', [ProductController::class, 'uploadTempMainImage'])->name('upload-temp-main-image');
+    Route::post('/delete-temp-main-image', [ProductController::class, 'deleteTempMainImage'])->name('delete-temp-main-image');
 
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
     Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
@@ -554,6 +560,8 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/aboutus-create-admin', [AboutusController::class, 'storeAboutusAdmin'])->name('store-aboutus-admin');
     Route::get('/aboutus-edit-admin/{id}', [AboutusController::class, 'editAboutusAdmin'])->name('edit-aboutus-admin');
     Route::put('/aboutus-update-admin/{id}', [AboutusController::class, 'updateAboutusAdmin'])->name('update-aboutus-admin');
+    Route::delete('/aboutus-delete-admin/delete-field', [AboutusController::class, 'deleteAboutUsField'])
+        ->name('delete-aboutus-field-admin');
 
     // POP UP
     Route::get('/popup-admin', [PopupController::class, 'indexPopupAdmin'])->name('index-popup-admin');

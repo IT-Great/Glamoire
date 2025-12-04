@@ -546,7 +546,8 @@
                                                         Formulir Edit Tentang Kami
                                                     </h4>
                                                     <p class="text-muted mb-0">
-                                                        Silakan edit formulir di bawah ini untuk update informasi Tentang Kami di sistem.
+                                                        Silakan edit formulir di bawah ini untuk update informasi
+                                                        Tentang Kami di sistem.
                                                     </p>
                                                 </div>
 
@@ -707,6 +708,84 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    {{-- Intro Video/GIF --}}
+                                                    <div class="form-group">
+                                                        <label>Video/GIF Intro</label>
+                                                        <input type="file" name="intro_video"
+                                                            class="form-control video-input"
+                                                            data-preview="intro_video_preview"
+                                                            data-progress="intro_video_progress"
+                                                            data-container="intro_video_container"
+                                                            accept="video/mp4,video/mov,video/avi,video/wmv,image/gif">
+                                                        <small class="form-text text-muted">
+                                                            Opsional. Unggah video atau GIF untuk bagian Intro. Format:
+                                                            MP4, MOV, AVI, WMV, GIF. Ukuran maksimal 10MB.
+                                                        </small>
+
+                                                        <div id="intro_video_container" class="mt-2">
+                                                            {{-- Video/GIF lama --}}
+                                                            @if (!empty($aboutUs->intro_video))
+                                                                <p class="mb-1 fw-bold">Media Lama:</p>
+                                                                <div class="mb-3">
+                                                                    @if (pathinfo($aboutUs->intro_video, PATHINFO_EXTENSION) === 'gif')
+                                                                        <img src="{{ asset('storage/' . $aboutUs->intro_video) }}"
+                                                                            width="300" class="mb-2"
+                                                                            style="border-radius: 4px;">
+                                                                    @else
+                                                                        <video width="300" controls class="mb-2">
+                                                                            <source
+                                                                                src="{{ asset('storage/' . $aboutUs->intro_video) }}"
+                                                                                type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+                                                                    @endif
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <i class="bi bi-file-earmark-play"></i>
+                                                                        {{ basename($aboutUs->intro_video) }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="preview mt-3" id="intro_video_preview"
+                                                                style="display: none;">
+                                                                <p class="fw-bold text-primary mb-1">Preview <span
+                                                                        id="intro_media_type">Media</span> Baru:</p>
+
+                                                                <div class="d-flex align-items-start gap-3">
+                                                                    <!-- Preview Container -->
+                                                                    <div id="intro_preview_content">
+                                                                        <!-- Video Preview -->
+                                                                        <video width="300" controls class="mb-2"
+                                                                            id="intro_video_element"
+                                                                            style="display: none;">
+                                                                            <source src="" type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+
+                                                                        <!-- GIF Preview -->
+                                                                        <img id="intro_gif_element" src=""
+                                                                            width="300" class="mb-2"
+                                                                            style="display: none; border-radius: 4px; border: 1px solid #ddd;">
+                                                                    </div>
+
+                                                                    <!-- Tombol Hapus -->
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-video-btn d-flex align-items-center h-25">
+                                                                        <i class="bi bi-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {{-- Progress bar --}}
+                                                            <div class="progress mt-2" id="intro_video_progress"
+                                                                style="display: none; height: 5px;">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: 0%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <hr>
                                                 </div>
 
@@ -781,6 +860,83 @@
                                                                 <div class="progress-bar bg-success"
                                                                     style="width: 0%;">
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Vision Video --}}
+                                                    <div class="form-group">
+                                                        <label>Video/GIF Vision</label>
+                                                        <input type="file" name="vision_video"
+                                                            class="form-control video-input"
+                                                            data-preview="vision_video_preview"
+                                                            data-progress="vision_video_progress"
+                                                            data-container="vision_video_container"
+                                                            accept="video/mp4,video/mov,video/avi,video/wmv,image/gif">
+                                                        <small class="form-text text-muted">
+                                                            Opsional. Unggah video atau GIF untuk bagian Vision. Format:
+                                                            MP4, MOV, AVI, WMV, GIF. Ukuran maksimal 10MB.
+                                                        </small>
+
+                                                        <div id="vision_video_container" class="mt-2">
+                                                            {{-- Video/GIF lama --}}
+                                                            @if (!empty($aboutUs->vision_video))
+                                                                <p class="mb-1 fw-bold">Media Lama:</p>
+                                                                <div class="mb-3">
+                                                                    @if (pathinfo($aboutUs->vision_video, PATHINFO_EXTENSION) === 'gif')
+                                                                        <img src="{{ asset('storage/' . $aboutUs->vision_video) }}"
+                                                                            width="300" class="mb-2"
+                                                                            style="border-radius: 4px;">
+                                                                    @else
+                                                                        <video width="300" controls class="mb-2">
+                                                                            <source
+                                                                                src="{{ asset('storage/' . $aboutUs->vision_video) }}"
+                                                                                type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+                                                                    @endif
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <i class="bi bi-file-earmark-play"></i>
+                                                                        {{ basename($aboutUs->vision_video) }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="preview mt-3" id="vision_video_preview"
+                                                                style="display: none;">
+                                                                <p class="fw-bold text-primary mb-1">Preview <span
+                                                                        id="vision_media_type">Media</span> Baru:</p>
+
+                                                                <div class="d-flex align-items-start gap-3">
+                                                                    <!-- Preview Container -->
+                                                                    <div id="vision_preview_content">
+                                                                        <!-- Video Preview -->
+                                                                        <video width="300" controls class="mb-2"
+                                                                            id="vision_video_element"
+                                                                            style="display: none;">
+                                                                            <source src="" type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+
+                                                                        <!-- GIF Preview -->
+                                                                        <img id="vision_gif_element" src=""
+                                                                            width="300" class="mb-2"
+                                                                            style="display: none; border-radius: 4px; border: 1px solid #ddd;">
+                                                                    </div>
+
+                                                                    <!-- Tombol Hapus -->
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-video-btn d-flex align-items-center h-25">
+                                                                        <i class="bi bi-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {{-- Progress bar --}}
+                                                            <div class="progress mt-2" id="vision_video_progress"
+                                                                style="display: none; height: 5px;">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: 0%;"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -860,6 +1016,84 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
+                                                    {{-- Mision Video --}}
+                                                    <div class="form-group">
+                                                        <label>Video/GIF Mission</label>
+                                                        <input type="file" name="mission_video"
+                                                            class="form-control video-input"
+                                                            data-preview="mission_video_preview"
+                                                            data-progress="mission_video_progress"
+                                                            data-container="mission_video_container"
+                                                            accept="video/mp4,video/mov,video/avi,video/wmv,image/gif">
+                                                        <small class="form-text text-muted">
+                                                            Opsional. Unggah video atau GIF untuk bagian Vision. Format:
+                                                            MP4, MOV, AVI, WMV, GIF. Ukuran maksimal 10MB.
+                                                        </small>
+
+                                                        <div id="mission_video_container" class="mt-2">
+                                                            {{-- Video/GIF lama --}}
+                                                            @if (!empty($aboutUs->mission_video))
+                                                                <p class="mb-1 fw-bold">Media Lama:</p>
+                                                                <div class="mb-3">
+                                                                    @if (pathinfo($aboutUs->mission_video, PATHINFO_EXTENSION) === 'gif')
+                                                                        <img src="{{ asset('storage/' . $aboutUs->mission_video) }}"
+                                                                            width="300" class="mb-2"
+                                                                            style="border-radius: 4px;">
+                                                                    @else
+                                                                        <video width="300" controls class="mb-2">
+                                                                            <source
+                                                                                src="{{ asset('storage/' . $aboutUs->mission_video) }}"
+                                                                                type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+                                                                    @endif
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <i class="bi bi-file-earmark-play"></i>
+                                                                        {{ basename($aboutUs->mission_video) }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="preview mt-3" id="mission_video_preview"
+                                                                style="display: none;">
+                                                                <p class="fw-bold text-primary mb-1">Preview <span
+                                                                        id="mission_media_type">Media</span> Baru:</p>
+
+                                                                <div class="d-flex align-items-start gap-3">
+                                                                    <!-- Preview Container -->
+                                                                    <div id="mission_preview_content">
+                                                                        <!-- Video Preview -->
+                                                                        <video width="300" controls class="mb-2"
+                                                                            id="mission_video_element"
+                                                                            style="display: none;">
+                                                                            <source src="" type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+
+                                                                        <!-- GIF Preview -->
+                                                                        <img id="mission_gif_element" src=""
+                                                                            width="300" class="mb-2"
+                                                                            style="display: none; border-radius: 4px; border: 1px solid #ddd;">
+                                                                    </div>
+
+                                                                    <!-- Tombol Hapus -->
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-video-btn d-flex align-items-center h-25">
+                                                                        <i class="bi bi-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {{-- Progress bar --}}
+                                                            <div class="progress mt-2" id="mission_video_progress"
+                                                                style="display: none; height: 5px;">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: 0%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <hr>
                                                 </div>
 
@@ -932,6 +1166,83 @@
                                                         </div>
                                                     </div>
 
+                                                    {{-- Story Video --}}
+                                                    <div class="form-group">
+                                                        <label>Video/GIF Story</label>
+                                                        <input type="file" name="story_video"
+                                                            class="form-control video-input"
+                                                            data-preview="story_video_preview"
+                                                            data-progress="story_video_progress"
+                                                            data-container="story_video_container"
+                                                            accept="video/mp4,video/mov,video/avi,video/wmv,image/gif">
+                                                        <small class="form-text text-muted">
+                                                            Opsional. Unggah video atau GIF untuk bagian Story. Format:
+                                                            MP4, MOV, AVI, WMV, GIF. Ukuran maksimal 10MB.
+                                                        </small>
+
+                                                        <div id="story_video_container" class="mt-2">
+                                                            {{-- Video/GIF lama --}}
+                                                            @if (!empty($aboutUs->story_video))
+                                                                <p class="mb-1 fw-bold">Media Lama:</p>
+                                                                <div class="mb-3">
+                                                                    @if (pathinfo($aboutUs->story_video, PATHINFO_EXTENSION) === 'gif')
+                                                                        <img src="{{ asset('storage/' . $aboutUs->story_video) }}"
+                                                                            width="300" class="mb-2"
+                                                                            style="border-radius: 4px;">
+                                                                    @else
+                                                                        <video width="300" controls class="mb-2">
+                                                                            <source
+                                                                                src="{{ asset('storage/' . $aboutUs->story_video) }}"
+                                                                                type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+                                                                    @endif
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <i class="bi bi-file-earmark-play"></i>
+                                                                        {{ basename($aboutUs->story_video) }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="preview mt-3" id="story_video_preview"
+                                                                style="display: none;">
+                                                                <p class="fw-bold text-primary mb-1">Preview <span
+                                                                        id="story_media_type">Media</span> Baru:</p>
+
+                                                                <div class="d-flex align-items-start gap-3">
+                                                                    <!-- Preview Container -->
+                                                                    <div id="story_preview_content">
+                                                                        <!-- Video Preview -->
+                                                                        <video width="300" controls class="mb-2"
+                                                                            id="story_video_element"
+                                                                            style="display: none;">
+                                                                            <source src="" type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+
+                                                                        <!-- GIF Preview -->
+                                                                        <img id="story_gif_element" src=""
+                                                                            width="300" class="mb-2"
+                                                                            style="display: none; border-radius: 4px; border: 1px solid #ddd;">
+                                                                    </div>
+
+                                                                    <!-- Tombol Hapus -->
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-video-btn d-flex align-items-center h-25">
+                                                                        <i class="bi bi-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {{-- Progress bar --}}
+                                                            <div class="progress mt-2" id="story_video_progress"
+                                                                style="display: none; height: 5px;">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: 0%;"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
                                                     <hr>
                                                 </div>
 
@@ -966,7 +1277,7 @@
                                                             Opsional. Unggah gambar untuk mendukung bagian Prestasi.
                                                             Ukuran maksimal 2MB.
                                                         </small>
-                                                        
+
                                                         <div id="achievement_container" class="mt-2">
                                                             {{-- Gambar lama --}}
                                                             @if (!empty($aboutUs->achievement_image))
@@ -1001,6 +1312,85 @@
                                                                 <div class="progress-bar bg-success"
                                                                     style="width: 0%;">
                                                                 </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {{-- Sertifikasi Video --}}
+                                                    <div class="form-group">
+                                                        <label>Video/GIF Story</label>
+                                                        <input type="file" name="achievement_video"
+                                                            class="form-control video-input"
+                                                            data-preview="achievement_video_preview"
+                                                            data-progress="achievement_video_progress"
+                                                            data-container="achievement_video_container"
+                                                            accept="video/mp4,video/mov,video/avi,video/wmv,image/gif">
+                                                        <small class="form-text text-muted">
+                                                            Opsional. Unggah video atau GIF untuk bagian Story. Format:
+                                                            MP4, MOV, AVI, WMV, GIF. Ukuran maksimal 10MB.
+                                                        </small>
+
+                                                        <div id="achievement_video_container" class="mt-2">
+                                                            {{-- Video/GIF lama --}}
+                                                            @if (!empty($aboutUs->achievement_video))
+                                                                <p class="mb-1 fw-bold">Media Lama:</p>
+                                                                <div class="mb-3">
+                                                                    @if (pathinfo($aboutUs->achievement_video, PATHINFO_EXTENSION) === 'gif')
+                                                                        <img src="{{ asset('storage/' . $aboutUs->achievement_video) }}"
+                                                                            width="300" class="mb-2"
+                                                                            style="border-radius: 4px;">
+                                                                    @else
+                                                                        <video width="300" controls class="mb-2">
+                                                                            <source
+                                                                                src="{{ asset('storage/' . $aboutUs->achievement_video) }}"
+                                                                                type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+                                                                    @endif
+                                                                    <p class="mb-0 text-muted small">
+                                                                        <i class="bi bi-file-earmark-play"></i>
+                                                                        {{ basename($aboutUs->achievement_video) }}
+                                                                    </p>
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="preview mt-3" id="achievement_video_preview"
+                                                                style="display: none;">
+                                                                <p class="fw-bold text-primary mb-1">Preview <span
+                                                                        id="achievement_media_type">Media</span> Baru:
+                                                                </p>
+
+                                                                <div class="d-flex align-items-start gap-3">
+                                                                    <!-- Preview Container -->
+                                                                    <div id="achievement_preview_content">
+                                                                        <!-- Video Preview -->
+                                                                        <video width="300" controls class="mb-2"
+                                                                            id="achievement_video_element"
+                                                                            style="display: none;">
+                                                                            <source src="" type="video/mp4">
+                                                                            Browser Anda tidak mendukung tag video.
+                                                                        </video>
+
+                                                                        <!-- GIF Preview -->
+                                                                        <img id="achievement_gif_element"
+                                                                            src="" width="300"
+                                                                            class="mb-2"
+                                                                            style="display: none; border-radius: 4px; border: 1px solid #ddd;">
+                                                                    </div>
+
+                                                                    <!-- Tombol Hapus -->
+                                                                    <button type="button"
+                                                                        class="btn btn-danger btn-sm remove-video-btn d-flex align-items-center h-25">
+                                                                        <i class="bi bi-trash me-1"></i> Hapus
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+
+                                                            {{-- Progress bar --}}
+                                                            <div class="progress mt-2" id="achievement_video_progress"
+                                                                style="display: none; height: 5px;">
+                                                                <div class="progress-bar bg-success"
+                                                                    style="width: 0%;"></div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1104,6 +1494,180 @@
         }
     </script>
 
+    {{-- upload file video --}}
+    {{-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle video input
+            document.querySelectorAll('.video-input').forEach(input => {
+                input.addEventListener('change', () => handleVideoInput(input));
+            });
+
+            // Handle remove video button
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-video-btn') ||
+                    e.target.closest('.remove-video-btn')) {
+                    const container = e.target.closest('.form-group');
+                    const input = container.querySelector('.video-input');
+                    const preview = container.querySelector('.preview');
+                    const progress = container.querySelector('.progress');
+
+                    input.value = '';
+                    preview.style.display = 'none';
+                    progress.style.display = 'none';
+                    progress.querySelector('.progress-bar').style.width = '0%';
+                }
+            });
+        });
+
+        function handleVideoInput(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Validasi ukuran file (50MB = 52428800 bytes)
+            if (file.size > 10428800) {
+                alert('Ukuran video terlalu besar! Maksimal 10MB.');
+                input.value = '';
+                return;
+            }
+
+            const previewId = input.dataset.preview;
+            const progressId = input.dataset.progress;
+
+            const preview = document.getElementById(previewId);
+            const progress = document.getElementById(progressId);
+
+            const video = preview.querySelector('video source');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                video.src = e.target.result;
+                video.parentElement.load(); // Reload video element
+                preview.style.display = 'block';
+                simulateProgress(progress, progressBar);
+            };
+            reader.readAsDataURL(file);
+        }
+    </script> --}}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Handle video/gif input
+            document.querySelectorAll('.video-input').forEach(input => {
+                input.addEventListener('change', () => handleMediaInput(input));
+            });
+
+            // Handle remove button
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-video-btn') ||
+                    e.target.closest('.remove-video-btn')) {
+                    const container = e.target.closest('.form-group');
+                    const input = container.querySelector('.video-input');
+                    const preview = container.querySelector('.preview');
+                    const progress = container.querySelector('.progress');
+
+                    // Dapatkan section name dari input (intro, vision, mission, dll)
+                    const sectionName = input.name.replace('_video', ''); // Misal: intro_video -> intro
+
+                    const videoElement = document.getElementById(sectionName + '_video_element');
+                    const gifElement = document.getElementById(sectionName + '_gif_element');
+
+                    input.value = '';
+                    preview.style.display = 'none';
+
+                    if (videoElement) {
+                        videoElement.style.display = 'none';
+                        const source = videoElement.querySelector('source');
+                        if (source) source.src = '';
+                    }
+
+                    if (gifElement) {
+                        gifElement.style.display = 'none';
+                        gifElement.src = '';
+                    }
+
+                    progress.style.display = 'none';
+                    progress.querySelector('.progress-bar').style.width = '0%';
+                }
+            });
+        });
+
+        function handleMediaInput(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            // Validasi ukuran file (10MB)
+            if (file.size > 10428800) {
+                alert('Ukuran file terlalu besar! Maksimal 10MB.');
+                input.value = '';
+                return;
+            }
+
+            const previewId = input.dataset.preview;
+            const progressId = input.dataset.progress;
+
+            const preview = document.getElementById(previewId);
+            const progress = document.getElementById(progressId);
+            const progressBar = progress.querySelector('.progress-bar');
+
+            // Dapatkan section name dari input name (intro, vision, mission, dll)
+            const sectionName = input.name.replace('_video', ''); // intro_video -> intro
+
+            // Cari element berdasarkan section name
+            const videoElement = document.getElementById(sectionName + '_video_element');
+            const gifElement = document.getElementById(sectionName + '_gif_element');
+            const mediaTypeLabel = document.getElementById(sectionName + '_media_type');
+
+            if (!videoElement || !gifElement) {
+                console.error('Element tidak ditemukan untuk section:', sectionName);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const fileData = e.target.result;
+
+                // Cek apakah file adalah GIF
+                if (file.type === 'image/gif') {
+                    // Tampilkan GIF
+                    gifElement.src = fileData;
+                    gifElement.style.display = 'block';
+                    videoElement.style.display = 'none';
+                    if (mediaTypeLabel) mediaTypeLabel.textContent = 'GIF';
+                } else {
+                    // Tampilkan Video
+                    const videoSource = videoElement.querySelector('source');
+                    videoSource.src = fileData;
+                    videoElement.load();
+                    videoElement.style.display = 'block';
+                    gifElement.style.display = 'none';
+                    if (mediaTypeLabel) mediaTypeLabel.textContent = 'Video';
+                }
+
+                preview.style.display = 'block';
+                simulateProgress(progress, progressBar);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function simulateProgress(progress, progressBar) {
+            progress.style.display = 'block';
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progress.style.display = 'none';
+                        progressBar.style.width = '0%';
+                    }, 500);
+                } else {
+                    width += 10;
+                    progressBar.style.width = width + '%';
+                }
+            }, 100);
+        }
+    </script>
 
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>

@@ -316,8 +316,9 @@
 <body>
     <div id="auth">
         <div class="auth-container">
-            <div class="auth-logo text-center">
-                <h4>Glamoire</h4>
+            <div class="auth-logo">
+                <!-- Tambahkan gambar di sini -->
+                <img src="{{ asset('images/new-logo2-cut.png') }}" alt="Logo" style="max-height: 90px;">
             </div>
             <h1 class="auth-title">Lupa Kata Sandi</h1>
             <p class="auth-subtitle mb-5">Masukkan email akun anda, kami akan mengirimkan link ubah kata sandi.</p>
