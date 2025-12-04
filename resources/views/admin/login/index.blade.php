@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Glamoire - Login</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -42,7 +44,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
             animation: float 20s ease-in-out infinite;
         }
 
@@ -53,13 +55,20 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
             animation: float 25s ease-in-out infinite reverse;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
         }
 
         #auth {
@@ -79,7 +88,7 @@
             width: 100%;
             padding: 3rem;
             border-radius: 20px;
-            box-shadow: 
+            box-shadow:
                 0 20px 40px rgba(0, 0, 0, 0.15),
                 0 8px 32px rgba(0, 0, 0, 0.1),
                 0 0 0 1px rgba(255, 255, 255, 0.4);
@@ -89,7 +98,7 @@
 
         .auth-container:hover {
             transform: translateY(-5px);
-            box-shadow: 
+            box-shadow:
                 0 25px 50px rgba(0, 0, 0, 0.2),
                 0 12px 40px rgba(0, 0, 0, 0.15),
                 0 0 0 1px rgba(255, 255, 255, 0.5);
@@ -230,16 +239,16 @@
             #auth {
                 padding: 1rem;
             }
-            
+
             .auth-container {
                 padding: 2rem;
                 margin: 1rem;
             }
-            
+
             .auth-logo h4 {
                 font-size: 2rem;
             }
-            
+
             .auth-title {
                 font-size: 1.8rem;
             }
@@ -267,8 +276,13 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* Input focus effects */
@@ -276,8 +290,8 @@
             position: relative;
         }
 
-        .form-control:focus + .form-label,
-        .form-control:not(:placeholder-shown) + .form-label {
+        .form-control:focus+.form-label,
+        .form-control:not(:placeholder-shown)+.form-label {
             transform: translateY(-25px) scale(0.8);
             color: #183018;
         }
@@ -295,47 +309,40 @@
         }
     </style>
 </head>
+
 <body>
     <div class="bg-decoration"></div>
-    
+
     <div id="auth">
         <div class="auth-container">
             <div class="auth-logo">
-                <h4>Glamoire</h4>
+                <!-- Tambahkan gambar di sini -->
+                <img src="{{ asset('images/new-logo2-cut.png') }}" alt="Logo" style="max-height: 90px;">
             </div>
-            
+
             <h1 class="auth-title">Selamat Datang</h1>
             <p class="auth-subtitle">Masukkan kredensial Anda untuk mengakses dashboard admin</p>
-            
+
             <form id="loginForm" action="{{ route('login-admin') }}" method="POST">
                 @csrf
                 <div class="form-group">
                     <label for="name">Username</label>
-                    <input type="text" 
-                           name="name"
-                           class="form-control @error('name') is-invalid @enderror" 
-                           id="name"
-                           placeholder="Masukkan username Anda" 
-                           required 
-                           value="{{ old('name') }}">
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
+                        id="name" placeholder="Masukkan username Anda" required value="{{ old('name') }}">
                     @error('name')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
                     @enderror
                 </div>
-                
+
                 <div class="form-group">
                     <label for="password">Password</label>
                     <div class="password-container">
-                        <input type="password" 
-                               name="password"
-                               class="form-control @error('password') is-invalid @enderror" 
-                               id="password" 
-                               placeholder="Masukkan password Anda" 
-                               required>
-                        <i class="bi bi-eye-slash password-toggle-icon" 
-                           data-target="password"></i>
+                        <input type="password" name="password"
+                            class="form-control @error('password') is-invalid @enderror" id="password"
+                            placeholder="Masukkan password Anda" required>
+                        <i class="bi bi-eye-slash password-toggle-icon" data-target="password"></i>
                     </div>
                     @error('password')
                         <div class="invalid-feedback">
@@ -343,29 +350,68 @@
                         </div>
                     @enderror
                 </div>
-                
+
                 <button type="submit" class="btn btn-primary" id="loginBtn">
                     <span class="btn-text">Masuk ke Dashboard</span>
                 </button>
             </form>
-            
+
             <div class="forgot-password">
                 <p><a href="/forgot-password">Lupa password?</a></p>
             </div>
         </div>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                icon: 'error',
+                title: 'Error {{ $errors->first() }}',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: '{{ session('success') }}',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        </script>
+    @endif
+
     <script>
         // Toggle password visibility
         document.addEventListener('DOMContentLoaded', function() {
             const passwordToggle = document.querySelector('.password-toggle-icon');
             const passwordInput = document.getElementById('password');
-            
+
             passwordToggle.addEventListener('click', function() {
                 const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                 passwordInput.setAttribute('type', type);
-                
+
                 // Toggle icon
                 if (type === 'password') {
                     passwordToggle.classList.remove('bi-eye');
@@ -375,23 +421,23 @@
                     passwordToggle.classList.add('bi-eye');
                 }
             });
-            
+
             // Add loading state to button
             const loginForm = document.getElementById('loginForm');
             const loginBtn = document.getElementById('loginBtn');
-            
+
             loginForm.addEventListener('submit', function() {
                 loginBtn.classList.add('loading');
                 loginBtn.innerHTML = '<span>Memproses...</span>';
             });
-            
+
             // Input focus effects
             const inputs = document.querySelectorAll('.form-control');
             inputs.forEach(input => {
                 input.addEventListener('focus', function() {
                     this.parentElement.classList.add('focused');
                 });
-                
+
                 input.addEventListener('blur', function() {
                     if (this.value === '') {
                         this.parentElement.classList.remove('focused');
@@ -401,4 +447,5 @@
         });
     </script>
 </body>
+
 </html>

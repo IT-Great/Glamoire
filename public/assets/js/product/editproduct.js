@@ -614,7 +614,6 @@ function initializeExistingMainImage(mainImageUrl) {
 
         const imgLabel = document.createElement("span");
         imgLabel.className = "preview-label";
-        imgLabel.innerText = "Old Image";
         imgLabel.style.color = "green";
 
         const img = document.createElement("img");
@@ -696,7 +695,6 @@ function initializeExistingImages(images) {
     // Label untuk gambar lama
     const oldImageLabel = document.createElement("span");
     oldImageLabel.className = "preview-label";
-    oldImageLabel.innerText = "Old Image";
     oldImageLabel.style.color = "green";
     oldImageLabel.style.display = "block";
     oldImageLabel.style.marginBottom = "10px";

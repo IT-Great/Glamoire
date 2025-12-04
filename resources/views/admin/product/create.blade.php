@@ -15,13 +15,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <link rel="stylesheet" href="assets/vendors/perfect-scrollbar/perfect-scrollbar.css">
     <link rel="stylesheet" href="assets/vendors/bootstrap-icons/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="assets/css/product/createproduct.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="{{asset('assets/vendors/summernote/summernote-lite.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/summernote/summernote-lite.min.css') }}">
 
     <style>
         .flatpickr-calendar {
@@ -496,6 +497,7 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
         }
+
         .note-editor.note-frame {
             border-radius: 0.25rem;
         }
@@ -524,11 +526,11 @@
                             <nav aria-label="breadcrumb" class="breadcrumb-header" style="margin-bottom: 20px;">
                                 <ol class="breadcrumb mb-0">
                                     <li class="breadcrumb-item">
-                                    <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
-                                        <i class="bi bi-box-seam me-1"></i> Produk
-                                    </a>
-                                </li>
-                                <li class="breadcrumb-item active">Buat Produk</li>
+                                        <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
+                                            <i class="bi bi-box-seam me-1"></i> Produk
+                                        </a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Buat Produk</li>
                                 </ol>
                             </nav>
                         </div>
@@ -868,100 +870,130 @@
                                                             @endif
                                                         </div>
 
-                                                        {{-- single image --}}
+                                                        {{-- single image --}}                                            
                                                         <div class="form-group mb-4">
-                                                            <label for="first-name-icon">Gambar Utama<span
-                                                                    style="color: red"> *</span></label>
+                                                            <label for="first-name-icon">Gambar Utama
+                                                                <span style="color: red"> *</span>
+                                                            </label>
+
                                                             <div class="image-upload-wrap mt-2"
                                                                 id="single-image-upload-wrap"
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
-                                                                <input type="file" name="main_image"
-                                                                    class="file-upload-input"
-                                                                    onchange="readURLSingle(this);" accept="image/*"
+                                                                <input type="file" name="main_image_upload"
+                                                                    id="main_image_upload" class="file-upload-input"
+                                                                    onchange="uploadMainImageToTemp(this.files[0]);"
+                                                                    accept="image/*"
                                                                     style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                                                 <div class="drag-text"
                                                                     style="text-align: center; color: #888;">
-                                                                    <p>Drag and drop a file or select to add Image
-                                                                    </p>
+                                                                    <p>Drag and drop a file or select to add Image</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Progress Bar untuk Main Image -->
+                                                            <div id="main-upload-progress"
+                                                                style="display: none; margin-bottom: 15px;">
+                                                                <div
+                                                                    style="background: #f0f0f0; border-radius: 10px; overflow: hidden; height: 30px; position: relative;">
+                                                                    <div id="main-progress-bar"
+                                                                        style="background: linear-gradient(90deg, #4CAF50, #45a049); height: 100%; width: 0%; transition: width 0.3s;">
+                                                                        <span id="main-progress-text"
+                                                                            style="color: white; font-weight: bold; font-size: 12px; position: absolute; width: 100%; text-align: center; line-height: 30px;"></span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
                                                             <span id="main-image-error" class="text-danger"
                                                                 style="display:none; font-size: 13px;"></span>
 
-                                                            <!-- Unik untuk Single Image -->
-
+                                                            <!-- Container untuk Single Image -->
                                                             <div class="file-upload-content"
                                                                 id="single-file-upload-content"
                                                                 style="display: flex; flex-wrap: wrap;">
-                                                                <!-- Gambar yang diunggah akan ditambahkan di sini -->
+                                                                <!-- Gambar yang diunggah akan ditampilkan di sini -->
                                                             </div>
 
+                                                            <!-- Hidden input untuk menyimpan path temporary main image -->
+                                                            <input type="hidden" name="temp_main_image"
+                                                                id="temp-main-image" value="">
+
                                                             @if ($errors->has('main_image'))
-                                                                <p style="color: red">
+                                                                <p style="color: red margin-bottom: 20px;">
                                                                     {{ $errors->first('main_image') }}</p>
                                                             @else
-                                                                <small class="form-text text-muted">Unggah gambar
-                                                                    yang
-                                                                    jelas dan berkualitas tinggi yang paling
-                                                                    mewakili
-                                                                    produk Anda. Gambar ini akan menjadi gambar
-                                                                    utama
-                                                                    yang ditampilkan dalam hasil pencarian. Gunakan
-                                                                    format file JPG, JPEG, atau PNG, dan pastikan
-                                                                    ukuran
-                                                                    file tidak lebih dari 2MB. Ukuran gambar
-                                                                    sebaiknya
-                                                                    1024x1024 piksel.</small>
+                                                                <small class="form-text text-muted">
+                                                                    Unggah gambar yang jelas dan berkualitas tinggi yang
+                                                                    paling mewakili produk Anda.
+                                                                    Gambar ini akan menjadi gambar utama yang
+                                                                    ditampilkan dalam hasil pencarian.
+                                                                    Gunakan format file JPG, JPEG, atau PNG, dan
+                                                                    pastikan ukuran file tidak lebih dari 2MB.
+                                                                    Ukuran gambar sebaiknya 1024x1024 piksel.
+                                                                </small>
                                                             @endif
                                                         </div>
+
 
                                                         {{-- multiple image --}}
                                                         <div class="form-group mb-4">
                                                             <label for="first-name-icon">Gambar Tambahan
-                                                                <span style="color: red">*</span></label>
+                                                                <span style="color: red">*</span>
+                                                            </label>
                                                             <div class="image-upload-wrap mt-2" id="image-upload-wrap"
                                                                 style="border: 2px dashed #ddd; border-radius: 4px; padding: 20px; width: 100%; box-sizing: border-box; position: relative; background: #f8f8f8; margin-bottom: 15px; height: auto;">
-                                                                <input type="file" id="images" name="images[]"
-                                                                    class="file-upload-input"
-                                                                    {{ $errors->has('images[]') ? 'is-invalid' : '' }}
-                                                                    onchange="handleFiles(this.files);"
+                                                                <input type="file" id="images"
+                                                                    name="images_upload[]" class="file-upload-input"
+                                                                    onchange="uploadImagesToTemp(this.files);"
                                                                     accept="image/*" multiple
                                                                     style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
                                                                 <div class="drag-text"
                                                                     style="text-align: center; color: #888;">
-                                                                    <p>Drag and drop files or select add Image(s)
-                                                                    </p>
+                                                                    <p>Drag and drop files or select add Image(s)</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Progress Bar -->
+                                                            <div id="upload-progress"
+                                                                style="display: none; margin-bottom: 15px;">
+                                                                <div
+                                                                    style="background: #f0f0f0; border-radius: 10px; overflow: hidden; height: 30px; position: relative;">
+                                                                    <div id="progress-bar"
+                                                                        style="background: linear-gradient(90deg, #4CAF50, #45a049); height: 100%; width: 0%; transition: width 0.3s;">
+                                                                        <span id="progress-text"
+                                                                            style="color: white; font-weight: bold; font-size: 12px; position: absolute; width: 100%; text-align: center; line-height: 30px;"></span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
 
                                                             <!-- Tempat pesan error -->
                                                             <span id="image-error"
-                                                                style="color: red; display: none;"></span>
+                                                                style="color: red; display: none; margin-bottom: 20px;"></span>
 
                                                             <div class="file-upload-content upload__img-wrap"
                                                                 id="file-upload-content"
-                                                                style="display: flex; flex-wrap: wrap;">
-                                                                <!-- Gambar yang diunggah akan ditambahkan di sini -->
+                                                                style="display: flex; flex-wrap: wrap; gap: 10px;">
+                                                                <!-- Gambar preview akan muncul di sini -->
                                                             </div>
 
+                                                            <!-- Hidden inputs untuk menyimpan path temporary images -->
+                                                            <div id="temp-images-container"></div>
+
                                                             @if ($errors->has('images'))
-                                                                <p style="color: red">
-                                                                    {{ $errors->first('images') }}</p>
-                                                            @else
-                                                                <small class="form-text text-muted">Tambahkan
-                                                                    gambar
-                                                                    tambahan untuk menampilkan sudut atau fitur
-                                                                    berbeda
-                                                                    dari produk Anda. Anda dapat mengunggah beberapa
-                                                                    gambar sekaligus. Gunakan format gambar JPG,
-                                                                    JPEG,
-                                                                    atau PNG, dengan ukuran file tidak melebihi 2MB.
-                                                                    Ukuran gambar sebaiknya 1024x1024 piksel, dan
-                                                                    maksimal 6 gambar dapat diunggah.</small>
+                                                                <p style="color: red">{{ $errors->first('images') }}
+                                                                </p>
                                                             @endif
+
+                                                            <small class="form-text text-muted">Tambahkan gambar
+                                                                tambahan untuk menampilkan sudut atau fitur berbeda
+                                                                dari produk Anda. Anda dapat mengunggah beberapa gambar
+                                                                sekaligus. Gunakan format gambar JPG, JPEG,
+                                                                atau PNG, dengan ukuran file tidak melebihi 2MB. Ukuran
+                                                                gambar sebaiknya 1024x1024 piksel, dan
+                                                                maksimal 12 gambar dapat diunggah.
+                                                            </small>
                                                         </div>
 
+                                                        {{-- video --}}
                                                         <div class="form-group mb-4">
                                                             <label for="video-upload">Video</label>
                                                             <div class="video-upload-wrap mt-2"
@@ -996,6 +1028,7 @@
                                                         </div>
 
                                                     </div>
+
 
                                                     <div class="col-12">
                                                         <div class="mt-5">
@@ -1172,7 +1205,7 @@
     <!-- Include jQuery dan jQuery UI CSS dan JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    
+
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/pages/dashboard.js"></script>
@@ -1185,7 +1218,7 @@
     <script src="assets/js/product/createproduct.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js')}}"></script>
+    <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js') }}"></script>
 
     {{-- handle select brand & category --}}
     <script>
@@ -1602,6 +1635,496 @@
                         return item.indexOf(keyword) === 0;
                     }));
                 }
+            }
+        });
+    </script>
+
+    {{-- multiple image --}}
+    <script>
+        const MAX_IMAGES = 12;
+        let uploadedImages = []; // Array untuk menyimpan info gambar yang sudah diupload
+
+        // Restore gambar yang sudah diupload sebelumnya (jika ada error)
+        window.addEventListener('DOMContentLoaded', function() {
+            @if (session('uploaded_temp_images'))
+                const tempImages = @json(session('uploaded_temp_images'));
+                uploadedImages = tempImages;
+                restoreUploadedImages();
+            @endif
+        });
+
+        function restoreUploadedImages() {
+            const fileUploadContent = document.getElementById("file-upload-content");
+
+            uploadedImages.forEach((imageData, index) => {
+                displayImagePreview(imageData.url, imageData.path, index);
+            });
+        }
+
+        function showProgress(current, total, text = '') {
+            const progressContainer = document.getElementById("upload-progress");
+            const progressBar = document.getElementById("progress-bar");
+            const progressText = document.getElementById("progress-text");
+
+            progressContainer.style.display = "block";
+            const percentage = Math.round((current / total) * 100);
+            progressBar.style.width = percentage + "%";
+            progressText.textContent = text || `${current}/${total} (${percentage}%)`;
+
+            if (current === total && !text) {
+                progressText.textContent = `✓ ${total} images uploaded`;
+                setTimeout(() => {
+                    progressContainer.style.display = "none";
+                }, 2000);
+            }
+        }
+
+        function displayImagePreview(imageUrl, imagePath, index) {
+            const fileUploadContent = document.getElementById("file-upload-content");
+            const tempContainer = document.getElementById("temp-images-container");
+
+            const imgBox = document.createElement("div");
+            imgBox.classList.add("upload__img-box-multiple");
+            imgBox.dataset.index = index;
+            imgBox.dataset.path = imagePath;
+
+            const imgBg = document.createElement("div");
+            imgBg.classList.add("img-bg");
+            imgBg.style.backgroundImage = `url(${imageUrl})`;
+
+            const imgClose = document.createElement("div");
+            imgClose.classList.add("upload__img-close");
+            // Tambahkan ikon trash SVG
+            imgClose.innerHTML = `<i class="bi bi-trash"></i>`;
+
+            imgClose.onclick = function() {
+                deleteImageFromTemp(imagePath, imgBox);
+            };
+
+            imgBg.appendChild(imgClose);
+            imgBox.appendChild(imgBg);
+            fileUploadContent.appendChild(imgBox);
+
+            // Tambahkan hidden input untuk path gambar
+            const hiddenInput = document.createElement("input");
+            hiddenInput.type = "hidden";
+            hiddenInput.name = "temp_images[]";
+            hiddenInput.value = imagePath;
+            hiddenInput.dataset.path = imagePath;
+            tempContainer.appendChild(hiddenInput);
+        }
+
+        async function deleteImageFromTemp(imagePath, imgBox) {
+            try {
+                // Hapus dari server
+                const response = await fetch('{{ route('delete-temp-image') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        path: imagePath
+                    })
+                });
+
+                if (response.ok) {
+                    // Hapus dari array
+                    uploadedImages = uploadedImages.filter(img => img.path !== imagePath);
+
+                    // Hapus dari DOM
+                    imgBox.remove();
+
+                    // Hapus hidden input
+                    const hiddenInput = document.querySelector(`input[data-path="${imagePath}"]`);
+                    if (hiddenInput) hiddenInput.remove();
+
+                    // Cek jika tidak ada gambar
+                    if (uploadedImages.length === 0) {
+                        const imageError = document.getElementById("image-error");
+                        imageError.textContent = "Please upload at least one image.";
+                        imageError.style.display = "block";
+                    }
+                }
+            } catch (error) {
+                console.error('Error deleting image:', error);
+            }
+        }
+
+        async function uploadImagesToTemp(files) {
+            const fileUploadContent = document.getElementById("file-upload-content");
+            const imageError = document.getElementById("image-error");
+            const fileInput = document.getElementById("images");
+            const totalFiles = uploadedImages.length + files.length;
+
+            imageError.style.display = "none";
+
+            // Validasi jumlah
+            if (totalFiles > MAX_IMAGES) {
+                imageError.textContent = `Maksimal ${MAX_IMAGES} gambar. Anda mencoba upload ${totalFiles} gambar.`;
+                imageError.style.display = "block";
+                fileInput.value = '';
+                return;
+            }
+
+            const filesToProcess = Array.from(files);
+            let uploadedCount = 0;
+
+            showProgress(0, filesToProcess.length);
+
+            for (const file of filesToProcess) {
+                // Validasi ukuran
+                const maxSize = 2 * 1024 * 1024; // 2MB
+                if (file.size > maxSize) {
+                    imageError.textContent = "Setiap gambar maksimal 2MB.";
+                    imageError.style.display = "block";
+                    uploadedCount++;
+                    showProgress(uploadedCount, filesToProcess.length);
+                    continue;
+                }
+
+                // Validasi tipe
+                if (!file.type.match("image.*")) {
+                    uploadedCount++;
+                    showProgress(uploadedCount, filesToProcess.length);
+                    continue;
+                }
+
+                // Upload ke server
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                try {
+                    const response = await fetch('{{ route('upload-temp-image') }}', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Simpan info gambar
+                        const imageData = {
+                            path: result.path,
+                            url: result.url,
+                            name: file.name
+                        };
+                        uploadedImages.push(imageData);
+
+                        // Tampilkan preview
+                        displayImagePreview(result.url, result.path, uploadedImages.length - 1);
+                    } else {
+                        imageError.textContent = result.message || "Upload failed.";
+                        imageError.style.display = "block";
+                    }
+
+                    uploadedCount++;
+                    showProgress(uploadedCount, filesToProcess.length);
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    imageError.textContent = "Upload error occurred.";
+                    imageError.style.display = "block";
+                    uploadedCount++;
+                    showProgress(uploadedCount, filesToProcess.length);
+                }
+            }
+
+            // Reset file input
+            fileInput.value = '';
+        }
+
+        // Validasi sebelum submit
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const imageError = document.getElementById("image-error");
+
+            if (uploadedImages.length === 0) {
+                event.preventDefault();
+                imageError.textContent = "Minimal upload 1 gambar.";
+                imageError.style.display = "block";
+                imageError.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+                return;
+            }
+
+            // Tampilkan loading
+            showProgress(1, 1, "Submitting form...");
+        });
+    </script>
+
+    {{-- main image --}}
+    <script>
+        let uploadedMainImage = null; // Object untuk menyimpan info main image
+
+        // Restore main image dari session (jika ada error)
+        window.addEventListener('DOMContentLoaded', function() {
+            @if (session('uploaded_temp_main_image'))
+                const tempMainImage = @json(session('uploaded_temp_main_image'));
+                uploadedMainImage = tempMainImage;
+                restoreMainImage();
+            @endif
+        });
+
+        function restoreMainImage() {
+            if (!uploadedMainImage) return;
+
+            const singleUploadContent = document.getElementById("single-file-upload-content");
+            const tempMainImageInput = document.getElementById("temp-main-image");
+
+            // Set hidden input value
+            tempMainImageInput.value = uploadedMainImage.path;
+
+            // Clear existing content
+            singleUploadContent.innerHTML = "";
+
+            // Create image preview
+            const imgBox = document.createElement("div");
+            imgBox.classList.add("upload__img-box-single");
+            imgBox.dataset.restored = "true";
+            imgBox.dataset.path = uploadedMainImage.path;
+
+            const imgBg = document.createElement("div");
+            imgBg.classList.add("img-bg");
+            imgBg.style.backgroundImage = `url(${uploadedMainImage.url})`;
+
+            // Badge untuk restored image
+            const badge = document.createElement("div");
+            // badge.className = "restored-image-badge";
+            // badge.textContent = "Restored";
+            imgBg.appendChild(badge);
+
+            // Tombol close
+            const imgClose = document.createElement("div");
+            imgClose.classList.add("upload__img-close");
+            imgClose.innerHTML = `<i class="bi bi-trash"></i>`;
+
+            imgClose.onclick = function() {
+                deleteMainImageFromTemp(uploadedMainImage.path, imgBox);
+            };
+
+            imgBg.appendChild(imgClose);
+            imgBox.appendChild(imgBg);
+            singleUploadContent.appendChild(imgBox);
+
+            console.log('Main image restored from session');
+        }
+
+        function showMainProgress(text = '', percentage = 0) {
+            const progressContainer = document.getElementById("main-upload-progress");
+            const progressBar = document.getElementById("main-progress-bar");
+            const progressText = document.getElementById("main-progress-text");
+
+            progressContainer.style.display = "block";
+            progressBar.style.width = percentage + "%";
+            progressText.textContent = text;
+
+            if (percentage >= 100) {
+                setTimeout(() => {
+                    progressContainer.style.display = "none";
+                }, 2000);
+            }
+        }
+
+        function displayMainImagePreview(imageUrl, imagePath) {
+            const singleUploadContent = document.getElementById("single-file-upload-content");
+            const tempMainImageInput = document.getElementById("temp-main-image");
+
+            // Clear previous image
+            singleUploadContent.innerHTML = "";
+
+            // Set hidden input
+            tempMainImageInput.value = imagePath;
+
+            const imgBox = document.createElement("div");
+            imgBox.classList.add("upload__img-box-single");
+            imgBox.dataset.path = imagePath;
+            imgBox.style.opacity = "0";
+            imgBox.style.transform = "scale(0.8)";
+
+            const imgBg = document.createElement("div");
+            imgBg.classList.add("img-bg");
+            imgBg.style.backgroundImage = `url(${imageUrl})`;
+
+            const imgClose = document.createElement("div");
+            imgClose.classList.add("upload__img-close");
+            imgClose.innerHTML = `<i class="bi bi-trash"></i>`;
+
+            imgClose.onclick = function() {
+                deleteMainImageFromTemp(imagePath, imgBox);
+            };
+
+            imgBg.appendChild(imgClose);
+            imgBox.appendChild(imgBg);
+            singleUploadContent.appendChild(imgBox);
+
+            // Animasi fade in
+            setTimeout(() => {
+                imgBox.style.transition = "opacity 0.3s, transform 0.3s";
+                imgBox.style.opacity = "1";
+                imgBox.style.transform = "scale(1)";
+            }, 50);
+        }
+
+        async function deleteMainImageFromTemp(imagePath, imgBox) {
+            try {
+                // Hapus dari server
+                const response = await fetch('{{ route('delete-temp-main-image') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        path: imagePath
+                    })
+                });
+
+                if (response.ok) {
+                    // Reset variable
+                    uploadedMainImage = null;
+
+                    // Animasi fade out
+                    imgBox.style.transition = "opacity 0.3s, transform 0.3s";
+                    imgBox.style.opacity = "0";
+                    imgBox.style.transform = "scale(0.8)";
+
+                    setTimeout(() => {
+                        imgBox.remove();
+                        document.getElementById("temp-main-image").value = "";
+                        document.getElementById("main_image_upload").value = "";
+                    }, 300);
+
+                    console.log('Main image deleted from temp');
+                }
+            } catch (error) {
+                console.error('Error deleting main image:', error);
+            }
+        }
+
+        async function uploadMainImageToTemp(file) {
+            if (!file) return;
+
+            const mainImageError = document.getElementById("main-image-error");
+            const fileInput = document.getElementById("main_image_upload");
+
+            // Reset error
+            mainImageError.style.display = "none";
+            mainImageError.textContent = "";
+
+            // Validasi ukuran
+            const maxSize = 2 * 1024 * 1024; // 2MB
+            if (file.size > maxSize) {
+                mainImageError.textContent = "Image file must be less than 2MB.";
+                mainImageError.style.display = "block";
+                fileInput.value = "";
+                return;
+            }
+
+            // Validasi tipe
+            if (!file.type.match("image.*")) {
+                mainImageError.textContent = "Only image files are allowed.";
+                mainImageError.style.display = "block";
+                fileInput.value = "";
+                return;
+            }
+
+            // Show progress
+            showMainProgress("Uploading...", 30);
+
+            // Upload ke server
+            const formData = new FormData();
+            formData.append('image', file);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            try {
+                const response = await fetch('{{ route('upload-temp-main-image') }}', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                showMainProgress("Processing...", 70);
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Simpan info gambar
+                    uploadedMainImage = {
+                        path: result.path,
+                        url: result.url,
+                        name: file.name
+                    };
+
+                    // Tampilkan preview
+                    displayMainImagePreview(result.url, result.path);
+
+                    showMainProgress("✓ Upload complete", 100);
+
+                    console.log('Main image uploaded successfully');
+                } else {
+                    mainImageError.textContent = result.message || "Upload failed.";
+                    mainImageError.style.display = "block";
+                    showMainProgress("Upload failed", 0);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                mainImageError.textContent = "Upload error occurred.";
+                mainImageError.style.display = "block";
+                showMainProgress("Upload failed", 0);
+            }
+
+            // Reset file input
+            fileInput.value = "";
+        }
+
+        // Drag and drop support
+        const singleUploadWrap = document.getElementById('single-image-upload-wrap');
+
+        if (singleUploadWrap) {
+            singleUploadWrap.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#4CAF50';
+                this.style.background = '#f0f8f0';
+            });
+
+            singleUploadWrap.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#ddd';
+                this.style.background = '#f8f8f8';
+            });
+
+            singleUploadWrap.addEventListener('drop', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.style.borderColor = '#ddd';
+                this.style.background = '#f8f8f8';
+
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    uploadMainImageToTemp(files[0]);
+                }
+            });
+        }
+
+        // Validasi sebelum submit form
+        document.querySelector("form").addEventListener("submit", function(event) {
+            const mainImageError = document.getElementById("main-image-error");
+            const singleUploadContent = document.getElementById("single-file-upload-content");
+
+            // Cek apakah ada main image
+            if (singleUploadContent.children.length === 0) {
+                event.preventDefault();
+                mainImageError.textContent = "Main image is required.";
+                mainImageError.style.display = "block";
+                mainImageError.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+                return false;
             }
         });
     </script>

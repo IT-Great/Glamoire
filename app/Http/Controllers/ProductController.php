@@ -806,42 +806,376 @@ class ProductController extends Controller
 
 
     // lancar jaya
-    public function storeProductAdmin(Request $request)
+    // public function storeProductAdmin(Request $request)
+    // {
+    //     try {
+    //         $request->validate([
+    //             'product_name' => 'required',
+    //             'stock_quantity' => 'required',
+    //             'regular_price' => 'required',
+    //             'stock_quantity' => 'required|integer',
+    //             'weight_product' => 'required|numeric',
+    //             'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //             'images' => 'required|array|min:1|max:6', // Ubah ini
+    //             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    //             'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
+    //             'description' => 'required',
+    //         ]);
+
+    //         // Hapus format rupiah dari regular_price
+    //         $regularPrice = str_replace(['Rp. ', '.'], '', $request->regular_price);
+
+    //         // Simpan single image
+    //         $mainImagePath = null;
+    //         if ($request->hasFile('main_image')) {
+    //             $mainImage = $request->file('main_image');
+    //             $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
+    //             // Simpan file ke storage/app/public/product_images
+    //             $mainImagePath = $mainImage->storeAs('product_images', $mainImageName, 'public');
+    //         }
+
+    //         // Multiple Images
+    //         $imagePaths = [];
+    //         if ($request->hasFile('images')) {
+    //             foreach ($request->file('images') as $image) {
+    //                 $imageName = time() . '_' . $image->getClientOriginalName();
+    //                 // Simpan file ke storage/app/public/product_images
+    //                 $imagePath = $image->storeAs('product_images', $imageName, 'public');
+    //                 $imagePaths[] = $imagePath;
+    //             }
+    //         }
+
+    //         // Simpan video
+    //         $videoPath = null;
+    //         if ($request->hasFile('video')) {
+    //             $video = $request->file('video');
+    //             $videoName = time() . '_' . $video->getClientOriginalName();
+    //             // Simpan file ke storage/app/public/product_videos
+    //             $videoPath = $video->storeAs('product_videos', $videoName, 'public');
+    //         }
+
+
+    //         // Simpan data dimensi sebagai array JSON
+    //         $dimensions = [
+    //             'length' => $request->input('length'),
+    //             'width' => $request->input('width'),
+    //             'height' => $request->input('height'),
+    //         ];
+
+    //         // Ambil brand dari database berdasarkan brand_id
+    //         $brand = Brand::find($request->brand_id);
+
+    //         // Pastikan brand ditemukan
+    //         if (!$brand) {
+    //             return redirect()->back()->with('error', 'Brand not found.');
+    //         }
+
+    //         // Ambil brand_code dari brand yang dipilih
+    //         $brandCode = strtoupper($brand->brand_code);
+
+    //         // Cari produk terakhir dengan brand yang sama
+    //         $lastProduct = Product::where('brand_id', $request->brand_id)
+    //             ->orderBy('id', 'desc')
+    //             ->first();
+
+    //         // Jika ada produk terakhir, ambil nomor urut dari product_code-nya
+    //         if ($lastProduct) {
+    //             $lastCodeNumber = (int)substr($lastProduct->product_code, strlen($brandCode));
+    //             $newCodeNumber = $lastCodeNumber + 1;
+    //         } else {
+    //             // Jika belum ada produk dengan brand tersebut, mulai dari 1
+    //             $newCodeNumber = 1;
+    //         }
+
+    //         // Buat product_code dengan format urut
+    //         $productCode = $brandCode . str_pad($newCodeNumber, 4, '0', STR_PAD_LEFT);
+
+    //         // Simpan produk ke database
+    //         $product = Product::create([
+    //             'product_name' => $request->product_name,
+    //             'product_code' => $productCode, // Simpan product_code yang di-generate
+    //             'category_product_id' => $request->category_product_id,
+    //             'brand_id' => $request->brand_id,
+    //             'description' => $request->description,
+    //             'information_product' => $request->information_product,
+    //             'stock_quantity' => $request->stock_quantity,
+    //             'regular_price' => $regularPrice,
+    //             'date_expired' => $request->date_expired,
+    //             'weight_product' => $request->weight_product,
+    //             'main_image' => $mainImagePath,
+    //             'images' => json_encode($imagePaths),
+    //             'video' => $videoPath,
+    //             'color' => $request->color, // Simpan warna
+    //             'color_text' => $request->color_text, // Simpan warna
+    //             'dimensions' => json_encode($dimensions),  // Menyimpan sebagai JSON                
+    //         ]);
+
+
+    //         if ($request->has('variant_type') && $request->has('variant_values')) {
+    //             foreach ($request->variant_type as $typeIndex => $variantType) {
+    //                 if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
+    //                     foreach ($request->variant_values[$typeIndex] as $valueIndex => $variantValue) {
+    //                         $useVariantImage = isset($request->use_variant_image[$typeIndex][$valueIndex]) && $request->use_variant_image[$typeIndex][$valueIndex] == '1';
+    //                         $variantImage = null;
+
+    //                         if ($useVariantImage && $request->hasFile("variant_images.$typeIndex.$valueIndex")) {
+    //                             $variantImageFile = $request->file("variant_images")[$typeIndex][$valueIndex];
+    //                             $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
+    //                             $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
+    //                         }
+
+    //                         $variantPrice = str_replace(['Rp. ', '.'], '', $request->variant_price[$typeIndex][$valueIndex]);
+
+    //                         ProductVariations::create([
+    //                             'product_id' => $product->id,
+    //                             'variant_type' => $variantType,
+    //                             'variant_value' => $variantValue,
+    //                             'use_variant_image' => $useVariantImage,
+    //                             'variant_image' => $variantImage,
+    //                             'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex], // Sesuaikan
+    //                             'variant_price' => $variantPrice, // Simpan setelah format dihapus
+    //                             'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex], // Sesuaikan
+    //                             'variant_expired' => $request->variant_expired[$typeIndex][$valueIndex], // New field
+    //                         ]);
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         return redirect()->route('index-product-admin')->with('success', 'Product created successfully!');
+    //     } catch (\Illuminate\Validation\ValidationException $e) {
+    //         return redirect()->back()->withErrors($e->errors())->withInput();
+    //     } catch (\Exception $e) {
+    //         Log::error('Error creating product', ['exception' => $e->getMessage()]);
+    //         return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])->withInput();
+    //     }
+    // }
+
+    public function uploadTempMainImage(Request $request)
     {
         try {
             $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = 'temp_main_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('temp_images', $imageName, 'public');
+
+                // Simpan info ke session
+                $mainImageData = [
+                    'path' => $path,
+                    'url' => asset('storage/' . $path),
+                    'name' => $image->getClientOriginalName()
+                ];
+
+                session(['uploaded_temp_main_image' => $mainImageData]);
+
+                Log::info('Main image uploaded to temp', ['path' => $path]);
+
+                return response()->json([
+                    'success' => true,
+                    'path' => $path,
+                    'url' => asset('storage/' . $path)
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No image uploaded'
+            ], 400);
+        } catch (\Exception $e) {
+            Log::error('Error uploading temp main image', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Hapus Main Image dari Temporary Folder
+     * Route: POST /delete-temp-main-image
+     */
+    public function deleteTempMainImage(Request $request)
+    {
+        try {
+            $path = $request->input('path');
+
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+                Log::info('Main image deleted from temp', ['path' => $path]);
+            }
+
+            // Hapus dari session
+            session()->forget('uploaded_temp_main_image');
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            Log::error('Error deleting temp main image', ['error' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function uploadTempImage(Request $request)
+    {
+        try {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            ]);
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = 'temp_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $path = $image->storeAs('temp_images', $imageName, 'public');
+
+                // Simpan info ke session
+                $uploadedImages = session('uploaded_temp_images', []);
+                $uploadedImages[] = [
+                    'path' => $path,
+                    'url' => asset('storage/' . $path),
+                    'name' => $image->getClientOriginalName()
+                ];
+                session(['uploaded_temp_images' => $uploadedImages]);
+
+                return response()->json([
+                    'success' => true,
+                    'path' => $path,
+                    'url' => asset('storage/' . $path)
+                ]);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'No image uploaded'
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * METHOD BARU 2: Hapus gambar dari temporary folder
+     * Route: POST /delete-temp-image
+     */
+    public function deleteTempImage(Request $request)
+    {
+        try {
+            $path = $request->input('path');
+
+            // Hapus file dari storage
+            if (Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+
+            // Hapus dari session
+            $uploadedImages = session('uploaded_temp_images', []);
+            $uploadedImages = array_filter($uploadedImages, function ($img) use ($path) {
+                return $img['path'] !== $path;
+            });
+            session(['uploaded_temp_images' => array_values($uploadedImages)]);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * METHOD YANG DIUPDATE: Store product dengan gambar dari temp folder
+     * PERUBAHAN UTAMA:
+     * 1. Validasi 'temp_images' bukan 'images'
+     * 2. Copy gambar dari temp_images ke product_images
+     * 3. Hapus temp files setelah berhasil
+     */
+    public function storeProductAdmin(Request $request)
+    {
+        try {
+            // PENTING: Validasi menggunakan temp_main_image, BUKAN main_image
+            $request->validate([
                 'product_name' => 'required',
-                'stock_quantity' => 'required',
-                'regular_price' => 'required',
                 'stock_quantity' => 'required|integer',
-                'weight_product' => 'required|numeric',
-                'main_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                'images' => 'required|array|min:1|max:6', // Ubah ini
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'regular_price' => 'required',
+                // 'weight_product' => 'required|numeric',
+                'temp_main_image' => 'required|string', // INI YANG BENAR - string path, bukan file
+                'temp_images' => 'required|array|min:1|max:12', // Array of paths
+                'temp_images.*' => 'string', // Setiap element adalah string path
                 'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
                 'description' => 'required',
+            ], [
+                // Custom error messages
+                'temp_main_image.required' => 'Gambar utama wajib diupload.',
+                'temp_images.required' => 'Minimal 1 gambar tambahan harus diupload.',
+                'temp_images.max' => 'Maksimal 12 gambar dapat diupload.',
             ]);
 
             // Hapus format rupiah dari regular_price
             $regularPrice = str_replace(['Rp. ', '.'], '', $request->regular_price);
 
-            // Simpan single image
+            // ===== PROCESS MAIN IMAGE dari temporary =====
             $mainImagePath = null;
-            if ($request->hasFile('main_image')) {
-                $mainImage = $request->file('main_image');
-                $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
-                // Simpan file ke storage/app/public/product_images
-                $mainImagePath = $mainImage->storeAs('product_images', $mainImageName, 'public');
+            if ($request->filled('temp_main_image')) {
+                $tempPath = $request->temp_main_image;
+
+                Log::info('Processing main image from temp', ['temp_path' => $tempPath]);
+
+                if (Storage::disk('public')->exists($tempPath)) {
+                    // Pindahkan dari temp ke folder permanent
+                    $fileName = basename($tempPath);
+                    $newFileName = str_replace('temp_main_', '', $fileName);
+                    $newPath = 'product_images/' . $newFileName;
+
+                    // Copy file ke folder permanent
+                    Storage::disk('public')->copy($tempPath, $newPath);
+                    $mainImagePath = $newPath;
+
+                    // Hapus file temporary
+                    Storage::disk('public')->delete($tempPath);
+
+                    Log::info('Main image moved successfully', [
+                        'from' => $tempPath,
+                        'to' => $newPath
+                    ]);
+                } else {
+                    Log::error('Temp main image not found', ['path' => $tempPath]);
+                }
             }
 
-            // Multiple Images
+            // ===== PROCESS MULTIPLE IMAGES dari temporary =====
             $imagePaths = [];
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $imageName = time() . '_' . $image->getClientOriginalName();
-                    // Simpan file ke storage/app/public/product_images
-                    $imagePath = $image->storeAs('product_images', $imageName, 'public');
-                    $imagePaths[] = $imagePath;
+            if ($request->filled('temp_images')) {
+                foreach ($request->temp_images as $tempPath) {
+                    if (Storage::disk('public')->exists($tempPath)) {
+                        // Pindahkan dari temp ke folder permanent
+                        $fileName = basename($tempPath);
+                        $newFileName = str_replace('temp_', '', $fileName);
+                        $newPath = 'product_images/' . $newFileName;
+
+                        // Copy file
+                        Storage::disk('public')->copy($tempPath, $newPath);
+                        $imagePaths[] = $newPath;
+
+                        // Hapus file temporary
+                        Storage::disk('public')->delete($tempPath);
+
+                        Log::info('Multiple image moved', [
+                            'from' => $tempPath,
+                            'to' => $newPath
+                        ]);
+                    }
                 }
             }
 
@@ -850,10 +1184,8 @@ class ProductController extends Controller
             if ($request->hasFile('video')) {
                 $video = $request->file('video');
                 $videoName = time() . '_' . $video->getClientOriginalName();
-                // Simpan file ke storage/app/public/product_videos
                 $videoPath = $video->storeAs('product_videos', $videoName, 'public');
             }
-
 
             // Simpan data dimensi sebagai array JSON
             $dimensions = [
@@ -867,7 +1199,9 @@ class ProductController extends Controller
 
             // Pastikan brand ditemukan
             if (!$brand) {
-                return redirect()->back()->with('error', 'Brand not found.');
+                return redirect()->back()
+                    ->with('error', 'Brand not found.')
+                    ->withInput();
             }
 
             // Ambil brand_code dari brand yang dipilih
@@ -893,7 +1227,7 @@ class ProductController extends Controller
             // Simpan produk ke database
             $product = Product::create([
                 'product_name' => $request->product_name,
-                'product_code' => $productCode, // Simpan product_code yang di-generate
+                'product_code' => $productCode,
                 'category_product_id' => $request->category_product_id,
                 'brand_id' => $request->brand_id,
                 'description' => $request->description,
@@ -905,17 +1239,18 @@ class ProductController extends Controller
                 'main_image' => $mainImagePath,
                 'images' => json_encode($imagePaths),
                 'video' => $videoPath,
-                'color' => $request->color, // Simpan warna
-                'color_text' => $request->color_text, // Simpan warna
-                'dimensions' => json_encode($dimensions),  // Menyimpan sebagai JSON                
+                'color' => $request->color,
+                'color_text' => $request->color_text,
+                'dimensions' => json_encode($dimensions),
             ]);
 
-
+            // Handle variants
             if ($request->has('variant_type') && $request->has('variant_values')) {
                 foreach ($request->variant_type as $typeIndex => $variantType) {
                     if (isset($request->variant_values[$typeIndex]) && is_array($request->variant_values[$typeIndex])) {
                         foreach ($request->variant_values[$typeIndex] as $valueIndex => $variantValue) {
-                            $useVariantImage = isset($request->use_variant_image[$typeIndex][$valueIndex]) && $request->use_variant_image[$typeIndex][$valueIndex] == '1';
+                            $useVariantImage = isset($request->use_variant_image[$typeIndex][$valueIndex])
+                                && $request->use_variant_image[$typeIndex][$valueIndex] == '1';
                             $variantImage = null;
 
                             if ($useVariantImage && $request->hasFile("variant_images.$typeIndex.$valueIndex")) {
@@ -932,26 +1267,42 @@ class ProductController extends Controller
                                 'variant_value' => $variantValue,
                                 'use_variant_image' => $useVariantImage,
                                 'variant_image' => $variantImage,
-                                'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex], // Sesuaikan
-                                'variant_price' => $variantPrice, // Simpan setelah format dihapus
-                                'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex], // Sesuaikan
-                                'variant_expired' => $request->variant_expired[$typeIndex][$valueIndex], // New field
+                                'variant_stock' => $request->variant_stock[$typeIndex][$valueIndex],
+                                'variant_price' => $variantPrice,
+                                'weight_variant' => $request->variant_weight[$typeIndex][$valueIndex],
+                                'variant_expired' => $request->variant_expired[$typeIndex][$valueIndex],
                             ]);
                         }
                     }
                 }
             }
 
-            return redirect()->route('index-product-admin')->with('success', 'Product created successfully!');
+            // Clear session setelah berhasil
+            session()->forget(['uploaded_temp_main_image', 'uploaded_temp_images']);
+
+            Log::info('Product created successfully', ['product_id' => $product->id]);
+
+            return redirect()->route('index-product-admin')
+                ->with('success', 'Product created successfully!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return redirect()->back()->withErrors($e->errors())->withInput();
+            Log::warning('Validation failed', ['errors' => $e->errors()]);
+
+            // Return dengan withInput() untuk mempertahankan data
+            // Session akan otomatis ter-preserve
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
         } catch (\Exception $e) {
-            Log::error('Error creating product', ['exception' => $e->getMessage()]);
-            return redirect()->back()->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])->withInput();
+            Log::error('Error creating product', [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])
+                ->withInput();
         }
     }
-
-
 
     public function detailProductAdmin($id)
     {

@@ -5,47 +5,86 @@
 }
 
 .upload__img-box-multiple {
-    width: 150px;
-    padding: 0 10px;
-    margin-bottom: 12px;
     position: relative;
+    width: 150px;
+    height: 150px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .upload__img-box-single {
     width: 150px;
-    padding: 0 10px;
+    height: 150px;
+    /* WAJIB */
+    border-radius: 8px;
+    overflow: hidden;
     margin-bottom: 12px;
     position: relative;
 }
 
 .upload__img-close {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5);
     position: absolute;
-    top: 6px;
-    right: 6px;
-    text-align: center;
-    line-height: 24px;
-    z-index: 1;
+    top: 8px;
+    right: 8px;
+
+    background-color: #fee2e2;
+    color: #ef4444;
+
+    /* soft pink */
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    /* rounded square */
     cursor: pointer;
+    z-index: 5;
+
+    transition: 0.2s ease;
 }
 
-.upload__img-close:after {
-    content: '\2716';
-    font-size: 14px;
+.upload__img-close i {
+    font-size: 18px;
+    color: #ff4040;
+    /* merah icon */
+}
+
+/* Hover effect */
+.upload__img-close:hover {
+    background-color: #fecaca;
+    /* sedikit lebih gelap */
+    /* transform: scale(1.08); */
+}
+
+
+.image-loading {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.restored-image-badge {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background: rgba(76, 175, 80, 0.9);
     color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: bold;
+    z-index: 10;
 }
 
 .img-bg {
-    background-repeat: no-repeat;
-    background-position: center;
+    width: 100%;
+    height: 100%;
     background-size: cover;
+    background-position: center;
     position: relative;
-    padding-bottom: 100%;
-    border: 1px solid #ddd;
-    border-radius: 4px;
 }
 
 .video-upload-wrap {
@@ -96,7 +135,8 @@
 
 
 .upload__video-close:after {
-    content: '\2716'; /* Unicode character for 'X' */
+    content: '\2716';
+    /* Unicode character for 'X' */
     font-size: 14px;
     color: white;
 }

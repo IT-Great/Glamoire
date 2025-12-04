@@ -13,6 +13,7 @@
 
 <!-- Favicon -->
 <link href="logo.png" rel="icon" type="image/x-icon" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 
 {{-- bi icon --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">

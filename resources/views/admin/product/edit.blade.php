@@ -888,7 +888,7 @@
                                                                                 Image</span>
                                                                             <img src="{{ Storage::url($product->main_image) }}"
                                                                                 class="preview-image"
-                                                                                alt="Old Image Preview"
+                                                                                alt="Preview"
                                                                                 onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
                                                                         </div>
                                                                     </div>

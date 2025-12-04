@@ -521,19 +521,36 @@
                                 <table class="table table-bordered">
                                     {{-- HERO --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-megaphone text-primary me-2"></i>Hero Section</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-megaphone text-primary me-2"></i>Hero Section
+                                            </h5>
                                         </th>
                                     </tr>
 
                                     <tr>
-                                        <th>Title</th>
-                                        <td>{{ $aboutUs->hero_title }}</td>
+                                        <th width="20%">Title</th>
+                                        <td width="70%">{{ $aboutUs->hero_title }}</td>
+                                        <td width="10%" class="text-center">
+                                            @if ($aboutUs->hero_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="hero_title" data-section="Hero">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->hero_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->hero_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="hero_description" data-section="Hero">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -546,22 +563,47 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->hero_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="hero_image" data-section="Hero">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
 
                                     {{-- INTRO --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-lightbulb text-warning me-2"></i>Intro Section</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-lightbulb text-warning me-2"></i>Intro Section
+                                            </h5>
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Title</th>
                                         <td>{{ $aboutUs->intro_title }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->intro_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="intro_title" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->intro_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->intro_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="intro_description" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -574,22 +616,87 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->intro_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="intro_image" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
+
+                                    <tr>
+                                        <th>Video/GIF</th>
+                                        <td>
+                                            @if ($aboutUs->intro_video)
+                                                @php
+                                                    $fileExtension = pathinfo(
+                                                        $aboutUs->intro_video,
+                                                        PATHINFO_EXTENSION,
+                                                    );
+                                                @endphp
+
+                                                @if (strtolower($fileExtension) === 'gif')
+                                                    {{-- Preview GIF --}}
+                                                    <img src="{{ asset('storage/' . $aboutUs->intro_video) }}"
+                                                        width="400"
+                                                        style="max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid #dee2e6;"
+                                                        alt="Mission GIF">
+                                                @else
+                                                    {{-- Preview Video --}}
+                                                    <video width="400" height="300" controls>
+                                                        <source src="{{ asset('storage/' . $aboutUs->intro_video) }}"
+                                                            type="video/mp4">
+                                                        Browser Anda tidak mendukung tag video.
+                                                    </video>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Tidak ada media</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->intro_video)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="intro_video" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
 
                                     {{-- VISION --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-eye text-success me-2"></i>Visi</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-eye text-success me-2"></i>Visi
+                                            </h5>
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Title</th>
                                         <td>{{ $aboutUs->vision_title }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->vision_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="vision_title" data-section="Visi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->vision_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->vision_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="vision_description" data-section="Visi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -602,22 +709,86 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->vision_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="vision_image" data-section="Visi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Video/GIF</th>
+                                        <td>
+                                            @if ($aboutUs->vision_video)
+                                                @php
+                                                    $fileExtension = pathinfo(
+                                                        $aboutUs->vision_video,
+                                                        PATHINFO_EXTENSION,
+                                                    );
+                                                @endphp
+
+                                                @if (strtolower($fileExtension) === 'gif')
+                                                    {{-- Preview GIF --}}
+                                                    <img src="{{ asset('storage/' . $aboutUs->vision_video) }}"
+                                                        width="400"
+                                                        style="max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid #dee2e6;"
+                                                        alt="Mission GIF">
+                                                @else
+                                                    {{-- Preview Video --}}
+                                                    <video width="400" height="300" controls>
+                                                        <source src="{{ asset('storage/' . $aboutUs->vision_video) }}"
+                                                            type="video/mp4">
+                                                        Browser Anda tidak mendukung tag video.
+                                                    </video>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Tidak ada media</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->vision_video)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="vision_video" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
 
                                     {{-- MISSION --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-flag text-danger me-2"></i>Misi</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-flag text-danger me-2"></i>Misi
+                                            </h5>
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Title</th>
                                         <td>{{ $aboutUs->mission_title }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->mission_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="mission_title" data-section="Misi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->mission_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->mission_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="mission_description" data-section="Misi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -630,22 +801,88 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->mission_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="mission_image" data-section="Misi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
+
+                                    <tr>
+                                        <th>Video/GIF</th>
+                                        <td>
+                                            @if ($aboutUs->mission_video)
+                                                @php
+                                                    $fileExtension = pathinfo(
+                                                        $aboutUs->mission_video,
+                                                        PATHINFO_EXTENSION,
+                                                    );
+                                                @endphp
+
+                                                @if (strtolower($fileExtension) === 'gif')
+                                                    {{-- Preview GIF --}}
+                                                    <img src="{{ asset('storage/' . $aboutUs->mission_video) }}"
+                                                        width="400"
+                                                        style="max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid #dee2e6;"
+                                                        alt="Mission GIF">
+                                                @else
+                                                    {{-- Preview Video --}}
+                                                    <video width="400" height="300" controls>
+                                                        <source
+                                                            src="{{ asset('storage/' . $aboutUs->mission_video) }}"
+                                                            type="video/mp4">
+                                                        Browser Anda tidak mendukung tag video.
+                                                    </video>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Tidak ada media</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->mission_video)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="mission_video" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
 
                                     {{-- OUR STORY --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-book text-info me-2"></i>Cerita Terkini</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-book text-info me-2"></i>Cerita Terkini
+                                            </h5>
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Title</th>
                                         <td>{{ $aboutUs->story_title }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->story_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="story_title" data-section="Cerita Terkini">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->story_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->story_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="story_description" data-section="Cerita Terkini">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -658,22 +895,87 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->story_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="story_image" data-section="Cerita Terkini">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <th>Video/GIF</th>
+                                        <td>
+                                            @if ($aboutUs->story_video)
+                                                @php
+                                                    $fileExtension = pathinfo(
+                                                        $aboutUs->story_video,
+                                                        PATHINFO_EXTENSION,
+                                                    );
+                                                @endphp
+
+                                                @if (strtolower($fileExtension) === 'gif')
+                                                    {{-- Preview GIF --}}
+                                                    <img src="{{ asset('storage/' . $aboutUs->story_video) }}"
+                                                        width="400"
+                                                        style="max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid #dee2e6;"
+                                                        alt="Mission GIF">
+                                                @else
+                                                    {{-- Preview Video --}}
+                                                    <video width="400" height="300" controls>
+                                                        <source src="{{ asset('storage/' . $aboutUs->story_video) }}"
+                                                            type="video/mp4">
+                                                        Browser Anda tidak mendukung tag video.
+                                                    </video>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Tidak ada media</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->story_video)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="story_video" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
 
                                     {{-- ACHIEVEMENT --}}
                                     <tr>
-                                        <th>
-                                            <h5 class="d-inline-flex align-items-center"> <i
-                                                    class="bi bi-trophy text-warning me-2"></i>Sertifikat/Prestasi</h5>
+                                        <th colspan="3">
+                                            <h5 class="d-inline-flex align-items-center">
+                                                <i class="bi bi-trophy text-warning me-2"></i>Sertifikat/Prestasi
+                                            </h5>
                                         </th>
                                     </tr>
                                     <tr>
                                         <th>Title</th>
                                         <td>{{ $aboutUs->achievement_title }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->achievement_title)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="achievement_title" data-section="Sertifikat/Prestasi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Description</th>
                                         <td>{{ $aboutUs->achievement_description }}</td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->achievement_description)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="achievement_description"
+                                                    data-section="Sertifikat/Prestasi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Image</th>
@@ -686,13 +988,62 @@
                                                 </a>
                                             @endif
                                         </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->achievement_image)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="achievement_image" data-section="Sertifikat/Prestasi">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
                                     </tr>
+
+
+                                    <tr>
+                                        <th>Video/GIF</th>
+                                        <td>
+                                            @if ($aboutUs->achievement_video)
+                                                @php
+                                                    $fileExtension = pathinfo(
+                                                        $aboutUs->achievement_video,
+                                                        PATHINFO_EXTENSION,
+                                                    );
+                                                @endphp
+
+                                                @if (strtolower($fileExtension) === 'gif')
+                                                    {{-- Preview GIF --}}
+                                                    <img src="{{ asset('storage/' . $aboutUs->achievement_video) }}"
+                                                        width="400"
+                                                        style="max-height: 300px; object-fit: contain; border-radius: 4px; border: 1px solid #dee2e6;"
+                                                        alt="Mission GIF">
+                                                @else
+                                                    {{-- Preview Video --}}
+                                                    <video width="400" height="300" controls>
+                                                        <source src="{{ asset('storage/' . $aboutUs->achievement_video) }}"
+                                                            type="video/mp4">
+                                                        Browser Anda tidak mendukung tag video.
+                                                    </video>
+                                                @endif
+                                            @else
+                                                <span class="text-muted">Tidak ada media</span>
+                                            @endif
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($aboutUs->achievement_video)
+                                                <button class="btn btn-sm btn-danger delete-field"
+                                                    data-field="achievement_video" data-section="Intro">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            @endif
+                                        </td>
+                                    </tr>
+
+
                                 </table>
                             @else
                                 <p class="text-center">No About Us data found. Please create it.</p>
                             @endif
                         </div>
-
                     </div>
                 </section>
 
@@ -712,6 +1063,94 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+    </script>
+
+    {{-- Script untuk Delete dengan SweetAlert2 --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-field');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const field = this.getAttribute('data-field');
+                    const section = this.getAttribute('data-section');
+                    const fieldType = field.includes('title') ? 'Title' :
+                        field.includes('description') ? 'Description' : 'Image';
+
+                    Swal.fire({
+                        title: 'Konfirmasi Hapus',
+                        text: `Apakah Anda yakin ingin menghapus ${fieldType} dari ${section}?`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const csrfToken = document.querySelector(
+                                'meta[name="csrf-token"]').getAttribute('content');
+
+                            // Tampilkan loading
+                            Swal.fire({
+                                title: 'Menghapus...',
+                                text: 'Mohon tunggu sebentar',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
+                            fetch('{{ route('delete-aboutus-field-admin') }}', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken
+                                    },
+                                    body: JSON.stringify({
+                                        field: field
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            title: 'Berhasil!',
+                                            text: data.message,
+                                            icon: 'success',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'OK',
+                                            timer: 3000,
+                                            timerProgressBar: true
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Gagal!',
+                                            text: data.message,
+                                            icon: 'error',
+                                            confirmButtonColor: '#3085d6',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'Terjadi kesalahan saat menghapus field',
+                                        icon: 'error',
+                                        confirmButtonColor: '#3085d6',
+                                        confirmButtonText: 'OK'
+                                    });
+                                });
+                        }
+                    });
+                });
+            });
+        });
     </script>
 
     @if (session('success'))
