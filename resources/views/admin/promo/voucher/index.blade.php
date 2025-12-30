@@ -96,6 +96,11 @@
             color: white;
         }
 
+        .stats-card-info {
+            background: linear-gradient(135deg, var(--info-color), #3b82f6);
+            color: white;
+        }
+
         .stats-icon {
             width: 48px;
             height: 48px;
@@ -257,7 +262,7 @@
                 <!-- Stats Cards -->
                 <div class="row mb-4 slide-in">
                     <!-- Active Promo -->
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
                         <div class="stats-card stats-card-primary">
                             <div class="stats-icon">
                                 <i class="bi bi-gift-fill"></i> <!-- Ganti dari envelope ke gift -->
@@ -275,7 +280,7 @@
                     </div>
 
                     <!-- Active Vouchers -->
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
                         <div class="stats-card stats-card-success">
                             <div class="stats-icon">
                                 <i class="bi bi-tag"></i> <!-- Voucher ikon -->
@@ -292,7 +297,7 @@
                     </div>
 
                     <!-- Active Discount -->
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-3">
                         <div class="stats-card stats-card-warning">
                             <div class="stats-icon">
                                 <i class="bi bi-percent"></i> <!-- Diskon ikon -->
@@ -307,6 +312,24 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Active Gift -->
+                    <div class="col-12 col-md-3">
+                        <div class="stats-card stats-card-info">
+                            <div class="stats-icon">
+                                <i class="bi bi-gift"></i>
+                            </div>
+                            <div class="stats-title">Active Gift</div>
+                            <h3 class="stats-number">{{ $activeGifts ?? 0 }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-gift me-1"></i>
+                                    Hadiah menarik untuk pembelian tertentu
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Navigation Tabs -->
@@ -322,6 +345,10 @@
                     <a href="{{ route('index-promo-diskon') }}"
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Diskon
+                    </a>
+                    <a href="{{ route('index-promo-gift') }}"
+                        class="promo-nav-item {{ Request::is('promo-gift') ? 'active' : '' }}">
+                        <i class="bi bi-gift-fill me-2"></i>Gift
                     </a>
                 </div>
 
@@ -340,7 +367,8 @@
                                     <h4>Voucher Terbatas</h4>
                                     <p class="flex-grow-1">Voucher untuk pembeli tertentu yang hanya dapat dibagikan
                                         melalui kode</p>
-                                    <a href="{{ route('create-promo-voucher') }}" class="btn btn-primary mt-3">Buat</a>
+                                    <a href="{{ route('create-promo-voucher') }}"
+                                        class="btn btn-primary mt-3">Buat</a>
                                 </div>
                             </div>
                             <div class="col-md-4 mb-3">
@@ -380,7 +408,8 @@
                 <!-- Voucher List -->
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0">Voucher Aktif</h4>
+                        <h4 class="mb-2 d-flex align-items-center"><i class="bi bi-receipt-cutoff me-2"></i>Data
+                            Voucher</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">

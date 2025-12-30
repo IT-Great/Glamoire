@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Kategori Produk - Glamoire</title>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -532,7 +533,8 @@
 
                         <div class="row">
                             <div class="col-12 col-md-6">
-                                <h4 class="mb-0 d-flex align-items-center"><i class="bi bi-collection-fill me-2"></i>List Kategori</h4>
+                                <h4 class="mb-0 d-flex align-items-center"><i
+                                        class="bi bi-collection-fill me-2"></i>List Kategori</h4>
                             </div>
                             <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center">
                                 <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
@@ -570,7 +572,7 @@
                                                     <i class="fa fa-plus"></i> Add Subcategory
                                                 </button>
 
-                                                <button class="btn btn-sm btn-danger delete-category"
+                                                <button class="btn btn-sm btn-danger d-inline-flex align-items-center delete-category"
                                                     data-id="{{ $category->id }}">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </button>
@@ -592,7 +594,7 @@
                                             </td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <button class="btn btn-sm btn-danger delete-category"
+                                                    <button class="btn btn-sm btn-danger d-inline-flex align-items-center delete-category"
                                                         data-id="{{ $subcategory->id }}">
                                                         <i class="bi bi-trash"></i> Delete
                                                     </button>
@@ -655,6 +657,94 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/vendors/fontawesome/all.min.js"></script>
 
+    {{-- delete category --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-category').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.dataset.id;
+
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus?',
+                        text: 'Kategori yang dihapus tidak bisa dikembalikan!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            fetch(`/delete-category-product/${id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': document
+                                            .querySelector('meta[name="csrf-token"]')
+                                            .getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    }
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        let timerInterval;
+
+                                        Swal.fire({
+                                            title: 'Berhasil!',
+                                            html: 'Halaman akan dimuat ulang dalam <b></b> detik.',
+                                            icon: 'success',
+                                            timer: 2000,
+                                            timerProgressBar: true,
+                                            allowOutsideClick: false,
+                                            didOpen: () => {
+                                                Swal.showLoading();
+                                                const b = Swal
+                                                    .getHtmlContainer()
+                                                    .querySelector('b');
+                                                timerInterval = setInterval(
+                                                    () => {
+                                                        b.textContent =
+                                                            Math.ceil(
+                                                                Swal
+                                                                .getTimerLeft() /
+                                                                1000);
+                                                    }, 100);
+                                            },
+                                            willClose: () => {
+                                                clearInterval(
+                                                timerInterval);
+                                            }
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+
+                                    } else {
+                                        Swal.fire(
+                                            'Gagal!',
+                                            data.message ??
+                                            'Kategori tidak ditemukan.',
+                                            'error'
+                                        );
+                                    }
+                                })
+                                .catch(() => {
+                                    Swal.fire(
+                                        'Error!',
+                                        'Terjadi kesalahan server.',
+                                        'error'
+                                    );
+                                });
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+
+
+
+
+    {{-- add category --}}
     <script>
         $(document).ready(function() {
             // Form submission for category and subcategory
@@ -682,7 +772,7 @@
                             form[0].reset();
                             Swal.fire({
                                 title: 'Success!',
-                                text: 'Category has been successfully created.',
+                                text: 'Kategori Produk Berhasil Dibuat.',
                                 icon: 'success',
                                 confirmButtonText: 'OK',
                                 confirmButtonColor: '#4A69E2',
@@ -693,7 +783,7 @@
                         }
                     },
                     error: function(xhr) {
-                        Swal.fire('Error!', 'An error occurred while creating the category.', 'error');
+                        Swal.fire('Error!', 'Error Terdapat Duplikat Nama Category Atau Yang Lain.', 'error');
                     }
                 });
             }

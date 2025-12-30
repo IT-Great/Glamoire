@@ -139,6 +139,11 @@
             color: white;
         }
 
+        .stats-card-info {
+            background: linear-gradient(135deg, var(--info-color), #3b82f6);
+            color: white;
+        }
+
         .stats-icon {
             width: 48px;
             height: 48px;
@@ -453,7 +458,7 @@
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item">
                                     <a href="{{ route('index-promo') }}" class="d-flex align-items-center">
-                                        <i class="bi bi-bookmark-star me-1"></i> Promo
+                                        <i class="bi bi-receipt me-1"></i> Promo
                                     </a>
                                 </li>
                                 <li class="breadcrumb-item active">Semua Promo Event</li>
@@ -464,17 +469,17 @@
 
                 <div class="row mb-4 slide-in">
                     <!-- Active Promo -->
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
                         <div class="stats-card stats-card-primary">
                             <div class="stats-icon">
-                                <i class="bi bi-gift-fill"></i> <!-- Ganti dari envelope ke gift -->
+                                <i class="bi bi-receipt"></i> <!-- Ganti dari envelope ke gift -->
                             </div>
                             <div class="stats-title">Active Promo</div>
                             <h3 class="mb-0">{{ $activePromos ?? 0 }}</h3>
 
                             <div class="mt-3">
                                 <small class="d-flex align-items-center">
-                                    <i class="bi bi-gift me-1"></i>
+                                    <i class="bi bi-receipt me-1"></i>
                                     Promo spesial yang sedang berjalan
                                 </small>
                             </div>
@@ -482,7 +487,7 @@
                     </div>
 
                     <!-- Active Vouchers -->
-                    <div class="col-12 col-md-4 mb-3 mb-md-0">
+                    <div class="col-12 col-md-3 mb-3 mb-md-0">
                         <div class="stats-card stats-card-success">
                             <div class="stats-icon">
                                 <i class="bi bi-tag"></i> <!-- Voucher ikon -->
@@ -499,7 +504,7 @@
                     </div>
 
                     <!-- Active Discount -->
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-3">
                         <div class="stats-card stats-card-warning">
                             <div class="stats-icon">
                                 <i class="bi bi-percent"></i> <!-- Diskon ikon -->
@@ -514,13 +519,30 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Active Gift -->
+                    <div class="col-12 col-md-3">
+                        <div class="stats-card stats-card-info">
+                            <div class="stats-icon">
+                                <i class="bi bi-gift"></i>
+                            </div>
+                            <div class="stats-title">Active Gift</div>
+                            <h3 class="stats-number">{{ $activeGifts ?? 0 }}</h3>
+                            <div class="mt-3">
+                                <small class="d-flex align-items-center">
+                                    <i class="bi bi-gift me-1"></i>
+                                    Hadiah menarik untuk pembelian tertentu
+                                </small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Navigation Tabs -->
                 <div class="promo-nav d-flex justify-content-start align-items-center gap-3 flex-wrap">
                     <a href="{{ route('index-promo') }}"
                         class="promo-nav-item {{ Request::is('promo') ? 'active' : '' }}">
-                        <i class="bi bi-grid-fill me-2"></i>Promo
+                        <i class="bi bi-receipt me-2"></i>Promo
                     </a>
                     <a href="{{ route('index-promo-voucher') }}"
                         class="promo-nav-item {{ Request::is('promo-voucher') ? 'active' : '' }}">
@@ -530,12 +552,16 @@
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Diskon
                     </a>
+                    <a href="{{ route('index-promo-gift') }}"
+                        class="promo-nav-item {{ Request::is('promo-gift') ? 'active' : '' }}">
+                        <i class="bi bi-gift-fill me-2"></i>Gift
+                    </a>
                 </div>
 
                 <!-- Main Content -->
                 <div class="card promo-card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 d-flex align-items-center"><i class="bi bi-tag me-2"></i>List Promo</h5>
+                        <h5 class="mb-0 d-flex align-items-center"><i class="bi bi-receipt me-2"></i>Data Promo</h5>
                         <a href="{{ route('create-promo') }}"
                             class="btn btn-sm btn-primary d-inline-flex align-items-center gap">
                             <i class="fa fa-plus me-2"></i>Buat Promo

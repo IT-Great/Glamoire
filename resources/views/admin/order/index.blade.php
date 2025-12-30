@@ -311,9 +311,9 @@
                 <div class="row mb-2">
                     <div class="col-12">
                         <div class="page-title">
-                            <h3 class="mb-2">Order Product Management</h3>
-                            <p>Kelola pesanan produk pelanggan, pantau status pengiriman, dan tindak lanjuti pesanan
-                                secara efisien.</p>
+                            <h3 class="mb-2">Semua Pesanan Produk</h3>
+                            <p>Halaman ini menampilkan semua pesanan produk yang ada. Anda dapat memantau status,
+                                mengelola, dan menindaklanjuti setiap pesanan dengan efisien.</p>
                         </div>
                     </div>
                 </div>
@@ -326,12 +326,11 @@
                                 <li class="breadcrumb-item"><a href="{{ route('index-admin-order') }}"
                                         class="d-flex align-items-center"><i class="bi bi-envelope me-1"></i>Order</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">All Order</li>
+                                <li class="breadcrumb-item active" aria-current="page">List Order</li>
                             </ol>
                         </nav>
                     </div>
                 </div>
-
             </div>
 
             <!-- Main Tabs -->
@@ -362,7 +361,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{{ route('index-admin-order', ['status' => 'returned']) }}"
+                        <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
                             class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
                             Pengembalian/Pembatalan
                         </a>
@@ -390,10 +389,10 @@
                     <table class="table" id="table1">
                         <thead>
                             <tr>
-                                <th style="min-width: 300px">Order Details</th>
-                                <th style="min-width: 120px">Total Amount</th>
+                                <th style="min-width: 300px">Order Detail</th>
+                                <th style="min-width: 120px">Total</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>

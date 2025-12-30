@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="assets/css/app.css">
     <link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
-    <link rel="stylesheet" href="{{asset('assets/css/product/createproduct.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/product/createproduct.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
@@ -572,7 +572,7 @@
                                                                     class="form-control {{ $errors->has('product_name') ? 'is-invalid' : '' }}"
                                                                     placeholder="Masukan Nama Produk"
                                                                     id="first-name-icon" name="product_name"
-                                                                    value="{{ old('product_name') }}">
+                                                                    value="{{ old('product_name') }}" required>
 
                                                             </div>
                                                             @if ($errors->has('product_name'))
@@ -796,7 +796,8 @@
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="">Berat Produk</label>
+                                                            <label for="">Berat Produk <span
+                                                                    style="color: red">*</span></label>
                                                             <div class="input-group mt-2">
                                                                 <input type="text" class="form-control"
                                                                     placeholder="Masukkan Berat Produk"
@@ -811,7 +812,8 @@
                                                         </div>
 
                                                         <div class="form-group mb-4">
-                                                            <label for="">Dimensi Produk</label>
+                                                            <label for="">Dimensi Produk <span
+                                                                    style="color: red">*</span></label>
                                                             <div class="row mt-2">
                                                                 <div class="col">
                                                                     <div class="input-group">
@@ -870,7 +872,7 @@
                                                             @endif
                                                         </div>
 
-                                                        {{-- single image --}}                                            
+                                                        {{-- single image --}}
                                                         <div class="form-group mb-4">
                                                             <label for="first-name-icon">Gambar Utama
                                                                 <span style="color: red"> *</span>
@@ -1214,8 +1216,8 @@
 
     <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{{asset('assets/vendors/sweetalert2/sweetalert2.all.min.js')}}"></script>
-    <script src="{{asset('assets/js/product/createproduct.js')}}"></script>
+    <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ asset('assets/js/product/createproduct.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
     <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js') }}"></script>
