@@ -8,6 +8,8 @@ use App\Models\CategoryArticle;
 use App\Models\CategoryProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Validators\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -27,31 +29,39 @@ class CategoryController extends Controller
     public function createCategoryProduct(Request $request)
     {
         try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                // 'parent_id' => 'required|exists:category_products,id' // Memastikan parent_id ada dan valid
-            ]);
+            $rules = [
+                'name' => ['required', 'string', 'max:255'],
+            ];
 
-            $subcategory = CategoryProduct::create([
+            // 🔑 Jika CATEGORY (parent_id = null) → HARUS UNIQUE
+            if (empty($request->parent_id)) {
+                $rules['name'][] = Rule::unique('category_products')
+                    ->whereNull('parent_id');
+            }
+
+            $request->validate($rules);
+
+            $category = CategoryProduct::create([
                 'name' => $request->name,
-                'parent_id' => $request->parent_id // Ini akan menjadi subcategory karena memiliki parent_id
+                'parent_id' => $request->parent_id
             ]);
 
             return response()->json([
                 'success' => true,
-                'data' => $subcategory
+                'data' => $category
             ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama category sudah ada.'
+            ], 422);
         } catch (\Exception $e) {
-            // Log error jika terjadi exception
-            Log::error('Error creating category product: ' . $e->getMessage(), [
-                'request' => $request->all(),
-                'exception' => $e
-            ]);
+            Log::error($e->getMessage());
 
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while creating the category product. Please try again.'
-            ], 500); // Mengembalikan status error 500
+                'message' => 'Terjadi kesalahan server.'
+            ], 500);
         }
     }
 

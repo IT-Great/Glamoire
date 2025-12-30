@@ -1,7 +1,6 @@
 @extends('user.layouts.master')
 
 @section('content')
-    
     <style>
         * {
             margin: 0;
@@ -318,7 +317,6 @@
         }
     </style>
 
-
     <div class="hero-section">
         <div class="hero-header">
             <h1 class="hero-title">Grow Your Business With Us</h1>
@@ -331,7 +329,9 @@
         </div>
 
         <div class="form-container">
-            <form id="business-partner-form" onsubmit="handleSubmit(event)">
+            <form id="business-partner-form" action="{{ route('partnership') }}" method="POST"
+                enctype="multipart/form-data">
+                @csrf
                 <div class="form-group">
                     <label for="partner_fullname" class="form-label">Nama Lengkap</label>
                     <input type="text" class="form-control" id="partner_fullname" name="partner_fullname"
@@ -424,89 +424,24 @@
     <script>
         function updateFileName(input) {
             const label = document.getElementById('fileLabel');
-            const textSpan = label.querySelector('.file-input-text');
+            const text = label.querySelector('.file-input-text');
 
-            if (input.files && input.files[0]) {
-                textSpan.textContent = input.files[0].name;
+            if (input.files.length > 0) {
+                text.textContent = input.files[0].name;
                 label.classList.add('has-file');
             } else {
-                textSpan.textContent = 'File file PDF profil perusahaan';
+                text.textContent = 'File PDF profil perusahaan';
                 label.classList.remove('has-file');
             }
         }
 
-        function scrollToForm() {
-            const form = document.querySelector('.form-container');
-            form.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }
-
-        function showTerms() {
-            Swal.fire({
-                title: 'Syarat & Ketentuan',
-                html: `
-                    <div style="text-align: left; max-height: 400px; overflow-y: auto;">
-                        <h6>Persyaratan Mitra Bisnis:</h6>
-                        <ol>
-                            <li>Memiliki legalitas usaha yang jelas (PT/CV)</li>
-                            <li>Produk berkualitas dan memiliki izin edar</li>
-                            <li>Komitmen untuk kerjasama jangka panjang</li>
-                            <li>Siap mengikuti standar dan prosedur Glamoire</li>
-                        </ol>
-                        <h6>Ketentuan Umum:</h6>
-                        <ul>
-                            <li>Proses verifikasi maksimal 3 hari kerja</li>
-                            <li>Tim kami akan menghubungi Anda dalam 24 jam</li>
-                            <li>Data yang diberikan akan dijaga kerahasiaannya</li>
-                        </ul>
-                    </div>
-                `,
-                icon: 'info',
-                confirmButtonText: 'Mengerti',
-                confirmButtonColor: '#1a4d2e',
-                width: '600px'
-            });
-        }
-
-        function handleSubmit(event) {
-            event.preventDefault();
-
-            const formData = new FormData(event.target);
-            const data = {};
-            formData.forEach((value, key) => {
-                if (key !== 'file_company') {
-                    data[key] = value;
-                }
-            });
-
-            Swal.fire({
-                title: 'Memproses...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Formulir Terkirim!',
-                    text: 'Tim kami akan segera menghubungi Anda dalam 24 jam',
-                    confirmButtonText: 'OK',
-                    confirmButtonColor: '#1a4d2e'
-                }).then(() => {
-                    event.target.reset();
-                    document.getElementById('fileLabel').classList.remove('has-file');
-                    document.querySelector('.file-input-text').textContent =
-                        'File file PDF profil perusahaan';
-                });
-            }, 1500);
-        }
+        document.getElementById('partner_handphone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.startsWith('0')) value = value.substring(1);
+            e.target.value = value;
+        });
     </script>
+
 
     @if (session('success'))
         <script>
@@ -527,9 +462,6 @@
             });
         </script>
     @endif
-
-
-
 
     <script>
         // File input functionality
