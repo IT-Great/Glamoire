@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class Role
 {
@@ -20,7 +20,7 @@ class Role
     // public function handle(Request $request, Closure $next): Response
     // {
     //     return $next($request);
-    // } 
+    // }
 
 
     // berfungsi
@@ -76,7 +76,7 @@ class Role
         $user = Auth::user();
 
         // Jika ini adalah rute dashboard dan user bukan admin/superadmin
-        if ($request->is('dashboard') && !in_array($user->role, ['admin', 'superadmin', 'accounting'])) {
+        if ($request->is('dashboard') && !in_array($user->role, ['admin', 'superadmin', 'accounting', 'gudang'])) {
             return redirect('/');
         }
 

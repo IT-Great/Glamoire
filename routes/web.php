@@ -1,54 +1,54 @@
 <?php
 
-use App\Http\Controllers\AboutusController;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
-
-use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\BiteshipController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ChartofAccountController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\PromoController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\ContactusController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\SubscribeController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\DokuPaymentController;
-use App\Http\Controllers\FaqController;
-use App\Http\Controllers\FinancialController;
-use App\Http\Controllers\JournalController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PopupController;
-use App\Http\Controllers\PrismalinkController;
-use App\Http\Controllers\StockExportImportController;
-use App\Http\Controllers\TransactionController;
-
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Auth\Events\Verified;
-
-use App\Models\NotifyMe;
 use App\Models\User;
 use App\Models\AboutUs;
+use App\Models\NotifyMe;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\PromoController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PopupController;
+use App\Http\Controllers\AboutusController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BiteshipController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ContactusController;
+use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\PrismalinkController;
+use App\Http\Controllers\DokuPaymentController;
+
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\PasswordResetController;
+
+use App\Http\Controllers\ChartofAccountController;
+use App\Http\Controllers\StockExportImportController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
 Route::post('/payment/submit', [PrismalinkController::class, 'submitPayment'])->name('payment.submit');
 Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name('callback');
-Route::get('/callback-payment/frontend', [PrismalinkController::class, 'callbackFrontend'])->name('callback');
+// Route::get('/callback-payment/frontend', [PrismalinkController::class, 'callbackFrontend'])->name('callback');
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
 // Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
 // Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
@@ -204,7 +204,7 @@ Route::get('/get-total-cart', [CartController::class, 'getTotalCart'])->name('ge
 Route::post('/choose-product-cart', [CartController::class, 'chooseProductCart'])->name('choose.product.cart');
 Route::post('/choose-product-variant-cart', [CartController::class, 'chooseProductVariantCart'])->name('choose.product.variant.cart');
 
-// FORM 
+// FORM
 Route::post('/subscribe', [UserController::class, 'subscribe'])->name('subscribe');
 Route::post('/send-question', [FormController::class, 'sendQuestion'])->name('send.question');
 Route::post('/partnership', [FormController::class, 'files'])->name('partnership');
@@ -218,7 +218,7 @@ Route::get('/belanja-{category}', [ShopController::class, 'category'])->name('sh
 // DETAIL PRODUCT
 Route::get('/{code}_product/{varian?}', [ProductController::class, 'detail'])->name('detail.product.varian');
 
-// SHIPPING 
+// SHIPPING
 Route::get('/provinces', [CheckoutController::class, 'getProvinces']);
 Route::get('/expeditions', [CheckoutController::class, 'getExpeditions']);
 Route::get('/cities/{id}', [CheckoutController::class, 'getCities']);
@@ -348,7 +348,7 @@ Route::get('/reset-password/{token}', [AuthenticateController::class, 'showReset
 Route::post('/reset-password', [AuthenticateController::class, 'resetPassword'])->name('reset.password.admin');
 
 Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
-Route::middleware(['auth', 'role:admin,superadmin,accounting'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
+Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
 
 Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
@@ -372,7 +372,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
 
 
-    // STOCK PRODUCT 
+    // STOCK PRODUCT
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
     Route::get('/stock-product-admin-low', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
