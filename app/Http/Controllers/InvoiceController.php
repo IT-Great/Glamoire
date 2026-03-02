@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Coa;
-use Illuminate\Http\Request;
-
-use App\Models\Invoice;
-use App\Models\Invoice_Supplier;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Invoice;
+
 use App\Models\Payment;
-use App\Models\PaymentHistories;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use App\Models\Supplier_Data;
+use App\Models\Invoice_Supplier;
+use App\Models\PaymentHistories;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class InvoiceController extends Controller

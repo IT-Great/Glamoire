@@ -29,7 +29,7 @@
                 <li class="sidebar-title">Menu</li>
                 <!-- Jika User adalah Admin -->
                 {{-- @if (Auth::user()->role === 'admin' || Auth::user()->role === 'superadmin') --}}
-                @if (in_array(Auth::user()->role, ['admin', 'superadmin', 'accounting']))
+                @if (in_array(Auth::user()->role, ['admin', 'superadmin', 'accounting', 'gudang']))
                     <li class="sidebar-item {{ Request::is('dashboard') ? 'active' : '' }}">
                         <a href="{{ route('dashboard') }}" class='sidebar-link'>
                             <i class="bi bi-grid-fill"></i>
@@ -201,6 +201,33 @@
                             <i class="bi bi-journal-check"></i>
                             <span>Jurnal</span>
                         </a>
+                    </li>
+                @endif
+
+                <!-- Jika User adalah Admin Gudang -->
+                @if (Auth::user()->role === 'gudang')
+                    {{-- GUDANG SIDE --}}
+                    <li class="sidebar-title">Gudang</li>
+
+                    <li
+                        class="sidebar-item has-sub {{ Request::is('product-admin*') || Request::is('stock-product-admin*') ? 'active' : '' }}">
+                        <a href="#" class='sidebar-link'>
+                            <i class="bi bi-bag-fill"></i>
+                            <span>Produk</span>
+                        </a>
+
+                        <ul class="submenu">
+                            <li class="submenu-item {{ Request::is('product-admin') ? 'active' : '' }}">
+                                <a href="{{ route('index-product-admin') }}">
+                                    Produk
+                                </a>
+                            </li>
+                            <li class="submenu-item {{ Request::is('stock-product*') ? 'active' : '' }}">
+                                <a href="{{ route('index-stock-product-admin') }}">
+                                    Stok Produk
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 @endif
             </ul>

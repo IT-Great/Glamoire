@@ -658,3 +658,66 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     // JOURNAL
     Route::get('/journal', [JournalController::class, 'indexJournal'])->name('index-journal');
 });
+
+// GUDANG
+Route::middleware(['auth', 'role:gudang,admin,superadmin'])->group(function () {
+    // product
+    Route::get('/product-admin', [ProductController::class, 'indexProductAdmin'])->name('index-product-admin');
+    Route::get('/product-admin-create', [ProductController::class, 'createProductAdmin'])->name('create-product-admin');
+    Route::post('/store-product', [ProductController::class, 'storeProductAdmin'])->name('store-product-admin');
+    Route::get('/product-admin-edit/{id}', [ProductController::class, 'editProductAdmin'])->name('edit-product-admin');
+    Route::put('/update/product/{id}', [ProductController::class, 'updateProductAdmin'])->name('update-product-admin');
+    Route::post('/upload-temp-image', [ProductController::class, 'uploadTempImage'])->name('upload-temp-image');
+    Route::post('/upload-temp-image', [ProductController::class, 'uploadTempImage'])->name('upload-temp-image');
+    Route::post('/delete-temp-image', [ProductController::class, 'deleteTempImage'])->name('delete-temp-image');
+    // Routes untuk Main Image Temporary Upload
+    Route::post('/upload-temp-main-image', [ProductController::class, 'uploadTempMainImage'])->name('upload-temp-main-image');
+    Route::post('/delete-temp-main-image', [ProductController::class, 'deleteTempMainImage'])->name('delete-temp-main-image');
+
+    Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
+    Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
+    Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
+
+
+    // STOCK PRODUCT
+    Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
+    Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
+    Route::get('/stock-product-admin-low', [ProductController::class, 'lowStockProductAdmin'])->name('low-stock-product-admin');
+
+    Route::get('/check-stock-alerts', [ProductController::class, 'checkStockAlerts'])
+        ->name('check-stock-alerts');
+
+    // product update stock
+    Route::get('/get-stock-details/{id}', [ProductController::class, 'getStockDetails']);
+    Route::put('/update-stock/{id}', [ProductController::class, 'updateStock'])->name('update-stock');
+
+    // product variant update stock
+    Route::get('/get-variant-stock-details/{variantId}', [ProductController::class, 'getVariantStockDetails']);
+
+    // import export stock
+    Route::get('/download-product-stock-template', [StockExportImportController::class, 'downloadProductStockTemplate'])
+        ->name('download.product.stock.template');
+    Route::get('/download-product-variant-stock-template', [StockExportImportController::class, 'downloadProductStockVariantTemplate'])
+        ->name('download.product.variant.stock.template');
+
+    // Stock Export Routes
+    Route::get('/export/product-stocks', [StockExportImportController::class, 'exportProductStocks'])
+        ->name('export.product.stocks');
+    Route::get('/export/product-variants', [StockExportImportController::class, 'exportProductVariants'])
+        ->name('export.product.variants');
+
+    // Stock Import Routes
+    Route::post('/import/product-stocks', [StockExportImportController::class, 'importProductStocks'])
+        ->name('import.product.stocks');
+    Route::post('/import/product-variants', [StockExportImportController::class, 'importProductStockVariants'])
+        ->name('import.product.variants');
+    // Route::post('/import/product-variants', [StockExportImportController::class
+
+
+    // product-variant
+    Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');
+    Route::get('/create-product-variant', [ProductController::class, 'createProductVariantAdmin'])->name('create-product-variant-admin');
+    Route::post('/store-product-variant', [ProductController::class, 'storeProductVariantAdmin'])->name('store-product-variant-admin');
+    Route::get('/edit-product-variant/{id}', [ProductController::class, 'editProductVariantAdmin'])->name('edit-product-variant-admin');
+    Route::put('/update/product-variant/{id}', [ProductController::class, 'updateProductVariantAdmin'])->name('update-product-variant-admin');
+});

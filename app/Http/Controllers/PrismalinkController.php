@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Exception;
 use Carbon\Carbon;
-use GuzzleHttp\Client;
-use Illuminate\Support\Str;
 use App\Models\User;
-use App\Models\Invoice;
 use App\Models\Cart;
-use App\Models\Cart_item;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Promo;
+use GuzzleHttp\Client;
+use App\Models\Buynow;
+use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\ProductVariations;
-use App\Models\Promo;
-use App\Models\Shipping_address;
+use App\Models\Cart_item;
+use App\Models\OrderItem;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Models\VoucherNewUser;
-use App\Models\Buynow;
+use App\Models\Shipping_address;
+use App\Models\ProductVariations;
+use Illuminate\Support\Facades\Log;
 use App\Services\PrismalinkService;
-use Exception;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 
 // bisa tapi datanya masih statis
@@ -47,17 +47,16 @@ class PrismalinkController extends Controller
     {
         $this->status = config('app.env');
         $this->id_user = session('id_user');
-        if($this->status == 'local'){
+        if ($this->status == 'local') {
             $this->merchantKeyId = config('services.prismalink.merch_key_id');
-            $this->merchantId = config('services.prismalink.merch_id'); 
+            $this->merchantId = config('services.prismalink.merch_id');
             $this->backendCallbackUrl = config('services.prismalink.backend_callback');
             $this->frontendCallbackUrl = config('services.prismalink.frontend_callback');
             $this->secretKey = config('services.prismalink.secret_key');
             $this->transactionUrl = config('services.prismalink.transaction_api');
-        }
-        else{
+        } else {
             $this->merchantKeyId = config('services.prismalink.merch_key_id');
-            $this->merchantId = config('services.prismalink.merch_id'); 
+            $this->merchantId = config('services.prismalink.merch_id');
             $this->backendCallbackUrl = config('services.prismalink.backend_callback');
             $this->frontendCallbackUrl = config('services.prismalink.frontend_callback');
             $this->secretKey = config('services.prismalink.secret_key');
@@ -67,7 +66,7 @@ class PrismalinkController extends Controller
 
     public function submitPayment(Request $request)
     {
-        if ($request->condition !== "guest"){
+        if ($request->condition !== "guest") {
             $uniq = uniqid();
             $userId = session('id_user');
             $cartId = Cart::where('user_id', session('id_user'))->value('id');
@@ -120,7 +119,7 @@ class PrismalinkController extends Controller
         // session(['condition' => $request->condition]);
         $this->condition = $request->condition;
 
-        if($request->condition == "buynow"){
+        if ($request->condition == "buynow") {
             $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
             session(['productBuyNow' => $request->products]);
             $body = [
@@ -164,8 +163,8 @@ class PrismalinkController extends Controller
             ];
         }
         // KERANJANG -> BUY
-        elseif($request->condition == "standard"){
-            if($request->total_amount == 0){
+        elseif ($request->condition == "standard") {
+            if ($request->total_amount == 0) {
                 $body = [
                     "merchant_key_id" => $this->merchantKeyId,
                     "merchant_id" => $this->merchantId,
@@ -202,7 +201,7 @@ class PrismalinkController extends Controller
                     "bank_id" => ""
                     // "bank_id" => "022"
                 ];
-            }else{
+            } else {
                 $body = [
                     "merchant_key_id" => $this->merchantKeyId,
                     "merchant_id" => $this->merchantId,
@@ -241,7 +240,7 @@ class PrismalinkController extends Controller
                 ];
             }
         }
-        
+
         // Konversi body ke JSON string exact seperti yang akan dikirim ke API
         $jsonBody = json_encode($body);
 
@@ -256,8 +255,8 @@ class PrismalinkController extends Controller
         // Log::info('Generated MAC', ['mac' => $mac, 'secret_key' => $secretKey]);
 
         // Panggil endpoint Prismalink dengan MAC yang dihasilkan secara dinamis
-        $url = $this->transactionUrl;   
-        
+        $url = $this->transactionUrl;
+
         $response = Http::withHeaders([
             'mac' => $mac,
             'Content-Type' => 'application/json',
@@ -267,7 +266,7 @@ class PrismalinkController extends Controller
         Log::info(['Response submit-trx :' => $response->json()]);
 
         $status = $response->json();
-        
+
         // Cek apakah response berhasil
         if ($status['response_code'] == "PL000") {
             $data = $response->json();
@@ -276,14 +275,13 @@ class PrismalinkController extends Controller
             $saveCheckStatus = $this->checkStatus($invoiceCreate->no_invoice, $data['plink_ref_no'], $data['timestamp']);
             $this->merchant_ref_no = $invoiceCreate->no_invoice;
             $this->plink_ref_no = $data['plink_ref_no'];
-            $this->trasmission_date_time =$data ['validity'];
+            $this->trasmission_date_time = $data['validity'];
 
             if (isset($data['payment_page_url'])) {
                 // Base URL untuk halaman pembayaran Prismalink
-                if($this->status == 'local'){
+                if ($this->status == 'local') {
                     $paymentBaseUrl = 'https://secure2-staging.plink.co.id';
-                }
-                else{
+                } else {
                     $paymentBaseUrl = 'https://secure3.plink.co.id';
                 }
 
@@ -319,19 +317,19 @@ class PrismalinkController extends Controller
                 $etd = $request->etd;
                 $description = $request->description;
                 $destinationPostalCode = $request->destinationPostalCode;
-                
+
                 $orderData = $this->saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode);
                 $this->order_data = $orderData;
                 // session(['order_data' => $orderData]);
                 $this->createNewOrder($this->order_data);
-                
+
                 // Log::info(['Request : ' => $request]);
 
                 $deadline = Carbon::parse($data['validity']);
 
                 // Format dalam Bahasa Indonesia (jika kamu sudah set locale)
                 // App::setLocale('id'); // Pastikan ini ditetapkan                
-                
+
                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
 
                 Log::info("Request payment | User ID :" . $this->id_user .  "| Payment page :" . $fullPaymentPageUrl . " | Deadline:" . $formattedDeadline);
@@ -348,10 +346,16 @@ class PrismalinkController extends Controller
             return back()->with('error', 'Response received, but no payment page URL was found.');
         } else {
             // Log error detail
-            Log::error('User', $this->id_user, 'failed request payment, redirecting to payment page :', [
+            // Log::error('User', $this->id_user, 'failed request payment, redirecting to payment page :', [
+            //     'status' => $response->status(),
+            //     'body' => $response->body(),
+            // ]);
+
+            Log::error('User ' . $this->id_user . ' failed request payment, redirecting to payment page :', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
+
             // Log::error('Prismalink Response Error :', [
             //     'status' => $response->status(),
             //     'body' => $response->body(),
@@ -366,15 +370,13 @@ class PrismalinkController extends Controller
     public function callback(Request $request)
     {
         try {
-            if($this->status == 'local'){
+            if ($this->status == 'local') {
                 Log::info('Prismalink Callback Data: ', $request->all());
                 return redirect()->route('account');
-            }
-            else{
+            } else {
                 Log::info('Redirect to https://glamoire.co.id/account');
                 return redirect('https://glamoire.co.id/account');
             }
-            
         } catch (\Exception $e) {
             Log::info('Prismalink Callback Error: ' . $e->getMessage());
             // return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()], 500);
@@ -382,7 +384,8 @@ class PrismalinkController extends Controller
         }
     }
 
-    private function checkStatus($merchant_ref_no, $plink_ref_no, $transmission_date_time){
+    private function checkStatus($merchant_ref_no, $plink_ref_no, $transmission_date_time)
+    {
         $data = [
             'merchant_ref_no' => $merchant_ref_no,
             'plink_ref_no' => $plink_ref_no,
@@ -403,10 +406,10 @@ class PrismalinkController extends Controller
             'transmission_date_time' => $this->trasmission_date_time,
         ]);
 
-        if($this->condition == 'standard'){
+        if ($this->condition == 'standard') {
             $order = Order::create([
                 'invoice_id' => $getInvoiceId,
-                'user_id' => auth()->id(), 
+                'user_id' => auth()->id(),
                 'shipping_address_id' => $orderData['shippingAddressId'],
                 'shipping_cost' => $orderData['shippingCost'],
                 'discount_amount' => $orderData['discountAmount'] ?? 0,
@@ -426,13 +429,13 @@ class PrismalinkController extends Controller
             ]);
 
             $this->order_id = $order->id;
-    
+
             $cartId = Cart::where('user_id', $this->id_user)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)
                 ->where('is_choose', true)
                 ->with(['product.brand'])
                 ->get();
-    
+
             foreach ($cartItems as $item) {
                 if ($item->product && $item->product->promos->where('status', 'Active')) {
                     foreach ($item->product->promos->where('status', 'Active') as $promo) {
@@ -447,7 +450,7 @@ class PrismalinkController extends Controller
                                             $item->total = $discountedPrice;
                                         }
                                         break;
-            
+
                                     case 'nominal':
                                         // Contoh logika untuk diskon nominal
                                         if ($item->quantity == $tier->min_quantity) {
@@ -456,14 +459,14 @@ class PrismalinkController extends Controller
                                             $item->total = $discountedPrice;
                                         }
                                         break;
-            
+
                                     case 'package':
                                         if ($item->quantity == $tier->min_quantity) {
                                             $item->bundle_price = $tier->package_price; // Tetapkan harga paket
                                             $item->total = $tier->package_price;
                                         }
                                         break;
-            
+
                                     default:
                                         // Logika default jika tidak ada kasus yang cocok
                                         $item->discounted_price = $item->product->price;
@@ -484,11 +487,10 @@ class PrismalinkController extends Controller
                     ]);
                 }
             }
-        }
-        elseif($this->condition == 'buynow'){
+        } elseif ($this->condition == 'buynow') {
             $order = Order::create([
                 'invoice_id' => $getInvoiceId,
-                'user_id' => auth()->id(), 
+                'user_id' => auth()->id(),
                 'shipping_address_id' => $orderData['shippingAddressId'],
                 'shipping_cost' => $orderData['shippingCost'],
                 'discount_amount' => $orderData['discountAmount'] ?? 0,
@@ -511,7 +513,7 @@ class PrismalinkController extends Controller
                 ->where('is_buy', false)
                 ->with(['product.brand'])
                 ->get();
-    
+
             foreach ($cartItems as $item) {
                 if ($item->product && $item->product->promos->where('status', 'Active')) {
                     foreach ($item->product->promos->where('status', 'Active') as $promo) {
@@ -526,7 +528,7 @@ class PrismalinkController extends Controller
                                             $item->total = $discountedPrice;
                                         }
                                         break;
-            
+
                                     case 'nominal':
                                         // Contoh logika untuk diskon nominal
                                         if ($item->quantity == $tier->min_quantity) {
@@ -535,32 +537,32 @@ class PrismalinkController extends Controller
                                             $item->total = $discountedPrice;
                                         }
                                         break;
-            
+
                                     case 'package':
                                         if ($item->quantity == $tier->min_quantity) {
                                             $item->bundle_price = $tier->package_price; // Tetapkan harga paket
                                             $item->total = $tier->package_price;
                                         }
                                         break;
-            
+
                                     default:
                                         // Logika default jika tidak ada kasus yang cocok
                                         $item->discounted_price = $item->product->price;
                                         break;
-                                    }
                                 }
                             }
                         }
+                    }
 
-                        OrderItem::create([
-                            'order_id'   => $order->id,
-                            'product_id' => $item->product_id,
-                            'product_variant_id' => $item->product_variant_id,
-                            'quantity' => $item->quantity,
-                            'price' => $item->price,
-                            'is_tier' => $item->bundle_price,
-                            'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
-                        ]);
+                    OrderItem::create([
+                        'order_id'   => $order->id,
+                        'product_id' => $item->product_id,
+                        'product_variant_id' => $item->product_variant_id,
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'is_tier' => $item->bundle_price,
+                        'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+                    ]);
                 }
             }
         }
@@ -592,16 +594,15 @@ class PrismalinkController extends Controller
         $useVoucherNewUser = VoucherNewUser::where('user_id', $userId)
             ->where('code', $orderData['voucherPromo'])
             ->first();
-        
+
         if ($useVoucherNewUser) {
             $useVoucherNewUser->is_use = 1;
             $useVoucherNewUser->save();
         }
 
-        if($useVoucherNewUser == NULL){
+        if ($useVoucherNewUser == NULL) {
             $voucherUsed = Promo::where('promo_code', $orderData['voucherPromo'])->first();
-        }
-        else {
+        } else {
             $voucherUsed = NULL;
         }
 
@@ -610,10 +611,10 @@ class PrismalinkController extends Controller
         }
 
         // Jika pembayaran selesai
-       
+
         if ($payment->status == "completed") {
             $cartId = Cart::where('user_id', $userId)->value('id');
-            
+
             if ($voucherUsed !== NULL) {
                 $voucherUsed->total_used += 1;
                 $voucherUsed->save();
@@ -625,10 +626,10 @@ class PrismalinkController extends Controller
                     $ongkirUsed->save();
                 }
             }
-            
-            foreach($cartItems as $product){
+
+            foreach ($cartItems as $product) {
                 // Temukan produk berdasarkan ID\
-                if($product['product_variant_id'] !== null){
+                if ($product['product_variant_id'] !== null) {
                     // $productVariant = ProductVariations::find($product['product_variant_id']);
                     // $getProductId = ProductVariations::where('id', $product['product_variant_id'])->value('product_id');
                     // $productMain = Product::find($getProductId);
@@ -641,36 +642,36 @@ class PrismalinkController extends Controller
                     //     $productMain->sale += $product['quantity'];
                     //     $productMain->save();
                     // }
-        
+
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
                         ->where('product_variant_id', $product['product_variant_id'])
                         ->delete();
-                }
-                else{
+                } else {
                     // $products = Product::find($product['product_id']);
-                    
+
                     // Jika produk ditemukan, lakukan update stok
                     // if ($products) {
                     //     $products->stock_quantity -= $product['quantity'];
                     //     $products->sale += $product['quantity'];
                     //     $products->save();
                     // }
-        
+
                     // Hapus item dari cart berdasarkan cart_id dan product_id
                     Cart_item::where('cart_id', $cartId)
                         ->where('product_id', $product['product_id'])
                         ->delete();
                 }
-                 
+
                 session(['activeTab' => '#my-order']);
             }
         }
-       
+
         return $order;
     }
 
-    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode){
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode)
+    {
         $data = [
             'orderId' => $orderId,
             'totalAmount' => $totalAmount,
@@ -693,15 +694,15 @@ class PrismalinkController extends Controller
         return $data;
     }
 
-    private function getPaymentStatus(){
-        try{
-            if($this->status == 'local'){
+    private function getPaymentStatus()
+    {
+        try {
+            if ($this->status == 'local') {
                 $url = 'https://api-staging.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
-            }
-            else{
+            } else {
                 $url = 'https://secure3.plink.co.id/gateway/v2/payment/integration/transaction/api/inquiry-transaction';
             }
-    
+
             $body = [
                 "merchant_key_id" => $this->merchantKeyId,
                 "merchant_id" => $this->merchantId,
@@ -709,20 +710,45 @@ class PrismalinkController extends Controller
                 "plink_ref_no" => $this->plink_ref_no,
                 "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
             ];
-    
-            $jsonBody = json_encode($body);
+
+            // $jsonBody = json_encode($body);
+            // $secretKey = $this->secretKey;
+            // $mac = hash_hmac('sha256', $jsonBody, $secretKey);
+
+            // $response = Http::withHeaders([
+            //     'mac' => $mac,
+            //     'Content-Type' => 'application/json',
+            // ])->post($url, $body);
+
+            // Tambahkan JSON_UNESCAPED_SLASHES agar URL callback tidak rusak (misal http:\/\/...)
+            // $jsonBody = json_encode($body, JSON_UNESCAPED_SLASHES);
+            // $secretKey = $this->secretKey;
+            // $mac = hash_hmac('sha256', $jsonBody, $secretKey);
+
+            // // Gunakan ->withBody() untuk mengirim string JSON mentah yang sama persis dengan yang di-Hash
+            // $response = Http::withHeaders([
+            //     'mac' => $mac,
+            //     'Content-Type' => 'application/json',
+            // ])->withBody($jsonBody, 'application/json')->post($url);
+
+            // 1. Tambahkan JSON_UNESCAPED_SLASHES agar URL callback tidak rusak (misal http:\/\/...)
+            $jsonBody = json_encode($body, JSON_UNESCAPED_SLASHES);
+
+            // 2. Buat signature MAC
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
-            
+
+            $url = $this->transactionUrl;
+
+            // 3. Gunakan ->withBody() untuk mengirim string JSON mentah yang sama persis dengan yang di-Hash
             $response = Http::withHeaders([
                 'mac' => $mac,
                 'Content-Type' => 'application/json',
-            ])->post($url, $body);
-    
+            ])->withBody($jsonBody, 'application/json')->post($url);
+
             $result = json_decode($response->getBody(), true);
             return $result;
-        }
-        catch(Exception $err){
+        } catch (Exception $err) {
             dd($err->getMessage());
             Log::error('Error getPaymentStatus: ' . $err->getMessage());
             return response()->json([

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Brand;
+use Carbon\Carbon;
 use App\Models\Cart;
-use App\Models\Cart_item;
-use App\Models\Wishlist;
+use App\Models\Brand;
 use App\Models\Promo;
 use App\Models\Product;
+use App\Models\Wishlist;
+use App\Models\Cart_item;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -42,6 +42,7 @@ class BrandController extends Controller
             'pagination' => (string) $brands->links()->render()
         ]);
     }
+
 
     public function createBrand()
     {
