@@ -295,8 +295,8 @@ Route::post('/initiate-doku-payment', [DokuPaymentController::class, 'initiatePa
 Route::match(['get', 'post'], '/doku-callback', [DokuPaymentController::class, 'callback'])->name('doku.callback');
 
 // payment
-Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
-Route::get('/payment/failed', [PaymentController::class, 'failed'])->name('payment.failed');
+Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/failed', [PaymentController::class, 'paymentFailed'])->name('payment.failed');
 
 
 
@@ -347,7 +347,16 @@ Route::post('/send-reset-link', [AuthenticateController::class, 'sendResetLink']
 Route::get('/reset-password/{token}', [AuthenticateController::class, 'showResetForm'])->name('password.reset.admin');
 Route::post('/reset-password', [AuthenticateController::class, 'resetPassword'])->name('reset.password.admin');
 
-Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
+// TAMPILKAN PROFILE ADMIN
+Route::get('/admin/profile', [AuthenticateController::class, 'adminProfile'])->name('admin.profile');
+
+// PROSES UPDATE PROFILE ADMIN
+Route::put('/admin/profile/update', [AuthenticateController::class, 'updateProfile'])->name('admin.profile.update');
+Route::put('/admin/profile/password', [AuthenticateController::class, 'updatePassword'])->name('admin.profile.password');
+Route::get('/admin/settings', [AuthenticateController::class, 'settings'])->name('admin.settings');
+Route::post('/admin/settings', [AuthenticateController::class, 'updateSettings'])->name('admin.settings.update');
+
+// Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
 

@@ -2,538 +2,409 @@
 
 @section('content')
     <style>
-        .about-section {
+        /* ==========================================
+           WORLD CLASS ABOUT US STYLING
+           ========================================== */
+        :root {
+            --glamoire-dark: #183018; 
+            --glamoire-light: #F9FAFB;
+            --glamoire-accent: #2A4D2A;
+            --glamoire-gold: #D4AF37;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
+            --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        body {
+            background-color: #FFFFFF;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* --- Hero Section Cinematic --- */
+        .about-hero {
             position: relative;
-            overflow: hidden;
-        }
-
-        .section-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(24, 48, 24, 0.2), transparent);
-            margin: 60px 0;
-        }
-
-        .elegant-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            text-align: justify;
-        }
-
-        .elegant-card .about-section-title {
-            text-align: center;
-            display: block;
-        }
-
-        .elegant-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Green card for Vision and Story sections */
-        .elegant-card-green {
-            background: linear-gradient(135deg, #183018, #2d5a2d);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            text-align: justify;
-            color: white;
-        }
-
-        .elegant-card-green .about-section-title {
-            text-align: center;
-            display: block;
-            color: white;
-        }
-
-        .elegant-card-green .about-section-title::after {
-            background: linear-gradient(90deg, #a8d5a8, #76fb76);
-        }
-
-        .elegant-card-green:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .elegant-card-green .text-muted {
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-
-        .elegant-card-green .feature-icon {
-            background: white;
+            height: 70vh;
+            min-height: 500px;
             display: flex;
-            /* gunakan flexbox untuk center */
             align-items: center;
-            /* vertical center */
             justify-content: center;
-            /* horizontal center */
-            border-radius: 50%;
-            margin: 0 auto;
-            /* center lingkaran di parent */
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Parallax effect */
+            color: #FFF;
+            margin-bottom: 5rem;
         }
 
-        .elegant-card-green .feature-icon i {
-            color: #183018;
-            /* hijau untuk icon */
-            font-size: 30px;
-            /* bisa sesuaikan ukuran icon */
-        }
-
-
-        .image-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .image-container::before {
+        .about-hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(24, 48, 24, 0.1), transparent);
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(24,48,24,0.7) 100%);
             z-index: 1;
         }
 
-        .image-container img {
-            transition: transform 0.3s ease;
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
         }
 
-        .image-container:hover img {
+        .hero-title {
+            font-family: 'The Seasons', serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+
+        .hero-desc {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            font-weight: 300;
+            line-height: 1.8;
+            opacity: 0.9;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* --- Content Sections (Z-Pattern Layout) --- */
+        .story-section {
+            padding: 5rem 0;
+        }
+
+        .story-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 6rem;
+        }
+        .story-row:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Reverse order for alternating layout */
+        .story-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .story-media {
+            flex: 1 1 45%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+
+        .story-media::after {
+            content: '';
+            display: block;
+            padding-bottom: 100%; /* 1:1 Aspect ratio default */
+        }
+
+        .story-media img, .story-media video {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+        .story-media:hover img {
             transform: scale(1.05);
         }
 
-        .content-overlay {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(243, 247, 242, 0.9));
-            backdrop-filter: blur(10px);
+        .story-text {
+            flex: 1 1 45%;
+            padding: 2rem 0;
         }
 
-        .about-section-title {
-            position: relative;
-            display: inline-block;
+        .section-label {
+            color: var(--glamoire-gold);
+            text-transform: uppercase;
             font-weight: 700;
-            font-size: 28px;
-            color: #183018;
-            margin-bottom: 20px;
-            max-width: 100%;
-            word-wrap: break-word;
-            text-align: center;
-        }
-
-        .about-section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #183018, #4a7c59);
-            border-radius: 2px;
-        }
-
-        /* Hero Section Styles */
-        .breadcrumb-item a {
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .breadcrumb-item a:hover {
-            color: #76fb76c0 !important;
-        }
-
-        .btn-light:hover {
-            background-color: #f8f9fa;
-            border-color: #f8f9fa;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #183018, #4a7c59);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            color: white;
-            font-size: 24px;
-        }
-
-        .stats-section {
-            background: linear-gradient(135deg, #183018, #2d5a2d);
-            border-radius: 20px;
-            color: white;
-            padding: 60px 0;
-            margin: 80px 0;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .stat-number {
-            font-size: 36px;
-            font-weight: 700;
-            color: #a8d5a8;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
             display: block;
         }
 
-        .stat-label {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-top: 5px;
+        .story-title {
+            font-family: 'The Seasons', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
 
-        @media (max-width: 768px) {
-            .hero-section {
-                height: 80vh !important;
-            }
+        .story-desc {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            text-align: justify;
+        }
+
+        /* --- Call to Action Footer --- */
+        .cta-section {
+            background: linear-gradient(135deg, var(--glamoire-light) 0%, #eef5eb 100%);
+            padding: 6rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .cta-title {
+            font-family: 'The Seasons', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            margin-bottom: 1rem;
+        }
+
+        .cta-desc {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-premium {
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary-dark {
+            background: var(--glamoire-dark);
+            color: #FFF;
+            border: 2px solid var(--glamoire-dark);
+        }
+        .btn-primary-dark:hover {
+            background: var(--glamoire-gold);
+            border-color: var(--glamoire-gold);
+            color: #FFF;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-outline-dark {
+            background: transparent;
+            color: var(--glamoire-dark);
+            border: 2px solid var(--glamoire-dark);
+        }
+        .btn-outline-dark:hover {
+            background: var(--glamoire-dark);
+            color: #FFF;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991px) {
+            .story-row { gap: 2rem; }
+            .story-media, .story-text { flex: 1 1 100%; }
+            .story-row.reverse { flex-direction: column; }
+            .story-media::after { padding-bottom: 60%; /* Taller ratio for mobile */ }
         }
     </style>
 
-    <!-- Hero Section with Background Image -->
-    <div class="hero-section position-relative text-white"
-        style="background-image: url('{{ Storage::url($data['hero_image']) }}'); background-size: cover; background-position: center; height: 100vh;">
-
-        <div class="overlay position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.0);"></div>
-
-        <div class="container position-relative z-1 h-100 d-flex align-items-center">
-            <div class="col-lg-8">
-
-                {{-- Title --}}
-                <h1 class="mb-3"
-                    style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);">
-                    {{ $data['hero_title'] }}
-                </h1>
-
-                {{-- Konten --}}
-                <div class="p-4 shadow" style="background-color: rgba(215, 226, 201, 0.6); border-radius: 1rem;">
-                    {{-- Description --}}
-                    <p class="mb-4"
-                        style="
-                        font-size: 1rem; 
-                        line-height: 1.6; 
-                        color: #2e7d32; 
-                        font-weight: 700;
-                        text-align: justify;">
-                        {{ $data['hero_description'] }}
-                    </p>
-                </div>
-
-            </div>
+    <div class="about-hero" style="background-image: url('{{ Storage::url($data['hero_image'] ?? 'images/bg-mitra-new.png') }}');">
+        <div class="hero-content">
+            <h1 class="hero-title text-white">{{ $data['hero_title'] ?? 'Tentang Glamoire' }}</h1>
+            <p class="hero-desc">{{ $data['hero_description'] ?? 'Temukan kisah di balik dedikasi kami untuk menghadirkan kecantikan vegan alami yang ramah lingkungan dan berkualitas tinggi.' }}</p>
         </div>
     </div>
 
-    <div class="container my-5">
-        <!-- Intro Section -->
-        @if ($data->intro_title || $data->intro_description || $data->intro_image || $data->intro_video)
-            <section class="about-section mb-5">
-                <div class="row align-items-center">
-                    @if ($data->intro_image || $data->intro_video)
-                        <div class="col-lg-6 mb-4 mb-lg-0">
-                            @if ($data->intro_video)
-                                <div class="shadow">
-                                    @php
-                                        $fileExtension = pathinfo($data->intro_video, PATHINFO_EXTENSION);
-                                    @endphp
+    <div class="container md:px-20 lg:px-24 xl:px-24 2xl:px-48 pb-5">
 
-                                    @if (strtolower($fileExtension) === 'gif')
-                                        {{-- Tampilkan GIF --}}
-                                        <img src="{{ asset('storage/' . $data->intro_video) }}" class="img-fluid"
-                                            alt="Intro GIF"
-                                            style="border-radius: 2px; max-height: 500px; width: 100%; object-fit: cover;">
-                                    @else
-                                        {{-- Tampilkan Video --}}
-                                        <video width="100%" height="auto" controls autoplay muted loop playsinline
-                                            style="border-radius: 2px; max-height: 500px; object-fit: cover;">
-                                            <source src="{{ asset('storage/' . $data->intro_video) }}" type="video/mp4">
-                                            Browser Anda tidak mendukung tag video.
-                                        </video>
-                                    @endif
-                                </div>
+        <div class="story-section">
+
+            @if ($data->intro_title || $data->intro_description || $data->intro_image || $data->intro_video)
+                <div class="story-row">
+                    @if ($data->intro_image || $data->intro_video)
+                        <div class="story-media">
+                            @if ($data->intro_video)
+                                @php $fileExt = pathinfo($data->intro_video, PATHINFO_EXTENSION); @endphp
+                                @if (strtolower($fileExt) === 'gif')
+                                    <img src="{{ asset('storage/' . $data->intro_video) }}" alt="Intro GIF">
+                                @else
+                                    <video controls autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $data->intro_video) }}" type="video/mp4">
+                                    </video>
+                                @endif
                             @elseif ($data->intro_image)
-                                <div class="image-container shadow">
-                                    <img src="{{ Storage::url($data->intro_image) }}" class="img-fluid" alt="Intro">
-                                </div>
+                                <img src="{{ Storage::url($data->intro_image) }}" alt="Introduction">
                             @endif
                         </div>
                     @endif
 
-                    <div class="col-lg-{{ $data->intro_image || $data->intro_video ? '6' : '12' }}">
+                    <div class="story-text">
+                        <span class="section-label">Awal Mula</span>
                         @if ($data->intro_title)
-                            <h2 class="mb-2"
-                                style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); text-align: center;">
-                                {{ $data->intro_title }}
-                            </h2>
+                            <h2 class="story-title">{{ $data->intro_title }}</h2>
                         @endif
-
                         @if ($data->intro_description)
-                            <p class="mb-4"
-                                style="font-size: 1rem; line-height: 1.9; color: #4a7c68; font-weight: 550; font-family: 'Inter', sans-serif; text-align: justify;">
-                                {{ $data->intro_description }}
-                            </p>
+                            <p class="story-desc">{!! nl2br(e($data->intro_description)) !!}</p>
                         @endif
                     </div>
                 </div>
-            </section>
-        @endif
+            @endif
 
-        @if (
-            ($data->intro_title || $data->intro_description || $data->intro_image || $data->intro_video) &&
-                ($data->vision_title || $data->vision_description || $data->vision_image || $data->vision_video))
-            <div class="section-divider"></div>
-        @endif
-
-
-        <!-- Vision Section -->
-        @if ($data->vision_title || $data->vision_description || $data->vision_image || $data->vision_video)
-            <section class="about-section mb-5">
-                <div class="row align-items-center">
+            @if ($data->vision_title || $data->vision_description || $data->vision_image || $data->vision_video)
+                <div class="story-row reverse">
                     @if ($data->vision_image || $data->vision_video)
-                        <div class="col-lg-6 order-lg-2 mb-4 mb-lg-0">
+                        <div class="story-media">
                             @if ($data->vision_video)
-                                <div class="shadow">
-                                    @php
-                                        $fileExtension = pathinfo($data->vision_video, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    @if (strtolower($fileExtension) === 'gif')
-                                        <img src="{{ asset('storage/' . $data->vision_video) }}" class="img-fluid"
-                                            alt="Vision GIF"
-                                            style="border-radius: 2px; max-height: 500px; width: 100%; object-fit: cover;">
-                                    @else
-                                        <video width="100%" height="auto" controls autoplay muted loop playsinline
-                                            style="border-radius: 2px; max-height: 500px; object-fit: cover;">
-                                            <source src="{{ asset('storage/' . $data->vision_video) }}" type="video/mp4">
-                                            Browser Anda tidak mendukung tag video.
-                                        </video>
-                                    @endif
-                                </div>
+                                @php $fileExt = pathinfo($data->vision_video, PATHINFO_EXTENSION); @endphp
+                                @if (strtolower($fileExt) === 'gif')
+                                    <img src="{{ asset('storage/' . $data->vision_video) }}" alt="Vision GIF">
+                                @else
+                                    <video controls autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $data->vision_video) }}" type="video/mp4">
+                                    </video>
+                                @endif
                             @elseif ($data->vision_image)
-                                <div class="image-container shadow">
-                                    <img src="{{ Storage::url($data->vision_image) }}" class="img-fluid" alt="Vision">
-                                </div>
+                                <img src="{{ Storage::url($data->vision_image) }}" alt="Our Vision">
                             @endif
                         </div>
                     @endif
-                    <div class="col-lg-{{ $data->vision_image || $data->vision_video ? '6' : '12' }} order-lg-1">
+
+                    <div class="story-text">
+                        <span class="section-label">Visi Kami</span>
                         @if ($data->vision_title)
-                            <h2 class="mb-2"
-                                style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); text-align: center;">
-                                {{ $data->vision_title }}
-                            </h2>
+                            <h2 class="story-title">{{ $data->vision_title }}</h2>
                         @endif
                         @if ($data->vision_description)
-                            <div>
-                                <p class="mb-4"
-                                    style="font-size: 1rem; line-height: 1.6; color: #4a7c68; font-weight: 550; font-family: 'Inter', sans-serif; text-align: justify;">
-                                    {{ $data->vision_description }}
-                                </p>
-                            </div>
+                            <p class="story-desc">{!! nl2br(e($data->vision_description)) !!}</p>
                         @endif
                     </div>
                 </div>
-            </section>
-        @endif
+            @endif
 
-        @if (
-            ($data->vision_title || $data->vision_description || $data->vision_image || $data->vision_video) &&
-                ($data->mission_title || $data->mission_description || $data->mission_image || $data->mission_video))
-            <div class="section-divider"></div>
-        @endif
-
-        <!-- Mission Section -->
-        @if ($data->mission_title || $data->mission_description || $data->mission_image || $data->mission_video)
-            <section class="about-section mb-5">
-                <div class="row align-items-center">
+            @if ($data->mission_title || $data->mission_description || $data->mission_image || $data->mission_video)
+                <div class="story-row">
                     @if ($data->mission_image || $data->mission_video)
-                        <div class="col-lg-6 mb-4 mb-lg-0">
+                        <div class="story-media">
                             @if ($data->mission_video)
-                                <div class="shadow">
-                                    @php
-                                        $fileExtension = pathinfo($data->mission_video, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    @if (strtolower($fileExtension) === 'gif')
-                                        <img src="{{ asset('storage/' . $data->mission_video) }}" class="img-fluid"
-                                            alt="Mission GIF"
-                                            style="border-radius: 2px; max-height: 500px; width: 100%; object-fit: cover;">
-                                    @else
-                                        <video width="100%" height="auto" controls autoplay muted loop playsinline
-                                            style="border-radius: 2px; max-height: 500px; object-fit: cover;">
-                                            <source src="{{ asset('storage/' . $data->mission_video) }}" type="video/mp4">
-                                            Browser Anda tidak mendukung tag video.
-                                        </video>
-                                    @endif
-                                </div>
+                                @php $fileExt = pathinfo($data->mission_video, PATHINFO_EXTENSION); @endphp
+                                @if (strtolower($fileExt) === 'gif')
+                                    <img src="{{ asset('storage/' . $data->mission_video) }}" alt="Mission GIF">
+                                @else
+                                    <video controls autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $data->mission_video) }}" type="video/mp4">
+                                    </video>
+                                @endif
                             @elseif ($data->mission_image)
-                                <div class="image-container shadow">
-                                    <img src="{{ Storage::url($data->mission_image) }}" class="img-fluid" alt="Mission">
-                                </div>
+                                <img src="{{ Storage::url($data->mission_image) }}" alt="Our Mission">
                             @endif
                         </div>
                     @endif
-                    <div class="col-lg-{{ $data->mission_image || $data->mission_video ? '6' : '12' }}">
+
+                    <div class="story-text">
+                        <span class="section-label">Misi Kami</span>
                         @if ($data->mission_title)
-                            <h2 class="mb-2"
-                                style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); text-align: center;">
-                                {{ $data->mission_title }}
-                            </h2>
+                            <h2 class="story-title">{{ $data->mission_title }}</h2>
                         @endif
                         @if ($data->mission_description)
-                            <p class="mb-4"
-                                style="font-size: 1rem; line-height: 1.6; color: #4a7c68; font-weight: 550; font-family: 'Inter', sans-serif; text-align: justify;">
-                                {{ $data->mission_description }}
-                            </p>
+                            <p class="story-desc">{!! nl2br(e($data->mission_description)) !!}</p>
                         @endif
                     </div>
                 </div>
-            </section>
-        @endif
+            @endif
 
-        @if (
-            ($data->mission_title || $data->mission_description || $data->mission_image || $data->mission_video) &&
-                ($data->story_title || $data->story_description || $data->story_image || $data->story_video))
-            <div class="section-divider"></div>
-        @endif
-
-        <!-- Story Section -->
-        @if ($data->story_title || $data->story_description || $data->story_image || $data->story_video)
-            <section class="about-section mb-5">
-                <div class="row align-items-center">
+            @if ($data->story_title || $data->story_description || $data->story_image || $data->story_video)
+                <div class="story-row reverse">
                     @if ($data->story_image || $data->story_video)
-                        <div class="col-lg-6 order-lg-2 mb-lg-0">
+                        <div class="story-media">
                             @if ($data->story_video)
-                                <div class="shadow">
-                                    @php
-                                        $fileExtension = pathinfo($data->story_video, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    @if (strtolower($fileExtension) === 'gif')
-                                        <img src="{{ asset('storage/' . $data->story_video) }}" class="img-fluid"
-                                            alt="Story GIF"
-                                            style="border-radius: 2px; max-height: 500px; width: 100%; object-fit: cover;">
-                                    @else
-                                        <video width="100%" height="auto" controls autoplay muted loop playsinline
-                                            style="border-radius: 2px; max-height: 500px; object-fit: cover;">
-                                            <source src="{{ asset('storage/' . $data->story_video) }}" type="video/mp4">
-                                            Browser Anda tidak mendukung tag video.
-                                        </video>
-                                    @endif
-                                </div>
+                                @php $fileExt = pathinfo($data->story_video, PATHINFO_EXTENSION); @endphp
+                                @if (strtolower($fileExt) === 'gif')
+                                    <img src="{{ asset('storage/' . $data->story_video) }}" alt="Story GIF">
+                                @else
+                                    <video controls autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $data->story_video) }}" type="video/mp4">
+                                    </video>
+                                @endif
                             @elseif ($data->story_image)
-                                <div class="image-container shadow">
-                                    <img src="{{ Storage::url($data->story_image) }}" class="img-fluid" alt="Story">
-                                </div>
+                                <img src="{{ Storage::url($data->story_image) }}" alt="Our Story">
                             @endif
                         </div>
                     @endif
-                    <div class="col-lg-{{ $data->story_image || $data->story_video ? '6' : '12' }} order-lg-1">
+
+                    <div class="story-text">
+                        <span class="section-label">Perjalanan</span>
                         @if ($data->story_title)
-                            <h2 class="mb-2"
-                                style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); text-align: center;">
-                                {{ $data->story_title }}
-                            </h2>
+                            <h2 class="story-title">{{ $data->story_title }}</h2>
                         @endif
                         @if ($data->story_description)
-                            <div class="timeline-item">
-                                <div class="d-flex align-items-start">
-                                    <div>
-                                        <p class="mb-4"
-                                            style="font-size: 1rem; line-height: 1.6; color: #4a7c68; font-weight: 550; font-family: 'Inter', sans-serif; text-align: justify;">
-                                            {{ $data->story_description }}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
+                            <p class="story-desc">{!! nl2br(e($data->story_description)) !!}</p>
                         @endif
                     </div>
                 </div>
-            </section>
-        @endif
+            @endif
 
-        @if (
-            ($data->story_title || $data->story_description || $data->story_image || $data->story_video) &&
-                ($data->achievement_title ||
-                    $data->achievement_description ||
-                    $data->achievement_image ||
-                    $data->achievement_video))
-            <div class="section-divider"></div>
-        @endif
-
-        <!-- Achievement Section -->
-        @if ($data->achievement_title || $data->achievement_description || $data->achievement_image || $data->achievement_video)
-            <section class="about-section mb-5">
-                <div class="row align-items-center">
+            @if ($data->achievement_title || $data->achievement_description || $data->achievement_image || $data->achievement_video)
+                <div class="story-row">
                     @if ($data->achievement_image || $data->achievement_video)
-                        <div class="col-lg-6 mb-4 mb-lg-0">
+                        <div class="story-media">
                             @if ($data->achievement_video)
-                                <div class="shadow">
-                                    @php
-                                        $fileExtension = pathinfo($data->achievement_video, PATHINFO_EXTENSION);
-                                    @endphp
-
-                                    @if (strtolower($fileExtension) === 'gif')
-                                        <img src="{{ asset('storage/' . $data->achievement_video) }}" class="img-fluid"
-                                            alt="Achievement GIF"
-                                            style="border-radius: 2px; max-height: 500px; width: 100%; object-fit: cover;">
-                                    @else
-                                        <video width="100%" height="auto" controls autoplay muted loop playsinline
-                                            style="border-radius: 2px; max-height: 500px; object-fit: cover;">
-                                            <source src="{{ asset('storage/' . $data->achievement_video) }}"
-                                                type="video/mp4">
-                                            Browser Anda tidak mendukung tag video.
-                                        </video>
-                                    @endif
-                                </div>
+                                @php $fileExt = pathinfo($data->achievement_video, PATHINFO_EXTENSION); @endphp
+                                @if (strtolower($fileExt) === 'gif')
+                                    <img src="{{ asset('storage/' . $data->achievement_video) }}" alt="Achievement GIF">
+                                @else
+                                    <video controls autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $data->achievement_video) }}" type="video/mp4">
+                                    </video>
+                                @endif
                             @elseif ($data->achievement_image)
-                                <div class="image-container shadow">
-                                    <img src="{{ Storage::url($data->achievement_image) }}" class="img-fluid"
-                                        alt="Achievement">
-                                </div>
+                                <img src="{{ Storage::url($data->achievement_image) }}" alt="Our Achievement">
                             @endif
                         </div>
                     @endif
-                    <div class="col-lg-{{ $data->achievement_image || $data->achievement_video ? '6' : '12' }}">
+
+                    <div class="story-text">
+                        <span class="section-label">Pencapaian</span>
                         @if ($data->achievement_title)
-                            <h2 class="mb-2"
-                                style="font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 500; letter-spacing: 0.5px; background: linear-gradient(180deg, #eaa11b 0%, #dea63d 100%); -webkit-background-clip: text; color: transparent; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15); text-align: center;">
-                                {{ $data->achievement_title }}
-                            </h2>
+                            <h2 class="story-title">{{ $data->achievement_title }}</h2>
                         @endif
                         @if ($data->achievement_description)
-                            <p class="mb-4"
-                                style="font-size: 1rem; line-height: 1.6; color: #4a7c68; font-weight: 550; font-family: 'Inter', sans-serif; text-align: justify;">
-                                {{ $data->achievement_description }}
-                            </p>
+                            <p class="story-desc">{!! nl2br(e($data->achievement_description)) !!}</p>
                         @endif
                     </div>
                 </div>
-            </section>
-        @endif
+            @endif
+
+        </div>
     </div>
 
-    <!-- Call to Action -->
-    <section class="py-5" style="background: linear-gradient(135deg, #f3f7f2, #eef5eb);">
-        <div class="container text-center">
-            <h3 class="fw-bold mb-3" style="color: #183018;">Siap Berkolaborasi dengan Kami?</h3>
-            <p class="text-muted mb-4">Mari wujudkan visi bersama untuk masa depan yang lebih baik</p>
-            <div class="d-flex justify-content-center gap-3">
-                <a href="/contact" class="btn btn-lg px-4 py-3 rounded-pill"
-                    style="background: #183018; color: white; border: none;">
-                    <i class="fas fa-phone me-2"></i>Hubungi Kami
+    <section class="cta-section">
+        <div class="container">
+            <h3 class="cta-title">Tumbuh Bersama Glamoire</h3>
+            <p class="cta-desc">Kami percaya bahwa kecantikan sejati dimulai dari langkah-langkah kecil yang berdampak besar. Baik Anda seorang pelanggan yang mencari produk vegan berkualitas, maupun pebisnis yang ingin menjadi mitra, kami siap menyambut Anda.</p>
+            <div class="btn-cta-group">
+                <a href="/shop" class="btn-premium btn-primary-dark">
+                    <i class="fas fa-shopping-bag"></i> Mulai Belanja
                 </a>
-                <a href="/partner" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill">
-                    <i class="fas fa-envelope me-2"></i>Gabung Mitra
+                <a href="/partner" class="btn-premium btn-outline-dark">
+                    <i class="fas fa-handshake"></i> Gabung Kemitraan
                 </a>
             </div>
         </div>
     </section>
+
 @endsection

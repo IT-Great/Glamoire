@@ -1,1008 +1,1065 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
-    <div class="container-fluid px-0 px-md-3">
-        <div class="shadow-sm border border-black rounded-xl py-2 py-md-3 my-2 my-md-3">
-            <div class="d-flex gap-1 pl-2">
-                <a href="/" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Beranda</a>
-                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
-                <a href="/shop" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Belanja</a>
-                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">{{ $product->product_name }}</a>
-            </div>
-        </div>
-    </div>
+        <style>
+            /* ==========================================
+               PREMIUM PRODUCT DETAIL STYLING
+               ========================================== */
+            :root {
+                --glamoire-dark: #183018;
+                --glamoire-light: #F9FAFB;
+                --glamoire-accent: #2A4D2A;
+                --glamoire-gold: #D4AF37;
+                --text-main: #1F2937;
+                --text-muted: #6B7280;
+                --danger-main: #DC2626;
+                --border-color: #E5E7EB;
+                --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            }
 
-    <!-- Shop Detail Start -->
-    <div class="container-fluid mt-3 mt-md-0">
-        <!-- IMAGE PRODUCT -->
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="position-sticky" style="top: 4rem">
-                    <div style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff" class="swiper mySwiperShow p-0">
-                        <div class="swiper-wrapper">
-                            @if (!empty($product->main_image))
-                                <div class="swiper-slide">
-                                    <div class="image-container border shadow-sm border border-black rounded-xl">
-                                        <img class="zoomable-image main-display shadow-sm border border-black rounded-xl" src="{{ Storage::url($product->main_image) }}" alt="product Image" />
-                                    </div>
-                                </div>
-                            @endif
+            body {
+                background-color: #FFFFFF;
+                font-family: 'Poppins', sans-serif;
+            }
 
-                            @if (!empty($product->images))
-                                @foreach ($product->images as $image)
-                                    <div class="swiper-slide">
-                                        <div class="image-container border shadow-sm border border-black rounded-xl">
-                                            <img class="zoomable-image main-display shadow-sm border border-black rounded-xl" src="{{ Storage::url($image) }}" alt="product Image" />
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @endif
+            /* --- Premium Breadcrumb --- */
+            .premium-breadcrumb {
+                background: linear-gradient(to right, rgba(24, 48, 24, 0.03), transparent);
+                border-radius: 12px;
+                padding: 0.75rem 1.5rem;
+                margin-bottom: 2rem;
+            }
 
-                            @if (!empty($product->video))
-                                <div class="swiper-slide" style="max-height: 150px;">
-                                    <video class="zoomable-video main-display shadow-sm border border-black rounded-xl" id="mainVideo" controls controlsList="nodownload noplaybackrate h-fit">
-                                        <source src="{{ Storage::url($product->video) }}" type="video/mp4">
-                                    </video>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+            .premium-breadcrumb a {
+                color: var(--text-muted);
+                text-decoration: none;
+                font-weight: 500;
+                font-size: 0.85rem;
+                transition: var(--transition-smooth);
+            }
 
-                    <div class="swiper mySwiperProduct p-0">
-                        <div class="swiper-wrapper">
-                            @if (!empty($product->main_image))
-                                <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="main_image">
-                                    <a data-src="{{ Storage::url($product->main_image) }}" data-type="image" class="shadow-sm k rounded-xl">
-                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}" class="shadow-sm border border-black rounded-xl" />
-                                    </a>
-                                </div>
-                            @endif
+            .premium-breadcrumb a:hover {
+                color: var(--glamoire-dark);
+            }
 
-                            @if (!empty($product->images))
-                                @foreach ($product->images as $image)
-                                    <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="main_image">
-                                        <a data-src="{{ Storage::url($image) }}" data-type="image" class="shadow-sm  rounded-xl">
-                                            <img src="{{ Storage::url($image) }}" alt="{{ $product->product_name }}" class="shadow-sm border border-black rounded-xl" />
-                                        </a>
-                                    </div>
-                                @endforeach
-                            @endif
+            .premium-breadcrumb span {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                margin: 0 8px;
+            }
 
-                            @if (!empty($product->video))
-                                <div class="swiper-slide example-product hover:cursor-pointer shadow-sm rounded-xl" id="videoproduk">
-                                    <a data-src="{{ Storage::url($product->video) }}" data-type="video">
-                                        <div class="video-thumbnail-wrapper">
-                                            <img src="{{ Storage::url($product->main_image) }}" alt="Video Thumbnail" class="shadow-sm  rounded-xl"/>
-                                            <i class="fas fa-play" style="color: #183018;"></i>
-                                        </div>
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="d-flex align-items-center justify-content-center">
-                            <div class="swiper-button-next"></div>
-                            <div class="swiper-button-prev"></div>
-                        </div>
-                    </div>
+            .premium-breadcrumb .active-page {
+                color: var(--glamoire-dark);
+                font-weight: 600;
+                font-size: 0.85rem;
+            }
+
+            /* --- Image Gallery (Swiper) --- */
+            .gallery-container {
+                position: sticky;
+                top: 100px;
+            }
+
+            .main-image-wrapper {
+                border-radius: 16px;
+                overflow: hidden;
+                background: var(--glamoire-light);
+                margin-bottom: 1rem;
+                aspect-ratio: 1/1;
+                position: relative;
+            }
+
+            .main-image-wrapper img,
+            .main-image-wrapper video {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                cursor: crosshair;
+                transition: transform 0.3s ease;
+            }
+
+            .thumb-wrapper {
+                border-radius: 12px;
+                overflow: hidden;
+                background: var(--glamoire-light);
+                aspect-ratio: 1/1;
+                border: 2px solid transparent;
+                cursor: pointer;
+                transition: var(--transition-smooth);
+                padding: 4px;
+            }
+
+            .thumb-wrapper img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 8px;
+            }
+
+            .swiper-slide-thumb-active .thumb-wrapper {
+                border-color: var(--glamoire-dark);
+            }
+
+            .video-badge {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 40px;
+                height: 40px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--glamoire-dark);
+                font-size: 1.2rem;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                pointer-events: none;
+            }
+
+            /* --- Product Info Section --- */
+            .product-brand-title {
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--text-muted);
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .product-main-title {
+                font-family: 'The Seasons', serif;
+                font-size: 2.2rem;
+                font-weight: 700;
+                color: var(--text-main);
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+
+            @media (max-width: 768px) {
+                .product-main-title {
+                    font-size: 1.6rem;
+                }
+            }
+
+            .product-meta-row {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1.5rem;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .rating-badge {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                color: #F59E0B;
+                font-weight: 600;
+            }
+
+            .review-count {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                font-weight: 400;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .sold-count {
+                color: var(--danger-main);
+                font-size: 0.9rem;
+                font-weight: 500;
+                background: #FEE2E2;
+                padding: 2px 8px;
+                border-radius: 4px;
+            }
+
+            .product-price-display {
+                font-size: 2rem;
+                font-weight: 800;
+                color: var(--glamoire-dark);
+                margin-bottom: 1.5rem;
+            }
+
+            /* --- Variants --- */
+            .variant-label {
+                font-size: 0.9rem;
+                font-weight: 600;
+                color: var(--text-main);
+                margin-bottom: 0.8rem;
+            }
+
+            .variant-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 2rem;
+            }
+
+            .variant-btn {
+                padding: 0.6rem 1.25rem;
+                font-size: 0.9rem;
+                font-weight: 500;
+                border: 1px solid var(--border-color);
+                border-radius: 50px;
+                background: #FFF;
+                color: var(--text-main);
+                text-decoration: none;
+                transition: var(--transition-smooth);
+                cursor: pointer;
+            }
+
+            .variant-btn:hover {
+                border-color: var(--glamoire-dark);
+                color: var(--glamoire-dark);
+            }
+
+            .variant-btn.active {
+                background: var(--glamoire-dark);
+                color: #FFF;
+                border-color: var(--glamoire-dark);
+            }
+
+            /* --- Actions (Quantity & Buttons) --- */
+            .action-row {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .qty-selector {
+                display: flex;
+                align-items: center;
+                background: var(--glamoire-light);
+                border: 1px solid var(--border-color);
+                border-radius: 50px;
+                padding: 0.25rem;
+                height: 50px;
+            }
+
+            .qty-btn {
+                width: 35px;
+                height: 35px;
+                border: none;
+                background: #FFF;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                color: var(--text-main);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                transition: var(--transition-smooth);
+            }
+
+            .qty-btn:hover {
+                background: var(--border-color);
+            }
+
+            .qty-input {
+                width: 40px;
+                text-align: center;
+                border: none;
+                background: transparent;
+                font-weight: 600;
+                color: var(--text-main);
+                font-size: 1rem;
+            }
+
+            .qty-input:focus {
+                outline: none;
+            }
+
+            /* Hilangkan panah spinner bawaan input number */
+            input[type=number]::-webkit-inner-spin-button,
+            input[type=number]::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+            .btn-cart-premium {
+                flex: 1;
+                min-width: 150px;
+                height: 50px;
+                background: #FFF;
+                border: 1px solid var(--glamoire-dark);
+                color: var(--glamoire-dark);
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                transition: var(--transition-smooth);
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-cart-premium:hover {
+                background: rgba(24, 48, 24, 0.05);
+                color: var(--glamoire-dark);
+            }
+
+            .btn-buy-premium {
+                flex: 1;
+                min-width: 150px;
+                height: 50px;
+                background: var(--glamoire-dark);
+                border: 1px solid var(--glamoire-dark);
+                color: #FFF;
+                font-weight: 600;
+                font-size: 0.95rem;
+                border-radius: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition-smooth);
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            .btn-buy-premium:hover {
+                background: var(--glamoire-accent);
+                color: #FFF;
+                box-shadow: 0 4px 15px rgba(24, 48, 24, 0.2);
+            }
+
+            /* Wishlist Heart Icon */
+            .btn-wishlist-premium {
+                font-size: 1.5rem;
+                cursor: pointer;
+                transition: var(--transition-smooth);
+                color: #D1D5DB;
+                background: transparent;
+                border: none;
+                padding: 0;
+            }
+
+            .btn-wishlist-premium:hover {
+                transform: scale(1.1);
+            }
+
+            .btn-wishlist-premium.active {
+                color: var(--danger-main);
+            }
+
+            /* --- Modern Tabs --- */
+            .premium-tabs {
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                gap: 2rem;
+                margin-top: 3rem;
+                margin-bottom: 2rem;
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 2px;
+            }
+
+            .premium-tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .premium-tabs .nav-link {
+                color: var(--text-muted);
+                font-weight: 600;
+                font-size: 1rem;
+                padding: 0.5rem 0 1rem 0;
+                border: none;
+                background: transparent;
+                border-bottom: 2px solid transparent;
+                transition: var(--transition-smooth);
+                cursor: pointer;
+                border-radius: 0;
+            }
+
+            .premium-tabs .nav-link:hover {
+                color: var(--glamoire-dark);
+            }
+
+            .premium-tabs .nav-link.active {
+                color: var(--glamoire-dark);
+                border-bottom-color: var(--glamoire-dark);
+            }
+
+            .tab-content-box {
+                color: var(--text-main);
+                font-size: 0.95rem;
+                line-height: 1.8;
+            }
+
+            .tab-content-box h4 {
+                font-family: 'Poppins', sans-serif;
+                font-weight: 700;
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            /* --- Reviews --- */
+            .review-card {
+                background: #FFF;
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                margin-bottom: 1rem;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            }
+
+            .reviewer-name {
+                font-weight: 600;
+                color: var(--text-main);
+                font-size: 0.95rem;
+            }
+
+            .review-date {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+            }
+
+            .review-text {
+                font-size: 0.9rem;
+                line-height: 1.6;
+                margin-top: 0.5rem;
+            }
+
+            .review-media img,
+            .review-media video {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: transform 0.2s;
+                border: 1px solid #E5E7EB;
+            }
+
+            .review-media img:hover,
+            .review-media video:hover {
+                transform: scale(1.05);
+            }
+
+            /* Mobile Fixed Bottom Nav */
+            .mobile-buy-nav {
+                background: #FFF;
+                box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+                padding: 10px 15px;
+                padding-bottom: env(safe-area-inset-bottom, 10px);
+                z-index: 1030;
+            }
+
+            /* Reusable Product Card */
+            .premium-product-card-small {
+                background: #FFF;
+                border-radius: 12px;
+                border: 1px solid #F3F4F6;
+                overflow: hidden;
+                transition: var(--transition-smooth);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                position: relative;
+            }
+
+            .premium-product-card-small:hover {
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+                transform: translateY(-4px);
+            }
+        </style>
+
+        <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-4">
+            <div class="container-fluid">
+                <div class="premium-breadcrumb">
+                    <a href="/"><i class="fas fa-home me-1"></i> Beranda</a>
+                    <span>/</span>
+                    <a href="/shop">Belanja</a>
+                    <span>/</span>
+                    <span class="active-page">{{ $product->product_name }}</span>
                 </div>
             </div>
 
-            <div class="grid col-lg-8 pl-lg-0 h-fit gap-1">
-                <div class="grid gap-1">
-                    <div class="d-flex gap-1">
-                        <a href="/{{ $product->brand->name }}_brand" class="text-decoration-none font-semibold text-black text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">{{$product->brand->name}}</a> 
-                        @if (session('id_user'))
-                            @php
-                                $inWishlist = collect($wishlists)->contains('product_id', $product->id);
-                            @endphp
-                            <i 
-                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
-                                onclick="{{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}" 
-                                title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
-                            </i>
-                        @else
-                            <i 
-                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold grid align-items-center justify-content-between hover-red hover:cursor-pointer" 
-                                onclick="{{ 'addToWishlist(' . $product->id . ')' }}" title="Tambah ke Favorit">
-                            </i>
-                        @endif
-                    </div>
-                    <p class="text-[20px] md:text-[22px] lg:text-[24px] xl:text-[24px] text-black font-semibold">{{ $product->product_name }}</p>
-                </div>
+            <div class="container-fluid mb-5">
+                <div class="row g-4 g-lg-5">
 
-                <div class="d-flex items-center gap-3 flex-wrap text-sm xl:text-base text-[#183018]">
-                    @if ($product->sale != 0)
-                        <div class="flex items-center gap-1">
-                            <i class="fas fa-shopping-cart" style="color: red;"></i>
-                            <span class="text-xs">Terjual {{ $product->sale }}</span>
-                        </div>
-                    @endif
-
-                    <div class="flex items-center gap-1">
-                        <i class="fas fa-star text" style="color: orange;"></i>
-                        <span class="text-xs">{{ $product->rating }}</span>
-                        <span class="text-gray-500 text-xs">({{ $product->rating_and_reviews_count }} Ulasan)</span>
-                    </div>
-                </div>
-
-
-                <div>
-                @php
-                    $activePromo = $product->promos->first();
-                    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                @endphp
-                
-                @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                    <span class="text-muted text-decoration-line-through font-semi-bold text-black text-[14px] md:text-[16px] lg:text-[18px] xl:text-[18px]">
-                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                    </span>
-                    <span class="text-[#183018] font-semibold text-black text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px]">
-                        Rp{{ number_format($discountedPrice, 0, ',', '.') }}
-                    </span>
-                @else
-                    <span class="font-bold text-dark text-[18px] md:text-[22px] lg:text-[24px] xl:text-[24px] font-semibold">
-                        Rp{{ number_format($product->regular_price, 0, ',', '.') }}
-                    </span>
-                @endif
-                </div>
-                
-                @if ($product->stock_quantity == 0)
-                    <div class="d-lg-flex d-none d-lg-block">
-                        <span class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
-                        <span
-                            class="text-danger rounded-xl ml-auto text-[10px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
-                            data-bs-toggle="tooltip" 
-                            data-bs-placement="top" 
-                            title="Beritahu Saya Jika Stok Sudah Ada" 
-                            type="button" 
-                            id="notify-me-{{$product->id}}"
-                            onclick="notifyMe({{$product->id}}, null)">
-                            Beritahu Saya
-                        </span>
-                    </div>
-                @else
-                    @if (session('id_user'))
-                        @php
-                            $inCart = collect($cartItems)->contains('product_id', $product->id);
-                        @endphp
-
-                        @if ($inCart)
-                            <button onclick="cart()" class="d-none d-lg-block rounded-xl w-full bg-[#183018] hover:bg-neutral-900 text-white py-1 p-0 text-[10px] md:text-[12px] lg:text-[14px] xl:text-[16px] flex align-items-center justify-content-center">
-                                Cek Keranjangmu
-                            </button>
-                        @else
-                            <div class="grid">
-                                <div class="d-flex">
-                                    <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between mr-1 text-dark font-semibold">Stok : {{ $product->stock_quantity }}</p>
-                                </div>
-                                <div class="align-items-center flex gap-2">
-                                    <div class="input-group quantity-detail-produk rounded-xl shadow-sm" style="width: 120px;">
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-minus">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
+                    <div class="col-lg-5">
+                        <div class="gallery-container">
+                            <div style="--swiper-navigation-color: var(--glamoire-dark); --swiper-pagination-color: var(--glamoire-dark)"
+                                class="swiper mySwiperShow main-image-wrapper shadow-sm">
+                                <div class="swiper-wrapper">
+                                    @if (!empty($product->main_image))
+                                        <div class="swiper-slide">
+                                            <img class="zoomable-image" src="{{ Storage::url($product->main_image) }}"
+                                                alt="{{ $product->product_name }}" />
                                         </div>
-                                        <input type="number" 
-                                            class="form-control bg-secondary text-center px-2 no-spinner" 
-                                            id="total-detail-product-quantity-{{$product->id}}" 
-                                            value="1" 
-                                            min="1"
-                                            max="{{ $product->stock_quantity }}"
-                                            data-unify="Quantity"
-                                            name="quantityProduct"
-                                            oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
-                                        >
-                                        <div class="input-group-btn">
-                                            <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
+                                    @endif
+
+                                    @if (!empty($product->images))
+                                        @foreach ($product->images as $image)
+                                            <div class="swiper-slide">
+                                                <img class="zoomable-image" src="{{ Storage::url($image) }}" alt="Product Detail" />
+                                            </div>
+                                        @endforeach
+                                    @endif
+
+                                    @if (!empty($product->video))
+                                        <div class="swiper-slide position-relative bg-black">
+                                            <video id="mainVideo" controls controlsList="nodownload noplaybackrate">
+                                                <source src="{{ Storage::url($product->video) }}" type="video/mp4">
+                                            </video>
                                         </div>
-                                    </div>
-                                    
-                                    <a onclick="addCartWithQuantity({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 hover:bg-gray-100 rounded-xl shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                    <a onclick="buyNow({{$product->id}})" class="d-none d-lg-block hover:cursor-pointer py-2 text-decoration-none rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
+                                    @endif
                                 </div>
-                                <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
+                                <div class="swiper-button-next d-none d-md-flex"></div>
+                                <div class="swiper-button-prev d-none d-md-flex"></div>
                             </div>
-                        @endif
-                    @else
-                        <div class="grid">
-                            <div class="d-flex">
-                                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] grid align-items-center justify-content-between mr-1">Stok : {{ $product->stock_quantity }}</p>
-                            </div>
-                            <div class="align-items-center gap-2 d-none d-lg-flex">
-                                <div class="input-group quantity-detail-produk rounded-xl shadow-sm" style="width: 120px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-minus">
-                                            <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="number" 
-                                        class="form-control bg-secondary text-center px-2  no-spinner" 
-                                        id="total-detail-product-quantity-{{$product->id}}" 
-                                        value="1" 
-                                        min="1"
-                                        max="{{ $product->stock_quantity }}"
-                                        data-unify="Quantity"
-                                        name="quantityProduct"
-                                        oninput="checkMaxQuantity(this, {{ $product->stock_quantity }})"
-                                    >
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-plus" id="btn-plus-{{$product->id}}">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <a onclick="addCartWithQuantity({{$product->id}})" class="hover:cursor-pointer py-2 hover:bg-gray-100 rounded-xl shadow-sm text-decoration-none px-3 text-black text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]"><i class="fa fa-plus mr-1"></i> Keranjang</a>
-                                <a onclick="buyNowGuest({{$product->id}})" class="hover:cursor-pointer text-decoration-none py-2 rounded-xl hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] text-[14px] md:text-[12px] lg:text-[16px] xl:text-[16px]">Beli Sekarang</a>
-                            </div>
-                            <span id="quantity-warning-{{$product->id}}" class="text-danger" style="display: none;">Batas untuk pembelian produk terpenuhi</span>
-                        </div>
-                    @endif
-                @endif
 
-                {{-- <div class="d-flex pt-2">
-                    <p class="text-dark text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold mb-0 mr-2">Bagikan Produk ke:</p>
-                    <div class="d-inline-flex">
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-dark px-2 text-[12px] text-black md:text-[14px] lg:text-[16px] xl:text-[18px]" href="">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                    </div>
-                </div> --}}
+                            <div class="swiper mySwiperProduct pb-2">
+                                <div class="swiper-wrapper">
+                                    @if (!empty($product->main_image))
+                                        <div class="swiper-slide" style="width: 20%;">
+                                            <div class="thumb-wrapper">
+                                                <img src="{{ Storage::url($product->main_image) }}" alt="Thumb" />
+                                            </div>
+                                        </div>
+                                    @endif
 
-                
-                {{-- Desc/Inf/Ulasan --}}
-                <div class="row">
-                    <div class="col tabbable mt-1 mt-md-2 border-bottom mx-3 mx-0 px-0">
-                        <div class="nav nav-tabs justify-content-start border-secondary mb-2">
-                            <a class="nav-item nav-link active text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#deskripsi">Deskripsi</a>
-                            <a class="nav-item nav-link text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#informasi">Informasi</a>
-                            <a class="nav-item nav-link text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px]" data-bs-toggle="tab" href="#ulasan">Ulasan ({{ $product->rating_and_reviews_count }})</a>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active p-1" id="deskripsi">
-                                <h4 class="mb-1 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">Deskripsi Produk</h4>
-                                <div>{!! $product->description !!}</div>
-                            </div>
-                            <div class="tab-pane fade p-1" id="informasi">
-                                <h4 class="mb-1 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">Informasi terkait produk</h4>
-                                <div>{!! $product->information_product !!}</div>
-                            </div>
-                            <div class="tab-pane fade p-1" id="ulasan">
-                                <div class="row">
-                                    <div class="col-12 overflow-y-auto custom-scroll" style="max-height:60vh;">
-                                        <h4 class="mb-3 text-[14px] md:text-[14px] lg:text-[16px] xl:text-[18px] font-semibold">{{ $product->rating_and_reviews_count }} Ulasan untuk "{{ $product->product_name }}"</h4>
-                                        @foreach ($product->ratingAndReviews as $ratingAndReviews)
-                                            <div class="comment mb-1">
-                                                <div class="media-body grid border border-[#183018] rounded-xl shadow-md p-2">
-                                                    <div class="col-12 p-0">
-                                                        <div class="grid">
-                                                            <div class="flex items-start gap-3">
-                                                                {{-- Nama + Tanggal + Rating --}}
-                                                                <div class="flex flex-col w-full">
-                                                                    <div class="flex justify-between items-center">
-                                                                        <h6 class="text-xs lg:text-base font-semibold text-[#183018]">
-                                                                            🧖‍♀️{{ $ratingAndReviews->user->fullname }}
-                                                                        </h6>
-                                                                        <span class="text-xs text-gray-500">
-                                                                            {{ \Carbon\Carbon::parse($ratingAndReviews->created_at)->format('d F Y') }}
-                                                                        </span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                @for ($star = 1; $star <= 5; $star++)
-                                                                    <small class="fas fa-star" style="color:orange;"></small>
-                                                                @endfor
-                                                            </div>
-                                                            <div class="text-[12px] text-black md:text-[10px] lg:text-[12px] xl:text-[14px] text-black leading-relaxed">
-                                                                {{ $ratingAndReviews->description }}
-                                                            </div>
-                                                            <div class="d-flex mt-1">
-                                                                @if ($ratingAndReviews->video !== null)
-                                                                    <video class="zoomable-video video-rating-review hover:cursor-pointer" id="mainVideo-{{$ratingAndReviews->id}}" controlsList="nodownload noplaybackrate" onclick="openFullscreenModal('{{ Storage::url($ratingAndReviews->video) }}', 'video')">
-                                                                        <source src="{{ Storage::url($ratingAndReviews->video) }}" type="video/mp4">
-                                                                    </video>
-                                                                @endif
-                                                                @if ($ratingAndReviews->images !== null)
-                                                                    @foreach (json_decode($ratingAndReviews->images, true) as $index => $image)
-                                                                        {{-- <div class="col-2 pr-1 pl-0"> --}}
-                                                                            <img class="image-rating-review hover:cursor-pointer rounded-xl mr-2" src="{{ Storage::url($image) }}" title="Gambar ulasan dari pengguna {{$ratingAndReviews->user->fullname}}" style="height: 100%; object-fit: cover; width: auto;" onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')"/>
-                                                                        {{-- </div> --}}
-                                                                    @endforeach
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    @if (!empty($product->images))
+                                        @foreach ($product->images as $image)
+                                            <div class="swiper-slide" style="width: 20%;">
+                                                <div class="thumb-wrapper">
+                                                    <img src="{{ Storage::url($image) }}" alt="Thumb" />
                                                 </div>
                                             </div>
                                         @endforeach
-                                    </div>
+                                    @endif
+
+                                    @if (!empty($product->video))
+                                        <div class="swiper-slide" id="videoproduk" style="width: 20%;">
+                                            <div class="thumb-wrapper position-relative">
+                                                <img src="{{ Storage::url($product->main_image) }}" alt="Video Thumb" />
+                                                <div class="video-badge"><i class="fas fa-play"
+                                                        style="font-size: 0.8rem; margin-left: 2px;"></i></div>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7">
+                        <div class="product-brand-title">
+                            <a href="/{{ $product->brand->name }}_brand"
+                                class="text-decoration-none text-muted hover:text-dark">
+                                {{ $product->brand->name }}
+                            </a>
+
+                            @php
+    $inWishlist = session('id_user') && collect($wishlists)->contains('product_id', $product->id);
+                            @endphp
+                            <button class="btn-wishlist-premium {{ $inWishlist ? 'active' : '' }} d-none d-lg-block"
+                                onclick="{{ session('id_user') ? ($inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')') : 'var myModal = new bootstrap.Modal(document.getElementById(\'loginUser1\')); myModal.show();' }}"
+                                title="{{ $inWishlist ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
+                                <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                            </button>
+                        </div>
+
+                        <h1 class="product-main-title">{{ $product->product_name }}</h1>
+
+                        <div class="product-meta-row">
+                            <div class="rating-badge">
+                                <i class="fas fa-star"></i> {{ $product->rating ?? '5.0' }}
+                            </div>
+                            <span class="review-count"
+                                onclick="document.getElementById('tab-ulasan').click(); document.getElementById('ulasan-section').scrollIntoView({behavior: 'smooth'});">
+                                ({{ $product->rating_and_reviews_count }} Ulasan)
+                            </span>
+                            @if ($product->sale != 0)
+                                <span class="sold-count"><i class="fas fa-fire me-1"></i> Terjual {{ $product->sale }}</span>
+                            @endif
+                            <span class="text-muted fs-7 ms-auto">Stok: <strong
+                                    class="text-dark">{{ $product->stock_quantity }}</strong></span>
+                        </div>
+
+                        <div class="product-price-display" id="price-variant">
+                            @php
+    $activePromo = $product->promos->first();
+    $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                            @endphp
+
+                            @if ($product->priceVariation !== null)
+                                <span>{{ $product->priceVariation }}</span>
+                            @else
+                                @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                    <span
+                                        class="price-strike d-block fs-5 text-muted">Rp{{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                    <span class="text-danger">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                @else
+                                    <span>Rp{{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                @endif
+                            @endif
+                        </div>
+
+                        @if(isset($variantType) && isset($variant) && count($variant) > 0)
+                            <div class="variant-section">
+                                <div class="variant-label">Pilih {{ ucwords($variantType) }}:</div>
+                                <div class="variant-grid">
+                                    @foreach ($variant as $varian)
+                                        <a href="{{ route('detail.product', ['id' => $product->product_code, 'varian' => $varian->sku]) }}"
+                                            class="variant-btn {{ (isset($firstVariant) && $firstVariant->sku == $varian->sku) ? 'active' : '' }}">
+                                            {{ $varian->variant_value }}
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($product->stock_quantity == 0)
+                            <div
+                                class="alert alert-danger bg-danger text-white border-0 d-flex align-items-center justify-content-between p-3 rounded-3 mt-4 mb-4">
+                                <div>
+                                    <i class="fas fa-exclamation-circle me-2"></i> Maaf, produk ini sedang kosong.
+                                </div>
+                                <button class="btn btn-light btn-sm fw-bold" id="notify-me-{{$product->id}}"
+                                    onclick="notifyMe('{{$product->id}}', null)">
+                                    Beritahu Saya
+                                </button>
+                            </div>
+                        @else
+                            <div class="action-row d-none d-lg-flex">
+                                <div class="qty-selector">
+                                    <button class="qty-btn btn-minus"><i class="fas fa-minus"
+                                            style="font-size: 0.7rem;"></i></button>
+                                    <input type="number" class="qty-input no-spinner"
+                                        id="total-detail-product-quantity-{{$product->id}}" data-unify="Quantity" value="1" min="1"
+                                        max="{{ $product->stock_quantity }}">
+                                    <button class="qty-btn btn-plus" id="btn-plus-{{$product->id}}"><i class="fas fa-plus"
+                                            style="font-size: 0.7rem;"></i></button>
+                                </div>
+
+                                @if (session('id_user'))
+                                    @php $inCart = collect($cartItems)->contains('product_id', $product->id); @endphp
+
+                                    @if ($inCart)
+                                        <button onclick="window.location.href='/cart'" class="btn-buy-premium w-auto flex-grow-1"
+                                            style="background:#10B981; border-color:#10B981;">
+                                            <i class="fas fa-check-circle fs-5"></i> Cek Keranjang
+                                        </button>
+                                    @else
+                                        <button onclick="addCartWithQuantity({{ $product->id }})" class="btn-cart-premium">
+                                            <i class="fas fa-shopping-cart"></i> Keranjang
+                                        </button>
+                                        <button onclick="buyNowGuest({{ $product->id }})" class="btn-buy-premium">
+                                            Beli Sekarang
+                                        </button>
+                                    @endif
+                                @else
+                                    <button data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-buy-premium w-100">
+                                        Login untuk Belanja
+                                    </button>
+                                @endif
+                            </div>
+                            <p id="quantity-warning-{{$product->id}}" class="text-danger fs-7 d-none mb-3"><i
+                                    class="fas fa-info-circle"></i> Batas maksimal stok terpenuhi</p>
+                        @endif
+
+                    </div>
+                </div>
+
+                <div class="row mt-5" id="ulasan-section">
+                    <div class="col-12">
+                        <nav class="nav premium-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="tab-deskripsi" data-bs-toggle="tab" data-bs-target="#deskripsi"
+                                type="button" role="tab">Deskripsi Produk</button>
+                            <button class="nav-link" id="tab-informasi" data-bs-toggle="tab" data-bs-target="#informasi"
+                                type="button" role="tab">Informasi Penting</button>
+                            <button class="nav-link" id="tab-ulasan" data-bs-toggle="tab" data-bs-target="#ulasan" type="button"
+                                role="tab">Ulasan Pembeli ({{ $product->rating_and_reviews_count }})</button>
+                        </nav>
+
+                        <div class="tab-content tab-content-box p-2">
+                            <div class="tab-pane fade show active" id="deskripsi" role="tabpanel">
+                                {!! $product->description !!}
+                            </div>
+
+                            <div class="tab-pane fade" id="informasi" role="tabpanel">
+                                {!! $product->information_product !!}
+                            </div>
+
+                            <div class="tab-pane fade" id="ulasan" role="tabpanel">
+                                @if($product->rating_and_reviews_count > 0)
+                                    <div class="row">
+                                        <div class="col-lg-8">
+                                            @foreach ($product->ratingAndReviews as $review)
+                                                <div class="review-card">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div
+                                                                style="width:35px; height:35px; background:var(--glamoire-sand); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--glamoire-dark);">
+                                                                {{ substr($review->user->fullname, 0, 1) }}
+                                                            </div>
+                                                            <div>
+                                                                <div class="reviewer-name">{{ $review->user->fullname }}</div>
+                                                                <div class="review-date">
+                                                                    {{ \Carbon\Carbon::parse($review->created_at)->translatedFormat('d F Y') }}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="rating-badge">
+                                                            @for ($star = 1; $star <= 5; $star++)
+                                                                <i class="fas fa-star"
+                                                                    style="color: {{ $star <= $review->rating ? '#F59E0B' : '#E5E7EB' }}; font-size:0.8rem;"></i>
+                                                            @endfor
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="review-text">{{ $review->description }}</div>
+
+                                                    <div class="review-media d-flex gap-2 mt-3 flex-wrap">
+                                                        @if ($review->video !== null)
+                                                            <div class="position-relative">
+                                                                <video class="hover:cursor-pointer"
+                                                                    style="width:80px; height:80px; object-fit:cover; border-radius:8px; border:1px solid #eee;"
+                                                                    onclick="openFullscreenModal('{{ Storage::url($review->video) }}', 'video')">
+                                                                    <source src="{{ Storage::url($review->video) }}" type="video/mp4">
+                                                                </video>
+                                                                <div class="video-badge" style="width:24px; height:24px; font-size:0.6rem;">
+                                                                    <i class="fas fa-play"></i></div>
+                                                            </div>
+                                                        @endif
+                                                        @if ($review->images !== null)
+                                                            @foreach (json_decode($review->images, true) as $image)
+                                                                <img src="{{ Storage::url($image) }}" alt="Review Image"
+                                                                    onclick="openFullscreenModal('{{ Storage::url($image) }}', 'image')" />
+                                                            @endforeach
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @else
+                                    <div class="text-center py-5 text-muted">
+                                        <i class="far fa-comment-dots fs-1 mb-3 opacity-50"></i>
+                                        <p>Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan ulasan!</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="container-fluid mb-5 mt-5 pt-4 border-top">
+                <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+                    <h2 class="m-0"
+                        style="font-family: 'The Seasons', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
+                        Mungkin Anda Suka</h2>
+                </div>
 
-                @if ($product->stock_quantity == 0)
-                    <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-                        <div class="container-fluid d-flex gap-2 py-1">
-                            <span class="text-danger py-2 text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]">Stok kosong</span>
-                            <span
-                                class="text-light py-2 rounded-xl ml-auto text-[12px] md:text-[14px] lg:text-[16px] xl:text-[16px]" 
-                                data-bs-toggle="tooltip" 
-                                data-bs-placement="top" 
-                                title="Beritahu Saya Jika Stok Sudah Ada" 
-                                type="button" 
-                                id="notify-me-{{$product->id}}"
-                                onclick="notifyMe({{$product->id}}, null)">
-                                Beritahu Saya
-                            </span>
-                        </div>
-                    </div>
-                @else
-                    @if (session('id_user'))
-                        @php
-                            $inCart = collect($cartItems)->contains('product_id', $product->id);
-                        @endphp
+                <div class="swiper mySwiperDetail">
+                    <div class="swiper-wrapper pb-4">
+                        @if (session('id_user'))
+                            @foreach ($youlike as $yl)
+                                @php
+            $activePromoYL = $yl->promos->first();
+            $discountedPriceYL = $activePromoYL ? $activePromoYL->pivot->discounted_price : null;
+            $discountPercentYL = ($discountedPriceYL && $yl->regular_price > 0) ? round((($yl->regular_price - $discountedPriceYL) / $yl->regular_price) * 100) : 0;
+            $inWishlistYL = collect($wishlists)->contains('product_id', $yl->id);
+                                @endphp
+                                <div class="swiper-slide h-auto">
+                                    <div class="premium-product-card-small"
+                                        onclick="window.location.href = '/{{ $yl->product_code }}_product'">
+                                        <div class="card-img-box {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}">
+                                            @if ($discountPercentYL > 0)
+                                                <span class="card-badge badge-discount">-{{ $discountPercentYL }}%</span>
+                                            @endif
 
-                        @if ($inCart)
-                        <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-                            <div class="container-fluid d-flex gap-2 py-1">
-                                <a onclick="cart()" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
-                                    Cek Keranjangmu
-                                </a>
-                            </div>
-                        </div>
-                        @else
-                            <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-                                <div class="container-fluid d-flex gap-2 py-1">
-                                    <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
-                                        + Keranjang
-                                    </a>
-                                    <a onclick="buyNow({{$product->id}})" class="btn hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
-                                        Beli Sekarang
-                                    </a>
+                                            <div class="btn-wishlist {{ $inWishlistYL ? 'active' : '' }}"
+                                                onclick="event.stopPropagation(); {{ $inWishlistYL ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}">
+                                                <i class="{{ $inWishlistYL ? 'fas' : 'far' }} fa-heart"></i>
+                                            </div>
+                                            <img src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
+                                        </div>
+
+                                        <div class="card-info p-3">
+                                            <div class="rating-box mb-1"><i class="fas fa-star"></i>
+                                                <span>{{ $yl->rating ?? '5.0' }}</span></div>
+                                            <a href="/{{ $yl->product_code }}_product"
+                                                class="product-name fs-6">{{ $yl->product_name }}</a>
+
+                                            <div class="price-box">
+                                                @if ($yl->priceVariation !== null)
+                                                    <span class="price-current fs-6">{{ $yl->priceVariation }}</span>
+                                                @else
+                                                    @if ($discountedPriceYL && $discountedPriceYL < $yl->regular_price)
+                                                        <span class="price-strike"
+                                                            style="font-size:0.75rem;">Rp{{ number_format($yl->regular_price, 0, ',', '.') }}</span>
+                                                        <span
+                                                            class="price-current price-discounted fs-6">Rp{{ number_format($discountedPriceYL, 0, ',', '.') }}</span>
+                                                    @else
+                                                        <span
+                                                            class="price-current fs-6">Rp{{ number_format($yl->regular_price, 0, ',', '.') }}</span>
+                                                    @endif
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endforeach
+                        @endif
+                    </div>
+                    <div class="swiper-button-next-other"
+                        style="position:absolute; right:10px; top:40%; z-index:10; background:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.1); cursor:pointer;">
+                        <i class="fas fa-chevron-right text-dark"></i></div>
+                    <div class="swiper-button-prev-other"
+                        style="position:absolute; left:10px; top:40%; z-index:10; background:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,0.1); cursor:pointer;">
+                        <i class="fas fa-chevron-left text-dark"></i></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content bg-transparent border-0">
+                    <div class="modal-body p-0 position-relative text-center">
+                        <button type="button" id="btn-close-fullscreen" class="btn-close position-absolute top-0 end-0 m-3 z-3"
+                            data-bs-dismiss="modal"
+                            style="background-color: white; border-radius: 50%; padding: 0.5rem;"></button>
+                        <div id="modalContent" class="shadow-lg rounded-4 overflow-hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if ($product->stock_quantity > 0)
+            <div class="d-lg-none fixed-bottom mobile-buy-nav">
+                <div class="d-flex gap-2">
+                    @if (session('id_user'))
+                        @php $inCartMobile = collect($cartItems)->contains('product_id', $product->id); @endphp
+                        @if($inCartMobile)
+                            <button onclick="window.location.href='/cart'" class="btn-buy-premium w-100"
+                                style="background:#10B981; border-color:#10B981; border-radius:12px;">
+                                <i class="fas fa-check-circle me-1"></i> Di Keranjang
+                            </button>
+                        @else
+                            <button onclick="addCartWithQuantity({{$product->id}})" class="btn-cart-premium w-50"
+                                style="border-radius:12px;">
+                                Keranjang
+                            </button>
+                            <button onclick="buyNowGuest({{$product->id}})" class="btn-buy-premium w-50" style="border-radius:12px;">
+                                Beli Sekarang
+                            </button>
                         @endif
                     @else
-                        <div class="d-lg-none fixed-bottom" style="background-color:#183018;">
-                            <div class="container-fluid d-flex gap-2 py-1">
-                                <a onclick="addToCart({{$product->id}})" class="btn hover:cursor-pointer rounded-xl shadow-sm w-full bg-transparent text-white border border-white text-[12px]">
-                                    + Keranjang
-                                </a>
-                                <a onclick="buyNowGuest({{$product->id}})" class="btn  hover:cursor-pointer btn-light rounded-xl shadow-sm w-full text-[#183018] text-[12px]">
-                                    Beli Sekarang
-                                </a>
-                            </div>
-                        </div>
+                        <button data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-buy-premium w-100"
+                            style="border-radius:12px;">
+                            Login untuk Belanja
+                        </button>
                     @endif
-                @endif
-                
+                </div>
             </div>
-        </div>
-        <!-- END IMAGE PRODUCT -->
+        @endif
 
-    </div>
-    <!-- Shop Detail End -->
+        @include('spinner')
 
-    <!-- Products Start -->
-    <div class="container-fluid mb-14 mb-lg-0">
-        <div class="text-center py-3">
-            <h2 class="section-title px-5  text-[12px] md:text-[14px] lg:text-[18px] xl:text-[22px]"><span class="px-2">Produk Lainnya</span></h2>
-        </div>
+        <script>
+            // Inisialisasi Data
+            let maxQuantity = {{ $product->stock_quantity }};
+            const warningMessage = document.getElementById("quantity-warning-" + {{ $product->id }});
 
-        <div class="swiper mySwiperDetail">
-            <div class="swiper-wrapper"> 
-                @if (session('id_user'))
-                    @foreach ($youlike as $yl)
-                        <div class="swiper-slide">
-                            <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
-                                <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
-                                    <div class="product-image-container">
-                                        <img class="card-img-top product-image-home {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
-                                    </div>
+            // Ambil semua container selector (ini memperbaiki BUG sebelumnya)
+            const qtySelectors = document.querySelectorAll('.qty-selector');
 
-                                    <div class="grid text-left p-1 p-md-2">
-                                        <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px]">{{ $yl->rating }}</p>
-                                            @php
-                                                $inWishlist = collect($wishlists)->contains('product_id', $yl->id);
-                                            @endphp
-                                            <i 
-                                                class="fas fa-heart ml-auto text-decoration-none {{ $inWishlist ? 'text-[#FF0000]' : 'text-[#183018]' }} text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
-                                                onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $yl->id . ')' : 'addToWishlist(' . $yl->id . ')' }}"
-                                                >
-                                            </i>
-                                        </div>
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
-                                            <a href="/{{ $yl->product_code }}_product" 
-                                            class="text-decoration-none truncate-ellipsis" 
-                                            data-bs-toggle="tooltip" 
-                                            data-bs-placement="top" 
-                                            title="{{ $yl->product_name }}">
-                                                {{ $yl->product_name }}
-                                            </a>
-                                        </p>
+            // Logic Kuantitas Plus Minus (Desktop input manual)
+            qtySelectors.forEach((selector) => {
+                const input = selector.querySelector('.qty-input');
+                const btnMinus = selector.querySelector('.btn-minus');
+                const btnPlus = selector.querySelector('.btn-plus');
 
-                                        <div class="flex justify-content-start gap-1">
-                                            @php
-                                                $activePromo = $yl->promos->first();
-                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                            @endphp
+                if (input && btnMinus && btnPlus) {
+                    input.value = 1;
 
-                                            @if ($yl->priceVariation !== null)
-                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                    {{ $yl->priceVariation }}
-                                                </p>
-                                            @else
-                                                @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                    <del>
-                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                    </del>
-                                                    </p>
-                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                    @else
-                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                    </p>
-                                                @endif
-                                            @endif
-                                        </div>
-                                        
-                                        {{-- @if ($yl->stock_quantity == 0)
-                                            <a class="py-1 rounded-xl border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                type="button" 
-                                                style="color:#183018"
-                                                id="notify-me-{{$yl->id}}"
-                                                onclick="event.stopPropagation();notifyMe({{$yl->id}})"
-                                            >
-                                                Stok Habis
-                                            </a>
-                                        @else
-                                            @php
-                                                $inCart = collect($cartItems)->contains('product_id', $yl->id);
-                                            @endphp
-        
-                                            @if($inCart)
-                                                <a href="/cart" class="py-1 rounded-xl border border-[#183018] hover:bg-neutral-900 shadow-sm w-full bg-[#183018] text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red">
-                                                    Cek Keranjang
-                                                </a>
-                                            @else
-                                                <a class="gap-1 py-1 rounded-xl hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center" onclick="event.stopPropagation();addToCart({{$yl->id}})">
-                                                    + <i class="fas fa-shopping-cart"></i> Keranjang
-                                                </a>
-                                            @endif
-                                        @endif --}}
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach    
-
-                <!-- MUNCULKAN DATA PRODUK JIKA USER BELUM LOGIN -->
-                @else
-                    @foreach ($youlike as $yl)
-                        <div class="swiper-slide">
-                            <div class="bg-white rounded-lg shadow-sm overflow-hidden h-fit border border-xl">
-                                <a href="/{{ $yl->product_code }}_product" class="text-decoration-none">
-                                    <div class="product-image-container">
-                                        <img class="card-img-top product-image-home {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}" src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
-                                    </div>
-
-                                    <div class="grid text-left p-1 p-md-2">
-                                        <div class="flex gap-1">
-                                            <i class="text-decoration-none fas fa-star text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] grid align-items-center justify-content-between" style="color:orange;"></i>
-                                            <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[12px]">{{ $yl->rating }}</p>
-                                            <i 
-                                                class="fas fa-heart ml-auto text-decoration-none text-[#183018] text-[9px] md:text-[12px] lg:text-[10px] xl:text-[12px] grid align-items-center justify-content-between hover-red" 
-                                                onclick="event.stopPropagation();addToWishlist({{ $yl->id }})">
-                                            </i>
-                                        </div>
-                                        <p class="text-decoration-none text-black text-[9px] md:text-[12px] lg:text-[12px] xl:text-[14px] overflow-hidden">
-                                            <a href="/{{ $yl->product_code }}_product" 
-                                            class="text-decoration-none truncate-ellipsis" 
-                                            data-bs-toggle="tooltip" 
-                                            data-bs-placement="top" 
-                                            title="{{ $yl->product_name }}">
-                                                {{ $yl->product_name }}
-                                            </a>
-                                        </p>
-
-                                        <div class="flex justify-content-start gap-1">
-                                            @php
-                                                $activePromo = $yl->promos->first();
-                                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                            @endphp
-
-                                            @if ($yl->priceVariation !== null)
-                                                <p class="text-decoration-none text-[#183018] text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px]">
-                                                    {{ $yl->priceVariation }}
-                                                </p>
-                                            @else
-                                                @if ($discountedPrice && $discountedPrice < $yl->regular_price)
-                                                    <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[8px] md:text-[10px] lg:text-[10px] xl:text-[12px]">
-                                                    <del>
-                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                    </del>
-                                                    </p>
-                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                                    @else
-                                                    <p class="text-decoration-none text-black text-[8px] md:text-[10px] lg:text-[12px] xl:text-[14px]">
-                                                        Rp{{ number_format($yl->regular_price, 0, ',', '.') }}
-                                                    </p>
-                                                @endif
-                                            @endif
-                                        </div>
-                                        
-                                        {{-- @if ($yl->stock_quantity == 0)
-                                            <a class="py-1 rounded-xl border border-[#183018] shadow-sm w-full bg-danger text-decoration-none text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center"
-                                                data-bs-toggle="tooltip" 
-                                                data-bs-placement="top" 
-                                                title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                type="button" 
-                                                style="color:#183018"
-                                                id="notify-me-{{$yl->id}}"
-                                                onclick="event.stopPropagation();notifyMe({{$yl->id}})"
-                                            >
-                                                Stok Habis
-                                            </a>
-                                        @else
-                                            <a class="gap-1 py-1 rounded-xl hover:cursor-pointer border border-[#183018] hover:border-white shadow-sm w-full hover:bg-[#183018] text-decoration-none text-[#183018] hover:text-white p-0 text-[10px] md:text-[12px] lg:text-[10px] xl:text-[12px] flex align-items-center justify-content-center hover-red" onclick="event.stopPropagation();addToCart({{$yl->id}})">
-                                                + <i class="fas fa-shopping-cart"></i> Keranjang
-                                            </a>
-                                        @endif --}}
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
-                @endif
-            </div>
-        </div>
-    </div>
-    <!-- Products End -->
-</div>
-
-<!-- Modal untuk gambar/video fullscreen -->
-<div class="modal fade " id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-sm modal-dialog-centered rounded-xl">
-    <div class="modal-content">
-      <div class="modal-body">
-        <!-- Konten gambar atau video akan diubah secara dinamis -->
-        <button type="button" id="btn-close-fullscreen" class="position-absolute top-0 end-0" data-bs-dismiss="modal" aria-label="Close">
-          <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 72 72">
-          <path d="M36,12c13.255,0,24,10.745,24,24c0,13.255-10.745,24-24,24S12,49.255,12,36C12,22.745,22.745,12,36,12z M40.243,44.485	c1.171,1.171,3.071,1.172,4.243,0c1.172-1.172,1.171-3.071,0-4.243C44.253,40.01,42.063,37.82,40.243,36	c1.82-1.82,4.01-4.01,4.243-4.243c1.171-1.171,1.172-3.071,0-4.243c-1.171-1.171-3.071-1.171-4.243,0	C40.01,27.747,37.82,29.937,36,31.757c-1.82-1.82-4.01-4.01-4.243-4.243c-1.171-1.171-3.071-1.172-4.243,0	c-1.172,1.172-1.171,3.071,0,4.243c0.232,0.232,2.423,2.423,4.243,4.243c-1.82,1.82-4.01,4.01-4.243,4.243	c-1.171,1.171-1.171,3.071,0,4.243c1.172,1.172,3.071,1.171,4.243,0c0.232-0.232,2.423-2.423,4.243-4.243	C37.82,42.063,40.01,44.253,40.243,44.485z"></path>
-          </svg>
-        </button>
-        <div id="modalContent">
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- UNTUK MENGATUR ZOOM IN GAMBAR PADA HALAMAN DETAIL PRODUK -->
-@if (!empty($product->video))
-    <script>
-        document.getElementById('videoproduk').addEventListener('click', function(e) {
-            e.preventDefault();
-            // Temukan video berdasarkan ID
-            const video = document.getElementById('mainVideo');
-            
-            // Pastikan video berada di slide yang aktif
-            const swiperInstance = document.querySelector('.swiper').swiper;
-            swiperInstance.slideTo(6); // Mengarahkan ke slide dengan indeks yang berisi video
-
-            // Tunggu sampai transisi selesai dan kemudian play video
-            setTimeout(function() {
-                video.play();
-            }, 500); // Delay untuk memastikan transisi selesai
-        });
-    </script>
-@endif
-<script>
-    document.querySelector('.image-container').addEventListener('mousemove', function(e) {
-        const zoomableImage = this.querySelector('.zoomable-image');
-        const rect = this.getBoundingClientRect();
-        const x = e.clientX - rect.left; // Koordinat x kursor relatif terhadap kontainer
-        const y = e.clientY - rect.top;  // Koordinat y kursor relatif terhadap kontainer
-
-        // Mengatur transform-origin berdasarkan posisi kursor
-        zoomableImage.style.transformOrigin = `${x}px ${y}px`;
-    });
-
-    
-    function addCartWithQuantity(productId) {
-        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
-
-        $.ajax({
-            url: "{{ route('add.to.chart.with.quantity') }}", // Route register di Laravel
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
-                product_id: productId,
-                quantity: currentQuantity,
-            },
-            success: function (response) {
-                if (response.success) {
-                    Toast.fire({
-                      icon: "success",
-                      text: response.message,
-                      willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                      }
-                    })
-                    .then(function () {
-                        window.location.reload(); // Redirect ke halaman utama atau halaman lain
-                        });
-                } else {
-                    let errors = response.errors;
-                    let errorMessages = response.message;
-                    for (const key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            errorMessages += errors[key][0] + "<br>";
+                    // Tombol Minus
+                    btnMinus.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        let value = parseInt(input.value, 10);
+                        if (value > 1) {
+                            input.value = value - 1;
+                            if (warningMessage) warningMessage.classList.add("d-none");
                         }
-                    }
-                    Toast.fire({
-                    icon: "error",
-                    text: errorMessages,
-                    
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
+                    });
+
+                    // Tombol Plus
+                    btnPlus.addEventListener("click", function (e) {
+                        e.preventDefault();
+                        let value = parseInt(input.value, 10);
+                        if (value < maxQuantity) {
+                            input.value = value + 1;
+                            if (warningMessage) warningMessage.classList.add("d-none");
+                        } else {
+                            if (warningMessage) warningMessage.classList.remove("d-none");
+                        }
+                    });
+
+                    // Input manual keyboard
+                    input.addEventListener("input", function () {
+                        let value = parseInt(input.value, 10);
+                        if (isNaN(value) || value < 1) {
+                            input.value = 1;
+                            if (warningMessage) warningMessage.classList.add("d-none");
+                        } else if (value > maxQuantity) {
+                            input.value = maxQuantity;
+                            if (warningMessage) warningMessage.classList.remove("d-none");
+                        } else {
+                            if (warningMessage) warningMessage.classList.add("d-none");
+                        }
                     });
                 }
-            },
-            error: function (response) {
-                const message = response.responseJSON?.message || 'Terjadi kesalahan tak terduga';
-                Toast.fire({
-                    icon: "error",
-                    text: message,
+            });
 
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff';
-                        if (content) content.style.color = '#ffffff';
+            // Zoom Image Logic
+            const imageContainers = document.querySelectorAll('.main-image-wrapper');
+            imageContainers.forEach(container => {
+                container.addEventListener('mousemove', function (e) {
+                    const zoomableImage = this.querySelector('.zoomable-image');
+                    if (zoomableImage) {
+                        const rect = this.getBoundingClientRect();
+                        const x = (e.clientX - rect.left) / rect.width * 100;
+                        const y = (e.clientY - rect.top) / rect.height * 100;
+                        zoomableImage.style.transformOrigin = `${x}% ${y}%`;
+                        zoomableImage.style.transform = 'scale(2)';
                     }
                 });
-            },
-        });
-    }
-
-    function buyNowGuest(productId) {
-        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
-
-        $.ajax({
-            url: "{{ route('add.to.chart.with.quantity') }}", // Route register di Laravel
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
-                product_id: productId,
-                quantity: currentQuantity,
-            },
-            success: function (response) {
-                if (response.success) {
-                    Toast.fire({
-                      icon: "success",
-                      text: response.message,
-                      willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                      }
-                    })
-                    .then(function () {
-                        window.location.href = "/cart"; // Redirect ke halaman utama atau halaman lain
-                    });
-                } else {
-                    let errors = response.errors;
-                    let errorMessages = response.message;
-                    for (const key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            errorMessages += errors[key][0] + "<br>";
-                        }
-                    }
-                    Toast.fire({
-                    icon: "error",
-                    text: errorMessages,
-                    
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                    });
-                }
-            },
-            error: function (response) {
-                const message = response.responseJSON?.message || 'Terjadi kesalahan tak terduga';
-                Toast.fire({
-                    icon: "error",
-                    text: message,
-
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff';
-                        if (content) content.style.color = '#ffffff';
+                container.addEventListener('mouseleave', function () {
+                    const zoomableImage = this.querySelector('.zoomable-image');
+                    if (zoomableImage) {
+                        zoomableImage.style.transform = 'scale(1)';
                     }
                 });
-            },
-        });
-    }
+            });
 
-    function buyNow(productId) {
-        var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val());
+            // Handle AJAX Add to Cart
+            function addCartWithQuantity(productId) {
+                var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val()) || 1;
 
-        $.ajax({
-            url: "{{ route('add.product.buy.now') }}", // Route register di Laravel
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}", // Token CSRF untuk Laravel
-                product_id: productId,
-                quantity: currentQuantity,
-            },
-            success: function (response) {
-                if (response.success) {
-                    window.location.href = "/buy-now";
-                } else {
-                    let errors = response.errors;
-                    let errorMessages = response.message;
-                    for (const key in errors) {
-                        if (errors.hasOwnProperty(key)) {
-                            errorMessages += errors[key][0] + "<br>";
+                $.ajax({
+                    url: "{{ route('add.to.chart.with.quantity') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        product_id: productId,
+                        quantity: currentQuantity,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil",
+                                text: response.message,
+                                timer: 1500,
+                                showConfirmButton: false
+                            }).then(() => window.location.reload());
+                        } else {
+                            Swal.fire({ icon: "error", title: "Oops..", text: response.message });
                         }
-                    }
-                    Toast.fire({
-                    icon: "error",
-                    text: errorMessages,
-                    
-                    willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                    });
-                }
-            },
-            error: function (response) {
-                if (response.responseJSON) {
-                    if (response.responseJSON.message) {
-                        errorMessage = response.responseJSON.message; // Pesan error dari Laravel
-                    } else if (response.responseJSON.errors) {
-                        // Jika ada beberapa pesan error, tampilkan semuanya
-                        errorMessage = "";
-                        $.each(response.responseJSON.errors, function (key, value) {
-                            errorMessage += value[0] + "<br>"; // Menggabungkan pesan error
-                        });
-                    }
-                } else if (response.statusText) {
-                    // Jika tidak ada response JSON, tampilkan status text dari request
-                    errorMessage = response.statusText;
-                }
-                
-                Toast.fire({
-                    icon: "error",
-                    text:  errorMessage,
-                    
-                    willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
+                    },
+                    error: function () {
+                        Swal.fire({ icon: "error", title: "Error", text: "Terjadi kesalahan sistem." });
                     }
                 });
-            },
-        });
-    }
-
-    // Product Quantity
-    $(".quantity-detail-produk button").on("click", function () {
-        var button = $(this);
-        var input = button.parent().parent().find("input");
-        var oldValue = input.val();
-        var maxQuantity = {{ $product->stock_quantity }};
-
-        var newVal;
-
-        if (button.hasClass("btn-plus")) {
-            newVal = parseFloat(oldValue) + 1;
-        } else {
-            newVal = (oldValue > 1) ? parseFloat(oldValue) - 1 : 1;
-        }
-
-        // Set the new value to the input
-        input.val(newVal);
-
-        checkMaxQuantity(input[0], maxQuantity);
-    });
-
-    
-    const quantityInput = document.querySelector('input[data-unify="Quantity"]');
-    quantityInput.addEventListener('input', () => checkMaxQuantity(quantityInput));
-    quantityInput.addEventListener('blur', () => checkMaxQuantity(quantityInput));
-
-
-    function checkMaxQuantity(input, maxQuantity) {
-        var value = parseFloat(input.value);
-        var warningElement = document.getElementById("quantity-warning-" + input.id.split('-').pop());
-        var plusButton = document.getElementById("btn-plus-" + input.id.split('-').pop());
-
-        if (value >= maxQuantity) {
-            warningElement.style.display = "block"; // Show warning
-            plusButton.disabled = true; // Disable the plus button
-        } else {
-            warningElement.style.display = "none"; // Hide warning
-            plusButton.disabled = false; // Enable the plus button
-        }
-    }
-
-    function openFullscreenModal(source, type) {
-        var modalContent = document.getElementById('modalContent');
-
-        if (type === 'image') {
-            modalContent.innerHTML = '<img src="' + source + '" style="object-fit: contain;">';
-        } else if (type === 'video') {
-            modalContent.innerHTML = '<video class="w-100 h-auto" controls controlsList="nodownload noplaybackrate"><source src="' + source + '" type="video/mp4"></video>';
-        }
-
-        // Initialize and show the modal
-        var fullscreenModal = new bootstrap.Modal(document.getElementById('fullscreenModal'));
-        fullscreenModal.show();
-    }
-
-    // Close modal manually without getInstance
-    document.getElementById('btn-close-fullscreen').addEventListener('click', function() {
-        var fullscreenModalElement = document.getElementById('fullscreenModal');
-        var modal = new bootstrap.Modal(fullscreenModalElement); // Recreate the modal
-        modal.hide(); // Close the modal
-    });
-
-    $(document).on('input', '[name="quantityProduct"]', function() {
-        var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
-        var newQuantity = parseInt($(this).val());
-        var maxQuantity = {{ $product->stock_quantity }}; // Get max quantity from the product data
-
-        // Ensure the quantity is a valid number and greater than 0
-        if (!isNaN(newQuantity) && newQuantity > 0) {
-            if(newQuantity > maxQuantity) {
-                $(this).val(maxQuantity); // Reset to max quantity if exceeded
-            } else {
-                $(this).val(newQuantity); // Set the new valid quantity
             }
-            $(this).value(maxQuantity);
-        } else {
-            $(this).val(1); // Reset to 1 if the input is invalid
-        }
-    });
 
+            // Handle AJAX Buy Now
+            function buyNowGuest(productId) {
+                var currentQuantity = parseInt($('#total-detail-product-quantity-' + productId).val()) || 1;
 
-</script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> --}}
-<script>
-    function cart(){
-        window.location.href = "/cart";
-    }
+                $.ajax({
+                    url: "{{ route('add.product.buy.now') }}",
+                    type: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        product_id: productId,
+                        quantity: currentQuantity,
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = "/buy-now";
+                        } else {
+                            Swal.fire({ icon: "error", title: "Oops..", text: response.message });
+                        }
+                    }
+                });
+            }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Swiper product Lainnya
-        var swiperDetailProduct = new Swiper(".mySwiperDetail", {
-            slidesPerView: 5,
-            spaceBetween: 15,
-            cssMode: true,
-            navigation: {
-            nextEl: ".swiper-next",
-            prevEl: ".swiper-prev",
-            },
-            breakpoints: {
-            2560: {
-                slidesPerView: 6, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1440: {
-                slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            1024: {
-                slidesPerView: 5, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 10, // Menyusun jarak antar slide
-            },
-            // Tablet
-            768: {
-                slidesPerView: 4, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 5, // Menyusun jarak antar slide
-            },
-            425: {
-                slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 5, // Menyusun jarak antar slide
-                navigation: false,
-            },
-            375: {
-                slidesPerView: 3, // Untuk layar dengan lebar 768px atau lebih besar
-                spaceBetween: 5, // Menyusun jarak antar slide
-                navigation: false,
-            },
-            // Mobile
-            320: {
-                slidesPerView: 3, // Untuk layar dengan lebar 480px atau lebih besar
-                spaceBetween: 5,  // Menyusun jarak antar slide
-                navigation: false,
-            },
-            },
-        });
+            // Modal Fullscreen
+            function openFullscreenModal(source, type) {
+                var modalContent = document.getElementById('modalContent');
+                if (type === 'image') {
+                    modalContent.innerHTML = '<img src="' + source + '" class="w-100 rounded-4" style="object-fit: contain; max-height:85vh;">';
+                } else if (type === 'video') {
+                    modalContent.innerHTML = '<video class="w-100 rounded-4" controls autoplay controlsList="nodownload noplaybackrate" style="max-height:85vh;"><source src="' + source + '" type="video/mp4"></video>';
+                }
+                var fullscreenModal = new bootstrap.Modal(document.getElementById('fullscreenModal'));
+                fullscreenModal.show();
+            }
 
-        // Swiper untuk menampilkan gambar/video utama
-        const thumbnailLinks = document.querySelectorAll('.mySwiperProduct .swiper-slide a');
-        const mySwiperProduct = new Swiper('.mySwiperProduct', {
-            slidesPerView: 5,
-            spaceBetween: 3,
-            loop: false,
-            watchSlidesProgress: true,
-        });
+            // Initialize Swiper Sliders
+            document.addEventListener('DOMContentLoaded', function () {
+                // Thumbnail Swiper
+                const mySwiperProduct = new Swiper('.mySwiperProduct', {
+                    slidesPerView: 5,
+                    spaceBetween: 10,
+                    watchSlidesProgress: true,
+                });
 
-        const mySwiperShow = new Swiper('.mySwiperShow', {
-            slidesPerView: 1,
-            spaceBetween: 10,
-            loop: true,
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            thumbs: {
-                swiper: mySwiperProduct,
-            },
-        });
+                // Main Image Swiper
+                const mySwiperShow = new Swiper('.mySwiperShow', {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+                    navigation: {
+                        nextEl: '.swiper-button-next',
+                        prevEl: '.swiper-button-prev',
+                    },
+                    thumbs: {
+                        swiper: mySwiperProduct,
+                    },
+                });
 
-        // Tambahkan highlight aktif manual jika perlu
-        mySwiperShow.on('slideChange', function () {
-            const activeIndex = mySwiperShow.realIndex;
-            thumbnailLinks.forEach((link, index) => {
-                const parentSlide = link.closest('.swiper-slide');
-                if (index === activeIndex) {
-                    parentSlide.classList.add('active-thumb');
-                } else {
-                    parentSlide.classList.remove('active-thumb');
+                // Related Products Swiper
+                var swiperDetailProduct = new Swiper(".mySwiperDetail", {
+                    slidesPerView: 2,
+                    spaceBetween: 12,
+                    navigation: {
+                        nextEl: ".swiper-button-next-other",
+                        prevEl: ".swiper-button-prev-other",
+                    },
+                    breakpoints: {
+                        576: { slidesPerView: 3, spaceBetween: 15 },
+                        768: { slidesPerView: 4, spaceBetween: 15 },
+                        992: { slidesPerView: 5, spaceBetween: 20 },
+                        1200: { slidesPerView: 6, spaceBetween: 20 }
+                    },
+                });
+
+                // Handle Video Click to slide
+                const videoThumb = document.getElementById('videoproduk');
+                if (videoThumb) {
+                    videoThumb.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const video = document.getElementById('mainVideo');
+                        const videoIndex = Array.from(videoThumb.parentNode.children).indexOf(videoThumb);
+                        mySwiperShow.slideTo(videoIndex);
+                        setTimeout(() => { if (video) video.play(); }, 300);
+                    });
                 }
             });
-        });
-
-        // Klik thumbnail = geser slide utama
-        thumbnailLinks.forEach((link, index) => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                mySwiperShow.slideTo(index);
-            });
-        });
-
-    });
-</script>
+        </script>
 
 @endsection

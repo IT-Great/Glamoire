@@ -265,8 +265,7 @@
 
                     <!-- User Profile Dropdown -->
                     <div class="dropdown">
-                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false"
-                            style="text-decoration: none;">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration: none;">
                             <div class="d-flex align-items-center">
                                 <div class="user-name text-end me-3">
                                     <h6 class="mb-0 text-capitalize">{{ Auth::user()->role }}</h6>
@@ -283,10 +282,16 @@
                             <li>
                                 <h6 class="dropdown-header">Hello, {{ Auth::user()->name }}!</h6>
                             </li>
-                            <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-person me-2"></i> My
+                            {{-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-person me-2"></i> My
+                                    Profile</a></li> --}}
+                            <li><a class="dropdown-item" href="{{ route('admin.profile') }}"><i
+                                        class="icon-mid bi bi-person me-2"></i> My
                                     Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
-                                    Settings</a></li>
+                            {{-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
+                                    Settings</a></li> --}}
+                            <li><a class="dropdown-item" href="{{ route('admin.settings') }}"><i
+                                        class="icon-mid bi bi-gear me-2"></i> Settings</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -311,7 +316,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         function updateStockAlerts() {
             fetch("{{ route('check-stock-alerts') }}")
                 .then(response => response.json())
@@ -354,15 +359,15 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Inisialisasi Bootstrap Dropdown
         var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
-        var dropdownList = dropdownElementList.map(function(dropdownToggleEl) {
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
             return new bootstrap.Dropdown(dropdownToggleEl);
         });
 
         // Menghindari konflik jQuery
-        $(document).on('click', '.dropdown-toggle', function() {
+        $(document).on('click', '.dropdown-toggle', function () {
             $(this).dropdown('toggle');
         });
     });

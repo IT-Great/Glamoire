@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Article;
-use App\Models\CategoryArticle;
 use Illuminate\Http\Request;
+use App\Models\CategoryArticle;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller

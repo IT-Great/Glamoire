@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Article;
+use Illuminate\Http\Request;
 use App\Models\CategoryArticle;
 use App\Models\CategoryProduct;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Validators\ValidationException;
 
 class CategoryController extends Controller

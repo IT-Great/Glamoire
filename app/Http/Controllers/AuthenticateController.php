@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Mail;
+use App\Models\Setting;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Mail\ResetPasswordMail;
 use Illuminate\Validation\Rules;
-
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticateController extends Controller
 {
@@ -197,5 +196,128 @@ class AuthenticateController extends Controller
                 'password' => 'Terjadi kesalahan. Silakan coba lagi.'
             ]);
         }
+    }
+
+    // ==========================================
+    // MANAJEMEN PROFIL ADMIN
+    // ==========================================
+
+    // 1. Tampilkan halaman profil
+    public function adminProfile()
+    {
+        $user = Auth::user();
+        // Sesuaikan 'admin.profile.index' dengan lokasi file blade-mu nanti
+        return view('admin.profile.index', compact('user'));
+    }
+
+    // 2. Update data profil
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'fullname'  => 'nullable|string|max:255',
+            // Gunakan rule unique dan abaikan ID user saat ini agar tidak error saat klik save tanpa ubah email
+            'email'     => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'handphone' => 'nullable|string|max:20|unique:users,handphone,' . $user->id,
+            'gender'    => 'nullable|in:Laki-laki,Perempuan',
+            'date'      => 'nullable|date',
+        ], [
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
+            'handphone.unique' => 'Nomor HP ini sudah terdaftar.',
+        ]);
+
+        try {
+            // Update data user menggunakan Eloquent (pastikan pakai UUID string)
+            $userToUpdate = User::findOrFail($user->id);
+            $userToUpdate->update([
+                'name'      => $request->name,
+                'fullname'  => $request->fullname,
+                'email'     => $request->email,
+                'handphone' => $request->handphone,
+                'gender'    => $request->gender,
+                'date'      => $request->date,
+            ]);
+
+            Log::info('Admin profile updated successfully for user: ' . $user->email);
+            return back()->with('success', 'Profil berhasil diperbarui!');
+        } catch (\Exception $e) {
+            Log::error('Error updating profile: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan profil.']);
+        }
+    }
+
+    // 3. Update Password Khusus
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password'     => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'new_password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+            'new_password.min' => 'Password minimal harus 8 karakter.',
+        ]);
+
+        $user = User::findOrFail(Auth::id());
+
+        // Cek apakah password lama yang diinputkan sesuai dengan di database
+        if (!Hash::check($request->current_password, $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+        }
+
+        // Update ke password baru
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        Log::info('Admin password changed successfully for user: ' . $user->email);
+        return back()->with('success_password', 'Password berhasil diubah!');
+    }
+
+    // 4. Tampilkan Halaman Pengaturan (Settings)
+    public function settings()
+    {
+        // Mengambil semua data setting dan mengubahnya menjadi array assosiatif [ 'key' => 'value' ]
+        $settings = Setting::pluck('value', 'key')->toArray();
+
+        return view('admin.settings.index', compact('settings'));
+    }
+
+    // 5. Proses Simpan Pengaturan
+    public function updateSettings(Request $request)
+    {
+        // Ambil semua request kecuali token dan file logo
+        $data = $request->except(['_token', 'site_logo']);
+
+        foreach ($data as $key => $value) {
+            // Cegah password/secret key tertimpa menjadi kosong jika form disubmit tanpa diisi ulang
+            if (in_array($key, ['mail_password', 'prismalink_secret_key']) && empty($value)) {
+                continue;
+            }
+
+            // Simpan atau update ke database
+            Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
+
+        // Proses khusus untuk upload logo website
+        if ($request->hasFile('site_logo')) {
+            $file = $request->file('site_logo');
+            $filename = time() . '_logo.' . $file->getClientOriginalExtension();
+
+            // Simpan ke folder public/assets/images
+            $file->move(public_path('assets/images'), $filename);
+
+            Setting::updateOrCreate(
+                ['key' => 'site_logo'],
+                ['value' => 'assets/images/' . $filename]
+            );
+        }
+
+        Log::info('System settings updated by user: ' . Auth::user()->email);
+        return back()->with('success', 'Pengaturan berhasil diperbarui!');
     }
 }

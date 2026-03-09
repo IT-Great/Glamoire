@@ -1,927 +1,896 @@
 @extends('user.layouts.master')
 
 @section('content')
-<div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 mb-12 mb-md-0 py-2">
-    <div class="container-fluid px-0 px-md-3">
-        <div class="shadow-sm border border-black rounded-sm py-2 py-md-3 my-2 my-md-3">
-            <div class="d-flex gap-1 pl-3">
-                <a href="/" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Beranda</a>
-                <p class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]"> > </p>
-                <a href="#" class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Keranjang</a>
+    <style>
+        /* ==========================================
+           WORLD CLASS SHOPPING CART STYLING
+           ========================================== */
+        :root {
+            --glamoire-dark: #183018;
+            --glamoire-light: #F9FAFB;
+            --glamoire-accent: #2A4D2A;
+            --glamoire-gold: #D4AF37;
+            --text-main: #1F2937;
+            --text-muted: #6B7280;
+            --danger-main: #DC2626;
+            --border-color: #E5E7EB;
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            background-color: var(--glamoire-light);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* --- Premium Breadcrumb --- */
+        .premium-breadcrumb {
+            background: transparent;
+            padding: 1.5rem 0;
+            margin-bottom: 0;
+        }
+
+        .premium-breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.85rem;
+            transition: var(--transition-smooth);
+        }
+
+        .premium-breadcrumb a:hover {
+            color: var(--glamoire-dark);
+        }
+
+        .premium-breadcrumb span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin: 0 8px;
+        }
+
+        .premium-breadcrumb .active-page {
+            color: var(--glamoire-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* --- Page Title --- */
+        .page-title {
+            font-family: 'The Seasons', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2rem;
+        }
+
+        /* --- Layout Wrappers --- */
+        .cart-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: flex-start;
+            margin-bottom: 5rem;
+        }
+
+        .cart-items-section {
+            flex: 1 1 65%;
+            background: #FFF;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+        }
+
+        .cart-summary-section {
+            flex: 0 0 350px;
+            background: #FFF;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+        }
+
+        @media (max-width: 991px) {
+            .cart-container {
+                flex-direction: column;
+            }
+
+            .cart-items-section,
+            .cart-summary-section {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+
+            .cart-summary-section {
+                position: static;
+                display: none;
+                /* Disembunyikan di mobile, diganti fixed bottom */
+            }
+        }
+
+        /* --- Custom Checkbox --- */
+        .modern-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .modern-checkbox input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #CBD5E1;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            margin: 0;
+        }
+
+        .modern-checkbox input:checked {
+            background: var(--glamoire-dark);
+            border-color: var(--glamoire-dark);
+        }
+
+        .modern-checkbox input:checked::after {
+            content: '\f00c';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            color: white;
+            font-size: 11px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* --- Cart Header Actions --- */
+        .cart-header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--glamoire-light);
+        }
+
+        .btn-delete-all {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-delete-all:hover {
+            color: var(--danger-main);
+        }
+
+        /* --- Cart Item Row --- */
+        .cart-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            transition: var(--transition-smooth);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cart-item.out-of-stock {
+            opacity: 0.6;
+            background-color: #FAFAFA;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .item-select-col {
+            display: flex;
+            align-items: center;
+        }
+
+        .item-image-col {
+            flex: 0 0 100px;
+        }
+
+        .item-img-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .item-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .item-img-wrapper:hover img {
+            transform: scale(1.05);
+        }
+
+        .item-details-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-brand {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .item-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.2rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .item-name:hover {
+            color: var(--glamoire-dark);
+        }
+
+        .item-variant {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            background: var(--glamoire-light);
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+            border: 1px solid var(--border-color);
+        }
+
+        .item-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .price-strike {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+            text-decoration: line-through;
+        }
+
+        .price-current {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--glamoire-dark);
+        }
+
+        .promo-tier-text {
+            font-size: 0.75rem;
+            color: var(--danger-main);
+            background: #FEE2E2;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .item-actions-col {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+
+        /* Modern Qty Selector */
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            background: var(--glamoire-light);
+            border: 1px solid var(--border-color);
+            border-radius: 50px;
+            padding: 0.2rem;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: #FFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: var(--transition-smooth);
+        }
+
+        .qty-btn:hover {
+            background: var(--border-color);
+        }
+
+        .qty-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .qty-input {
+            width: 35px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+
+        .qty-input:focus {
+            outline: none;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-remove-item {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 5px;
+        }
+
+        .btn-remove-item:hover {
+            color: var(--danger-main);
+        }
+
+        /* --- Summary Section --- */
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed var(--border-color);
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--glamoire-dark);
+        }
+
+        .btn-checkout {
+            width: 100%;
+            background: var(--glamoire-dark);
+            color: #FFF;
+            border: none;
+            padding: 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-top: 1.5rem;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+        }
+
+        .btn-checkout:hover:not(:disabled) {
+            background: var(--glamoire-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(24, 48, 24, 0.15);
+        }
+
+        .btn-checkout:disabled {
+            background: #D1D5DB;
+            cursor: not-allowed;
+            color: #9CA3AF;
+        }
+
+        /* Empty State */
+        .empty-state-box {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: #FFF;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .empty-state-box img {
+            max-width: 180px;
+            margin-bottom: 1.5rem;
+            opacity: 0.8;
+        }
+
+        .empty-state-box h4 {
+            font-family: 'The Seasons', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-box p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .btn-shop-now {
+            display: inline-block;
+            background: var(--glamoire-dark);
+            color: #FFF;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-shop-now:hover {
+            background: var(--glamoire-gold);
+            color: #FFF;
+        }
+
+        /* Mobile Fixed Bottom Checkout */
+        .mobile-checkout-bar {
+            display: none;
+            background: #FFF;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px;
+            padding-bottom: env(safe-area-inset-bottom, 15px);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1030;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 991px) {
+            .mobile-checkout-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+            }
+
+            .item-details-col {
+                flex: 1 1 100%;
+            }
+
+            .item-actions-col {
+                width: 100%;
+                justify-content: space-between;
+                border-top: 1px dashed var(--border-color);
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-4">
+
+        <div class="container-fluid">
+            <div class="premium-breadcrumb">
+                <a href="/"><i class="fas fa-home me-1"></i> Beranda</a>
+                <span>/</span>
+                <span class="active-page">Keranjang Belanja</span>
             </div>
         </div>
-    </div>
-    
-    <div class="row gap-2 gap-md-0 m-0 p-0 mb-2">
-        @if (count($data) !== 0)
-            <div class="col-lg-9 grid gap-2 px-0 px-md-3">
-                <div class="container border border-[#183018] rounded shadow-md">
-                    <div class="flex justify-between items-center py-2 py-md-3 border-bottom border-[#183018]">
-                        <!-- Pilih Semua -->
-                        <div class="form-check">
-                            <input 
-                                class="form-check-input" 
-                                type="checkbox" 
-                                value="" 
-                                id="select-all" 
-                                onclick="toggleCheckboxes(this)" 
-                                onchange="toggleSelectAll()"
-                            >
-                            <label 
-                                class="form-check-label text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]" 
-                                for="select-all"
-                            >
-                                Pilih Semua
+
+        <div class="container-fluid">
+            <h1 class="page-title">Keranjang Belanja</h1>
+
+            @if (count($data) !== 0)
+                <div class="cart-container">
+
+                    <div class="cart-items-section">
+
+                        <div class="cart-header-actions">
+                            <label class="modern-checkbox">
+                                <input type="checkbox" id="select-all" onclick="toggleCheckboxes(this)"
+                                    onchange="toggleSelectAll()">
+                                Pilih Semua Barang
                             </label>
+                            <button class="btn-delete-all" name="delete-all-product-cart">
+                                <i class="far fa-trash-alt"></i> Hapus Terpilih
+                            </button>
                         </div>
-                    
-                        <!-- Hapus Semua -->
-                        <button 
-                            class="btn btn-delete" 
-                            name="delete-all-product-cart" 
-                            title="Hapus semua produk terpilih dari keranjang" 
-                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                        > 
-                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
+
+                        @foreach ($data as $product)
+                            @php
+                                $isVariant = $product->product_variant_id !== NULL;
+                                $stock = $isVariant ? $product->productVariant->variant_stock : $product->product->stock_quantity;
+                                $isOutOfStock = $stock == 0;
+                                $image = $isVariant ? ($product->productVariant->variant_image ?? $product->product->main_image) : $product->product->main_image;
+                                $price = $isVariant ? $product->productVariant->variant_price : $product->product->regular_price; // Base price for display
+                                $sku = $isVariant ? $product->productVariant->sku : null;
+                                $productCode = $product->product->product_code;
+
+                                // Promo checking logic
+                                $activePromo = $product->product->promos->first();
+                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                            @endphp
+
+                            <div class="cart-item {{ $isOutOfStock ? 'out-of-stock' : '' }}">
+
+                                <div class="item-select-col">
+                                    @if (!$isOutOfStock)
+                                        <label class="modern-checkbox">
+                                            <input class="item-checkbox" type="checkbox"
+                                                id="produk_{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                                data-type="{{ $isVariant ? 'variant' : 'product' }}" data-price="{{ $product->price }}"
+                                                onchange="calculateTotal()" {{ $product->is_choose ? 'checked' : '' }}>
+                                        </label>
+                                    @else
+                                        <span class="badge bg-danger">Habis</span>
+                                    @endif
+                                </div>
+
+                                <div class="item-image-col">
+                                    <div class="item-img-wrapper"
+                                        onclick="window.location.href='/{{ $productCode }}_product{{ $sku ? '?varian=' . $sku : '' }}'">
+                                        <img src="{{ Storage::url($image) }}" alt="Produk">
+                                    </div>
+                                </div>
+
+                                <div class="item-details-col">
+                                    <div class="item-brand">{{ $product->product->brand->name ?? 'Glamoire' }}</div>
+                                    <a href="/{{ $productCode }}_product{{ $sku ? '?varian=' . $sku : '' }}" class="item-name">
+                                        {{ $product->product->product_name }}
+                                    </a>
+
+                                    @if ($isVariant)
+                                        <div class="item-variant">{{ $product->productVariant->variant_value }}</div>
+                                    @endif
+
+                                    <div class="item-price-row">
+                                        @if ($discountedPrice && $discountedPrice < $product->product->regular_price && !$isVariant)
+                                            <span
+                                                class="price-strike">Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}</span>
+                                            <span class="price-current">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                        @else
+                                            <span class="price-current">Rp{{ number_format($product->price, 0, ',', '.') }}</span>
+                                        @endif
+                                    </div>
+
+                                    @if ($product->all_discount_tiers)
+                                        <div class="promo-tier-text mt-1">{!! $product->all_discount_tiers !!}</div>
+                                    @endif
+
+                                    <div class="item-actions-col">
+                                        @if (!$isOutOfStock)
+                                            <div class="qty-selector">
+                                                <button class="qty-btn btn-minus"
+                                                    data-id="{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                                    data-type="{{ $isVariant ? 'variant' : 'product' }}">
+                                                    <i class="fas fa-minus" style="font-size: 0.6rem;"></i>
+                                                </button>
+                                                <input type="number" class="qty-input"
+                                                    id="product-quantity-{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                                    value="{{ $product->quantity }}" min="1" max="{{ $stock }}"
+                                                    data-type="{{ $isVariant ? 'variant' : 'product' }}">
+                                                <button class="qty-btn btn-plus"
+                                                    data-id="{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                                    data-type="{{ $isVariant ? 'variant' : 'product' }}" data-max="{{ $stock }}">
+                                                    <i class="fas fa-plus" style="font-size: 0.6rem;"></i>
+                                                </button>
+                                            </div>
+                                        @else
+                                            <div class="text-danger fw-bold fs-7">Produk ini sudah habis</div>
+                                        @endif
+
+                                        <button class="btn-remove-item" name="delete-product-cart"
+                                            data-type="{{ $isVariant ? 'variant' : 'product' }}"
+                                            data-id="{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                            title="Hapus item">
+                                            <i class="far fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                    <span
+                                        id="quantity-warning-{{ $isVariant ? $product->product_variant_id : $product->product_id }}"
+                                        class="text-danger fs-7 mt-1" style="display: none;">Batas maksimal stok tercapai.</span>
+                                </div>
+
+                            </div>
+                        @endforeach
+
+                    </div>
+
+                    <div class="cart-summary-section">
+                        <h3 class="summary-title">Ringkasan Belanja</h3>
+                        <div class="summary-row">
+                            <span>Total Harga (<span id="summary-count">0</span> barang)</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>Total Tagihan</span>
+                            <span id="totalPrice">Rp0</span>
+                        </div>
+                        <button class="btn-checkout" id="paynow" onclick="checkout()" disabled>
+                            Beli Sekarang
                         </button>
+                        <p class="text-muted fs-7 text-center mt-3 mb-0"><i class="fas fa-shield-alt me-1"></i> Transaksi Anda
+                            aman dan terenkripsi.</p>
                     </div>
-                    
-        
-                    @foreach ($data as $product)
 
-                        {{-- TAMPILKAN PRODUCT VARIAN --}}
-                        @if($product->product_variant_id !== NULL)
-                            <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->productVariant->variant_stock == 0 ? 'bg-secondary' : ''}}">
-                                <div class="d-flex">
-                                    <div class="col-lg-2 col-md-4 col-4 pl-1">
-                                        @if ($product->productVariant->variant_stock > 0)
-                                        <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{$product->product_variant_id}}" data-type="variant"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
-                                        @else
-                                        @endif
-                                        @if ($product->productVariant->variant_image == NULL)
-                                        <img src="{{ Storage::url($product->product->main_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                        @else
-                                        <img src="{{ Storage::url($product->productVariant->variant_image) }}" alt="{{$product->product->product_name}}" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                        @endif
-                                    </div>
-                                    <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                        @if ($product->productVariant->variant_stock == 0)
-                                        <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
-                                            Stok Habis
-                                        </p>
-                                        @endif
-                                        <p class="text-dark hover:cursor-pointer text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] {{ $product->productVariant->variant_stock == 0 ? 'text-primary' : ''}}" onclick="detailProductVariant('{{ $product->product->product_code }}', '{{$product->productVariant->sku}}')">{{ $product->product->product_name }}</p>
-                                        <a class="w-fit text-decoration-none bg-[#183018] text-white p-1 rounded-sm text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px] text-center">
-                                            {{ $product->productVariant->variant_value }}
-                                        </a>
-                                        
-                                        @php
-                                            $activePromo = $product->product->promos->first();
-                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                        @endphp
-
-                                                <div class="flex gap-1">
-
-                                                    <p
-                                                        class="text-decoration-none text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                        Rp{{ number_format($product->productVariant->variant_price, 0, ',', '.') }}
-                                                    </p>
-
-                                                </div>
-
-                                                <div class="flex gap-1">
-
-                                                    <p
-                                                        class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                        {!! $product->all_discount_tiers !!}
-                                                    </p>
-
-                                                </div>
-
-                                                <!-- BUTTON PLUS & MINUS & DELETE -->
-                                                <div class="flex mt-auto bottom">
-                                                    <div class="flex ml-auto">
-                                                        <button class="btn btn-delete" name="delete-product-cart"
-                                                            title="Hapus produk dari keranjang"
-                                                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                            data-type="product"
-                                                            data-id="{{ $product->product_variant_id }}">
-                                                            <i class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                                                        </button>
-
-                                                        @if ($product->productVariant->variant_stock == 0)
-                                                            <button
-                                                                class="btn btn-danger text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-xl"
-                                                                data-bs-toggle="tooltip" data-bs-placement="top"
-                                                                title="Beritahu Saya Jika Stok Sudah Ada" type="button"
-                                                                id="notify-me-{{ $product->productVariant->id }}"
-                                                                onclick="notifyMe({{ $product->productVariant->id }})">
-                                                                Beritahu Saya
-                                                            </button>
-                                                        @else
-                                                            <div class="input-group quantity-detail-produk-variant rounded-xl shadow-sm"
-                                                                style="width: 120px;">
-                                                                <div class="input-group-btn">
-                                                                    <button class="btn btn-minus-variant"
-                                                                        data-id="{{ $product->product_variant_id }}"
-                                                                        data-quantity="{{ $product->productVariant->variant_stock }}"
-                                                                        style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                        id="minus-btn-product-cart-variant-{{ $product->product_variant_id }}">
-                                                                        <i class="fa fa-minus text-xs"></i>
-                                                                    </button>
-                                                                </div>
-
-                                                                <input type="number"
-                                                                    id="product-quantity-{{ $product->product_variant_id }}"
-                                                                    value="{{ $product->quantity }}"
-                                                                    name="total_product_variant"
-                                                                    class="text-xs form-control bg-secondary text-center no-spinner"
-                                                                    min="1"
-                                                                    max="{{ $product->productVariant->variant_stock }}"
-                                                                    oninput="validateInput(this, {{ $product->productVariant->variant_stock }})">
-
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-plus-variant" data-id="{{$product->product_variant_id}}" data-quantity="{{$product->productVariant->variant_stock}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="plus-btn-product-cart-variant-{{$product->product_variant_id}}">
-                                                            <i class="fa fa-plus text-xs"></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {{-- TAMPILKAN PRODUCT SAJA --}}
-                        @else
-                            <div class="form-check grid border-bottom border-[#183018] py-2 py-md-3 {{ $product->product->stock_quantity == 0 ? 'bg-secondary' : ''}}">
-                                <div class="d-flex">
-                                    <div class="col-lg-2 col-md-4 col-4 pl-1">
-                                        @if ($product->product->stock_quantity > 0)
-                                        <input class="form-check-input item-checkbox" type="checkbox" value="{{ $product->total }}" id="produk_{{ $product->product_id }}" data-type="product"  data-price="{{ $product->price }}" onchange="calculateTotal()" {{ $product->is_choose == TRUE ? "checked" : "" }}>
-                                        @else
-                                        @endif
-                                        <img src="{{ Storage::url($product->product->main_image) }}" alt="nama produk" class="img-fluid w-100 border border-[#183018] rounded-sm">
-                                    </div>
-                                    <div class="col-lg-10 col-md-8 col-8 p-0 p-md-2 d-flex flex-column">
-                                        @if ($product->product->stock_quantity == 0)
-                                        <p class="text-danger font-semibold text-[10px] md:text-[12px] lg:text-[12px] xl:text-[14px] hover:cursor-pointer">
-                                            Stok Habis
-                                        </p>
-                                        @endif
-                                        <p class="hover:cursor-pointer text-[12px] text-black md:text-[12px] lg:text-[12px] xl:text-[14px] {{ $product->product->stock_quantity == 0 ? 'text-primary' : ''}}" onclick="detailProduct('{{ $product->product->product_code }}')">{{ $product->product->product_name }}</p>
-                                        @php
-                                            $activePromo = $product->product->promos->first(); // Mengambil promo pertama yang aktif
-                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                        
-                                            // Mengambil produk terkait dari promo tier
-                                            $promoTiers = $activePromo ? $activePromo->all_discount_tiers : null;
-                                        @endphp
-                                    
-                                        <div class="flex gap-1">
-                                            @if ($discountedPrice && $discountedPrice < $product->product->regular_price)
-                                            <p class="flex justify-content-center text-align-center text-decoration-none text-muted text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">
-                                                <del>
-                                                Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
-                                                </del>
-                                            </p>
-                                            <p class="text-decoration-none text-[#183018] text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</p>
-                                            @else
-                                            <p class="text-decoration-none  text-[12px] md:text-[10px] lg:text-[12px] xl:text-[14px] font-semibold text-[#183018]">
-                                                Rp{{ number_format($product->product->regular_price, 0, ',', '.') }}
-                                            </p>
-                                            @endif
-                                        </div>
-
-                                                @if (!empty($promoTiers))
-                                                    <div>
-                                                        <p class="text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
-                                                            {!! $activePromo->all_discount_tiers !!}
-                                                        </p>
-                                                        <p
-                                                            class="text-danger text-[8px] md:text-[10px] lg:text-[11px] xl:text-[12px]">
-                                                            *Tidak bisa digabung dengan voucher diskon lainnya <br>
-                                                            *Harga Berubah ketika anda checkout
-                                                        </p>
-
-                                                    </div>
-                                                @endif
-
-                                                <!-- BUTTON PLUS & MINUS & DELETE -->
-                                                <div class="flex mt-auto bottom">
-                                                    <div class="flex ml-auto">
-                                                        <button class="btn btn-delete" name="delete-product-cart"
-                                                            title="Hapus produk dari keranjang"
-                                                            style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                            data-type="product" data-id="{{ $product->product_id }}">
-                                                            <i
-                                                                class="fas fa-trash text-[10px] text-black md:text-[12px] lg:text-[14px] xl:text-[16px]"></i>
-                                                        </button>
-
-                                                @if ($product->product->stock_quantity == 0)
-                                                    <button
-                                                        class="btn btn-danger text-[8px] md:text-[12px] lg:text-[12px] xl:text-[14px] rounded-sm" 
-                                                        data-bs-toggle="tooltip" 
-                                                        data-bs-placement="top" 
-                                                        title="Beritahu Saya Jika Stok Sudah Ada" 
-                                                        type="button" 
-                                                        id="notify-me-{{$product->product->id}}"
-                                                        onclick="notifyMe({{$product->product->id}})">
-                                                        Beritahu Saya
-                                                    </button>   
-                                                @else
-                                                <div class="input-group quantity-detail-produk rounded-sm shadow-sm" style="width: 120px;">
-                                                    <div class="input-group-btn">
-                                                        <button class="btn btn-minus" data-id="{{$product->product_id}}" data-quantity="{{$product->product->stock_quantity}}" style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;" id="minus-btn-product-cart-{{$product->product_id}}">
-                                                            <i class="fa fa-minus text-xs"></i>
-                                                        </button>
-                                                    </div>
-
-                                                        <input type="number"
-                                                            id="product-quantity-{{ $product->product->id }}"
-                                                            value="{{ $product->quantity }}" name="total_product"
-                                                            class="text-xs form-control bg-secondary text-center no-spinner"
-                                                            min="1"
-                                                            max="{{ $product->product->stock_quantity }}"
-                                                            oninput="validateInput(this, {{ $product->product->stock_quantity }})">
-
-                                                        <div class="input-group-btn">
-                                                            <button class="btn btn-plus"
-                                                                data-id="{{ $product->product_id }}"
-                                                                data-quantity="{{ $product->product->stock_quantity }}"
-                                                                style="height: 32px; width: 32px; display: flex; justify-content: center; align-items: center;"
-                                                                id="plus-btn-product-cart-{{ $product->product_id }}">
-                                                                <i class="fa fa-plus text-xs"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endforeach
                 </div>
-            </div>
+            @else
+                <div class="empty-state-box mb-5">
+                    <img src="{{ asset('images/cart-empty.png') }}" alt="Keranjang Kosong">
+                    <h4>Keranjang Belanjamu Kosong</h4>
+                    <p>Belum ada produk yang kamu masukkan. Yuk, eksplorasi produk kecantikan terbaik kami!</p>
+                    <a href="/shop" class="btn-shop-now">Mulai Belanja</a>
+                </div>
+            @endif
+        </div>
 
-            <div class="col-lg-3 pl-0 pl-md-3 pr-0 pr-md-3 pl-lg-0 mt-0 mt-md-2 mt-lg-0 mt-2 mt-md-0 d-none d-lg-block">
-                <div class="position-sticky" style="top: 4rem">
-                    <div class="mb-3 rounded p-3 bg-white shadow-md border border-[#183018]">
-                        <div class="d-flex py-2">
-                            <p class="text-black text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px]">Total Harga</p>
-                            <p id="totalPrice" class="text-[12px] md:text-[12px] lg:text-[14px] xl:text-[14px] ml-auto text-black">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
-                        </div>
-                        <div class="border-top border-[#183018] pt-2 mr-2">
-                                <button class="hover:cursor-pointer py-2 text-decoration-none rounded-sm hover:bg-neutral-900 shadow-sm px-3 text-white bg-[#183018] w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[16px]" id="paynow" onclick="checkout()" disabled>
-                                    Beli Sekarang
-                                </button>
-                            </a>
-                        </div>
-                    </div>
+        @if (count($data) !== 0)
+            <div class="mobile-checkout-bar">
+                <div>
+                    <span class="text-muted fs-7 d-block">Total Tagihan</span>
+                    <span id="totalPriceMobile" class="fw-bold text-dark" style="font-size: 1.25rem;">Rp0</span>
                 </div>
-            </div>
-
-        @else
-            <div style="min-height:10vh;">
-                <div class="flex align-items-center justify-content-center">
-                    <img src="images/cart-empty.png" class="img-fluid" style="width:20%; height:100%; object-fit: cover;" alt="Produk Tidak Ditemukan">
-                </div>
-                <div class="grid align-items-center justify-content-center">
-                    <p class="text-danger text-[10px] md:text-[14px] lg:text-[16px] xl:text-[18px">Keranjang belanjamu masih kosong nih</p>
-                    <button class="btn btn-success rounded-sm w-full text-[10px] md:text-[10px] lg:text-[12px] xl:text-[14px    " onclick="location.href='/shop'" >Mulai Belanja</button>
-                </div>
+                <button class="btn-checkout m-0 w-auto px-4" id="paynowmobile" onclick="checkout()" disabled>
+                    Beli Sekarang
+                </button>
             </div>
         @endif
     </div>
 
-    <div class="d-lg-none bg-[#183018] fixed-bottom px-0 d-flex justify-content-end align-items-center gap-2" style="width: 100%; box-sizing: border-box;">
-        <div class="grid py-2 text-end" style="flex: 1;">
-            <p class="text-white text-[14px]">Total</p>
-            <p id="totalPriceMobile" class="text-[14px] ml-auto text-white font-semibold">{{ 'Rp' . number_format(0, 0, ',', '.') }}</p>
-        </div>
-        <div class="pr-2">
-            <button class="btn btn-light w-fit h-fit font-semibold rounded-xl text-[#183018] text-[22px]" type="submit" id="paynowmobile" onclick="checkout()" disabled>
-                Beli Sekarang
-            </button>
-        </div>
-    </div>
-</div>
-
-
-
-    <!-- DELETE PRODUCT FROM CART -->
     <script>
-        $(document).on('click', 'button[name="delete-product-cart"]', function(e) {
-            e.preventDefault();
-
-            var id = $(this).data('id');
-            let type = $(this).data('type');
-
-        if (type === 'variant') {
-            $.ajax({
-                url: "{{ route('delete.product.variant.cart') }}",
-                type: 'POST',
-                data: {
-                    product_variant_id: id,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    Toast.fire({
-                        icon: "success",
-                        text: response.message,
-                        willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                        }
-                    }).then(function () {
-                        location.reload(); // Redirect ke halaman utama atau halaman lain
-                    });
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert("Error occurred!");
-                }
-            });
-        } else if (type === 'product') {
-            $.ajax({
-                url: "{{ route('delete.product.cart') }}",
-                type: 'POST',
-                data: {
-                    product_id: id,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    Toast.fire({
-                        icon: "success",
-                        text: response.message,
-                        willOpen: () => {
-                        const title = document.querySelector('.swal2-title');
-                        const content = document.querySelector('.swal2-html-container');
-                        if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                        if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                        }
-                    }).then(function () {
-                        location.reload(); // Redirect ke halaman utama atau halaman lain
-                    });
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert("Error occurred!");
-                }
-            });
-        }
-        
-    });
-
-    $(document).on('click', 'button[name="delete-all-product-cart"]', function(e) {
-        e.preventDefault();
-        $.ajax({
-            url: "{{ route('delete.all.product.cart') }}",
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                Toast.fire({
-                    icon: "success",
-                    text: response.message,
-                    willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Ubah warna judul
-                    if (content) content.style.color = '#ffffff'; // Ubah warna konten
-                    }
-                }).then(function () {
-                    location.reload(); // Redirect ke halaman utama atau halaman lain
-                });
-            },
-            error: function(xhr) {
-                console.log(xhr.responseText);
-                alert("Error occurred!");
-            }
-        });
-    });
-</script>
-
-
-    <!-- FUNCTION FOR DATABASE -->
-    <!-- CHOOSE PRODUCT -->
-    <script>
+        // Logic untuk redirect ke halaman checkout
         function checkout() {
             window.location.href = '/checkout';
         }
 
-        // Fungsi untuk memeriksa status checkbox "Pilih Semua"
-        function updateSelectAllStatus() {
-            let totalCheckboxes = $('.item-checkbox').length; // Jumlah semua checkbox item
-            let checkedCheckboxes = $('.item-checkbox:checked').length; // Jumlah checkbox item yang dipilih
+        function detailProduct(productCode) { window.location.href = "/" + productCode + "_product"; }
+        function detailProductVariant(productCode, productVariantSku) { window.location.href = "/" + productCode + "_product?varian=" + productVariantSku; }
 
-            // console.log({
-            //     totalCheckboxes : totalCheckboxes,
-            //     checkedCheckboxes : checkedCheckboxes,
-            // });
+        // Format Rupiah
+        function formatRupiah(number) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number).replace('Rp', 'Rp ').replace(',00', '');
+        }
 
-            if (totalCheckboxes !== 0 && checkedCheckboxes !== 0) {
-                if (totalCheckboxes === checkedCheckboxes) {
-                    $('#select-all').prop('checked', true); // Pilih Semua jika semua item dipilih
-                }
-            } else if (totalCheckboxes === 0 && checkedCheckboxes === 0) {
-                $('#select-all').prop('checked', false); // Hapus Pilih Semua jika tidak semua item dipilih
+        // HITUNG TOTAL BELANJA DI CLIENT SIDE
+        function calculateTotal() {
+            let total = 0;
+            let count = 0;
+            let hasSelectedProduct = false;
+
+            $('.item-checkbox:checked').each(function () {
+                let idAttr = $(this).attr('id').split('_')[1]; // ID unik (Bisa ID produk atau ID varian)
+                let quantity = parseInt($('#product-quantity-' + idAttr).val()) || 1;
+                let price = parseFloat($(this).data('price')) || 0;
+
+                total += price * quantity;
+                count += quantity;
+                hasSelectedProduct = true;
+            });
+
+            // Update UI Text
+            $('#totalPrice').text(formatRupiah(total));
+            if ($('#totalPriceMobile').length) $('#totalPriceMobile').text(formatRupiah(total));
+            $('#summary-count').text(count);
+
+            // Enable/Disable Checkout Button
+            if (hasSelectedProduct) {
+                $('#paynow').removeAttr('disabled');
+                if ($('#paynowmobile').length) $('#paynowmobile').removeAttr('disabled');
             } else {
-                $('#select-all').prop('checked', false); // Hapus Pilih Semua jika tidak semua item dipilih
+                $('#paynow').attr('disabled', 'disabled');
+                if ($('#paynowmobile').length) $('#paynowmobile').attr('disabled', 'disabled');
+            }
+
+            // Cek status Check All
+            let totalCheckboxes = $('.item-checkbox').length;
+            let checkedCheckboxes = $('.item-checkbox:checked').length;
+            if (totalCheckboxes > 0 && totalCheckboxes === checkedCheckboxes) {
+                $('#select-all').prop('checked', true);
+            } else {
+                $('#select-all').prop('checked', false);
             }
         }
 
-        // Fungsi untuk toggle status Pilih Semua
+        // CHECKBOX SELECT ALL
+        function toggleCheckboxes(source) {
+            $('.item-checkbox').prop('checked', source.checked);
+            calculateTotal();
+        }
+
         function toggleSelectAll() {
-            let selectAllChecked = $('#select-all').is(':checked');
-            $('.item-checkbox').prop('checked', selectAllChecked);
+            let isChecked = $('#select-all').is(':checked') ? 1 : 0;
 
-            // Kirim AJAX request untuk mengupdate semua produk
+            // Panggil AJAX untuk simpan state "Pilih Semua" ke database
             $.ajax({
                 url: "{{ route('choose.product.cart') }}",
                 type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    select_all: true, // Indikator bahwa ini untuk memilih semua
-                    is_choose: selectAllChecked ? 1 : 0 // TRUE jika semua dipilih, FALSE jika tidak
-                },
-                success: function(response) {},
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert('Terjadi kesalahan.');
-                }
+                data: { _token: '{{ csrf_token() }}', select_all: true, is_choose: isChecked },
+                error: function (xhr) { console.log(xhr.responseText); }
             });
         }
 
-        // Fungsi untuk toggle produk varian individu
-        function toggleProductSelectionVariant(productVariantId) {
+        $(document).ready(function () {
 
-            let isChecked = $('#produk_' + productVariantId).is(':checked');
+            // Initial Calculation saat halaman dimuat
+            calculateTotal();
 
-            // Kirim AJAX request untuk mengupdate produk individu
-            $.ajax({
-                url: "{{ route('choose.product.variant.cart') }}",
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_variant_id: productVariantId,
-                    is_choose: isChecked ? 1 : 0
-                },
-                success: function(response) {},
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert('Terjadi kesalahan.');
-                }
-            });
+            // Handle Checkbox Individu Change -> Save to DB via AJAX
+            $(document).on('change', '.item-checkbox', function () {
+                let type = $(this).data('type');
+                let id = $(this).attr('id').split('_')[1];
+                let isChecked = $(this).is(':checked') ? 1 : 0;
+                let urlRoute = type === 'variant' ? "{{ route('choose.product.variant.cart') }}" : "{{ route('choose.product.cart') }}";
 
-            // Update status checkbox "Pilih Semua"
-            updateSelectAllStatus();
-        }
+                let ajaxData = { _token: '{{ csrf_token() }}', is_choose: isChecked };
+                if (type === 'variant') { ajaxData.product_variant_id = id; }
+                else { ajaxData.product_id = id; }
 
-        function toggleProductSelection(productId) {
-
-            let isChecked = $('#produk_' + productId).is(':checked');
-
-            // Kirim AJAX request untuk mengupdate produk individu
-            $.ajax({
-                url: "{{ route('choose.product.cart') }}",
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_id: productId,
-                    is_choose: isChecked ? 1 : 0
-                },
-                success: function(response) {},
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert('Terjadi kesalahan.');
-                }
-            });
-
-            // Update status checkbox "Pilih Semua"
-            updateSelectAllStatus();
-        }
-
-        // Event listener untuk checkbox individu
-        $('.item-checkbox').on('change', function() {
-            let type = $(this).data('type'); // Ambil tipe dari data-type
-            let productId = $(this).attr('id').split('_')[1]; // Ambil ID produk/varian
-
-            if (type === 'variant') {
-                console.log('Product Variant clicked:', productId);
-                toggleProductSelectionVariant(productId);
-            } else if (type === 'product') {
-                console.log('Product clicked:', productId);
-                toggleProductSelection(productId);
-            }
-
-        });
-
-        // Update status "Pilih Semua" ketika halaman dimuat
-        $(document).ready(function() {
-            updateSelectAllStatus(); // Memastikan status "Pilih Semua" sesuai ketika halaman dimuat
-        });
-
-        // Event listener untuk checkbox "Pilih Semua"
-        $('#select-all').on('change', function() {
-            toggleSelectAll();
-        });
-    </script>
-
-    <!-- HANDLE QUANTITY -->
-    <script>
-        $(document).ready(function() {
-
-            // Handle quantity input change (both via plus/minus buttons and manual input)
-            $(document).on('input', '[name="total_product"]', function() {
-                var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
-                var newQuantity = parseInt($(this).val());
-                var maxQuantity = parseInt($(this).attr('max')); // Get max quantity from input attribute
-
-                // Ensure the quantity is a valid number and greater than 0
-                if (!isNaN(newQuantity) && newQuantity > 0) {
-                    if(newQuantity > maxQuantity) {
-                        $(this).val(maxQuantity); // Reset to max quantity if exceeded
-                        updateProductQuantity(productId, maxQuantity);
-                    } else {
-                        $(this).val(newQuantity); // Set the new valid quantity
-                        updateProductQuantity(productId, newQuantity);
-                    }
-                } else {
-                    $(this).val(1); // Reset to 1 if the input is invalid
-                    updateProductQuantity(productId, 1);
-                }
-            });
-
-            // Handle minus button click
-            $(document).on('click', '.btn-minus', function() {
-                var productId = $(this).data('id');
-                var currentQuantity = parseInt($('#product-quantity-' + productId).val());
-
-                if (currentQuantity >= 1) {
-                    $('#product-quantity-' + productId).val(currentQuantity);
-                    updateProductQuantity(productId, currentQuantity);
-                }
-            });
-
-            // Handle plus button click
-            $(document).on('click', '.btn-plus', function() {
-                var productId = $(this).data('id');
-                var currentQuantity = parseInt($('#product-quantity-' + productId).val());
-
-                $('#product-quantity-' + productId).val(currentQuantity);
-                updateProductQuantity(productId, currentQuantity);
-            });
-
-            // Function to send AJAX request to update quantity
-            function updateProductQuantity(productId, newQuantity) {
                 $.ajax({
-                    url: "{{ route('update.cart.quantity') }}", // Your route to update quantity
-                    type: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        product_id: productId,
-                        quantity: newQuantity
-                    },
-                    success: function(response) {},
-                    error: function(xhr) {
-                        console.log(xhr.responseText);
-                        alert("An error occurred.");
-                    }
+                    url: urlRoute, type: 'POST', data: ajaxData,
+                    error: function (xhr) { console.log(xhr.responseText); }
+                });
+                calculateTotal();
+            });
+
+            // HANDLE QUANTITY (PLUS, MINUS, INPUT)
+            function updateQuantityAJAX(id, type, newQty) {
+                let urlRoute = type === 'variant' ? "{{ route('update.cart.quantity.variant') }}" : "{{ route('update.cart.quantity') }}";
+                let ajaxData = { _token: '{{ csrf_token() }}', quantity: newQty };
+                if (type === 'variant') { ajaxData.product_variant_id = id; }
+                else { ajaxData.product_id = id; }
+
+                $.ajax({
+                    url: urlRoute, type: 'POST', data: ajaxData,
+                    error: function (xhr) { console.log("Gagal update qty ke server."); }
                 });
             }
-        });
 
-        // VARIANT
+            // Tombol Minus
+            $(document).on('click', '.btn-minus', function () {
+                let id = $(this).data('id');
+                let type = $(this).data('type');
+                let inputEl = $('#product-quantity-' + id);
+                let warnEl = $('#quantity-warning-' + id);
 
-        // HANDLE FOR VARIANT
-        // Handle quantity input change (both via plus/minus buttons and manual input)
-        $(document).on('input', '[name="total_product_variant"]', function() {
-            var productId = $(this).attr('id').split('-').pop(); // Get product ID from input ID
-            var newQuantity = parseInt($(this).val());
-            var maxQuantity = parseInt($(this).attr('max')); 
-
-            // Ensure the quantity is a valid number and greater than 0
-            if (!isNaN(newQuantity) && newQuantity > 0) {
-                if(newQuantity > maxQuantity) {
-                    $(this).val(maxQuantity); // Reset to max quantity if exceeded
-                    updateProductQuantityVariant(productId, maxQuantity);
-                } else {
-                    $(this).val(newQuantity); // Set the new valid quantity
-                    updateProductQuantityVariant(productId, newQuantity);
-                }
-            } else {
-                // alert("Quantity must be a valid number greater than 0");
-                $(this).val(1); // Reset to 1 if the input is invalid
-                updateProductQuantityVariant(productId, 1);
-            }
-        });
-
-        // Handle minus button click
-        $(document).on('click', '.btn-minus-variant', function() {
-
-            var productId = $(this).data('id');
-            var currentQuantity = parseInt($('#product-quantity-' + productId).val());
-
-            if (currentQuantity >= 1) {
-                $('#product-quantity-' + productId).val(currentQuantity);
-                updateProductQuantityVariant(productId, currentQuantity);
-            }
-        });
-
-        // Handle plus button click
-        $(document).on('click', '.btn-plus-variant', function() {
-            var productId = $(this).data('id');
-            var currentQuantity = parseInt($('#product-quantity-' + productId).val());
-
-            // console.log(currentQuantity);
-            $('#product-quantity-' + productId).val(currentQuantity);
-            updateProductQuantityVariant(productId, currentQuantity);
-        });
-
-        // Function to send AJAX request to update quantity
-        function updateProductQuantityVariant(productVariantId, newQuantity) {
-            // console.log({
-            //     variantId: productVariantId,
-            //     quantity: newQuantity,
-            // });
-            $.ajax({
-                url: "{{ route('update.cart.quantity.variant') }}", // Your route to update quantity
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    product_variant_id: productVariantId,
-                    quantity: newQuantity
-                },
-                success: function(response) {
-                    console.log(response.message)
-                },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
-                    alert("An error occurred.");
+                let currentQty = parseInt(inputEl.val());
+                if (currentQty > 1) {
+                    let newQty = currentQty - 1;
+                    inputEl.val(newQty);
+                    warnEl.hide();
+                    updateQuantityAJAX(id, type, newQty);
+                    calculateTotal();
                 }
             });
-        }
-    </script>
-    <!-- END FUNCTION FOR DATABASE -->
 
+            // Tombol Plus
+            $(document).on('click', '.btn-plus', function () {
+                let id = $(this).data('id');
+                let type = $(this).data('type');
+                let max = parseInt($(this).data('max'));
+                let inputEl = $('#product-quantity-' + id);
+                let warnEl = $('#quantity-warning-' + id);
 
-    <!-- MENGHITUNG TOTAL HARGA -->
-    <script>
-        // Fungsi untuk menghitung total harga
-        function calculateTotal() {
-            let total = 0; // Inisialisasi total
-            let product = 0;
-            let hasSelectedProduct = false; // Flag untuk memeriksa apakah ada produk yang dipilih
-
-            // Loop melalui semua checkbox produk
-            $('.item-checkbox:checked').each(function() {
-                let productId = $(this).attr('id').split('_')[1]; // Mendapatkan ID produk
-                let quantity = parseInt($('#product-quantity-' + productId).val()); // Mendapatkan kuantitas produk
-
-                // Mengambil harga dari elemen yang sesuai
-                let price = parseFloat($(this).data('price')); // Mengambil harga dari data atribut
-
-                // Hitung total harga untuk produk ini
-                total += price * quantity;
-
-                hasSelectedProduct = true; // Tandai bahwa ada produk yang dipilih
+                let currentQty = parseInt(inputEl.val());
+                if (currentQty < max) {
+                    let newQty = currentQty + 1;
+                    inputEl.val(newQty);
+                    warnEl.hide();
+                    updateQuantityAJAX(id, type, newQty);
+                    calculateTotal();
+                } else {
+                    warnEl.show();
+                }
             });
 
-            // Update total harga di tampilan
-            $('#totalPrice').text('Rp' + number_format(total, 0, ',', '.'));
-            $('#totalPriceMobile').text('Rp' + number_format(total, 0, ',', '.'));
+            // Manual Input (Ketik angka)
+            $(document).on('input blur', '.qty-input', function (e) {
+                let id = $(this).attr('id').split('-').pop();
+                let type = $(this).data('type');
+                let max = parseInt($(this).attr('max'));
+                let warnEl = $('#quantity-warning-' + id);
 
-            // Aktifkan atau nonaktifkan tombol "Bayar Sekarang"
-            if (hasSelectedProduct) {
-                $('#paynow').removeAttr('disabled'); // Aktifkan tombol
-                $('#paynowmobile').removeAttr('disabled');
+                let val = parseInt($(this).val());
 
-            } else {
-                $('#paynow').attr('disabled', 'disabled'); // Nonaktifkan tombol
-                $('#paynowmobile').attr('disabled', 'disabled');
-            }
-        }
-
-        // Fungsi untuk format angka ke format mata uang
-        function number_format(number, decimals, dec_point, thousands_sep) {
-            number = (number + '').replace(/[^0-9+\-.]/g, ''); // Menghapus karakter yang tidak diinginkan
-            let n = !isFinite(+number) ? 0 : +number; // Memastikan bahwa ini adalah angka
-            let prec = !isFinite(+decimals) ? 0 : Math.abs(decimals); // Mengambil angka desimal
-            let sep = typeof thousands_sep === 'undefined' ? ',' : thousands_sep; // Pemisah ribuan
-            let dec = typeof dec_point === 'undefined' ? '.' : dec_point; // Pemisah desimal
-            let toFixedFix = function(n, prec) {
-                let k = Math.pow(10, prec);
-                return '' + Math.round(n * k) / k;
-            };
-            // Mengatur desimal
-            let s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-            // Mengatur ribuan
-            if (s[0].length > 3) {
-                s[0] = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, sep);
-            }
-            // Menggabungkan kembali
-            return s.join(dec);
-        }
-
-        $(document).ready(function() {
-            // Event listener untuk tombol tambah/kurang kuantitas
-            $(document).on('click', '.btn-plus, .btn-minus', function() {
-                let productId = $(this).data('id');
-                let quantityInput = $('#product-quantity-' + productId);
-                let currentQuantity = parseInt(quantityInput.val());
-
-                if ($(this).hasClass('btn-plus')) {
-                    quantityInput.val(currentQuantity);
+                if (isNaN(val) || val < 1) {
+                    if (e.type === 'blur') { $(this).val(1); updateQuantityAJAX(id, type, 1); calculateTotal(); }
+                    warnEl.hide();
+                } else if (val > max) {
+                    $(this).val(max);
+                    warnEl.show();
+                    updateQuantityAJAX(id, type, max);
+                    calculateTotal();
                 } else {
-                    if (currentQuantity > 1) { // Menghindari kuantitas negatif
-                        quantityInput.val(currentQuantity);
+                    warnEl.hide();
+                    if (e.type === 'blur') { updateQuantityAJAX(id, type, val); calculateTotal(); }
+                }
+            });
+
+            // HANDLE HAPUS PRODUK
+            $(document).on('click', 'button[name="delete-product-cart"]', function (e) {
+                e.preventDefault();
+                let id = $(this).data('id');
+                let type = $(this).data('type');
+                let urlRoute = type === 'variant' ? "{{ route('delete.product.variant.cart') }}" : "{{ route('delete.product.cart') }}";
+                let ajaxData = { _token: '{{ csrf_token() }}' };
+                if (type === 'variant') { ajaxData.product_variant_id = id; }
+                else { ajaxData.product_id = id; }
+
+                Swal.fire({
+                    title: 'Hapus Item?', text: "Produk ini akan dihapus dari keranjang Anda.", icon: 'warning',
+                    showCancelButton: true, confirmButtonColor: '#DC2626', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Hapus'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: urlRoute, type: 'POST', data: ajaxData,
+                            success: function (response) { location.reload(); }
+                        });
                     }
-                }
-
-                // Hitung total lagi setelah kuantitas diperbarui
-                calculateTotal();
+                });
             });
 
-            // Event listener untuk tombol tambah/kurang kuantitas
-            $(document).on('click', '.btn-plus-variant, .btn-minus-variant', function() {
-                let productId = $(this).data('id');
-                let quantityInput = $('#product-quantity-' + productId);
-                let currentQuantity = parseInt(quantityInput.val());
+            // HANDLE HAPUS SEMUA (PILIHAN)
+            $(document).on('click', 'button[name="delete-all-product-cart"]', function (e) {
+                e.preventDefault();
+                let checkedItems = $('.item-checkbox:checked').length;
+                if (checkedItems === 0) {
+                    Swal.fire({ icon: 'info', title: 'Pilih Item', text: 'Silakan centang produk yang ingin dihapus terlebih dahulu.', confirmButtonColor: '#183018' });
+                    return;
+                }
 
-                if ($(this).hasClass('btn-plus-variant')) {
-                    quantityInput.val(currentQuantity);
-                } else {
-                    if (currentQuantity > 1) { // Menghindari kuantitas negatif
-                        quantityInput.val(currentQuantity);
+                Swal.fire({
+                    title: 'Hapus Item Terpilih?', text: "Semua produk yang dicentang akan dihapus.", icon: 'warning',
+                    showCancelButton: true, confirmButtonColor: '#DC2626', cancelButtonColor: '#6B7280', confirmButtonText: 'Ya, Hapus'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "{{ route('delete.all.product.cart') }}", type: 'POST', data: { _token: '{{ csrf_token() }}' },
+                            success: function (response) { location.reload(); }
+                        });
                     }
-                }
-
-                // Hitung total lagi setelah kuantitas diperbarui
-                calculateTotal();
+                });
             });
 
-            // Event listener untuk input manual kuantitas produk
-            $(document).on('change', '.form-control', function() {
-                let quantity = $(this).val();
-                $(this).val(quantity < 1 ? 1 : quantity); // Pastikan kuantitas minimal 1
-                calculateTotal(); // Hitung total saat kuantitas diubah
-            });
-
-            // Event listener untuk checkbox produk
-            $(document).on('change', '.item-checkbox', function() {
-                calculateTotal(); // Hitung total saat checkbox diubah
-            });
-
-            // Hitung total saat halaman dimuat
-            calculateTotal();
         });
-
-
-        function toggleCheckboxes(source) {
-            const checkboxes = document.querySelectorAll('.item-checkbox');
-            checkboxes.forEach((checkbox) => {
-                checkbox.checked = source.checked;
-            });
-            calculateTotal(); // Menghitung total saat checkbox "Pilih Semua" dicentang
-        }
-
-        // Product Quantity
-        $(".quantity-detail-produk button").on("click", function() {
-            var button = $(this);
-            var input = button.parent().parent().find("input");
-            var oldValue = parseFloat(input.val());
-            var maxQuantity = parseFloat(button.data("quantity")); // Ambil nilai max quantity dari data attribute
-            var newVal;
-
-            if (button.hasClass("btn-plus")) {
-                if (oldValue < maxQuantity) {
-                    newVal = oldValue + 1;
-                } else {
-                    newVal = maxQuantity; // Jika sudah mencapai maksimum, tetap pada max
-                }
-            } else {
-                newVal = (oldValue > 1) ? oldValue - 1 : 1;
-            }
-
-            // Set nilai baru ke input field
-            input.val(newVal);
-
-            // Panggil checkMaxQuantity untuk memeriksa batas
-            checkMaxQuantity(input[0], maxQuantity);
-        });
-
-        $(".quantity-detail-produk-variant button").on("click", function() {
-            var button = $(this);
-            var input = button.parent().parent().find("input");
-            var oldValue = parseFloat(input.val());
-            var maxQuantity = parseFloat(button.data("quantity")); // Ambil nilai max quantity dari data attribute
-            var newVal;
-
-            if (button.hasClass("btn-plus-variant")) {
-                if (oldValue < maxQuantity) {
-                    newVal = oldValue + 1;
-                } else {
-                    newVal = maxQuantity; // Jika sudah mencapai maksimum, tetap pada max
-                }
-            } else {
-                newVal = (oldValue > 1) ? oldValue - 1 : 1;
-            }
-
-            // Set nilai baru ke input field
-            input.val(newVal);
-
-            // Panggil checkMaxQuantity untuk memeriksa batas
-            checkMaxQuantityVariant(input[0], maxQuantity);
-        });
-
-        // Fungsi untuk memeriksa apakah sudah mencapai max quantity
-        function checkMaxQuantity(input, maxQuantity) {
-            var value = parseFloat(input.value);
-            var warningElement = document.getElementById("quantity-warning-" + input.id.split('-').pop());
-            var plusButton = document.getElementById("plus-btn-product-cart-" + input.id.split('-').pop());
-
-            if (value > maxQuantity) {
-                if (warningElement) {
-                    warningElement.innerText = "Batas untuk pembelian produk terpenuhi";
-                }
-            } else {
-                if (warningElement) {
-                    warningElement.innerText = "";
-                }
-            }
-        }
-
-        function checkMaxQuantityVariant(input, maxQuantity) {
-            var value = parseFloat(input.value);
-            var warningElement = document.getElementById("quantity-warning-variant-" + input.id.split('-').pop());
-            var plusButton = document.getElementById("plus-btn-product-cart-variant-" + input.id.split('-').pop());
-
-            if (value > maxQuantity) {
-                plusButton.disabled = true; // Disable tombol plus ketika sudah mencapai stok maksimum
-                if (warningElement) {
-                    warningElement.innerText = "Batas untuk pembelian produk terpenuhi";
-                }
-            } else {
-                plusButton.disabled = false; // Enable tombol plus jika belum mencapai stok maksimum
-                if (warningElement) {
-                    warningElement.innerText = "";
-                }
-            }
-        }
-
-        function validateInput(input, maxQuantity) {
-            var value = parseFloat(input.value);
-
-            if (value > maxQuantity) {
-                input.value = maxQuantity; // Jangan biarkan lebih dari stok
-            } else if (value < 1) {
-                input.value = 1; // Jangan biarkan di bawah 1
-            }
-            checkMaxQuantity(input, maxQuantity); // Update status tombol
-        }
     </script>
 
-    <script>
-        function detailProduct(productCode) {
-            window.location.href = productCode + "_product";
-        }
-
-        function detailProductVariant(productCode, productVariantSku) {
-            window.location.href = productCode + "_product?varian=" + productVariantSku;
-        }
-    </script>
-
-    @if (session('stock_empty'))
-        <script>
-            var Toast = Swal.mixin({
-                toast: true,
-                position: "center",
-                background: "#183018",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            });
-            Toast.fire({
-                icon: "error",
-                title: "Gagal checkout",
-                text: "{{ session('stock_empty') }}", // Pass session message here
-                willOpen: () => {
-                    const title = document.querySelector('.swal2-title');
-                    const content = document.querySelector('.swal2-html-container');
-                    if (title) title.style.color = '#ffffff'; // Change title color
-                    if (content) content.style.color = '#ffffff'; // Change content color
-                }
-            });
-        </script>
-    @endif
 @endsection

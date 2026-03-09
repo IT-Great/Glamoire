@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PaymentController extends Controller
-{    
-    public function success(Request $request)
+{
+    public function paymentSuccess(Request $request)
     {
         try {
             $order = Order::where('order_id', $request->order_id)
@@ -29,7 +29,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function failed(Request $request)
+    public function paymentFailed(Request $request)
     {
         try {
             $order = Order::where('order_id', $request->order_id)

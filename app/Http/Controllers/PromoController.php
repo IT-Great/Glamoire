@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Brand;
-use App\Models\Product;
-use App\Models\Promo;
-use App\Models\PromoProduct;
+use Exception;
+use Carbon\Carbon;
 use App\Models\Cart;
+use App\Models\Brand;
+use App\Models\Promo;
+use App\Models\Product;
+use App\Models\Wishlist;
 use App\Models\Cart_item;
+use App\Models\PromoTier;
+use App\Models\PromoProduct;
+use Illuminate\Http\Request;
 use App\Models\PromoGiftProduct;
 use App\Models\PromoGiftProducts;
-use App\Models\PromoTier;
-use App\Models\Wishlist;
-use Carbon\Carbon;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 
 class PromoController extends Controller
@@ -1345,7 +1345,7 @@ class PromoController extends Controller
 
 
 
-    // PROMO ONGKIR   
+    // PROMO ONGKIR
     public function createPromoVoucherShippingFee()
     {
         $products = Product::all(); // Pastikan kamu menggunakan model Product
