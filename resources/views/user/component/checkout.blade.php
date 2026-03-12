@@ -1184,6 +1184,7 @@
 
         // --- CHECKOUT ACTION (TOMBOL BAYAR) ---
         function checkoutAction() {
+            if ($('#paynow').data('processing')) return;
             // VALIDASI: Cek apakah user sudah mengisi alamat pengiriman
             if (shippingAddressId == null) {
                 Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan isi/pilih alamat pengiriman terlebih dahulu.', confirmButtonColor: '#183018' });
@@ -1195,6 +1196,9 @@
                 Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan pilih jasa pengiriman terlebih dahulu.', confirmButtonColor: '#183018' });
                 return;
             }
+            
+            // SET FLAG PROCESSING
+            $('#paynow').data('processing', true);
 
             // Jika lolos validasi, ubah tombol jadi loading
             $('#paynow, #paynowmobile').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Memproses...');

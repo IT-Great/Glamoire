@@ -357,10 +357,16 @@
                             Selesai
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
                             class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
                             Pengembalian/Pembatalan
+                        </a>
+                    </li> --}}
+                    <li class="nav-item">
+                        <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
+                            class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
+                            Pengembalian/Pembatalan/Paket Rusak
                         </a>
                     </li>
                 </ul>

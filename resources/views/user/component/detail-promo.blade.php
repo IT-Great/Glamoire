@@ -6,7 +6,7 @@
          WORLD CLASS PROMO DETAIL STYLING
          ========================================== */
       :root {
-          --glamoire-dark: #183018; 
+          --glamoire-dark: #183018;
           --glamoire-light: #F9FAFB;
           --glamoire-accent: #2A4D2A;
           --glamoire-gold: #D4AF37;
@@ -289,6 +289,30 @@
                                     @endif
                                   @endif
                               </div>
+                              @php
+    $allStocks = collect();
+    $totalUpdateStock = $product->stocks ? $product->stocks->sum('quantity') : 0;
+    $initialStockQty = $product->stock_quantity - $totalUpdateStock;
+
+    if ($initialStockQty > 0 && !empty($product->date_expired)) {
+        $allStocks->push($product->date_expired);
+    }
+    if ($product->stocks) {
+        foreach($product->stocks as $st) {
+            if ($st->quantity > 0 && !empty($st->date_expired)) {
+                $allStocks->push($st->date_expired);
+            }
+        }
+    }
+    $nearestExpired = $allStocks->sortBy(function($d) {
+        return \Carbon\Carbon::parse($d)->timestamp;
+    })->first();
+@endphp
+@if($nearestExpired)
+    <div class="mt-2" style="font-size: 0.75rem; color: var(--text-muted);">
+        <i class="far fa-calendar-alt"></i> Expired: <span class="{{ \Carbon\Carbon::parse($nearestExpired)->isPast() ? 'text-danger fw-bold' : 'text-dark fw-medium' }}">{{ \Carbon\Carbon::parse($nearestExpired)->format('d M Y') }}</span>
+    </div>
+@endif
                           </div>
                       </div>
                     @endforeach
@@ -315,7 +339,7 @@
           setTimeout(function() {
               if(skeletonLoader) skeletonLoader.style.display = 'none';
               if(productList) productList.style.display = 'block';
-          }, 800); 
+          }, 800);
       });
   </script>
 

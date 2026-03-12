@@ -289,9 +289,9 @@
                                     Profile</a></li>
                             {{-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
                                     Settings</a></li> --}}
-                            <li><a class="dropdown-item" href="{{ route('admin.settings') }}"><i
+                            {{-- <li><a class="dropdown-item" href="{{ route('admin.settings') }}"><i
                                         class="icon-mid bi bi-gear me-2"></i> Settings</a>
-                            </li>
+                            </li> --}}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

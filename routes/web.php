@@ -288,6 +288,8 @@ Route::get('/{nameArticle}_detailnewsletter', [ArticleController::class, 'detail
 Route::post('/order-paynow', [CheckoutController::class, 'orderPayment'])->name('order.payment');
 Route::post('/order-buynow', [CheckoutController::class, 'orderBuyNow'])->name('order.buynow');
 Route::post('/rating-and-review', [UserController::class, 'ratingAndReview'])->name('rating.and.review');
+// Tambahkan di area Route User
+Route::post('/order/request-return/{id}', [UserController::class, 'requestReturn'])->name('order.request-return');
 
 // testdoku
 Route::post('/initiate-doku-payment', [DokuPaymentController::class, 'initiatePayment'])->name('doku.initiate');
@@ -440,6 +442,9 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/admin/order/{id}/pick-up', [OrderController::class, 'pickUpBiteship'])->name('pick-up-biteship');
     Route::post('/orders/{orderId}/complete', [OrderController::class, 'changeDeliveryStatusOrder'])->name('orders.complete');
     Route::post('/orders/{orderId}/confirm-shipping', [OrderController::class, 'confirmShipping'])->name('orders.confirm-shipping');
+    // Untuk return product
+    Route::post('/admin/order/return/{id}/approve', [OrderController::class, 'approveReturn'])->name('admin.order.return.approve');
+    Route::post('/admin/order/return/{id}/reject', [OrderController::class, 'rejectReturn'])->name('admin.order.return.reject');
 
 
     // GENERATE LABEL RESI BUAT SENDIRI

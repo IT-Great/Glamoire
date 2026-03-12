@@ -602,8 +602,36 @@
                         @if ($product->sale != 0)
                             <span class="sold-count"><i class="fas fa-fire me-1"></i> Terjual {{ $product->sale }}</span>
                         @endif
-                        <span class="text-muted fs-7 ms-auto">Stok: <strong
-                                class="text-dark">{{ $firstVariant->variant_stock }}</strong></span>
+                        {{-- <span class="text-muted fs-7 ms-auto">Stok: <strong
+                                class="text-dark">{{ $firstVariant->variant_stock }}</strong></span> --}}
+                                <span class="text-muted fs-7 ms-auto text-end">
+                                    Stok: <strong class="text-dark">{{ $firstVariant->variant_stock }}</strong>
+                                    @php
+                                        $allVStks = collect();
+                                        $upVStk = $firstVariant->stocks ? $firstVariant->stocks->sum('quantity') : 0;
+                                        $initVStk = $firstVariant->variant_stock - $upVStk;
+
+                                        if ($initVStk > 0 && !empty($firstVariant->variant_expired)) {
+                                            $allVStks->push($firstVariant->variant_expired);
+                                        }
+                                        if ($firstVariant->stocks) {
+                                            foreach($firstVariant->stocks as $st) {
+                                                if ($st->quantity > 0 && !empty($st->date_expired)) {
+                                                    $allVStks->push($st->date_expired);
+                                                }
+                                            }
+                                        }
+                                        $nearestVariantExpired = $allVStks->sortBy(function($d) {
+                                            return \Carbon\Carbon::parse($d)->timestamp;
+                                        })->first();
+                                    @endphp
+                                    @if($nearestVariantExpired)
+                                        <br>
+                                        <span style="font-size: 0.75rem;">
+                                            <i class="far fa-calendar-alt"></i> Exp: <span class="{{ \Carbon\Carbon::parse($nearestVariantExpired)->isPast() ? 'text-danger fw-bold' : 'text-dark fw-medium' }}">{{ \Carbon\Carbon::parse($nearestVariantExpired)->format('d M Y') }}</span>
+                                        </span>
+                                    @endif
+                                </span>
                     </div>
 
                     <div class="product-price-display" id="price-variant">
@@ -812,7 +840,7 @@
                                     </div>
                                 </div>
                             </div>
-                        @endforeach    
+                        @endforeach
                     @endif
                 </div>
                 <div class="swiper-button-next-other"
@@ -875,7 +903,7 @@
         let productVariant = {!! json_encode($product) !!};
         let maxQuantity = {{ $firstVariant->variant_stock }};
         const warningMessage = document.getElementById("quantity-warning");
-        
+
         // AMBIL CONTAINER SELECTOR QUANTITY (MEMPERBAIKI BUG TOMBOL PLUS MINUS)
         const qtySelectors = document.querySelectorAll('.qty-selector');
 

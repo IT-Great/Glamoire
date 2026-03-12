@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Area;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderItem;
+use Illuminate\Http\Request;
 use App\Models\Shipping_address;
 use App\Services\BerduApiService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -450,6 +450,120 @@ class OrderController extends Controller
         return view('admin.order.complete-sent', compact('orders'));
     }
 
+    // public function returnedOrder()
+    // {
+    //     // Ambil order dengan status yang bermasalah dari kurir
+    //     $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
+    //         ->whereIn('status', ['returned', 'cancelled', 'disposed', 'failed'])
+    //         ->latest()
+    //         ->paginate(10);
+
+    //     // Group order items by product for each order
+    //     foreach ($orders as $order) {
+    //         $groupedItems = collect($order->orderItems)
+    //             ->filter(function ($item) {
+    //                 return $item->product !== null;
+    //             })
+    //             ->groupBy(function ($item) {
+    //                 return $item->product->id;
+    //             })
+    //             ->map(function ($group) {
+    //                 $firstItem = $group->first();
+    //                 return [
+    //                     'product' => $firstItem->product,
+    //                     'total_quantity' => $group->sum('quantity')
+    //                 ];
+    //             })
+    //             ->values();
+
+    //         $order->groupedOrderItems = $groupedItems;
+    //     }
+
+    //     // Arahkan ke view return-cancel
+    //     return view('admin.order.return-cancel', compact('orders'));
+    // }
+    // 1. UPDATE FUNGSI INI
+    public function returnedOrder()
+    {
+        // Ambil order dengan status yang bermasalah ATAU yang sedang mengajukan manual return
+        $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
+            ->whereIn('status', ['returned', 'cancelled', 'disposed', 'failed'])
+            ->orWhereNotNull('return_status') // Tambahan ini
+            ->latest()
+            ->paginate(10);
+
+        // Group order items by product for each order (SAMA SEPERTI ASLINYA)
+        foreach ($orders as $order) {
+            $groupedItems = collect($order->orderItems)
+                ->filter(function ($item) {
+                    return $item->product !== null;
+                })
+                ->groupBy(function ($item) {
+                    return $item->product->id;
+                })
+                ->map(function ($group) {
+                    $firstItem = $group->first();
+                    return [
+                        'product' => $firstItem->product,
+                        'total_quantity' => $group->sum('quantity')
+                    ];
+                })
+                ->values();
+            $order->groupedOrderItems = $groupedItems;
+        }
+
+        return view('admin.order.return-cancel', compact('orders'));
+    }
+
+    // 2. TAMBAHKAN FUNGSI BARU INI UNTUK APPROVE RETURN (DAN MENGEMBALIKAN STOK)
+    public function approveReturn($id)
+    {
+        try {
+            DB::transaction(function () use ($id) {
+                $order = Order::with('orderItems')->findOrFail($id);
+
+                // 1. Kembalikan (Restore) Stok Produk
+                foreach ($order->orderItems as $item) {
+                    if ($item->product_variant_id) {
+                        $variant = \App\Models\ProductVariations::lockForUpdate()->find($item->product_variant_id);
+                        if ($variant) {
+                            $variant->increment('variant_stock', $item->quantity);
+                            $variant->decrement('sale', $item->quantity);
+                        }
+                    } else {
+                        $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                        if ($product) {
+                            $product->increment('stock_quantity', $item->quantity);
+                            $product->decrement('sale', $item->quantity);
+                        }
+                    }
+                }
+
+                // 2. Update status
+                $order->update([
+                    'status' => 'returned', // Ubah status utama menjadi returned
+                    'return_status' => 'approved'
+                ]);
+            });
+
+            return response()->json(['success' => true, 'message' => 'Pengajuan return disetujui. Stok telah dikembalikan.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // 3. TAMBAHKAN FUNGSI BARU INI UNTUK REJECT RETURN
+    public function rejectReturn($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+            $order->update(['return_status' => 'rejected']);
+            return response()->json(['success' => true, 'message' => 'Pengajuan return ditolak.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function changeDeliveryStatusOrder($orderId)
     {
         try {
@@ -510,8 +624,8 @@ class OrderController extends Controller
         }
     }
 
-    
-    
+
+
     // CREATE ORDER KE BITESHIP
     public function pickUpBiteship($id)
     {
@@ -549,30 +663,30 @@ class OrderController extends Controller
                 ->value('postal_code');
 
             $items = $orderItems->map(function ($item) {
-                    $dimensions = json_decode($item->product->dimensions ?? '{}', true);
-                    return [
-                        "name"        => $item->product->product_name ?? 'Unknown Product',
-                        // "description" => $item->product->description ?? '',
-                        "value"       => $item->product->regular_price ?? 0,
-                        "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
-                        "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
-                        "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
-                        "weight"      => $item->product->weight_product ?? 0,
-                        "quantity"    => $item->quantity ?? 1,
-                    ];
-                })->toArray();
+                $dimensions = json_decode($item->product->dimensions ?? '{}', true);
+                return [
+                    "name"        => $item->product->product_name ?? 'Unknown Product',
+                    // "description" => $item->product->description ?? '',
+                    "value"       => $item->product->regular_price ?? 0,
+                    "length"      => isset($dimensions['length']) ? (int) $dimensions['length'] : 0,
+                    "width"       => isset($dimensions['width']) ? (int) $dimensions['width'] : 0,
+                    "height"      => isset($dimensions['height']) ? (int) $dimensions['height'] : 0,
+                    "weight"      => $item->product->weight_product ?? 0,
+                    "quantity"    => $item->quantity ?? 1,
+                ];
+            })->toArray();
 
             // Log::info('Order Items for Biteship:', $items);
             // Log::info(['Postal Code GCS:', $postalCodeGCS]);
             // Log::info(['Address:', $address['recipient_name'], $address['handphone'], $address['address'], $address['benchmark'], $getPostalCode]);
             // Log::info(['apiKey', $this->apiKey]);
-            
+
             // ORDER
             $createOrder = Http::withHeaders([
                 'Authorization' => $this->apiKey,
                 'Content-Type'  => 'application/json',
             ])->post('https://api.biteship.com/v1/orders', [
-                "shipper_contact_name" => "", 
+                "shipper_contact_name" => "",
                 "shipper_contact_phone" => "",
                 "shipper_contact_email" => "",
                 "shipper_organization" => "",
@@ -640,8 +754,8 @@ class OrderController extends Controller
 
             $status = $createOrder->json();
 
-         
-            if($status['success'] == true){
+
+            if ($status['success'] == true) {
                 $order->update([
                     'resi' => $status['courier']['waybill_id'],
                     'tracking' => $status['courier']['link'],
@@ -652,8 +766,7 @@ class OrderController extends Controller
                     'success' => true,
                     'message' => 'Pick Up Biteship initiated successfully!'
                 ]);
-            }
-            else{
+            } else {
                 return response()->json([
                     'success' => false,
                     'message' => 'Failed to create order in Biteship: ' . json_encode($createOrder->json())
@@ -666,5 +779,4 @@ class OrderController extends Controller
             ], 500);
         }
     }
-    
 }

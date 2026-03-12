@@ -8,8 +8,8 @@
 
     <style>
         /* ==========================================
-               WORLD CLASS ACCOUNT DASHBOARD STYLING
-               ========================================== */
+                                   WORLD CLASS ACCOUNT DASHBOARD STYLING
+                                   ========================================== */
         :root {
             --glamoire-dark: #183018;
             --glamoire-light: #F9FAFB;
@@ -898,29 +898,88 @@
                                                 </div>
                                             </div>
                                             <div>
+                                                {{-- @php
+                                                $statusText = '';
+                                                $statusClass = '';
+                                                switch ($order->status) {
+                                                case 'completed':
+                                                $statusText = 'Selesai';
+                                                $statusClass = 'status-completed';
+                                                break;
+                                                case 'pending':
+                                                $statusText = 'Menunggu Konfirmasi';
+                                                $statusClass = 'status-pending';
+                                                break;
+                                                case 'processing':
+                                                $statusText = 'Sedang Diproses';
+                                                $statusClass = 'status-processing';
+                                                break;
+                                                case 'delivery':
+                                                $statusText = 'Dalam Pengiriman';
+                                                $statusClass = 'status-delivery';
+                                                break;
+                                                default:
+                                                $statusText = 'Unknown';
+                                                $statusClass = 'bg-secondary text-white';
+                                                }
+                                                @endphp
+                                                <span class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span> --}}
                                                 @php
                                                     $statusText = '';
                                                     $statusClass = '';
-                                                    switch ($order->status) {
-                                                        case 'completed':
-                                                            $statusText = 'Selesai';
-                                                            $statusClass = 'status-completed';
-                                                            break;
-                                                        case 'pending':
-                                                            $statusText = 'Menunggu Konfirmasi';
-                                                            $statusClass = 'status-pending';
-                                                            break;
-                                                        case 'processing':
-                                                            $statusText = 'Sedang Diproses';
-                                                            $statusClass = 'status-processing';
-                                                            break;
-                                                        case 'delivery':
-                                                            $statusText = 'Dalam Pengiriman';
-                                                            $statusClass = 'status-delivery';
-                                                            break;
-                                                        default:
-                                                            $statusText = 'Unknown';
-                                                            $statusClass = 'bg-secondary text-white';
+
+                                                    // Jika order ini memiliki status pengajuan return (manual dari user)
+                                                    if ($order->return_status !== null) {
+                                                        if ($order->return_status == 'requested') {
+                                                            $statusText = 'Menunggu Validasi Retur';
+                                                            $statusClass = 'bg-warning text-dark';
+                                                        } elseif ($order->return_status == 'approved') {
+                                                            $statusText = 'Retur Disetujui';
+                                                            $statusClass = 'bg-success text-white';
+                                                        } elseif ($order->return_status == 'rejected') {
+                                                            $statusText = 'Retur Ditolak';
+                                                            $statusClass = 'bg-danger text-white';
+                                                        }
+                                                    }
+                                                    // Jika tidak ada pengajuan return manual, baca status asli (atau dari Biteship)
+                                                    else {
+                                                        switch ($order->status) {
+                                                            case 'completed':
+                                                                $statusText = 'Selesai';
+                                                                $statusClass = 'status-completed';
+                                                                break;
+                                                            case 'pending':
+                                                                $statusText = 'Menunggu Konfirmasi';
+                                                                $statusClass = 'status-pending';
+                                                                break;
+                                                            case 'processing':
+                                                                $statusText = 'Sedang Diproses';
+                                                                $statusClass = 'status-processing';
+                                                                break;
+                                                            case 'delivery':
+                                                                $statusText = 'Dalam Pengiriman';
+                                                                $statusClass = 'status-delivery';
+                                                                break;
+                                                            case 'cancelled':
+                                                                $statusText = 'Dibatalkan';
+                                                                $statusClass = 'bg-danger text-white';
+                                                                break;
+                                                            case 'returned':
+                                                                $statusText = 'Dikembalikan ke Penjual (by kurir)';
+                                                                $statusClass = 'bg-warning text-yellow-900';
+                                                                break;
+                                                            case 'disposed':
+                                                                $statusText = 'Paket Rusak (Dibuang)';
+                                                                $statusClass = 'bg-dark text-white';
+                                                                break;
+                                                            case 'failed':
+                                                                $statusText = 'Pembayaran Gagal';
+                                                                $statusClass = 'bg-danger text-white';
+                                                                break;
+                                                            default:
+                                                                $statusText = 'Unknown';
+                                                                $statusClass = 'bg-secondary text-white';
+                                                        }
                                                     }
                                                 @endphp
                                                 <span class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span>
@@ -939,7 +998,8 @@
                                                         <div class="order-item-name">{{ $item->product->product_name }}</div>
                                                         @if ($item->product_variant_id)
                                                             <div class="order-item-variant">Varian:
-                                                                {{ $item->productVariant->variant_value }}</div>
+                                                                {{ $item->productVariant->variant_value }}
+                                                            </div>
                                                         @endif
                                                         <div class="order-item-qty">{{ $item->quantity }} x
                                                             Rp{{ number_format($item->price, 0, ',', '.') }}</div>
@@ -957,6 +1017,23 @@
                                                 <span>Total Belanja:</span>
                                                 <strong>Rp{{ number_format($order->total_amount, 0, ',', '.') }}</strong>
                                             </div>
+                                            {{-- <div class="order-actions">
+                                                @if ($order->tracking !== null)
+                                                <a href="{{ $order->tracking }}" target="_blank"
+                                                    class="btn-outline-glamoire text-decoration-none">
+                                                    <i class="fas fa-truck me-1"></i> Lacak Paket
+                                                </a>
+                                                @endif
+
+                                                @if ($order->status == 'completed')
+                                                @if (count($order->ratingAndReviews) == 0)
+                                                <button class="btn-outline-glamoire" data-bs-toggle="modal"
+                                                    data-bs-target="#form-rating-review-{{ $order->id }}">Beri Ulasan</button>
+                                                @endif
+                                                <button class="btn-glamoire py-2 px-4" data-product-ids="{{ $order->id }}">Beli
+                                                    Lagi</button>
+                                                @endif
+                                            </div> --}}
                                             <div class="order-actions">
                                                 @if ($order->tracking !== null)
                                                     <a href="{{ $order->tracking }}" target="_blank"
@@ -969,6 +1046,23 @@
                                                     @if (count($order->ratingAndReviews) == 0)
                                                         <button class="btn-outline-glamoire" data-bs-toggle="modal"
                                                             data-bs-target="#form-rating-review-{{ $order->id }}">Beri Ulasan</button>
+                                                    @endif
+
+                                                    @if(is_null($order->return_status))
+                                                        <button class="btn btn-outline-danger"
+                                                            style="border-radius: 50px; font-weight: 600; font-size: 0.85rem;"
+                                                            data-bs-toggle="modal" data-bs-target="#modalReturn-{{ $order->id }}">Ajukan
+                                                            Pengembalian</button>
+                                                    @else
+                                                        @php
+                                                            $rStatus = $order->return_status;
+                                                            $bgClass = $rStatus == 'requested' ? 'bg-warning text-dark' : ($rStatus == 'approved' ? 'bg-success text-white' : 'bg-danger text-white');
+                                                            $rText = $rStatus == 'requested' ? 'Menunggu Konfirmasi Return' : ($rStatus == 'approved' ? 'Return Disetujui' : 'Return Ditolak');
+                                                        @endphp
+                                                        <span class="badge {{ $bgClass }} d-flex align-items-center px-3"
+                                                            style="border-radius: 50px; font-size: 0.85rem;">
+                                                            <i class="fas fa-sync-alt me-2"></i> {{ $rText }}
+                                                        </span>
                                                     @endif
                                                     <button class="btn-glamoire py-2 px-4" data-product-ids="{{ $order->id }}">Beli
                                                         Lagi</button>
@@ -1020,7 +1114,8 @@
                                                 </div>
                                                 <div class="card-info p-3">
                                                     <div class="rating-box mb-1"><i class="fas fa-star"></i>
-                                                        <span>{{ $wp->rating ?? '5.0' }}</span></div>
+                                                        <span>{{ $wp->rating ?? '5.0' }}</span>
+                                                    </div>
                                                     <a href="/{{ $wp->product_code }}_product"
                                                         class="product-name fs-6">{{ $wp->product_name }}</a>
                                                     <div class="price-box">
@@ -1234,8 +1329,78 @@
             </div>
         </div>
     @endforeach
+    @foreach ($profile->orders as $order)
+        @if ($order->status == 'completed' && is_null($order->return_status))
+            <div class="modal fade" id="modalReturn-{{ $order->id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="border-radius: 16px; border: none;">
+                        <div class="modal-header"
+                            style="background: var(--danger-main); color: white; border-radius: 16px 16px 0 0;">
+                            <h5 class="modal-title fw-bold m-0"><i class="fas fa-undo me-2"></i> Ajukan Pengembalian Barang</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form id="formReturn-{{ $order->id }}" onsubmit="submitReturn(event, {{ $order->id }})">
+                            <div class="modal-body p-4">
+                                <div class="alert alert-warning fs-7 p-2 mb-3">
+                                    <i class="fas fa-info-circle"></i> Pastikan barang belum digunakan. Admin akan mereview
+                                    pengajuan Anda.
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Alasan Pengembalian <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" name="return_reason" rows="3"
+                                        placeholder="Jelaskan alasan mengapa Anda mengembalikan produk ini..." required></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Unggah Bukti Foto <span class="text-danger">*</span></label>
+                                    <input class="form-control" type="file" name="return_image" accept="image/*" required>
+                                    <small class="text-muted fs-7">Format: JPG, PNG. Maks: 2MB.</small>
+                                </div>
+                            </div>
+                            <div class="modal-footer border-0 pt-0">
+                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 btn-submit-return">Kirim
+                                    Pengajuan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
 
     <script>
+        function submitReturn(e, orderId) {
+            e.preventDefault();
+            let form = document.getElementById('formReturn-' + orderId);
+            let formData = new FormData(form);
+            let btn = form.querySelector('.btn-submit-return');
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            btn.disabled = true;
+
+            fetch(`/order/request-return/${orderId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Berhasil!', data.message, 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Gagal!', data.message, 'error');
+                        btn.innerHTML = 'Kirim Pengajuan';
+                        btn.disabled = false;
+                    }
+                })
+                .catch(err => {
+                    Swal.fire('Error!', 'Terjadi kesalahan sistem.', 'error');
+                    btn.innerHTML = 'Kirim Pengajuan';
+                    btn.disabled = false;
+                });
+        }
         $(document).ready(function () {
             // Form Profile Button State
             let initialData = $('#profileForm').serialize();

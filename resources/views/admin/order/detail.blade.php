@@ -42,11 +42,11 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header d-flex flex-column">
-                                    <div class="d-flex align-items-center mb-3">
+                                    {{-- <div class="d-flex align-items-center mb-3">
                                         <h4 class="card-title mb-0 me-2">Order Id: {{ $order->invoice->no_invoice }}
                                         </h4>
                                         <span
-                                            class="badge 
+                                            class="badge
                                             {{ $order->status === 'pending' ? 'bg-warning text-dark' : '' }}
                                             {{ $order->status === 'processing' ? 'bg-primary' : '' }}
                                             {{ $order->status === 'delivery' ? 'bg-info' : '' }}
@@ -54,6 +54,41 @@
                                         ">
                                             {{ ucfirst($order->status) }}
                                         </span>
+                                    </div> --}}
+
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h4 class="card-title mb-0 me-2">Order Id: {{ $order->invoice->no_invoice }}
+                                        </h4>
+                                        @if($order->return_status !== null)
+                                            @if($order->return_status == 'requested')
+                                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Menunggu Persetujuan
+                                                    Return</span>
+                                            @elseif($order->return_status == 'approved')
+                                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Return Disetujui</span>
+                                            @else
+                                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Return Ditolak</span>
+                                            @endif
+                                        @else
+                                            @if ($order->status == 'pending')
+                                                <span class="badge bg-warning text-dark">Pending</span>
+                                            @elseif($order->status == 'processing')
+                                                <span class="badge bg-primary">Processing</span>
+                                            @elseif($order->status == 'delivery')
+                                                <span class="badge bg-info">Delivery</span>
+                                            @elseif($order->status == 'completed')
+                                                <span class="badge bg-success">Completed</span>
+                                            @elseif($order->status == 'cancelled')
+                                                <span class="badge bg-danger">Cancelled by System/Kurir</span>
+                                            @elseif($order->status == 'returned')
+                                                <span class="badge bg-secondary">Returned (Kurir)</span>
+                                            @elseif($order->status == 'disposed')
+                                                <span class="badge bg-dark">Disposed (Paket Rusak)</span>
+                                            @elseif($order->status == 'failed')
+                                                <span class="badge bg-danger">Payment Failed</span>
+                                            @else
+                                                <span class="badge bg-light text-dark border">Unknown</span>
+                                            @endif
+                                        @endif
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center">
@@ -62,7 +97,7 @@
                                         </small>
 
                                         <div>
-                                            @if ( $order->status === 'delivery')
+                                            @if ($order->status === 'delivery')
                                             <a href="{{$order->tracking}}" type="button"
                                                 class="btn btn-success btn-sm d-inline-flex align-items-center gap-1"
                                                 style="border-radius: 8px;">
@@ -75,7 +110,7 @@
                                                 <i class="bi bi-printer-fill"></i> Print
                                             </button>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
 
@@ -144,8 +179,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    
-                                                    @if ( $order->status === 'delivery')
+
+                                                    @if ($order->status === 'delivery')
                                                     <div class="col-md-4 pt-2">
                                                         <div class="border rounded p-3 h-100">
                                                             <h5 class="mb-3">
@@ -248,7 +283,7 @@
                                                                                 class="bi bi-truck"></i>
                                                                             Pick Up Biteship</button>
                                                                     @endif
-                                                                        
+
                                                                     {{-- <button type="button"
                                                                         class="btn btn-primary btn-sm d-inline-flex align-items-center gap-1 me-2"><i
                                                                             class="bi bi-bag-check"></i>
@@ -287,10 +322,10 @@
                 const confirmOrderBtn = document.querySelector('.btn-success');
                 confirmOrderBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-    
+
                     // Dapatkan ID pesanan dari tampilan
                     const orderId = "{{ $order->id }}";
-    
+
                     // SweetAlert2 confirmation dialog
                     Swal.fire({
                         title: 'Konfirmasi Pesanan',
@@ -355,17 +390,17 @@
                     });
                 });
             }
-            
+
             // Pick Up Biteship
 
             if(status == "processing"){
                 const pickUpBtn = document.querySelector('.btn-warning');
                 pickUpBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-    
+
                     // Dapatkan ID pesanan dari tampilan
                     const orderId = "{{ $order->id }}";
-    
+
                     // SweetAlert2 confirmation dialog
                     Swal.fire({
                         title: 'Pick Up Biteship',

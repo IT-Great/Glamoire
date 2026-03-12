@@ -1753,6 +1753,90 @@
             }
         }
 
+        // async function uploadImagesToTemp(files) {
+        //     const fileUploadContent = document.getElementById("file-upload-content");
+        //     const imageError = document.getElementById("image-error");
+        //     const fileInput = document.getElementById("images");
+        //     const totalFiles = uploadedImages.length + files.length;
+
+        //     imageError.style.display = "none";
+
+        //     // Validasi jumlah
+        //     if (totalFiles > MAX_IMAGES) {
+        //         imageError.textContent = `Maksimal ${MAX_IMAGES} gambar. Anda mencoba upload ${totalFiles} gambar.`;
+        //         imageError.style.display = "block";
+        //         fileInput.value = '';
+        //         return;
+        //     }
+
+        //     const filesToProcess = Array.from(files);
+        //     let uploadedCount = 0;
+
+        //     showProgress(0, filesToProcess.length);
+
+        //     for (const file of filesToProcess) {
+        //         // Validasi ukuran
+        //         const maxSize = 2 * 1024 * 1024; // 2MB
+        //         if (file.size > maxSize) {
+        //             imageError.textContent = "Setiap gambar maksimal 2MB.";
+        //             imageError.style.display = "block";
+        //             uploadedCount++;
+        //             showProgress(uploadedCount, filesToProcess.length);
+        //             continue;
+        //         }
+
+        //         // Validasi tipe
+        //         if (!file.type.match("image.*")) {
+        //             uploadedCount++;
+        //             showProgress(uploadedCount, filesToProcess.length);
+        //             continue;
+        //         }
+
+        //         // Upload ke server
+        //         const formData = new FormData();
+        //         formData.append('image', file);
+        //         formData.append('_token', '{{ csrf_token() }}');
+
+        //         try {
+        //             const response = await fetch('{{ route('upload-temp-image') }}', {
+        //                 method: 'POST',
+        //                 body: formData
+        //             });
+
+        //             const result = await response.json();
+
+        //             if (result.success) {
+        //                 // Simpan info gambar
+        //                 const imageData = {
+        //                     path: result.path,
+        //                     url: result.url,
+        //                     name: file.name
+        //                 };
+        //                 uploadedImages.push(imageData);
+
+        //                 // Tampilkan preview
+        //                 displayImagePreview(result.url, result.path, uploadedImages.length - 1);
+        //             } else {
+        //                 imageError.textContent = result.message || "Upload failed.";
+        //                 imageError.style.display = "block";
+        //             }
+
+        //             uploadedCount++;
+        //             showProgress(uploadedCount, filesToProcess.length);
+
+        //         } catch (error) {
+        //             console.error('Upload error:', error);
+        //             imageError.textContent = "Upload error occurred.";
+        //             imageError.style.display = "block";
+        //             uploadedCount++;
+        //             showProgress(uploadedCount, filesToProcess.length);
+        //         }
+        //     }
+
+        //     // Reset file input
+        //     fileInput.value = '';
+        // }
+
         async function uploadImagesToTemp(files) {
             const fileUploadContent = document.getElementById("file-upload-content");
             const imageError = document.getElementById("image-error");
@@ -1800,25 +1884,36 @@
                 try {
                     const response = await fetch('{{ route('upload-temp-image') }}', {
                         method: 'POST',
-                        body: formData
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json' // Meminta respons JSON
+                        }
                     });
 
-                    const result = await response.json();
+                    // PERBAIKAN BUG
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        const result = await response.json();
 
-                    if (result.success) {
-                        // Simpan info gambar
-                        const imageData = {
-                            path: result.path,
-                            url: result.url,
-                            name: file.name
-                        };
-                        uploadedImages.push(imageData);
+                        if (result.success) {
+                            // Simpan info gambar
+                            const imageData = {
+                                path: result.path,
+                                url: result.url,
+                                name: file.name
+                            };
+                            uploadedImages.push(imageData);
 
-                        // Tampilkan preview
-                        displayImagePreview(result.url, result.path, uploadedImages.length - 1);
+                            // Tampilkan preview
+                            displayImagePreview(result.url, result.path, uploadedImages.length - 1);
+                        } else {
+                            imageError.textContent = result.message || "Upload failed.";
+                            imageError.style.display = "block";
+                        }
                     } else {
-                        imageError.textContent = result.message || "Upload failed.";
-                        imageError.style.display = "block";
+                         console.error("Non-JSON Response");
+                         imageError.textContent = "Server error. Pastikan direktori storage bisa diakses.";
+                         imageError.style.display = "block";
                     }
 
                     uploadedCount++;
@@ -2006,6 +2101,81 @@
             }
         }
 
+        // async function uploadMainImageToTemp(file) {
+        //     if (!file) return;
+
+        //     const mainImageError = document.getElementById("main-image-error");
+        //     const fileInput = document.getElementById("main_image_upload");
+
+        //     // Reset error
+        //     mainImageError.style.display = "none";
+        //     mainImageError.textContent = "";
+
+        //     // Validasi ukuran
+        //     const maxSize = 2 * 1024 * 1024; // 2MB
+        //     if (file.size > maxSize) {
+        //         mainImageError.textContent = "Image file must be less than 2MB.";
+        //         mainImageError.style.display = "block";
+        //         fileInput.value = "";
+        //         return;
+        //     }
+
+        //     // Validasi tipe
+        //     if (!file.type.match("image.*")) {
+        //         mainImageError.textContent = "Only image files are allowed.";
+        //         mainImageError.style.display = "block";
+        //         fileInput.value = "";
+        //         return;
+        //     }
+
+        //     // Show progress
+        //     showMainProgress("Uploading...", 30);
+
+        //     // Upload ke server
+        //     const formData = new FormData();
+        //     formData.append('image', file);
+        //     formData.append('_token', '{{ csrf_token() }}');
+
+        //     try {
+        //         const response = await fetch('{{ route('upload-temp-main-image') }}', {
+        //             method: 'POST',
+        //             body: formData
+        //         });
+
+        //         showMainProgress("Processing...", 70);
+
+        //         const result = await response.json();
+
+        //         if (result.success) {
+        //             // Simpan info gambar
+        //             uploadedMainImage = {
+        //                 path: result.path,
+        //                 url: result.url,
+        //                 name: file.name
+        //             };
+
+        //             // Tampilkan preview
+        //             displayMainImagePreview(result.url, result.path);
+
+        //             showMainProgress("✓ Upload complete", 100);
+
+        //             console.log('Main image uploaded successfully');
+        //         } else {
+        //             mainImageError.textContent = result.message || "Upload failed.";
+        //             mainImageError.style.display = "block";
+        //             showMainProgress("Upload failed", 0);
+        //         }
+        //     } catch (error) {
+        //         console.error('Upload error:', error);
+        //         mainImageError.textContent = "Upload error occurred.";
+        //         mainImageError.style.display = "block";
+        //         showMainProgress("Upload failed", 0);
+        //     }
+
+        //     // Reset file input
+        //     fileInput.value = "";
+        // }
+
         async function uploadMainImageToTemp(file) {
             if (!file) return;
 
@@ -2044,35 +2214,50 @@
             try {
                 const response = await fetch('{{ route('upload-temp-main-image') }}', {
                     method: 'POST',
-                    body: formData
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' // Memaksa Laravel membalas dengan format JSON, bukan HTML
+                    }
                 });
 
                 showMainProgress("Processing...", 70);
 
-                const result = await response.json();
+                // PERBAIKAN BUG: Cek apakah respons dari server adalah text/HTML atau JSON
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const result = await response.json();
 
-                if (result.success) {
-                    // Simpan info gambar
-                    uploadedMainImage = {
-                        path: result.path,
-                        url: result.url,
-                        name: file.name
-                    };
+                    if (result.success) {
+                        // Simpan info gambar
+                        uploadedMainImage = {
+                            path: result.path,
+                            url: result.url,
+                            name: file.name
+                        };
 
-                    // Tampilkan preview
-                    displayMainImagePreview(result.url, result.path);
+                        // Tampilkan preview
+                        displayMainImagePreview(result.url, result.path);
 
-                    showMainProgress("✓ Upload complete", 100);
-
-                    console.log('Main image uploaded successfully');
+                        showMainProgress("✓ Upload complete", 100);
+                        console.log('Main image uploaded successfully');
+                    } else {
+                        mainImageError.textContent = result.message || "Upload failed.";
+                        mainImageError.style.display = "block";
+                        showMainProgress("Upload failed", 0);
+                    }
                 } else {
-                    mainImageError.textContent = result.message || "Upload failed.";
+                    // JIKA SERVER MENGEMBALIKAN HALAMAN HTML / ERROR PHP
+                    const textResponse = await response.text();
+                    console.error("Server mengembalikan non-JSON:", textResponse);
+
+                    mainImageError.textContent = "Terjadi kesalahan di server. Pastikan Route/Controller berfungsi dengan benar.";
                     mainImageError.style.display = "block";
                     showMainProgress("Upload failed", 0);
                 }
+
             } catch (error) {
                 console.error('Upload error:', error);
-                mainImageError.textContent = "Upload error occurred.";
+                mainImageError.textContent = "Koneksi ke server gagal.";
                 mainImageError.style.display = "block";
                 showMainProgress("Upload failed", 0);
             }

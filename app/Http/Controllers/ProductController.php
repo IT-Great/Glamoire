@@ -2,31 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\sendMailNotifyMe;
-use App\Http\Controllers\Controller;
-use App\Models\Article;
-use App\Models\Brand;
-use App\Models\CategoryProduct;
-use App\Models\Product;
-use App\Models\Partner;
-use App\Models\ProductVariations;
-use App\Models\User;
-use App\Models\Wishlist;
-use App\Models\Cart;
-use App\Models\Cart_item;
-use App\Models\Promo;
-use App\Models\NotifyMe;
-use App\Models\ProductStocks;
-use App\Models\Popup;
-
 use Exception;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Cart;
+use App\Models\Brand;
+use App\Models\Promo;
+use App\Models\Popup;
+use App\Models\Article;
+use App\Models\Product;
+use App\Models\Partner;
+use App\Models\Wishlist;
+use App\Models\NotifyMe;
+use App\Models\Cart_item;
 use Illuminate\Http\Request;
+use App\Models\ProductStocks;
+use App\Mail\sendMailNotifyMe;
+
+use App\Models\CategoryProduct;
+use App\Models\ProductVariations;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -1810,6 +1810,104 @@ class ProductController extends Controller
     //     }
     // }
 
+    // public function updateStock(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'stock_quantity' => 'required|integer|min:1',
+    //         'date_expired' => 'required|date',
+    //         'variant_id' => 'nullable|exists:product_variations,id',
+    //     ]);
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         if ($request->variant_id) {
+    //             // Update stok untuk varian produk
+    //             $variant = ProductVariations::findOrFail($request->variant_id);
+
+    //             // Tambahkan stok ke tabel `stocks`
+    //             $variant->stocks()->create([
+    //                 'variant_id' => $request->variant_id,
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             // Perbarui jumlah stok dan tanggal kadaluarsa di tabel `product_variations`
+    //             $variant->update([
+    //                 'variant_stock' => $variant->variant_stock + $request->stock_quantity,
+    //                 'variant_expired' => $request->date_expired, // Tambahkan baris ini
+    //             ]);
+    //         } else {
+    //             // Update stok untuk produk utama (tetap sama)
+    //             $product = Product::findOrFail($id);
+
+    //             $product->stocks()->create([
+    //                 'product_id' => $id,
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             $product->update([
+    //                 'stock_quantity' => $product->stock_quantity + $request->stock_quantity,
+    //             ]);
+    //         }
+
+    //         DB::commit();
+    //         return response()->json(['message' => 'Stock updated successfully']);
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
+    // public function updateStock(Request $request, $id)
+    // {
+    //     $request->validate([
+    //         'stock_quantity' => 'required|integer|min:1',
+    //         'date_expired' => 'required|date',
+    //         'variant_id' => 'nullable|exists:product_variations,id',
+    //     ]);
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         if ($request->variant_id) {
+    //             // Update stok untuk varian produk
+    //             $variant = ProductVariations::findOrFail($request->variant_id);
+
+    //             // Tambahkan stok ke tabel `product_stocks` menggunakan RELASI agar tidak salah kolom
+    //             $variant->stocks()->create([
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             // Perbarui HANYA jumlah total stok.
+    //             // TANGGAL EXPIRED DIHAPUS DARI SINI AGAR STOK AWAL TETAP AMAN!
+    //             $variant->update([
+    //                 'variant_stock' => $variant->variant_stock + $request->stock_quantity,
+    //             ]);
+    //         } else {
+    //             // Update stok untuk produk utama
+    //             $product = Product::findOrFail($id);
+
+    //             $product->stocks()->create([
+    //                 'quantity' => $request->stock_quantity,
+    //                 'date_expired' => $request->date_expired,
+    //             ]);
+
+    //             $product->update([
+    //                 'stock_quantity' => $product->stock_quantity + $request->stock_quantity,
+    //             ]);
+    //         }
+
+    //         DB::commit();
+    //         return response()->json(['message' => 'Stock updated successfully']);
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
     public function updateStock(Request $request, $id)
     {
         $request->validate([
@@ -1825,24 +1923,26 @@ class ProductController extends Controller
                 // Update stok untuk varian produk
                 $variant = ProductVariations::findOrFail($request->variant_id);
 
-                // Tambahkan stok ke tabel `stocks`
-                $variant->stocks()->create([
-                    'variant_id' => $request->variant_id,
+                // Tambahkan stok ke tabel `product_stocks` dengan Explicit Query
+                ProductStocks::create([
+                    'product_id' => $id,
+                    'variation_id' => $request->variant_id,
                     'quantity' => $request->stock_quantity,
                     'date_expired' => $request->date_expired,
                 ]);
 
-                // Perbarui jumlah stok dan tanggal kadaluarsa di tabel `product_variations`
+                // Perbarui HANYA jumlah total stok.
+                // KITA HAPUS UPDATE TANGGAL DISINI AGAR TANGGAL STOK AWAL TETAP AMAN!
                 $variant->update([
                     'variant_stock' => $variant->variant_stock + $request->stock_quantity,
-                    'variant_expired' => $request->date_expired, // Tambahkan baris ini
                 ]);
             } else {
-                // Update stok untuk produk utama (tetap sama)
+                // Update stok untuk produk utama
                 $product = Product::findOrFail($id);
 
-                $product->stocks()->create([
+                ProductStocks::create([
                     'product_id' => $id,
+                    'variation_id' => null,
                     'quantity' => $request->stock_quantity,
                     'date_expired' => $request->date_expired,
                 ]);
@@ -1860,7 +1960,6 @@ class ProductController extends Controller
         }
     }
 
-
     public function getStockDetails($id)
     {
         $product = Product::findOrFail($id);
@@ -1876,10 +1975,44 @@ class ProductController extends Controller
         ]);
     }
 
+    // public function getVariantStockDetails($variantId)
+    // {
+    //     $variant = ProductVariations::findOrFail($variantId);
+
+    //     $variantStocks = ProductStocks::where('variation_id', $variantId)
+    //         ->where('quantity', '>', 0)
+    //         ->orderBy('date_expired', 'desc')
+    //         ->take(2)
+    //         ->get();
+
+    //     return response()->json([
+    //         'variantStocks' => $variantStocks,
+    //         'variant_expired' => $variant->variant_expired // Tambahkan baris ini
+    //     ]);
+    // }
+
+    // public function getVariantStockDetails($variantId)
+    // {
+    //     $variant = ProductVariations::findOrFail($variantId);
+
+    //     // Gunakan Relasi stocks() BUKAN manual where() agar terhindar dari salah nama kolom
+    //     $variantStocks = $variant->stocks()
+    //         ->where('quantity', '>', 0)
+    //         ->orderBy('date_expired', 'desc')
+    //         ->take(2)
+    //         ->get();
+
+    //     return response()->json([
+    //         'variantStocks' => $variantStocks,
+    //         'variant_expired' => $variant->variant_expired
+    //     ]);
+    // }
+
     public function getVariantStockDetails($variantId)
     {
         $variant = ProductVariations::findOrFail($variantId);
 
+        // GUNAKAN EXPLICIT QUERY BUKAN RELASI, AGAR PASTI TERBACA!
         $variantStocks = ProductStocks::where('variation_id', $variantId)
             ->where('quantity', '>', 0)
             ->orderBy('date_expired', 'desc')
@@ -1888,10 +2021,9 @@ class ProductController extends Controller
 
         return response()->json([
             'variantStocks' => $variantStocks,
-            'variant_expired' => $variant->variant_expired // Tambahkan baris ini
+            'variant_expired' => $variant->variant_expired
         ]);
     }
-
 
     public function deleteProductAdmin($id)
     {

@@ -117,172 +117,12 @@
         }
 
         .table>tbody>tr {
-            cursor: pointer;
             transition: background-color 0.2s ease;
             border-bottom: 1px solid var(--border-color);
         }
 
         .table>tbody>tr:hover {
             background-color: rgba(99, 102, 241, 0.05);
-        }
-
-        /* Stock Badge */
-        .stock-badge {
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.3px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .action-buttons .badge {
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .action-buttons .badge:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-        }
-
-        .badge.bg-info {
-            background-color: var(--info-color) !important;
-            color: white;
-        }
-
-        .badge.bg-danger {
-            background-color: var(--danger-color) !important;
-        }
-
-        /* Quick Action Button */
-        .quick-action-btn {
-            border-radius: 10px;
-            padding: 0.75rem 1.25rem;
-            font-weight: 500;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-        }
-
-        .quick-action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Animations */
-        .fade-in {
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .slide-in {
-            animation: slideIn 0.5s ease-in-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        /* Responsiveness */
-        @media (max-width: 992px) {
-            .stats-card {
-                margin-bottom: 1rem;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-
-            .table td {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .product-details {
-                margin-left: 0;
-                margin-top: 0.5rem;
-            }
-
-            .d-flex.align-items-center.gap-3 {
-                flex-direction: column;
-                align-items: flex-start !important;
-            }
-
-            .action-buttons .badge {
-                display: block;
-                text-align: center;
-                margin-bottom: 0.5rem;
-            }
-        }
-
-        /* DataTables Custom Styling */
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: var(--primary-color) !important;
-            color: white !important;
-            border: none;
-            border-radius: 8px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background: var(--secondary-color) !important;
-            color: white !important;
-            border: none;
-        }
-
-        .dataTables_wrapper .dataTables_info {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* Empty state */
-        .empty-state {
-            padding: 3rem;
-            text-align: center;
-        }
-
-        .empty-state-icon {
-            font-size: 4rem;
-            color: var(--text-secondary);
-            opacity: 0.5;
-            margin-bottom: 1.5rem;
-        }
-
-        .empty-state-text {
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
         }
 
         .order-table img {
@@ -298,7 +138,6 @@
             transform: scale(1.1);
         }
     </style>
-
 </head>
 
 <body>
@@ -331,7 +170,6 @@
                 </div>
             </div>
 
-            <!-- Main Tabs -->
             <div class="border-bottom mb-4">
                 <ul class="nav nav-tabs border-0">
                     <li class="nav-item">
@@ -361,27 +199,21 @@
                     <li class="nav-item">
                         <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
                             class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
-                            Pengembalian/Pembatalan
+                            Pengembalian/Pembatalan/Paket Rusak
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <!-- Info Alert -->
             <div class="alert alert-info alert-dismissible fade show mt-3" role="alert">
                 <i class="fa fa-info-circle me-2"></i>
-                Halaman ini menampilkan semua produk yang dibatalkan atau dikembalikan. Anda dapat melihat detail
-                pesanan,
-                alasan pembatalan atau pengembalian, serta status prosesnya di sini.
-                Silakan tindak lanjuti jika diperlukan untuk memastikan layanan tetap optimal.
+                Halaman ini menampilkan semua pesanan yang dibatalkan, dikembalikan oleh kurir, maupun pengajuan retur manual dari pembeli. Anda dapat meninjau alasan, melihat bukti, dan menyetujui pengembalian stok.
                 <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
 
-
-            <!-- Orders Table -->
             <div class="card order-table">
                 <div class="card-header bg-white">
-                    <h4>Order List</h4>
+                    <h4>Return & Cancelled Orders</h4>
                 </div>
                 <div class="card-body">
                     <table class="table" id="table1">
@@ -442,7 +274,24 @@
                                                 <div class="text-muted">No products found</div>
                                             @endif
                                         </div>
+
+                                        @if ($order->return_status !== null)
+                                            <div class="alert alert-secondary mt-3 p-3 mb-0" style="border: 1px dashed #6b7280; background: #f9fafb;">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <h6 class="fw-bold mb-1 text-danger"><i class="bi bi-exclamation-triangle me-1"></i> Request Pengembalian Manual</h6>
+                                                        <p class="mb-1 text-dark fs-7"><strong>Alasan:</strong> {{ $order->return_reason }}</p>
+                                                    </div>
+                                                    @if($order->return_image)
+                                                        <a href="{{ Storage::url($order->return_image) }}" target="_blank" class="btn btn-sm btn-outline-dark bg-dark">
+                                                            <i class="bi bi-image me-1"></i> Lihat Bukti
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
                                     </td>
+
                                     <td>
                                         <div class="fw-medium">Rp.
                                             {{ number_format($order->total_amount, 0, ',', '.') }}</div>
@@ -451,26 +300,46 @@
                                             {{ $order->payment->method ?? 'Online Payment' }}
                                         </div>
                                     </td>
+
                                     <td>
-                                        <span class="badge bg-success d-inline-flex align-items-center">
-                                            <i class="bi bi-check d-inline-flex align-items-center"></i>
-                                            {{ $order->status }}
-                                        </span>
+                                        @if($order->return_status !== null)
+                                            @if($order->return_status == 'requested')
+                                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1"></i>Menunggu Persetujuan Return</span>
+                                            @elseif($order->return_status == 'approved')
+                                                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Return Disetujui</span>
+                                            @else
+                                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Return Ditolak</span>
+                                            @endif
+                                        @else
+                                            @if ($order->status == 'cancelled')
+                                                <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Cancelled by System/Kurir</span>
+                                            @elseif($order->status == 'returned')
+                                                <span class="badge bg-secondary"><i class="bi bi-arrow-return-left me-1"></i>Returned (Kurir)</span>
+                                            @elseif($order->status == 'disposed')
+                                                <span class="badge bg-dark"><i class="bi bi-trash me-1"></i>Disposed (Paket Rusak)</span>
+                                            @elseif($order->status == 'failed')
+                                                <span class="badge bg-danger"><i class="bi bi-slash-circle me-1"></i>Payment Failed</span>
+                                            @else
+                                                <span class="badge bg-light text-dark border"><i class="bi bi-question-circle me-1"></i>Unknown</span>
+                                            @endif
+                                        @endif
                                     </td>
 
                                     <td>
-                                        {{-- <a href="/order-detail/{{ $order->id }}" class="badge bg-info d-inline-flex align-items-center mb-2">
-                                                <i class="bi bi-arrow-clockwise me-1"></i>
-                                                Atur Ulang Pickup
-                                            </a> --}}
+                                        <div class="d-flex flex-column gap-2">
+                                            <a href="/order-detail/{{ $order->id }}" class="badge bg-primary d-inline-flex align-items-center justify-content-center p-2 text-decoration-none">
+                                                <i class="bi bi-box-arrow-in-right me-1"></i> Info Detail
+                                            </a>
 
-                                        <a href="/order-detail/{{ $order->id }}"
-                                            class="badge bg-primary d-inline-flex align-items-center">
-                                            <i class="bi bi-box-arrow-in-right me-1"></i>
-                                            Info Detail
-                                        </a>
-
-
+                                            @if($order->return_status == 'requested')
+                                                <button type="button" class="badge bg-success border-0 w-100 d-inline-flex align-items-center justify-content-center p-2" onclick="confirmReturnAction('approve', {{ $order->id }})">
+                                                    <i class="bi bi-check-lg me-1"></i> Setujui (Restore Stok)
+                                                </button>
+                                                <button type="button" class="badge bg-danger border-0 w-100 d-inline-flex align-items-center justify-content-center p-2" onclick="confirmReturnAction('reject', {{ $order->id }})">
+                                                    <i class="bi bi-x-lg me-1"></i> Tolak
+                                                </button>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -478,7 +347,7 @@
                     </table>
                 </div>
             </div>
-            <!-- Pagination Links -->
+
             <div class="d-flex justify-content-center mt-4">
                 {{ $orders->links('pagination::bootstrap-4') }}
             </div>
@@ -487,18 +356,69 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="assets/vendors/simple-datatables/simple-datatables.js"></script>
     <script>
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
-    </script>
-    {{-- JavaScript for image preview --}}
-    <script>
+
+        // Fungsi untuk membuka gambar di tab baru
         function openImageInNewTab(url) {
             window.open(url, '_blank');
         }
+
+        // Logic AJAX Approval & Rejection untuk Return
+        function confirmReturnAction(action, orderId) {
+            let textTitle = action === 'approve' ? 'Setujui Pengembalian?' : 'Tolak Pengembalian?';
+            let textDesc = action === 'approve'
+                ? 'Stok barang akan otomatis dikembalikan ke gudang dan status pesanan menjadi Returned.'
+                : 'Pengajuan pengembalian akan ditolak. Status pesanan akan tetap Completed.';
+            let confirmBtnColor = action === 'approve' ? '#10b981' : '#ef4444';
+            let routeUrl = action === 'approve'
+                ? `/admin/order/return/${orderId}/approve`
+                : `/admin/order/return/${orderId}/reject`;
+
+            Swal.fire({
+                title: textTitle,
+                text: textDesc,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: confirmBtnColor,
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Lanjutkan!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(routeUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success){
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: data.message,
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => location.reload());
+                        } else {
+                            Swal.fire('Gagal!', data.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        Swal.fire('Error!', 'Terjadi kesalahan sistem.', 'error');
+                        console.error(err);
+                    });
+                }
+            });
+        }
     </script>
+
     <script src="assets/vendors/fontawesome/all.min.js"></script>
     <script src="assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>

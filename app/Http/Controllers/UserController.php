@@ -2,32 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Shipping_address;
-use App\Models\User;
-use App\Models\Role;
-use App\Models\Subscribe;
-use App\Models\Cart;
-use App\Models\Cart_item;
-use App\Models\OrderItem;
-use App\Models\Wishlist;
-use App\Models\Buynow;
-use App\Models\Invoice;
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\RatingAndReview;
-use App\Models\ProductVariations;
-use App\Models\Payment;
-use App\Models\Promo;
-use App\Models\VoucherNewUser;
-
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
-
-
 use Exception;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\Promo;
+use App\Models\Buynow;
+use App\Models\Invoice;
+use App\Models\Product;
+use App\Models\Payment;
+use App\Models\Wishlist;
+use App\Models\Subscribe;
+use App\Models\Cart_item;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use App\Models\VoucherNewUser;
+
+use App\Models\RatingAndReview;
+use App\Models\Shipping_address;
+
+
+use App\Models\ProductVariations;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
@@ -1001,6 +1001,36 @@ class UserController extends Controller
             dd($err);
         }
     }
+
+    public function requestReturn(Request $request, $id)
+    {
+        $request->validate([
+            'return_reason' => 'required|string',
+            'return_image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        try {
+            $order = \App\Models\Order::where('id', $id)->where('user_id', session('id_user'))->firstOrFail();
+
+            // Simpan gambar bukti return
+            $imagePath = null;
+            if ($request->hasFile('return_image')) {
+                $imagePath = $request->file('return_image')->store('return_images', 'public');
+            }
+
+            $order->update([
+                'return_status' => 'requested',
+                'return_reason' => $request->return_reason,
+                'return_image' => $imagePath
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Pengajuan return berhasil dikirim. Menunggu konfirmasi admin.']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal mengajukan return: ' . $e->getMessage()]);
+        }
+    }
+
+    
 
     // ADMIN PAGE
     public function indexUserAdmin()

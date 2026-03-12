@@ -98,9 +98,9 @@
                             <li class="submenu-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                                 <a href="{{ route('index-promo-diskon') }}">Diskon</a>
                             </li>
-                            <li class="submenu-item {{ Request::is('promo-gift') ? 'active' : '' }}">
+                            {{-- <li class="submenu-item {{ Request::is('promo-gift') ? 'active' : '' }}">
                                 <a href="{{ route('index-promo-gift') }}">Gift</a>
-                            </li>
+                            </li> --}}
                         </ul>
                     </li>
 

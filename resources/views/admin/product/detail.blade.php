@@ -665,8 +665,7 @@
                                 <div class="d-flex gap-2 flex-wrap">
                                     @if (!empty($product->images) && is_array($product->images))
                                         @foreach ($product->images as $image)
-                                            <img src="{{ Storage::url($image) }}" alt="Gallery image"
-                                                class="gallery-thumbnail"
+                                            <img src="{{ Storage::url($image) }}" alt="Gallery image" class="gallery-thumbnail"
                                                 onclick="openImageInNewTab('{{ Storage::url($image) }}')">
                                         @endforeach
                                     @endif
@@ -725,14 +724,14 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <div class="detail-group">
                                             <div class="detail-label">
                                                 <i class="bi bi-building me-2"></i>Brand
                                             </div>
                                             <div class="detail-value">
-                                                {{ $product->brand ? $product->brand->name : 'N/A' }}</div>
+                                                {{ $product->brand ? $product->brand->name : 'N/A' }}
+                                            </div>
                                         </div>
 
                                         <div class="detail-group">
@@ -740,7 +739,38 @@
                                                 <i class="bi bi-box me-2"></i>Stok
                                             </div>
                                             <div class="detail-value">{{ $product->stock_quantity }}
-                                                {{ $product->unit }}</div>
+                                                {{ $product->unit }}
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-currency-dollar me-2"></i>Harga
+                                            </div>
+                                            <div class="detail-value">
+                                                <span class="discount-badge">
+                                                    Rp. {{ number_format($product->regular_price, 0, ',', '.') }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div> --}}
+                                    <div class="col-md-6">
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-building me-2"></i>Brand
+                                            </div>
+                                            <div class="detail-value">
+                                                {{ $product->brand ? $product->brand->name : 'N/A' }}
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-group">
+                                            <div class="detail-label">
+                                                <i class="bi bi-box me-2"></i>Stok Total
+                                            </div>
+                                            <div class="detail-value">{{ $product->stock_quantity }}
+                                                {{ $product->unit }}
+                                            </div>
                                         </div>
 
                                         <div class="detail-group">
@@ -757,24 +787,24 @@
                                 </div>
                                 <hr>
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-12">
                                         <div class="detail-group">
                                             <div class="detail-label">Detail Produk</div>
                                             <div class="stats-card">
                                                 <div class="row g-3">
                                                     @if ($product->color || $product->color_text)
-                                                        <div class="col-md-4">
-                                                            <div class="detail-label">Warna</div>
-                                                            <div class="detail-value">
-                                                                @if ($product->color_text)
-                                                                    {{ $product->color_text }}
-                                                                @else
-                                                                    <span class="color-swatch"
-                                                                        style="background-color: {{ $product->color }};"></span>
-                                                                @endif
-                                                            </div>
+                                                    <div class="col-md-4">
+                                                        <div class="detail-label">Warna</div>
+                                                        <div class="detail-value">
+                                                            @if ($product->color_text)
+                                                            {{ $product->color_text }}
+                                                            @else
+                                                            <span class="color-swatch"
+                                                                style="background-color: {{ $product->color }};"></span>
+                                                            @endif
                                                         </div>
+                                                    </div>
                                                     @endif
                                                     <div class="col-md-4">
                                                         <div class="detail-label">Berat</div>
@@ -787,6 +817,86 @@
                                                             {{ $product->dimensions['length'] ?? 'N/A' }} x
                                                             {{ $product->dimensions['width'] ?? 'N/A' }} x
                                                             {{ $product->dimensions['height'] ?? 'N/A' }} cm
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> --}}
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="detail-group">
+                                            <div class="detail-label">Detail Produk</div>
+                                            <div class="stats-card">
+                                                <div class="row g-3">
+                                                    @if ($product->color || $product->color_text)
+                                                        <div class="col-md-3">
+                                                            <div class="detail-label">Warna</div>
+                                                            <div class="detail-value">
+                                                                @if ($product->color_text)
+                                                                    {{ $product->color_text }}
+                                                                @else
+                                                                    <span class="color-swatch"
+                                                                        style="background-color: {{ $product->color }};"></span>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                    <div class="col-md-3">
+                                                        <div class="detail-label">Berat</div>
+                                                        <div class="detail-value">{{ $product->weight_product }}
+                                                            gram</div>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <div class="detail-label">Dimensi</div>
+                                                        <div class="detail-value">
+                                                            {{ $product->dimensions['length'] ?? 'N/A' }} x
+                                                            {{ $product->dimensions['width'] ?? 'N/A' }} x
+                                                            {{ $product->dimensions['height'] ?? 'N/A' }} cm
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-3">
+                                                        <div class="detail-label">Expired Terdekat</div>
+                                                        <div class="detail-value">
+                                                            @php
+                                                                $allMainStocks = collect();
+                                                                $mainTotalUpdateStock = $product->stocks ? $product->stocks->sum('quantity') : 0;
+                                                                $mainInitialStockQty = $product->stock_quantity - $mainTotalUpdateStock;
+
+                                                                // Masukkan Stok Awal (Jika sisa > 0)
+                                                                if ($mainInitialStockQty > 0 && !empty($product->date_expired)) {
+                                                                    $allMainStocks->push([
+                                                                        'date_expired' => $product->date_expired,
+                                                                    ]);
+                                                                }
+
+                                                                // Masukkan Stok Update
+                                                                if ($product->stocks) {
+                                                                    foreach ($product->stocks as $st) {
+                                                                        if ($st->quantity > 0 && !empty($st->date_expired)) {
+                                                                            $allMainStocks->push([
+                                                                                'date_expired' => $st->date_expired,
+                                                                            ]);
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                // Sortir untuk mencari yang terdekat (Ascending)
+                                                                $nearestMainExpired = $allMainStocks->sortBy(function ($s) {
+                                                                    return \Carbon\Carbon::parse($s['date_expired'])->timestamp;
+                                                                })->first();
+                                                            @endphp
+
+                                                            @if($nearestMainExpired)
+                                                                <span
+                                                                    class="{{ \Carbon\Carbon::parse($nearestMainExpired['date_expired'])->isPast() ? 'text-danger fw-bold' : 'text-dark' }}">
+                                                                    {{ \Carbon\Carbon::parse($nearestMainExpired['date_expired'])->format('d M Y') }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">N/A / Habis</span>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </div>
@@ -817,25 +927,91 @@
                                                     <th>Image</th>
                                                 </tr>
                                             </thead>
+                                            {{-- <tbody>
+                                                @foreach ($product->productVariations as $variant)
+                                                <tr>
+                                                    <td>{{ ucfirst($variant->variant_type) }}</td>
+                                                    <td>{{ $variant->variant_value }}</td>
+                                                    <td>{{ $variant->sku }}</td>
+                                                    <td>{{ $variant->variant_stock }}</td>
+                                                    <td>{{ $variant->variant_price }}</td>
+                                                    <td>{{ \Carbon\Carbon::parse($variant->variant_expired)->format('d M Y')
+                                                        }}
+                                                    </td>
+                                                    <td>{{ $variant->weight_variant }}</td>
+                                                    <td>
+                                                        @if ($variant->use_variant_image && $variant->variant_image)
+                                                        <img src="{{ Storage::url($variant->variant_image) }}"
+                                                            alt="{{ $variant->variant_value }}" class="variant-thumbnail"
+                                                            onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
+                                                        @else
+                                                        <span class="text-muted">No image</span>
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody> --}}
                                             <tbody>
                                                 @foreach ($product->productVariations as $variant)
                                                     <tr>
                                                         <td>{{ ucfirst($variant->variant_type) }}</td>
                                                         <td>{{ $variant->variant_value }}</td>
                                                         <td>{{ $variant->sku }}</td>
-                                                        <td>{{ $variant->variant_stock }}</td>
-                                                        <td>{{ $variant->variant_price }}</td>
-                                                        <td>{{ \Carbon\Carbon::parse($variant->variant_expired)->format('d M Y') }}
+
+                                                        <td>{{ $variant->variant_stock ?? 0 }}</td>
+
+                                                        <td>Rp. {{ number_format($variant->variant_price, 0, ',', '.') }}</td>
+
+                                                        <td>
+                                                            @php
+                                                                $allVariantStocks = collect();
+                                                                $variantTotalCurrentStock = $variant->variant_stock ?? 0;
+                                                                $variantTotalUpdateStock = $variant->stocks ? $variant->stocks->sum('quantity') : 0;
+
+                                                                // Sisa stok awal varian
+                                                                $variantInitialStockQty = $variantTotalCurrentStock - $variantTotalUpdateStock;
+
+                                                                // Masukkan Stok Awal (jika > 0)
+                                                                if ($variantInitialStockQty > 0 && !empty($variant->variant_expired)) {
+                                                                    $allVariantStocks->push([
+                                                                        'date_expired' => $variant->variant_expired,
+                                                                    ]);
+                                                                }
+
+                                                                // Masukkan Stok Update
+                                                                if ($variant->stocks) {
+                                                                    foreach ($variant->stocks as $st) {
+                                                                        if ($st->quantity > 0 && !empty($st->date_expired)) {
+                                                                            $allVariantStocks->push([
+                                                                                'date_expired' => $st->date_expired,
+                                                                            ]);
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                // Cari yang terdekat
+                                                                $nearestVariantExpired = $allVariantStocks->sortBy(function ($s) {
+                                                                    return \Carbon\Carbon::parse($s['date_expired'])->timestamp;
+                                                                })->first();
+                                                            @endphp
+
+                                                            @if($nearestVariantExpired)
+                                                                <span
+                                                                    class="badge bg-light text-dark border {{ \Carbon\Carbon::parse($nearestVariantExpired['date_expired'])->isPast() ? 'border-danger text-danger' : '' }}">
+                                                                    {{ \Carbon\Carbon::parse($nearestVariantExpired['date_expired'])->format('d M Y') }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted fs-7">N/A</span>
+                                                            @endif
                                                         </td>
-                                                        <td>{{ $variant->weight_variant }}</td>
+                                                        <td>{{ $variant->weight_variant }} gr</td>
                                                         <td>
                                                             @if ($variant->use_variant_image && $variant->variant_image)
                                                                 <img src="{{ Storage::url($variant->variant_image) }}"
-                                                                    alt="{{ $variant->variant_value }}"
-                                                                    class="variant-thumbnail"
+                                                                    alt="{{ $variant->variant_value }}" class="variant-thumbnail"
                                                                     onclick="openImageInNewTab('{{ Storage::url($variant->variant_image) }}')">
                                                             @else
-                                                                <span class="text-muted">No image</span>
+                                                                <span class="text-muted" style="font-size: 0.8rem;">No image</span>
                                                             @endif
                                                         </td>
                                                     </tr>

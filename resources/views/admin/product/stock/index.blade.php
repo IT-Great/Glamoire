@@ -496,7 +496,7 @@
                                     <li class="breadcrumb-item">
                                         <a href="{{ route('index-product-admin') }}" class="d-flex align-items-center">
                                             <i class="bi bi-box-seam text-primary me-2"></i>
-                                             Produk
+                                            Produk
                                         </a>
                                     </li>
                                     <li class="breadcrumb-item active" aria-current="page">Stok Produk</li>
@@ -616,7 +616,8 @@
                     Informasi penting tentang manajemen stok:
                     <ul class="mb-0">
                         {{-- <li><strong>Lokasi:</strong> Pastikan identifikasi lokasi produk dengan tepat.</li> --}}
-                        {{-- <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li> --}}
+                        {{-- <li><strong>Batas Stok:</strong> Atur batas stok aman untuk pembaruan tepat waktu.</li>
+                        --}}
                         <li><strong>Stok Tersedia:</strong> Jaga jumlah stok yang akurat.</li>
                         <li><strong>Pengaturan Stok:</strong> Sesuaikan pengaturan berdasarkan permintaan produk.</li>
                     </ul>
@@ -805,7 +806,153 @@
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            {{-- <tbody>
+                                @foreach ($products as $item)
+                                <tr class="product-row">
+                                    <td>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <img src="{{ Storage::url($item->main_image) }}" alt="Product Image"
+                                                class="product-image"
+                                                onclick="openImageInNewTab('{{ Storage::url($item->main_image) }}')">
+                                            <div class="product-details">
+                                                <span class="product-name">
+                                                    {{ Str::limit($item->product_name, 20, '...') }}
+                                                </span>
+                                                <span class="product-meta">SKU: {{ $item->product_code }}</span>
+                                                <span class="product-meta">Category:
+                                                    {{ $item->categoryProduct->name }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ $item->total_stock }}</td>
+                                    <td>
+                                        @foreach ($item->stocks as $stock)
+                                        <div class="stock-batch mb-1">
+                                            <span class="badge bg-info">
+                                                {{ $stock->quantity }} units
+                                            </span>
+                                            <span class="text-muted">
+                                                Exp:
+                                                {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @if ($item->isInitialStock() && $item->stock_quantity > 15)
+                                        <span
+                                            class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Stock Awal</span>
+                                        </span>
+                                        @elseif ($item->total_stock > 15)
+                                        <span
+                                            class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Stock Update</span>
+                                        </span>
+                                        @elseif ($item->total_stock > 0)
+                                        <span
+                                            class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            <span>Low Stock</span>
+                                        </span>
+                                        @else
+                                        <span
+                                            class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            <span>Out of Stock</span>
+                                        </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
+                                            data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
+                                            data-status="{{ $item->stock_quantity > 15 && $item->total_stock <= 15 ? 'stock_awal' : 'stock_update' }}">
+                                            <i class="bi bi-pencil"></i> Update
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Product Variants Rows -->
+                                @foreach ($item->productVariations as $variant)
+                                <tr class="variant-row">
+                                    <td class="ps-5">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="product-details">
+                                                <span class="product-name">
+                                                    {{ Str::limit($item->product_name, 20, '...') }}
+
+                                                    <span class="variant-indicator">Variant</span>
+                                                </span>
+                                                <span class="product-meta">
+                                                    {{ $variant->variant_type }}:
+                                                    {{ $variant->variant_value }}
+                                                </span>
+                                                <span class="product-meta">SKU: {{ $variant->sku }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ $variant->variant_stock ?? 0 }}</td>
+                                    <td>
+                                        @foreach ($variant->stocks as $stock)
+                                        <div class="stock-batch mb-1">
+                                            <span class="badge bg-info">
+                                                {{ $stock->quantity }} units
+                                            </span>
+                                            <span class="text-muted">
+                                                Exp:
+                                                {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
+                                            </span>
+                                        </div>
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                        $variantStockInitial = $variant->variant_stock ?? 0;
+                                        $variantTotalStock = $variant->stocks->sum('quantity');
+                                        @endphp
+                                        @if ($variantStockInitial > 15 && $variantTotalStock == 0)
+                                        <span
+                                            class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Stock Awal</span>
+                                        </span>
+                                        @elseif ($variantStockInitial + $variantTotalStock > 15)
+                                        <span
+                                            class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span>Stock Update</span>
+                                        </span>
+                                        @elseif ($variantStockInitial > 0 || $variantTotalStock > 0)
+                                        <span
+                                            class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-exclamation-circle-fill"></i>
+                                            <span>Low Stock </span>
+                                        </span>
+                                        @else
+                                        <span
+                                            class="badge rounded-pill bg-danger text-dark d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            <span>Out of Stock</span>
+                                        </span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button
+                                            class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
+                                            data-id="{{ $item->id }}" data-variant-id="{{ $variant->id }}"
+                                            data-name="{{ $item->product_name }}"
+                                            data-status="{{ $item->isInitialStock() ? 'stock_awal' : 'stock_update' }}">
+                                            <i class="bi bi-pencil"></i> Update
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endforeach
+                            </tbody> --}}
+                            <tbody id="variant-table-body">
                                 @foreach ($products as $item)
                                     <tr class="product-row">
                                         <td>
@@ -823,19 +970,71 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>{{ $item->total_stock }}</td>
+
+                                        <td>{{ $item->stock_quantity }}</td>
+
                                         <td>
-                                            @foreach ($item->stocks as $stock)
-                                                <div class="stock-batch mb-1">
-                                                    <span class="badge bg-info">
-                                                        {{ $stock->quantity }} units
-                                                    </span>
-                                                    <span class="text-muted">
-                                                        Exp:
-                                                        {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
-                                                    </span>
-                                                </div>
-                                            @endforeach
+                                            @php
+                                                $allStocks = collect();
+
+                                                // Hitung total history update
+                                                // $totalUpdateStock = $item->stocks ? $item->stocks->sum('quantity') : 0;
+                                                
+                                                // Hitung HANYA stok update untuk produk utama (mengabaikan variasi)
+                                                $totalUpdateStock = $item->stocks ? $item->stocks->filter(function ($q) {
+                                                    return is_null($q->variation_id) || $q->variation_id == 0;
+                                                })->sum('quantity') : 0;
+
+                                                // RUMUS: Sisa Stok Awal = Total Stok Saat Ini - Total Update
+                                                $initialStockQty = $item->stock_quantity - $totalUpdateStock;
+
+                                                // 1. Masukkan Stok Awal (Hanya jika sisa stok awal > 0)
+                                                if ($initialStockQty > 0 && !empty($item->date_expired)) {
+                                                    $allStocks->push([
+                                                        'quantity' => $initialStockQty,
+                                                        'date_expired' => $item->date_expired,
+                                                        'label' => 'Stok Awal'
+                                                    ]);
+                                                }
+
+                                                // 2. Masukkan Data Stok Update dari tabel product_stocks
+                                                if ($item->stocks) {
+                                                    foreach ($item->stocks as $st) {
+                                                        if ($st->quantity > 0 && !empty($st->date_expired)) {
+                                                            $allStocks->push([
+                                                                'quantity' => $st->quantity,
+                                                                'date_expired' => $st->date_expired,
+                                                                'label' => 'Update'
+                                                            ]);
+                                                        }
+                                                    }
+                                                }
+
+                                                // 3. Urutkan dari tanggal kadaluarsa terdekat (asc)
+                                                $sortedStocks = $allStocks->sortBy(function ($s) {
+                                                    return \Carbon\Carbon::parse($s['date_expired'])->timestamp;
+                                                });
+                                            @endphp
+
+                                            <div class="d-flex flex-column gap-1">
+                                                @forelse ($sortedStocks as $stock)
+                                                    <div class="stock-batch mb-1 d-flex align-items-center gap-2">
+                                                        <span
+                                                            class="badge {{ $stock['label'] == 'Stok Awal' ? 'bg-primary' : 'bg-info' }}"
+                                                            style="min-width: 65px;">
+                                                            {{ $stock['quantity'] }} units
+                                                        </span>
+                                                        <span class="text-muted" style="font-size: 0.85rem;">
+                                                            Exp: <span
+                                                                class="{{ \Carbon\Carbon::parse($stock['date_expired'])->isPast() ? 'text-danger fw-bold' : '' }}">{{ \Carbon\Carbon::parse($stock['date_expired'])->format('d M Y') }}</span>
+                                                            <small
+                                                                style="font-size: 0.7rem; opacity: 0.7;">({{ $stock['label'] }})</small>
+                                                        </span>
+                                                    </div>
+                                                @empty
+                                                    <span class="badge bg-danger">Habis</span>
+                                                @endforelse
+                                            </div>
                                         </td>
                                         <td>
                                             @if ($item->isInitialStock() && $item->stock_quantity > 15)
@@ -844,13 +1043,13 @@
                                                     <i class="bi bi-check-circle-fill"></i>
                                                     <span>Stock Awal</span>
                                                 </span>
-                                            @elseif ($item->total_stock > 15)
+                                            @elseif ($item->stock_quantity > 15)
                                                 <span
                                                     class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
                                                     <i class="bi bi-check-circle-fill"></i>
                                                     <span>Stock Update</span>
                                                 </span>
-                                            @elseif ($item->total_stock > 0)
+                                            @elseif ($item->stock_quantity > 0)
                                                 <span
                                                     class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
                                                     <i class="bi bi-exclamation-circle-fill"></i>
@@ -868,13 +1067,12 @@
                                             <button
                                                 class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
                                                 data-id="{{ $item->id }}" data-name="{{ $item->product_name }}"
-                                                data-status="{{ $item->stock_quantity > 15 && $item->total_stock <= 15 ? 'stock_awal' : 'stock_update' }}">
+                                                data-status="{{ $item->stock_quantity > 15 && $item->isInitialStock() ? 'stock_awal' : 'stock_update' }}">
                                                 <i class="bi bi-pencil"></i> Update
                                             </button>
                                         </td>
                                     </tr>
 
-                                    <!-- Product Variants Rows -->
                                     @foreach ($item->productVariations as $variant)
                                         <tr class="variant-row">
                                             <td class="ps-5">
@@ -882,50 +1080,96 @@
                                                     <div class="product-details">
                                                         <span class="product-name">
                                                             {{ Str::limit($item->product_name, 20, '...') }}
-                                                            {{-- {{ Str::limit($item->product_name, 20, '...') }} --}}
-
                                                             <span class="variant-indicator">Variant</span>
                                                         </span>
                                                         <span class="product-meta">
-                                                            {{ $variant->variant_type }}:
-                                                            {{ $variant->variant_value }}
+                                                            {{ $variant->variant_type }}: {{ $variant->variant_value }}
                                                         </span>
                                                         <span class="product-meta">SKU: {{ $variant->sku }}</span>
                                                     </div>
                                                 </div>
                                             </td>
+
                                             <td>{{ $variant->variant_stock ?? 0 }}</td>
+
                                             <td>
-                                                @foreach ($variant->stocks as $stock)
-                                                    <div class="stock-batch mb-1">
-                                                        <span class="badge bg-info">
-                                                            {{ $stock->quantity }} units
-                                                        </span>
-                                                        <span class="text-muted">
-                                                            Exp:
-                                                            {{ \Carbon\Carbon::parse($stock->date_expired)->format('d M Y') }}
-                                                        </span>
-                                                    </div>
-                                                @endforeach
+                                                @php
+                                                    $allVariantStocks = collect();
+                                                    $variantTotalCurrentStock = $variant->variant_stock ?? 0;
+
+                                                    // Hitung total history update varian
+                                                    $variantTotalUpdateStock = $variant->stocks ? $variant->stocks->sum('quantity') : 0;
+
+                                                    // RUMUS: Sisa Stok Awal Varian = Total Stok Saat Ini - Total Update
+                                                    $variantInitialStockQty = $variantTotalCurrentStock - $variantTotalUpdateStock;
+
+                                                    // 1. Masukkan Stok Awal Varian (Hanya jika sisa stok > 0)
+                                                    if ($variantInitialStockQty > 0 && !empty($variant->variant_expired)) {
+                                                        $allVariantStocks->push([
+                                                            'quantity' => $variantInitialStockQty,
+                                                            'date_expired' => $variant->variant_expired,
+                                                            'label' => 'Stok Awal'
+                                                        ]);
+                                                    }
+
+                                                    // 2. Masukkan Stok Update Varian
+                                                    if ($variant->stocks) {
+                                                        foreach ($variant->stocks as $st) {
+                                                            if ($st->quantity > 0 && !empty($st->date_expired)) {
+                                                                $allVariantStocks->push([
+                                                                    'quantity' => $st->quantity,
+                                                                    'date_expired' => $st->date_expired,
+                                                                    'label' => 'Update'
+                                                                ]);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    // 3. Urutkan berdasarkan tanggal terdekat
+                                                    $sortedVariantStocks = $allVariantStocks->sortBy(function ($s) {
+                                                        return \Carbon\Carbon::parse($s['date_expired'])->timestamp;
+                                                    });
+                                                @endphp
+
+                                                <div class="d-flex flex-column gap-1">
+                                                    @forelse ($sortedVariantStocks as $stock)
+                                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                                            <span
+                                                                class="badge {{ $stock['label'] == 'Stok Awal' ? 'bg-primary' : 'bg-info' }}"
+                                                                style="min-width: 65px;">
+                                                                {{ $stock['quantity'] }} units
+                                                            </span>
+                                                            <span class="text-muted" style="font-size: 0.85rem;">
+                                                                Exp: <span
+                                                                    class="{{ \Carbon\Carbon::parse($stock['date_expired'])->isPast() ? 'text-danger fw-bold' : '' }}">{{ \Carbon\Carbon::parse($stock['date_expired'])->format('d M Y') }}</span>
+                                                                <small
+                                                                    style="font-size: 0.7rem; opacity: 0.7;">({{ $stock['label'] }})</small>
+                                                            </span>
+                                                        </div>
+                                                    @empty
+                                                        <span class="badge bg-danger">Habis</span>
+                                                    @endforelse
+                                                </div>
                                             </td>
                                             <td>
                                                 @php
-                                                    $variantStockInitial = $variant->variant_stock ?? 0;
-                                                    $variantTotalStock = $variant->stocks->sum('quantity');
+                                                    $variantStockTotal = $variant->variant_stock ?? 0;
+                                                    $isVariantInitial = $variant->stocks->count() === 0;
                                                 @endphp
-                                                @if ($variantStockInitial > 15 && $variantTotalStock == 0)
+
+                                                @if ($isVariantInitial && $variantStockTotal > 15)
                                                     <span
                                                         class="badge rounded-pill bg-primary d-inline-flex align-items-center gap-1">
                                                         <i class="bi bi-check-circle-fill"></i>
                                                         <span>Stock Awal</span>
                                                     </span>
-                                                @elseif ($variantStockInitial + $variantTotalStock > 15)
+                                                @elseif ($variantStockTotal > 15)
                                                     <span
                                                         class="badge rounded-pill bg-success d-inline-flex align-items-center gap-1">
                                                         <i class="bi bi-check-circle-fill"></i>
                                                         <span>Stock Update</span>
                                                     </span>
-                                                @elseif ($variantStockInitial > 0 || $variantTotalStock > 0)
+                                                @elseif ($variantStockTotal > 0)
                                                     <span
                                                         class="badge rounded-pill bg-warning text-dark d-inline-flex align-items-center gap-1">
                                                         <i class="bi bi-exclamation-circle-fill"></i>
@@ -942,10 +1186,9 @@
                                             <td>
                                                 <button
                                                     class="btn btn-sm btn-primary update-btn d-inline-flex align-items-center"
-                                                    data-id="{{ $item->id }}"
-                                                    data-variant-id="{{ $variant->id }}"
+                                                    data-id="{{ $item->id }}" data-variant-id="{{ $variant->id }}"
                                                     data-name="{{ $item->product_name }}"
-                                                    data-status="{{ $item->isInitialStock() ? 'stock_awal' : 'stock_update' }}">
+                                                    data-status="{{ $isVariantInitial && $variantStockTotal > 15 ? 'stock_awal' : 'stock_update' }}">
                                                     <i class="bi bi-pencil"></i> Update
                                                 </button>
                                             </td>
@@ -968,8 +1211,7 @@
                         <h5 class="modal-title">
                             <i class="bi bi-pencil-square"></i> Update Stok Produk
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <form id="updateStockForm" action="" method="POST">
@@ -1019,12 +1261,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <input type="number" class="form-control" id="stock_quantity"
-                                            name="stock_quantity" required min="1"
-                                            placeholder="Jumlah stok baru">
+                                            name="stock_quantity" required min="1" placeholder="Jumlah stok baru">
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="date" class="form-control" id="date_expired"
-                                            name="date_expired" required>
+                                        <input type="date" class="form-control" id="date_expired" name="date_expired"
+                                            required>
                                     </div>
                                 </div>
                             </div>
@@ -1060,9 +1301,9 @@
     <script src="assets/js/main.js"></script>
 
     {{-- fungsi untuk handle update stock product utama dan variant --}}
-    {{-- yang digunakan  --}}
+    {{-- yang digunakan --}}
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             const updateModal = document.getElementById('updateModal');
             const modal = new bootstrap.Modal(updateModal);
 
@@ -1132,12 +1373,12 @@
             }
 
             // Event handler untuk tombol update
-            $(document).on('click', '.update-btn', function() {
+            $(document).on('click', '.update-btn', function () {
                 openUpdateModal(this);
             });
 
             // Handle form submission untuk update stok
-            $('#updateStockForm').on('submit', async function(e) {
+            $('#updateStockForm').on('submit', async function (e) {
                 e.preventDefault();
 
                 const productId = $('#product_id').val();
@@ -1185,13 +1426,13 @@
         function openImageInNewTab(url) {
             window.open(url, '_blank');
         }
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Initialize Simple DataTable
             let table1 = document.querySelector('#table1');
             let dataTable = new simpleDatatables.DataTable(table1);
 
             // Use event delegation for delete button
-            table1.addEventListener('click', function(event) {
+            table1.addEventListener('click', function (event) {
                 if (event.target.closest('.delete-product')) {
                     let productId = event.target.closest('.delete-product').getAttribute('data-id');
 
@@ -1208,13 +1449,13 @@
                         if (result.isConfirmed) {
                             // Send AJAX request to delete product
                             fetch(`/delete-product/${productId}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRF-TOKEN': document.querySelector(
-                                            'meta[name="csrf-token"]').getAttribute(
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': document.querySelector(
+                                        'meta[name="csrf-token"]').getAttribute(
                                             'content')
-                                    }
-                                })
+                                }
+                            })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.success) {

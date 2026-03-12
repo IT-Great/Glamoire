@@ -357,10 +357,16 @@
                         Selesai
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
                         class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
                         Pengembalian/Pembatalan
+                    </a>
+                </li> --}}
+                <li class="nav-item">
+                    <a href="{{ route('index-admin-order-returned', ['status' => 'returned']) }}"
+                        class="nav-link {{ request()->get('status') === 'returned' ? 'active text-primary' : 'text-secondary' }}">
+                        Pengembalian/Pembatalan/Paket Rusak
                     </a>
                 </li>
             </ul>
@@ -491,11 +497,10 @@
 
                                             <!-- Update to Shipping Status -->
                                             @if ($order->status === 'processing')
-                                                <form action="{{ route('update-shipping-status', $order->id) }}"
-                                                    method="POST" class="mb-2">
+                                                <form action="{{ route('update-shipping-status', $order->id) }}" method="POST"
+                                                    class="mb-2">
                                                     @csrf
-                                                    <button type="submit"
-                                                        class="action-button btn btn-primary btn-sm">
+                                                    <button type="submit" class="action-button btn btn-primary btn-sm">
                                                         <i class="bi bi-truck me-1"></i>
                                                         Kirim Pesanan
                                                     </button>
@@ -512,22 +517,20 @@
 
                                     {{-- berdu agregaotr --}}
                                     {{-- <td>
-                                            <div class="d-flex flex-column gap-2">
-                                                <button type="button"
-                                                    class="action-button btn btn-outline-primary btn-sm"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#sentModal-{{ $order->id }}">
-                                                    <i class="bi bi-truck me-1"></i>
-                                                    Atur Pengiriman
-                                                </button>
+                                        <div class="d-flex flex-column gap-2">
+                                            <button type="button" class="action-button btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="modal" data-bs-target="#sentModal-{{ $order->id }}">
+                                                <i class="bi bi-truck me-1"></i>
+                                                Atur Pengiriman
+                                            </button>
 
-                                                <a href="{{ route('admin.generate-label', ['order_id' => $order->id]) }}"
-                                                    class="action-button btn btn-outline-success btn-sm">
-                                                    <i class="bi bi-printer me-1"></i>
-                                                    Generate Label
-                                                </a>
-                                            </div>
-                                        </td> --}}
+                                            <a href="{{ route('admin.generate-label', ['order_id' => $order->id]) }}"
+                                                class="action-button btn btn-outline-success btn-sm">
+                                                <i class="bi bi-printer me-1"></i>
+                                                Generate Label
+                                            </a>
+                                        </div>
+                                    </td> --}}
 
                                 </tr>
                             @endforeach
@@ -544,7 +547,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
 
     {{-- berdu agregator --}}
-    {{-- <script>
+    {{--
+    <script>
         function toggleResiInput(radioElement) {
             const orderId = radioElement.name.split('_')[2]; // Extract order ID from name
             const resiContainer = document.getElementById(`resiInputContainer-${orderId}`);
@@ -572,16 +576,16 @@
 
             // Send AJAX request to update resi and status
             fetch('/admin/orders/update-resi', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        order_id: orderId,
-                        resi_number: resiNumber
-                    })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    resi_number: resiNumber
                 })
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
@@ -613,7 +617,7 @@
     {{-- bikin sendiri --}}
     <script>
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function() {
+            navigator.clipboard.writeText(text).then(function () {
                 // Show toast message
                 const toast = document.createElement('div');
                 toast.className =
@@ -639,10 +643,10 @@
                 bsToast.show();
 
                 // Remove the toast element after it's hidden
-                toast.addEventListener('hidden.bs.toast', function() {
+                toast.addEventListener('hidden.bs.toast', function () {
                     document.body.removeChild(toast);
                 });
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.error('Failed to copy text: ', err);
                 alert('Gagal menyalin nomor resi!');
             });
@@ -650,7 +654,7 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             let table = new simpleDatatables.DataTable("#table1", {
                 searchable: true,
                 fixedHeight: true,
@@ -697,12 +701,12 @@
 
             // Send AJAX request
             fetch(`/orders/${orderId}/confirm-shipping`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {

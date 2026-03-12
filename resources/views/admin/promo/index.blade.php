@@ -552,10 +552,10 @@
                         class="promo-nav-item {{ Request::is('promo-diskon') ? 'active' : '' }}">
                         <i class="bi bi-percent me-2"></i>Diskon
                     </a>
-                    <a href="{{ route('index-promo-gift') }}"
+                    {{-- <a href="{{ route('index-promo-gift') }}"
                         class="promo-nav-item {{ Request::is('promo-gift') ? 'active' : '' }}">
                         <i class="bi bi-gift-fill me-2"></i>Gift
-                    </a>
+                    </a> --}}
                 </div>
 
                 <!-- Main Content -->
