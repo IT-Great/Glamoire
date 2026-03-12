@@ -549,7 +549,7 @@
                 </div>
             </li>
 
-            <li><a href="/promotion" class="nav-link-premium">Promo</a></li>
+            {{-- <li><a href="/promotion" class="nav-link-premium">Promo</a></li> --}}
             <li><a href="/newsletter" class="nav-link-premium">Artikel</a></li>
         </ul>
 
@@ -618,10 +618,10 @@
         <span>Kategori</span>
     </a>
 
-    <a href="/promotion" class="mobile-nav-item {{ Request::is('promotion') ? 'active' : '' }}">
+    {{-- <a href="/promotion" class="mobile-nav-item {{ Request::is('promotion') ? 'active' : '' }}">
         <i class="fas fa-tag"></i>
         <span>Promo</span>
-    </a>
+    </a> --}}
 
     <a href="/cart" class="mobile-nav-item position-relative {{ Request::is('cart') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag"></i>
