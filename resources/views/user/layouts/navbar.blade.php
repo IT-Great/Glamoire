@@ -1303,7 +1303,7 @@
                 <li><a href="#" class="nav-link-premium require-login">Promo</a></li>
             @endif
 
-            {{-- <li><a href="/newsletter" class="nav-link-premium">Artikel</a></li> --}}
+            <li><a href="/newsletter" class="nav-link-premium">Artikel</a></li>
         </ul>
 
         <div class="premium-search-container">
