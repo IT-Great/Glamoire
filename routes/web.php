@@ -289,6 +289,7 @@ Route::post('/order-paynow', [CheckoutController::class, 'orderPayment'])->name(
 Route::post('/order-buynow', [CheckoutController::class, 'orderBuyNow'])->name('order.buynow');
 Route::post('/rating-and-review', [UserController::class, 'ratingAndReview'])->name('rating.and.review');
 // Tambahkan di area Route User
+Route::post('/add-rating-review', [UserController::class, 'ratingAndReview'])->name('add.rating.review');
 Route::post('/order/request-return/{id}', [UserController::class, 'requestReturn'])->name('order.request-return');
 
 // testdoku
@@ -606,6 +607,7 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // subscribe
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
+    Route::post('/admin/subscribe/send-email', [SubscribeController::class, 'sendEmail'])->name('subscribe.send.email');
 });
 
 // ACCOUNTING
