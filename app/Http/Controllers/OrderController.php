@@ -230,6 +230,29 @@ class OrderController extends Controller
             return redirect()->back()->with('error', 'Gagal menampilkan label pengiriman: ' . $e->getMessage());
         }
     }
+
+    public function updateShippingStatus($id)
+    {
+        try {
+            $order = Order::findOrFail($id);
+
+            if ($order->status !== 'processing') {
+                return redirect()->back()->with('error', 'Hanya pesanan yang sedang diproses yang dapat dikirim.');
+            }
+
+            if (empty($order->resi)) {
+                return redirect()->back()->with('error', 'Pesanan harus memiliki nomor resi (Generate Label) sebelum dikirim.');
+            }
+
+            $order->status = 'delivery';
+            $order->save();
+
+            return redirect()->back()->with('success', 'Status pesanan berhasil diubah menjadi Dalam Pengiriman.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal memperbarui status pengiriman: ' . $e->getMessage());
+        }
+    }
+
     // end resi sendiri
 
 
@@ -694,7 +717,7 @@ class OrderController extends Controller
                 "origin_contact_phone" => "08979243010", //
                 "origin_address" => "Jl Wijaya Kusuma no. 57, Surabaya", //
                 "origin_note" => "",
-                "origin_postal_code" => $postalCodeGCS, // 
+                "origin_postal_code" => $postalCodeGCS, //
                 "destination_contact_name" => $address['recipient_name'], //
                 "destination_contact_phone" => $address['handphone'], //
                 "destination_contact_email" => $address['email'],
@@ -733,7 +756,7 @@ class OrderController extends Controller
             //     "items" => $items,
             // ]);
 
-            // Log::info(['Biteship Request :' => 
+            // Log::info(['Biteship Request :' =>
             //     [
             //     'origin_contact_name' => "Glamoire",
             //     'origin_contact_phone' => "08979243010",

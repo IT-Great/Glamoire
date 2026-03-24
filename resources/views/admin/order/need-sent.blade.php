@@ -437,6 +437,84 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="modal fade" id="sentModal-{{ $order->id }}"
+                                                    tabindex="-1"
+                                                    aria-labelledby="sentModalLabel-{{ $order->id }}"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content border-0"
+                                                            style="border-radius: 16px;">
+                                                            <div class="modal-header bg-primary text-white"
+                                                                style="border-radius: 16px 16px 0 0;">
+                                                                <h5 class="modal-title"
+                                                                    id="sentModalLabel-{{ $order->id }}"><i
+                                                                        class="bi bi-truck me-2"></i>Atur Pengiriman
+                                                                    Manual</h5>
+                                                                <button type="button"
+                                                                    class="btn-close btn-close-white"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body p-4">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label fw-bold text-dark">Pilih
+                                                                        Jasa Kirim</label>
+                                                                    <div class="d-flex flex-wrap gap-3">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input"
+                                                                                type="radio"
+                                                                                name="shipping_method_{{ $order->id }}"
+                                                                                id="courier_jne_{{ $order->id }}"
+                                                                                value="JNE"
+                                                                                onchange="toggleResiInput(this)">
+                                                                            <label class="form-check-label"
+                                                                                for="courier_jne_{{ $order->id }}">JNE
+                                                                                Express</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input"
+                                                                                type="radio"
+                                                                                name="shipping_method_{{ $order->id }}"
+                                                                                id="courier_jnt_{{ $order->id }}"
+                                                                                value="J&T"
+                                                                                onchange="toggleResiInput(this)">
+                                                                            <label class="form-check-label"
+                                                                                for="courier_jnt_{{ $order->id }}">J&T
+                                                                                Express</label>
+                                                                        </div>
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input"
+                                                                                type="radio"
+                                                                                name="shipping_method_{{ $order->id }}"
+                                                                                id="courier_sicepat_{{ $order->id }}"
+                                                                                value="Sicepat"
+                                                                                onchange="toggleResiInput(this)">
+                                                                            <label class="form-check-label"
+                                                                                for="courier_sicepat_{{ $order->id }}">Sicepat</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="resiInputContainer-{{ $order->id }}"
+                                                                    style="display: none;">
+                                                                    <label for="resiNumber-{{ $order->id }}"
+                                                                        class="form-label fw-bold text-dark">Masukkan
+                                                                        Nomor Resi</label>
+                                                                    <input type="text" class="form-control"
+                                                                        id="resiNumber-{{ $order->id }}"
+                                                                        placeholder="Contoh: JP1234567890">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer border-0">
+                                                                <button type="button" class="btn btn-light"
+                                                                    data-bs-dismiss="modal">Batal</button>
+                                                                <button type="button" class="btn btn-primary px-4"
+                                                                    onclick="konfirmasiPengiriman({{ $order->id }})">Konfirmasi
+                                                                    & Kirim</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             @endforeach
                                         </div>
                                     </td>
@@ -497,10 +575,11 @@
 
                                             <!-- Update to Shipping Status -->
                                             @if ($order->status === 'processing')
-                                                <form action="{{ route('update-shipping-status', $order->id) }}" method="POST"
-                                                    class="mb-2">
+                                                <form action="{{ route('update-shipping-status', $order->id) }}"
+                                                    method="POST" class="mb-2">
                                                     @csrf
-                                                    <button type="submit" class="action-button btn btn-primary btn-sm">
+                                                    <button type="submit"
+                                                        class="action-button btn btn-primary btn-sm">
                                                         <i class="bi bi-truck me-1"></i>
                                                         Kirim Pesanan
                                                     </button>
@@ -617,7 +696,7 @@
     {{-- bikin sendiri --}}
     <script>
         function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(function () {
+            navigator.clipboard.writeText(text).then(function() {
                 // Show toast message
                 const toast = document.createElement('div');
                 toast.className =
@@ -643,10 +722,10 @@
                 bsToast.show();
 
                 // Remove the toast element after it's hidden
-                toast.addEventListener('hidden.bs.toast', function () {
+                toast.addEventListener('hidden.bs.toast', function() {
                     document.body.removeChild(toast);
                 });
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.error('Failed to copy text: ', err);
                 alert('Gagal menyalin nomor resi!');
             });
@@ -654,7 +733,7 @@
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             let table = new simpleDatatables.DataTable("#table1", {
                 searchable: true,
                 fixedHeight: true,
@@ -701,12 +780,12 @@
 
             // Send AJAX request
             fetch(`/orders/${orderId}/confirm-shipping`, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
