@@ -437,7 +437,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal fade" id="sentModal-{{ $order->id }}"
+                                                {{-- <div class="modal fade" id="sentModal-{{ $order->id }}"
                                                     tabindex="-1"
                                                     aria-labelledby="sentModalLabel-{{ $order->id }}"
                                                     aria-hidden="true">
@@ -514,7 +514,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             @endforeach
                                         </div>
                                     </td>
@@ -587,11 +587,11 @@
                                             @endif
                                         @endif
 
-                                        <button type="button" class="action-button btn btn-outline-primary btn-sm"
+                                        {{-- <button type="button" class="action-button btn btn-outline-primary btn-sm"
                                             data-bs-toggle="modal" data-bs-target="#sentModal-{{ $order->id }}">
                                             <i class="bi bi-gear me-1"></i>
                                             Atur Pengiriman
-                                        </button>
+                                        </button> --}}
                                     </td>
 
                                     {{-- berdu agregaotr --}}

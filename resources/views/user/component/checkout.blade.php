@@ -1196,7 +1196,7 @@
                 Swal.fire({ icon: 'warning', title: 'Perhatian', text: 'Silakan pilih jasa pengiriman terlebih dahulu.', confirmButtonColor: '#183018' });
                 return;
             }
-            
+
             // SET FLAG PROCESSING
             $('#paynow').data('processing', true);
 
