@@ -508,16 +508,52 @@ class OrderController extends Controller
     //     return view('admin.order.return-cancel', compact('orders'));
     // }
     // 1. UPDATE FUNGSI INI
+    // public function returnedOrder()
+    // {
+    //     // Ambil order dengan status yang bermasalah ATAU yang sedang mengajukan manual return
+    //     $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
+    //         ->whereIn('status', ['returned', 'cancelled', 'disposed', 'failed'])
+    //         ->orWhereNotNull('return_status') // Tambahan ini
+    //         ->latest()
+    //         ->paginate(10);
+
+    //     // Group order items by product for each order (SAMA SEPERTI ASLINYA)
+    //     foreach ($orders as $order) {
+    //         $groupedItems = collect($order->orderItems)
+    //             ->filter(function ($item) {
+    //                 return $item->product !== null;
+    //             })
+    //             ->groupBy(function ($item) {
+    //                 return $item->product->id;
+    //             })
+    //             ->map(function ($group) {
+    //                 $firstItem = $group->first();
+    //                 return [
+    //                     'product' => $firstItem->product,
+    //                     'total_quantity' => $group->sum('quantity')
+    //                 ];
+    //             })
+    //             ->values();
+    //         $order->groupedOrderItems = $groupedItems;
+    //     }
+
+    //     return view('admin.order.return-cancel', compact('orders'));
+    // }
+
     public function returnedOrder()
     {
-        // Ambil order dengan status yang bermasalah ATAU yang sedang mengajukan manual return
+        // 1. Query dengan Custom Order (Requested ditaruh paling atas)
         $orders = Order::with(['user', 'orderItems.product', 'payment', 'shippingAddress'])
-            ->whereIn('status', ['returned', 'cancelled', 'disposed', 'failed'])
-            ->orWhereNotNull('return_status') // Tambahan ini
-            ->latest()
+            ->where(function ($query) {
+                $query->whereIn('status', ['returned', 'cancelled', 'disposed', 'failed'])
+                      ->orWhereNotNull('return_status');
+            })
+            // Logika SQL: Jika requested beri nilai 1, sisanya 2. Urutkan dari yg terkecil (1).
+            ->orderByRaw("CASE WHEN return_status = 'requested' THEN 1 ELSE 2 END")
+            ->latest() // Setelah itu baru diurutkan berdasarkan tanggal terbaru
             ->paginate(10);
 
-        // Group order items by product for each order (SAMA SEPERTI ASLINYA)
+        // 2. Group order items by product for each order
         foreach ($orders as $order) {
             $groupedItems = collect($order->orderItems)
                 ->filter(function ($item) {
