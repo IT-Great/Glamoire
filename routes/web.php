@@ -1,48 +1,45 @@
 <?php
 
-use App\Models\User;
+use App\Http\Controllers\AboutusController;
+use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\BiteshipController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChartofAccountController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactusController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DokuPaymentController;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PopupController;
+use App\Http\Controllers\PrismalinkController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PromoController;
+use App\Http\Controllers\RatingAndReviewController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\StockExportImportController;
+use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use App\Models\AboutUs;
 use App\Models\NotifyMe;
-use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FaqController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\PromoController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PopupController;
-use App\Http\Controllers\AboutusController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\JournalController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\BiteshipController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ContactusController;
-use App\Http\Controllers\SubscribeController;
-use App\Http\Controllers\FinancialController;
-use App\Http\Controllers\PrismalinkController;
-use App\Http\Controllers\DokuPaymentController;
-
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\PasswordResetController;
-
-use App\Http\Controllers\ChartofAccountController;
-use App\Http\Controllers\StockExportImportController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
@@ -55,7 +52,6 @@ Route::get('/callback-backend-create-new-order', [PrismalinkController::class, '
 
 // BITESHIP ROUTE WEBHOOK
 Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback']);
-
 
 // VERIFIKASI EMAIL REGISTER
 // Rute untuk halaman yang hanya bisa diakses oleh user terverifikasi
@@ -71,13 +67,13 @@ Route::get('/email-verify', function () {
         if (auth()->user()->hasVerifiedEmail()) {
             return redirect('/'); // Ganti dengan route yang diinginkan
         }
+
         return view('user.component.verify-email');
     }
 
     // Jika pengguna belum login, redirect ke halaman login
     return redirect()->route('login');
 })->middleware('auth')->name('verification.notice');
-
 
 // Memproses link verifikasi
 // Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
@@ -108,9 +104,9 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request, $id, $hash) 
 
     session()->flash('success_verification_email');
     Auth::login($user); // Optional: login otomatis setelah verifikasi
+
     return redirect('/');
 })->name('verification.verify');
-
 
 // Mengirim ulang email verifikasi
 Route::post('/email/verification-notification', function (Request $request) {
@@ -149,6 +145,7 @@ Route::post('/notify-me', function (Request $request) {
                     'product_variant_id' => $request->product_variant_id,
                     'email' => $email,
                 ]);
+
                 return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
             } else {
                 NotifyMe::create([
@@ -156,6 +153,7 @@ Route::post('/notify-me', function (Request $request) {
                     'product_id' => $request->product_id,
                     'email' => $email,
                 ]);
+
                 return response()->json(['success' => true, 'message' => 'Selesai.. Kami akan mengirimkan email jika produk ini sudah kami restock.']);
             }
         }
@@ -229,6 +227,7 @@ Route::get('/contact', function () {
 
 Route::get('/about', function () {
     $data = AboutUs::first();
+
     return view('user.component.about')->with('data', $data);
 });
 
@@ -256,7 +255,6 @@ Route::post('/update-cart-quantity-variant-guest', [CartController::class, 'upda
 Route::post('/wishlist', [UserController::class, 'addToWishlist'])->name('add.to.wishlist');
 Route::post('/remove-wishlist', [UserController::class, 'removeFromWishlist'])->name('remove.from.wishlist');
 
-
 // BUY NOW
 Route::post('/add-product-buy-now', [CheckoutController::class, 'addProductBuyNow'])->name('add.product.buy.now');
 Route::post('/add-product-variant-buy-now', [CheckoutController::class, 'addProductVariantBuyNow'])->name('add.product.variant.buy.now');
@@ -266,13 +264,11 @@ Route::post('/update-cart-quantity-buy-now', [CheckoutController::class, 'update
 // BUY AGAIN
 Route::post('/buy-again', [UserController::class, 'addToCartBuyNow'])->name('buy.again');
 
-
 // Route::get('/help', function () {
 //     return view('user.component.help');
 // });
 
 Route::get('/help', [FaqController::class, 'index']);
-
 
 Route::get('/promotion', [PromoController::class, 'index'])->name('promo.user');
 Route::get('/{name}-detail-promo', [PromoController::class, 'detailPromoUser'])->name('detail.promo.user');
@@ -301,13 +297,9 @@ Route::match(['get', 'post'], '/doku-callback', [DokuPaymentController::class, '
 Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 Route::get('/payment/failed', [PaymentController::class, 'paymentFailed'])->name('payment.failed');
 
-
-
-
 Route::prefix('/cart')->group(function () {
     Route::get('/', [CartController::class, 'index']);
 });
-
 
 // CHECKOUT
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
@@ -331,13 +323,10 @@ Route::get('/terms', function () {
     return view('user.component.terms');
 });
 
-
 // ADMIN PAGE
 Route::get('/error-403', function () {
     return view('error-403');
 })->name('error-403');
-
-
 
 // DASHBOARD
 Route::get('/login-admin', [AuthenticateController::class, 'indexlogin'])->name('index-login');
@@ -362,7 +351,6 @@ Route::post('/admin/settings', [AuthenticateController::class, 'updateSettings']
 // Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
-
 Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/dashboard/get-sales-data', [DashboardController::class, 'getSalesData']);
 
@@ -382,7 +370,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProductAdmin'])->name('delete-product-admin');
     Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
     Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
-
 
     // STOCK PRODUCT
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
@@ -418,7 +405,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
         ->name('import.product.variants');
     // Route::post('/import/product-variants', [StockExportImportController::class
 
-
     // product-variant
     Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');
     Route::get('/create-product-variant', [ProductController::class, 'createProductVariantAdmin'])->name('create-product-variant-admin');
@@ -447,13 +433,12 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/admin/order/return/{id}/approve', [OrderController::class, 'approveReturn'])->name('admin.order.return.approve');
     Route::post('/admin/order/return/{id}/reject', [OrderController::class, 'rejectReturn'])->name('admin.order.return.reject');
 
-
     // GENERATE LABEL RESI BUAT SENDIRI
-    Route::get('/orders/{id}/generate-shipping-label', [App\Http\Controllers\OrderController::class, 'generateShippingLabel'])->name('generate-shipping-label');
+    Route::get('/orders/{id}/generate-shipping-label', [OrderController::class, 'generateShippingLabel'])->name('generate-shipping-label');
     // Route for viewing an existing shipping label
-    Route::get('/orders/{id}/view-shipping-label', [App\Http\Controllers\OrderController::class, 'viewShippingLabel'])->name('view-shipping-label');
+    Route::get('/orders/{id}/view-shipping-label', [OrderController::class, 'viewShippingLabel'])->name('view-shipping-label');
     // Route for updating shipping status
-    Route::post('/orders/{id}/update-shipping-status', [App\Http\Controllers\OrderController::class, 'updateShippingStatus'])->name('update-shipping-status');
+    Route::post('/orders/{id}/update-shipping-status', [OrderController::class, 'updateShippingStatus'])->name('update-shipping-status');
 
     // brand
     Route::get('/brand-admin', [BrandController::class, 'indexbrand'])->name('index-brand-admin');
@@ -509,7 +494,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/create-promo-voucher', [PromoController::class, 'storePromoVoucher'])->name('store-promo-voucher');
     Route::put('update-promo-voucher-limited/{id}', [PromoController::class, 'updatePromoVoucherLimited'])->name('update-promo-voucher-limited');
 
-
     // detail promo voucher
     Route::get('/detail-promo-voucher/{id}', [PromoController::class, 'detailPromoVoucher'])->name('detail-promo-voucher');
 
@@ -551,13 +535,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/admin/affiliate/{id}', [AffiliateController::class, 'sendResponseAffiliate'])->name('send-response-affiliate');
     Route::delete('/delete-affiliate-admin/{id}', [AffiliateController::class, 'deleteAffiliate'])->name('delete-affiliate');
 
-
     // faq
     Route::get('/faq-admin', [FaqController::class, 'indexFaqAdmin'])->name('index-faq-admin');
     Route::post('/faqs-create', [FaqController::class, 'store'])->name('faqs.store');
     Route::get('/faqs/render-row/{faq}', [FaqController::class, 'renderRow']);
     Route::delete('/faqs/{id}', [FaqController::class, 'delete'])->name('faqs.delete');
-
 
     Route::get('/chat-admin', function () {
         return view('admin.chat.index');
@@ -585,7 +567,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::post('/popup/{id}/toggle', [PopupController::class, 'toggle'])->name('popup.toggle');
     Route::delete('/popup/{id}', [PopupController::class, 'destroy'])->name('popup.destroy');
 
-
     // shipping fee
     Route::get('/shipping-fee', function () {
         return view('admin.shippingfee.index');
@@ -594,7 +575,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/create-shipping-fee', function () {
         return view('admin.shippingfee.create');
     });
-
 
     // contact us
     Route::get('/contact-us-admin', [ContactusController::class, 'indexContactusAdmin'])->name('index-contactus-admin');
@@ -608,6 +588,9 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // subscribe
     Route::get('/subscribe-admin', [SubscribeController::class, 'indexSubscribeAdmin'])->name('index-subscribe-admin');
     Route::post('/admin/subscribe/send-email', [SubscribeController::class, 'sendEmail'])->name('subscribe.send.email');
+
+    // Route Rating & Review Admin
+    Route::get('/rating-and-review-admin', [RatingAndReviewController::class, 'index'])->name('index-rating-review');
 });
 
 // ACCOUNTING
@@ -633,11 +616,9 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     Route::get('/invoices/{id}/payment-history', [InvoiceController::class, 'paymentHistory'])->name('invoice-payment-history');
     Route::get('/invoices/{id}/details', [InvoiceController::class, 'getInvoiceDetails'])->name('get-invoice-details');
 
-
     Route::get('/invoice/{id}/edit', [InvoiceController::class, 'editInvoice'])->name('edit-invoice');
     Route::post('/invoice-edit', [InvoiceController::class, 'updateInvoice'])->name('update-invoice');
     Route::delete('/invoice-suppliers/{id}', [InvoiceController::class, 'deleteInvoice'])->name('delete-invoice');
-
 
     // SUPPLIER-INVOICE
     Route::get('/invoice-supplier', [InvoiceController::class, 'indexSupplier'])->name('index-supplier');
@@ -648,7 +629,6 @@ Route::middleware(['auth', 'role:accounting,superadmin'])->group(function () {
     Route::get('/invoice-supplier/{id}/edit', [InvoiceController::class, 'editSupplier'])->name('edit-supplier');
     Route::post('/invoice-edit-supplier', [InvoiceController::class, 'updateSupplier'])->name('update-supplier');
     Route::delete('/invoice-delete-suppliers/{id}', [InvoiceController::class, 'deleteSupplier'])->name('delete-supplier');
-
 
     // TRANSACTION
     Route::get('/transaction', [TransactionController::class, 'indexTransaction'])->name('index-transaction');
@@ -694,7 +674,6 @@ Route::middleware(['auth', 'role:gudang,admin,superadmin'])->group(function () {
     Route::get('/product-admin-detail/{id}', [ProductController::class, 'detailProductAdmin'])->name('detail-product-admin');
     Route::post('/send-notify/{id}', [ProductController::class, 'notify'])->name('send-notify');
 
-
     // STOCK PRODUCT
     Route::get('/stock-product-admin', [ProductController::class, 'indexStockProductAdmin'])->name('index-stock-product-admin');
     Route::get('/stock-product-admin-outofstock', [ProductController::class, 'outOfStockProductAdmin'])->name('outof-stock-product-admin');
@@ -728,7 +707,6 @@ Route::middleware(['auth', 'role:gudang,admin,superadmin'])->group(function () {
     Route::post('/import/product-variants', [StockExportImportController::class, 'importProductStockVariants'])
         ->name('import.product.variants');
     // Route::post('/import/product-variants', [StockExportImportController::class
-
 
     // product-variant
     Route::get('/product-admin-variant', [ProductController::class, 'indexProductVariantAdmin'])->name('index-product-variant-admin');

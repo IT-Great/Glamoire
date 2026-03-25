@@ -68,6 +68,13 @@
                         </a>
                     </li>
 
+                    <li class="sidebar-item {{ Request::is('rating-and-review-admin*') ? 'active' : '' }}">
+                        <a href="{{ route('index-rating-review') }}" class='sidebar-link'>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <span>Rating & Review</span>
+                        </a>
+                    </li>
+
                     <li class="sidebar-item {{ Request::is('brand-admin*') ? 'active' : '' }}">
                         <a href="{{ route('index-brand-admin') }}" class='sidebar-link'>
                             <i class="bi bi-file-earmark-medical-fill"></i>
