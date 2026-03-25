@@ -31,14 +31,55 @@ class OrderController extends Controller
         $this->baseUrl = config('services.biteship.base_url');
     }
 
+    // public function indexOrder()
+    // {
+    //     $orders = Order::with([
+    //         'user',
+    //         'orderItems.product.categoryProduct', // Tambahkan categoryProduct
+    //         'payment',
+    //         'shippingAddress'
+    //     ])
+    //         ->latest()
+    //         ->paginate(10);
+
+    //     // Group order items by product for each order
+    //     foreach ($orders as $order) {
+    //         $groupedItems = [];
+
+    //         foreach ($order->orderItems as $item) {
+    //             if ($item->product) {
+    //                 $productId = $item->product->id;
+
+    //                 if (!isset($groupedItems[$productId])) {
+    //                     $groupedItems[$productId] = [
+    //                         'product' => $item->product,
+    //                         'total_quantity' => $item->quantity
+    //                     ];
+    //                 } else {
+    //                     $groupedItems[$productId]['total_quantity'] += $item->quantity;
+    //                 }
+    //             }
+    //         }
+
+    //         $order->groupedOrderItems = array_values($groupedItems);
+    //     }
+
+    //     // Debug untuk memeriksa data
+    //     // dd($orders->first()->groupedOrderItems);
+
+    //     return view('admin.order.index', compact('orders'));
+    // }
+
     public function indexOrder()
     {
+        // Tambahkan orderByRaw agar status 'requested' dipaksa naik ke urutan pertama
         $orders = Order::with([
             'user',
-            'orderItems.product.categoryProduct', // Tambahkan categoryProduct
+            'orderItems.product.categoryProduct',
             'payment',
             'shippingAddress'
         ])
+            ->orderByRaw("CASE WHEN return_status = 'requested' THEN 1 ELSE 2 END")
             ->latest()
             ->paginate(10);
 
@@ -64,12 +105,8 @@ class OrderController extends Controller
             $order->groupedOrderItems = array_values($groupedItems);
         }
 
-        // Debug untuk memeriksa data
-        // dd($orders->first()->groupedOrderItems);
-
         return view('admin.order.index', compact('orders'));
     }
-
 
     public function needSentAdmin()
     {
