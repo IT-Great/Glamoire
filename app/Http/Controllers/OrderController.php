@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReturnStatusMail;
 
 class OrderController extends Controller
 {
@@ -539,12 +541,49 @@ class OrderController extends Controller
     }
 
     // 2. TAMBAHKAN FUNGSI BARU INI UNTUK APPROVE RETURN (DAN MENGEMBALIKAN STOK)
+    // public function approveReturn($id)
+    // {
+    //     try {
+    //         DB::transaction(function () use ($id) {
+    //             $order = Order::with('orderItems')->findOrFail($id);
+
+    //             // 1. Kembalikan (Restore) Stok Produk
+    //             foreach ($order->orderItems as $item) {
+    //                 if ($item->product_variant_id) {
+    //                     $variant = \App\Models\ProductVariations::lockForUpdate()->find($item->product_variant_id);
+    //                     if ($variant) {
+    //                         $variant->increment('variant_stock', $item->quantity);
+    //                         $variant->decrement('sale', $item->quantity);
+    //                     }
+    //                 } else {
+    //                     $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+    //                     if ($product) {
+    //                         $product->increment('stock_quantity', $item->quantity);
+    //                         $product->decrement('sale', $item->quantity);
+    //                     }
+    //                 }
+    //             }
+
+    //             // 2. Update status
+    //             $order->update([
+    //                 'status' => 'returned', // Ubah status utama menjadi returned
+    //                 'return_status' => 'approved'
+    //             ]);
+    //         });
+
+    //         return response()->json(['success' => true, 'message' => 'Pengajuan return disetujui. Stok telah dikembalikan.']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
     public function approveReturn($id)
     {
         try {
-            DB::transaction(function () use ($id) {
-                $order = Order::with('orderItems')->findOrFail($id);
+            // PERHATIAN: Tambahkan with('user') agar bisa mengirim email
+            $order = Order::with(['orderItems', 'user'])->findOrFail($id);
 
+            DB::transaction(function () use ($order) {
                 // 1. Kembalikan (Restore) Stok Produk
                 foreach ($order->orderItems as $item) {
                     if ($item->product_variant_id) {
@@ -569,20 +608,46 @@ class OrderController extends Controller
                 ]);
             });
 
-            return response()->json(['success' => true, 'message' => 'Pengajuan return disetujui. Stok telah dikembalikan.']);
+            // 3. KIRIM EMAIL KE USER
+            if ($order->user && $order->user->email) {
+                Mail::to($order->user->email)->send(new ReturnStatusMail($order, 'approved'));
+            }
+
+            return response()->json(['success' => true, 'message' => 'Pengajuan return disetujui. Stok dikembalikan & Email dikirim.']);
         } catch (\Exception $e) {
+            Log::error("Error Approve Return: " . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
 
     // 3. TAMBAHKAN FUNGSI BARU INI UNTUK REJECT RETURN
+    // public function rejectReturn($id)
+    // {
+    //     try {
+    //         $order = Order::findOrFail($id);
+    //         $order->update(['return_status' => 'rejected']);
+    //         return response()->json(['success' => true, 'message' => 'Pengajuan return ditolak.']);
+    //     } catch (\Exception $e) {
+    //         return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+    //     }
+    // }
+
     public function rejectReturn($id)
     {
         try {
-            $order = Order::findOrFail($id);
+            // PERHATIAN: Tambahkan with('user') agar bisa mengirim email
+            $order = Order::with('user')->findOrFail($id);
+
             $order->update(['return_status' => 'rejected']);
-            return response()->json(['success' => true, 'message' => 'Pengajuan return ditolak.']);
+
+            // KIRIM EMAIL KE USER
+            if ($order->user && $order->user->email) {
+                Mail::to($order->user->email)->send(new ReturnStatusMail($order, 'rejected'));
+            }
+
+            return response()->json(['success' => true, 'message' => 'Pengajuan ditolak & Email penolakan telah dikirim.']);
         } catch (\Exception $e) {
+            Log::error("Error Reject Return: " . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }
     }
