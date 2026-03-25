@@ -37,6 +37,6 @@ class ReturnStatusMail extends Mailable
             : 'Pengajuan Retur Ditolak - Glamoire';
 
         return $this->subject($subject)
-                    ->view('emails.return_status');
+                    ->view('email.return_status');
     }
 }
