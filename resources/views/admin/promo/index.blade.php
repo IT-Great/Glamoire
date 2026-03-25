@@ -640,10 +640,10 @@
                                                         class="btn btn-sm btn-info d-inline-flex align-items-center">
                                                         <i class="bi bi-eye me-1"></i> View
                                                     </a>
-                                                    {{-- <a href="{{ url('edit-promo/' . $item->id) }}"
+                                                    <a href="{{ url('edit-promo/' . $item->id) }}"
                                                         class="btn btn-sm btn-warning d-inline-flex align-items-center">
                                                         <i class="bi bi-pencil me-1"></i> Edit
-                                                    </a> --}}
+                                                    </a>
                                                     <a href="javascript:void(0);"
                                                         class="btn btn-sm btn-danger delete-promo d-inline-flex align-items-center"
                                                         data-id="{{ $item->id }}">
