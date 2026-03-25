@@ -69,9 +69,11 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <div class="text-warning d-flex align-items-center" style="font-size: 0.9rem;">
+                                                <div class="d-flex align-items-center" style="font-size: 0.9rem;">
                                                     @for ($i = 1; $i <= 5; $i++)
-                                                        <i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star me-1"></i>
+                                                        @if ($i <= $review->rating)
+                                                            <i class="fas fa-star text-warning me-1"></i> @else
+                                                            <i class="far fa-star text-muted me-1"></i> @endif
                                                     @endfor
                                                 </div>
                                             </td>
@@ -84,7 +86,7 @@
                                                 <div class="d-flex gap-1 flex-wrap">
                                                     @if ($review->images)
                                                         @foreach(json_decode($review->images, true) as $img)
-                                                            <img src="{{ Storage::url($img) }}" alt="lampiran" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer;" onclick="openMediaModal('{{ Storage::url($img) }}', 'image')">
+                                                            <img src="{{ Storage::url($img) }}" alt="lampiran" style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 1px solid #e5e7eb;" onclick="openMediaModal('{{ Storage::url($img) }}', 'image')">
                                                         @endforeach
                                                     @endif
 
@@ -117,7 +119,7 @@
             <div class="modal-content bg-transparent border-0">
                 <div class="modal-body p-0 text-center position-relative">
                     <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3 bg-white p-2" data-bs-dismiss="modal" style="border-radius: 50%; opacity: 1;"></button>
-                    <div id="mediaContent" class="shadow-lg rounded-3 overflow-hidden"></div>
+                    <div id="mediaContent" class="shadow-lg rounded-3 overflow-hidden bg-dark"></div>
                 </div>
             </div>
         </div>
@@ -135,12 +137,17 @@
             new simpleDatatables.DataTable(table1);
         });
 
+        // Hentikan video saat modal ditutup agar audio tidak terus berjalan di background
+        $('#mediaModal').on('hidden.bs.modal', function () {
+            document.getElementById('mediaContent').innerHTML = '';
+        });
+
         function openMediaModal(url, type) {
             let contentDiv = document.getElementById('mediaContent');
             if (type === 'image') {
                 contentDiv.innerHTML = `<img src="${url}" class="w-100 h-auto" style="max-height: 85vh; object-fit: contain;">`;
             } else {
-                contentDiv.innerHTML = `<video src="${url}" class="w-100 h-auto" style="max-height: 85vh;" controls autoplay></video>`;
+                contentDiv.innerHTML = `<video src="${url}" class="w-100 h-auto" style="max-height: 85vh;" controls autoplay controlsList="nodownload"></video>`;
             }
             new bootstrap.Modal(document.getElementById('mediaModal')).show();
         }
