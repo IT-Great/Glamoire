@@ -438,72 +438,6 @@
         @include('user.layouts.navbar')
     @endif
 
-    <!-- Modal Login -->
-    {{-- <div class="modal fade" id="loginUser1" tabindex="-1" aria-labelledby="loginUser" aria-hidden="true" z-index="9999">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #183018">
-                <div class="modal-header border-none">
-                    <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-center align-items-center p-0 p-md-2">
-                        <img src="images/l-1.png" alt="logo glamoire" class="w-3/4 w-md-full">
-                    </div>
-
-                    <form method="POST" action="" class="mb-2 px-0 px-md-4">
-                        @csrf
-                        <div>
-                            <label for="login_email"
-                                class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email
-                            </label>
-                            <input type="email"
-                                class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                name="email" id="login_email" placeholder="nama@gmail.com" autocomplete="off"
-                                required>
-                            <div id="validationEmailLogin"
-                                class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]" style="display: none;">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="login_password"
-                                    class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Kata
-                                    Sandi </label>
-                                <input type="password" name="password" id="login_password"
-                                    class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    aria-describedby="passwordHelpBlock" placeholder="******" required>
-                                <div id="validationPasswordLogin"
-                                    class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    style="display: none;">
-                                </div>
-                            </div>
-                            <!-- Button with improved hover effect -->
-                            <!-- <button type="submit" class="btn btn-light" id="login">Masuk</button> -->
-                            <button
-                                class="btn btn-light rounded-lg w-full text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                type="submit" id="login">
-                                Masuk
-                            </button>
-                        </div>
-                    </form>
-
-                    <div class="grid px-0 px-md-4">
-                        <a href="#"
-                            class="ml-1 text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                            data-bs-toggle="modal" data-bs-target="#forgot" data-bs-dismiss="modal">Lupa Password ?</a>
-                        <p
-                            class="text-white text-center py-4 font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                            Belum Punya Akun ?
-                            <a href="#" class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                data-bs-toggle="modal" data-bs-target="#registerUser1" data-bs-dismiss="modal">Daftar
-                                Sekarang</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
     {{-- MODAL LOGIN BARU --}}
     <div class="modal fade" id="loginUser1" tabindex="-1" aria-labelledby="loginUser" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -516,7 +450,6 @@
 
                 <div class="modal-body">
                     <form method="POST" action="" class="mb-0" id="login-user-form">
-                        <!-- Email -->
                         <div class="mb-3">
                             <label for="login_email" class="form-label">Email <span style="color: red">*</span></label>
                             <input type="email" class="form-control" name="email" id="login_email"
@@ -524,7 +457,6 @@
                             <div id="validationEmailLogin" class="form-text text-danger" style="display: none;"></div>
                         </div>
 
-                        <!-- Password -->
                         <div class="mb-4">
                             <label for="login_password" class="form-label">Kata Sandi <span
                                     style="color: red">*</span></label>
@@ -542,28 +474,25 @@
                         </button>
                     </form>
 
-                    <!-- Login Sosial -->
                     <div class="social-login mt-4">
                         <div class="social-divider text-center my-2">
                             <span>ATAU LANJUTKAN DENGAN</span>
                         </div>
 
                         <div class="social-buttons d-flex gap-2 justify-content-center">
-                            <button type="button" class="btn btn-social google">
+                            <a href="{{ url('/auth/google') }}" class="btn btn-social google text-decoration-none">
                                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
                                     style="height:20px; vertical-align:middle; margin-right:8px;">
                                 Google
-                            </button>
+                            </a>
                         </div>
                     </div>
 
-                    <!-- Lupa Password -->
                     <div class="text-start mt-3">
                         <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgot"
                             data-bs-dismiss="modal" style="color: #183018; font-weight: bold">Lupa Kata Sandi?</a>
                     </div>
 
-                    <!-- Belum punya akun -->
                     <p class="text-center mt-3 text-muted">
                         Belum punya akun?
                         <a href="#" class="ms-1 switch-to-register" data-bs-toggle="modal"
@@ -571,7 +500,6 @@
                             style="color: #183018; font-weight: bold">Daftar Sekarang</a>
                     </p>
 
-                    <!-- Syarat & Ketentuan -->
                     <div class="terms-text mt-3 text-center text-muted text-sm">
                         Dengan menekan button "Masuk" atau Google, saya menyatakan bahwa saya telah membaca dan
                         menyetujui
@@ -585,143 +513,6 @@
         </div>
     </div>
 
-
-
-    <!-- Modal Sign Up -->
-    {{-- <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #183018">
-                <div class="modal-header border-none">
-                    <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-center align-items-center text-center">
-                        <img src="images/l-1.png" alt="logo glamoire" class="w-1/4">
-                    </div>
-
-                    <form class="px-0 px-md-4 grid" id="register-user-form">
-                        @csrf
-                        <div class="col-12 mb-2">
-                            <div>
-                                <label for="register_fullname"
-                                    class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Nama
-                                    Lengkap </label>
-                                <input type="text"
-                                    class="form-control rounded-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    name="fullname" id="register_fullname" placeholder="Masukkan Nama Lengkap" required>
-
-                                <label for="register_date"
-                                    class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Tanggal
-                                    Lahir </label>
-                                <input type="date"
-                                    class="form-control rounded-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    name="date" id="register_date" required>
-
-                                <label for="register_email"
-                                    class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Email
-                                </label>
-                                <input type="email"
-                                    class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    name="email" id="register_email" placeholder="contoh@gmail.com"
-                                    autocomplete="off" required>
-                                <div id="validationEmail"
-                                    class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    style="display: none;">
-                                </div>
-
-                                <label for="register_handphone"
-                                    class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Handphone
-                                </label>
-                                <div class="input-group">
-                                    <span
-                                        class="input-group-text text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                        id="basic-addon1">+62</span>
-                                    <input type="number"
-                                        class="form-control rounded-end-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                        name="handphone" id="register_handphone" placeholder="Nomor Handphone"
-                                        pattern="[0]{1}[8]{1}[0-9]{9,10}" required>
-                                </div>
-                                <div id="validationHandphone"
-                                    class="text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    style="display: none;"></div>
-
-                                <label for="register_password"
-                                    class="form-label text-white font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Password
-                                </label>
-                                <input type="password" name="password" id="register_password"
-                                    class="form-control rounded-lg text-black text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                    aria-describedby="passwordHelpBlock" placeholder="******" required>
-
-                                <label for="register_gender"
-                                    class="form-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">Jenis
-                                    Kelamin </label>
-                                <div id="register_gender">
-                                    <div class="form-check form-check-inline">
-                                        <input
-                                            class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                            type="radio" name="gender" id="register_gender_male" value="male"
-                                            required>
-                                        <label
-                                            class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                            for="register_gender_male">Pria </label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input
-                                            class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                            type="radio" name="gender" id="register_gender_female" value="female"
-                                            required>
-                                        <label
-                                            class="form-check-label text-white text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                            for="register_gender_male">Wanita </label>
-                                    </div>
-                                </div>
-
-
-                                <div class="form-check">
-                                    <input
-                                        class="form-check-input text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                        type="checkbox" value="" id="privacy_policy_agreement" required>
-                                    <label for="privacy_policy"
-                                        class="form-check-label text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px] text-white">
-                                        By registering you have agreed to the <a href="/privacy"
-                                            id="privacy_policy">Privacy Policy</a> and <a href="/terms">Terms of
-                                            Service</a>
-                                    </label>
-                                    <div
-                                        class="invalid-feedback text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                        You must agree before submitting.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <!-- Button with improved hover effect -->
-                            <button
-                                class="btn btn-light w-full rounded-lg text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                type="submit" id="register">
-                                Buat Akun
-                            </button>
-                            <div class="grid">
-                                <p
-                                    class="text-white text-center py-4 font-light text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]">
-                                    Sudah Memiliki Akun ?
-                                    <a href="#"
-                                        class="ml-1 text-[10px] md:text-[8px] lg:text-[10px] xl:text-[12px]"
-                                        data-bs-toggle="modal" data-bs-target="#loginUser1"
-                                        data-bs-dismiss="modal">Masuk Sekarang</a>
-                                </p>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-
-        </div>
-    </div> --}}
-
     {{-- MODAL SIGN UP BARU --}}
     <div class="modal fade" id="registerUser1" tabindex="-1" aria-labelledby="registerUser" aria-hidden="true">
         <div class="modal-dialog">
@@ -734,7 +525,6 @@
 
                 <div class="modal-body">
                     <form id="register-user-form">
-                        <!-- Nama Lengkap -->
                         <div class="mb-3">
                             <label for="register_fullname" class="form-label">Nama Lengkap <span
                                     style="color: red">*</span></label>
@@ -742,7 +532,6 @@
                                 placeholder="Masukkan nama lengkap" required>
                         </div>
 
-                        <!-- Email -->
                         <div class="mb-3">
                             <label for="register_email" class="form-label">Email <span
                                     style="color: red">*</span></label>
@@ -750,7 +539,6 @@
                                 placeholder="Masukkan email" required>
                         </div>
 
-                        <!-- Kata Sandi -->
                         <div class="mb-4">
                             <label for="register_password" class="form-label">Kata Sandi <span
                                     style="color: red">*</span></label>
@@ -763,7 +551,6 @@
                                 style="display: none;"></div>
                         </div>
 
-                        <!-- Bagian Benefits -->
                         <div class="benefits text-center mb-4">
                             <h3>Buat Akun</h3>
                             <p>
@@ -795,17 +582,17 @@
                             style="color: #183018; font-weight: bold">Masuk Sekarang</a>
                     </div>
 
-                    <!-- Login Sosial -->
                     <div class="social-login">
                         <div class="social-divider">
                             <span>ATAU LANJUTKAN DENGAN</span>
                         </div>
 
                         <div class="social-buttons">
-                            <button type="button" class="btn btn-social google">
-                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google">
+                            <a href="{{ url('/auth/google') }}" class="btn btn-social google text-decoration-none">
+                                <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
+                                    style="height:20px; vertical-align:middle; margin-right:8px;">
                                 Google
-                            </button>
+                            </a>
                         </div>
                     </div>
 
@@ -824,53 +611,6 @@
 
 
 
-
-    <!-- Modal Forgot Password -->
-    {{-- <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="background-color: #183018">
-                <div class="modal-header border-none">
-                    <button type="button" class="btn-close" style="filter: invert(1);" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="container-fluid">
-                    <div class="d-flex justify-content-center align-items-center text-center">
-                        <img src="images/l-1.png" alt="logo glamoire" class="w-1/3">
-                    </div>
-                    <form class="px-4 grid" id="forgot-password-form">
-                        @csrf
-                        <div class="col-12">
-                            <h1 class="text-white text-sm mb-3 text-center pt-4">Lupa Kata Sandi</h1>
-                            <p class="text-white text-xs mb-3 text-justify">Gunakan email anda untuk mengatur ulang
-                                kata sandi, kami akan mengirimkan link untuk mengubah kata sandi anda</p>
-                            <div class="relative flex items-center mb-2">
-                                <i class="fas fa-envelope text-gray-400 absolute left-3"></i> <!-- Ikon Email -->
-                                <input type="email" class="form-control pl-10 pr-10 rounded-md text-sm"
-                                    id="forgot_password_email" placeholder="Masukkan email" required>
-                                <div class="spinner-border text-[#183018] absolute right-3" role="status"
-                                    style="width:15px; height:15px;display:none;"> <!-- Spinner -->
-                                    <span class="visually-hidden"></span>
-                                </div>
-                            </div>
-
-                            <div id="validationEmailForgot" class="text-xs mb-2" style="display: none;">
-                            </div>
-                            <button class="py-2 w-full rounded-md text-[#183018] bg-white text-sm" type="submit"
-                                id="forgot-btn" disabled>Dapatkan Link</button>
-                        </div>
-                        <div class="col-12">
-                            <div class="text-center text-sm">
-                                <p class="text-white py-4">Sudah Ingat Akunmu?
-                                    <a href="#" class="text-white ml-1" data-bs-toggle="modal"
-                                        data-bs-target="#loginUser1" data-bs-dismiss="modal">Masuk</a>
-                                </p>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
     <div class="modal fade" id="forgot" tabindex="-1" aria-labelledby="forgot" aria-hidden="true">
         <div class="modal-dialog">
@@ -946,7 +686,6 @@
         @include('user.layouts.footer')
     @endif
 
-    <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -1032,7 +771,6 @@
         });
     </script>
 
-    <!-- UNTUK MENGATUR JUMLAH CARD MENGGUNAKAN SWIPERJS PADA HALAMAN HOME -->
     <script>
         var swiper = new Swiper(".mySwiper", {
             slidesPerView: 5,
@@ -1314,7 +1052,6 @@
         });
     </script>
 
-    <!-- UNTUK MENGATUR RANGE DI FILTER SHOP -->
     <script>
         function updatePriceRange() {
             const minPrice = document.getElementById("min-price").value;
@@ -1338,7 +1075,6 @@
         }
     </script>
 
-    <!-- UNTUK MENGATUR SAAT CARD DIKLIK DI DETAIL HALAMAN -->
     <script>
         document.querySelectorAll('.example-product').forEach(slide => {
             slide.addEventListener('click', function() {
@@ -1350,7 +1086,6 @@
         });
     </script>
 
-    <!-- Pilih all item di keranjang -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const checkAll = document.getElementById("checkAll");
@@ -1365,7 +1100,6 @@
         });
     </script>
 
-    <!-- ADD TO CART & ADD TO WHISLIST -->
     <script>
         // Function for adding to cart
         function addToCart(produkId) {
@@ -1546,7 +1280,6 @@
         }
     </script>
 
-    <!-- STYLE POP-UP -->
     <script>
         const style = document.createElement('style');
         style.innerHTML = `
@@ -1560,9 +1293,8 @@
         document.head.appendChild(style);
     </script>
 
-    <!-- Register -->
     <script>
-        $(document).on("submit", "#registerUser1", function(e) {
+        $(document).on("submit", "#register-user-form", function(e) {
             e.preventDefault();
 
             let fullname = $("#register_fullname").val();
@@ -1701,9 +1433,8 @@
         });
     </script>
 
-    <!-- Login -->
     <script>
-        $(document).on("submit", "#loginUser1", function(e) {
+        $(document).on("submit", "#login-user-form", function(e) {
             e.preventDefault();
 
             let email = $("#login_email").val();
@@ -1779,9 +1510,28 @@
                 },
                 error: function(response) {
                     Swal.close();
+                    let errorMessage = "Maaf, terjadi kesalahan."; // Definisikan errorMessage di awal
+
+                    // Cek apakah ada response JSON dari server
+                    if (response.responseJSON) {
+                        if (response.responseJSON.message) {
+                            errorMessage = response.responseJSON.message; // Pesan error dari Laravel
+                        } else if (response.responseJSON.errors) {
+                            // Jika ada beberapa pesan error, tampilkan semuanya
+                            errorMessage = "";
+                            $.each(response.responseJSON.errors, function(key, value) {
+                                errorMessage += value[0] + "<br>"; // Menggabungkan pesan error
+                            });
+                        }
+                    } else if (response.statusText) {
+                        // Jika tidak ada response JSON, tampilkan status text dari request
+                        errorMessage = response.statusText;
+                    }
+
+                    // Tampilkan pesan error dengan SweetAlert
                     Toast.fire({
                         icon: "error",
-                        text: "Kesalahan Sistem",
+                        text: errorMessage,
 
                         willOpen: () => {
                             const title = document.querySelector('.swal2-title');
@@ -1789,7 +1539,7 @@
                             if (title) title.style.color = '#ffffff'; // Ubah warna judul
                             if (content) content.style.color =
                                 '#ffffff'; // Ubah warna konten
-                        },
+                        }
                     }).then(function() {
                         window.location.href =
                             "/"; // Redirect ke halaman utama atau halaman lain
@@ -1799,7 +1549,6 @@
         });
     </script>
 
-    <!-- CHECK EMAIL & HANDPHONE REGISTER -->
     <script>
         $(document).ready(function() {
             // Cek email
@@ -1851,7 +1600,6 @@
         });
     </script>
 
-    <!-- CHECK EMAIL FORGOT PASSWORD -->
     <script>
         $('#forgot_password_email').on('keyup', function() {
             var email = $(this).val();
@@ -2014,13 +1762,15 @@
                             if (content) content.style.color =
                                 '#ffffff'; // Ubah warna konten
                         }
+                    }).then(function() {
+                        window.location.href =
+                            "/"; // Redirect ke halaman utama atau halaman lain
                     });
                 },
             });
         });
     </script>
 
-    <!-- Logout -->
     <script>
         $(document).ready(function() {
             // Fungsi logout
@@ -2063,7 +1813,6 @@
         });
     </script>
 
-    <!-- NOITFY ME -->
     <script>
         function notifyMe(produkId, productVariantId) {
             $.ajax({
@@ -2127,7 +1876,6 @@
         }
     </script>
 
-    <!-- Reset Form Masuk & Daftar -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Tangkap modal elemen
@@ -2146,7 +1894,6 @@
         });
     </script>
 
-    <!-- AMBIL TOTAL CART ITEMS -->
     @php
       $user = session('id_user');
     //   $cartGuest = session('guest_cart', []); // Ambil cart dari session
@@ -2174,7 +1921,7 @@
         $(document).ready(function() {
           // Update jumlah cart items di dalam elemen dengan ID total_cart_items
           let totalItem = {{ $totalItem }};
-    
+
           $('#total_cart_items').text(totalItem);
         });
       </script> --}}
