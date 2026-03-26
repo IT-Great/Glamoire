@@ -53,8 +53,14 @@ return [
     ],
 
     'biteship' => [
-        'api_key' => env('BITESHIP_API_KEY'),   
+        'api_key' => env('BITESHIP_API_KEY'),
         'base_url' => env('BITESHIP_BASE_URL'),
-    ]
+    ],
+
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URL'),
+    ],
 
 ];

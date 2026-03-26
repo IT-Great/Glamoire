@@ -40,6 +40,7 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GoogleController;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
@@ -350,6 +351,10 @@ Route::post('/admin/settings', [AuthenticateController::class, 'updateSettings']
 
 // Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
+
+// Rute untuk Google Socialite
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/dashboard/get-sales-data', [DashboardController::class, 'getSalesData']);
