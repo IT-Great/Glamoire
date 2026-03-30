@@ -1659,7 +1659,7 @@
 
 @endsection --}}
 
-{{-- @extends('user.layouts.master')
+@extends('user.layouts.master')
 
 @section('content')
 
@@ -3339,9 +3339,9 @@
         });
     </script>
 
-@endsection --}}
+@endsection
 
-@extends('user.layouts.master')
+{{-- @extends('user.layouts.master')
 
 @section('content')
 
@@ -5057,4 +5057,4 @@
         });
     </script>
 
-@endsection
+@endsection --}}
