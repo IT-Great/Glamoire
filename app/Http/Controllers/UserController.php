@@ -42,7 +42,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->merchantKeyId = config('services.prismalink.merch_key_id');
-        $this->merchantId = config('services.prismalink.merch_id'); 
+        $this->merchantId = config('services.prismalink.merch_id');
         $this->secretKey = config('services.prismalink.secret_key');
         $this->status = config('app.env');
     }
@@ -76,19 +76,19 @@ class UserController extends Controller
                         session(['activeTab' => '#my-order']);
                         session()->flash('payment_success');
                         $payment_status = $this->getPaymentStatus($order->id);
-    
+
                         // JIKA ORDERAN BERHASIL DIBAYAR
 
-                        
+
                         if ($payment_status['transaction_status'] == 'SETLD') {
                             $data = $payment_status;
-    
+
                             $statusMap = [
                                 'SETLD' => 'completed',
                                 'REJEC' => 'failed',
                                 'PNDNG' => 'pending'
                             ];
-    
+
                             Payment::where('order_id', $order->id)->update([
                                 'payment_method' => $data['payment_method'],
                                 'transaction_id' => $payment_status['transaction_status'],
@@ -96,67 +96,67 @@ class UserController extends Controller
                                 'amount'         => $data['transaction_amount'],
                                 'payment_date'   => Carbon::parse($data['payment_date'])->format('Y-m-d H:i:s'),
                             ]);
-    
+
                             // Update status voucher jika digunakan
                             $orderData = Order::where('id', $order->id)->first();
-    
+
                             $useVoucherNewUser = VoucherNewUser::where('user_id', $id)
                                 ->where('code', $orderData['voucherPromo'])
                                 ->first();
-                            
+
                             if ($useVoucherNewUser) {
                                 $useVoucherNewUser->is_use = 1;
                                 $useVoucherNewUser->save();
                             }
-    
+
                             if($useVoucherNewUser == NULL){
                                 $voucherUsed = Promo::where('promo_code', $orderData['voucherPromo'])->first();
                             }
                             else {
                                 $voucherUsed = NULL;
                             }
-    
+
                             if ($orderData['voucherOngkir'] !== null) {
                                 $ongkirUsed = Promo::where('promo_code', $orderData['voucherOngkir'])->first();
                             }
-    
+
                             $payment = Payment::where('order_id', $order->id)->first();
                             // dd($payment);
-    
+
                             // Jika pembayaran selesai
                             if ($payment->status == "completed") {
                                 $cartId = Cart::where('user_id', $id)->value('id');
-                                
+
                                 if ($voucherUsed !== NULL) {
                                     $voucherUsed->total_used += 1;
                                     $voucherUsed->save();
                                 }
-    
+
                                 if ($orderData['voucherOngkir'] !== null) {
                                     if ($ongkirUsed) {
                                         $ongkirUsed->total_used += 1;
                                         $ongkirUsed->save();
                                     }
                                 }
-    
+
                                 $orderItems = OrderItem::where('order_id', $order->id)->get();
-    
+
                                 foreach($orderItems as $product){
                                     // Temukan produk berdasarkan ID
                                     if($product['product_variant_id'] !== null){
                                         $productVariant = ProductVariations::find($product['product_variant_id']);
                                         $getProductId = ProductVariations::where('id', $product['product_variant_id'])->value('product_id');
                                         $productMain = Product::find($getProductId);
-    
+
                                         // Jika produk ditemukan, lakukan update stok
                                         if ($productVariant) {
                                             $productVariant->variant_stock -= $product['quantity'];
                                             $productVariant->save();
-    
+
                                             $productMain->sale += $product['quantity'];
                                             $productMain->save();
                                         }
-                            
+
                                         // Hapus item dari cart berdasarkan cart_id dan product_id
                                         Cart_item::where('cart_id', $cartId)
                                             ->where('product_variant_id', $product['product_variant_id'])
@@ -164,24 +164,24 @@ class UserController extends Controller
                                     }
                                     else{
                                         $products = Product::find($product['product_id']);
-                                        
+
                                         // Jika produk ditemukan, lakukan update stok
                                         if ($products) {
                                             $products->stock_quantity -= $product['quantity'];
                                             $products->sale += $product['quantity'];
                                             $products->save();
                                         }
-                            
+
                                         // Hapus item dari cart berdasarkan cart_id dan product_id
                                         Cart_item::where('cart_id', $cartId)
                                             ->where('product_id', $product['product_id'])
                                             ->delete();
                                     }
-                                    
+
                                     session(['activeTab' => '#my-order']);
                                 }
                             }
-    
+
                         } else {
                             // HAPUS ORDERAN YANG GAGAL
                             Order::where('id', $order->id)->delete();
@@ -201,10 +201,10 @@ class UserController extends Controller
                             ->wherePivot('discounted_price', '>', 0);
                     }])
                     ->get();
-    
+
                 foreach ($getProductWishlist as $prod) {
                     $variationPrices = $prod->productVariations->pluck('variant_price')->unique()->sort();
-    
+
                     if ($variationPrices->count() > 1) {
                         // Jika ada lebih dari satu harga unik, buat rentang harga
                         $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
@@ -216,7 +216,7 @@ class UserController extends Controller
                         $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
                     }
                 }
-    
+
                 return view('user.component.account', [
                     'profile' => $profile,
                     'wishlists' => $getProductWishlist,
@@ -261,7 +261,7 @@ class UserController extends Controller
             dd($err);
         }
     }
-    
+
     public function actionAddShippingAddressGuest(Request $request)
     {
         try {
@@ -388,7 +388,7 @@ class UserController extends Controller
                 session()->put('guest_cart', $guestCart);
 
                 return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);
-            }  
+            }
         } catch (Exception $err) {
             return response()->json(['success' => false, 'message' => $err]);
         }
@@ -570,7 +570,7 @@ class UserController extends Controller
 
                 // return response()->json(['success' => true, 'message' => 'Berhasil Menambahkan Produk ke Keranjang']);\
                 return response()->json(['success' => false, 'message' => 'Masuk/Daftar Terlebih Dahulu']);
-            }   
+            }
 
 
         } catch (Exception $err) {
@@ -714,23 +714,73 @@ class UserController extends Controller
         }
     }
 
+    // public function updateProfile(Request $request)
+    // {
+    //     try {
+    //         $user = User::find(session('id_user'));
+    //         if (!$user) {
+    //             return response()->json(['success' => false, 'message' => 'User Tidak Ditemukan']);
+    //         } else {
+    //             $user->update($request->all());
+    //             session()->put([
+    //                 'username' => $request->fullname,
+    //             ]);
+    //         }
+
+    //         session()->flash('after_update_profile');
+    //         return redirect()->back();
+    //     } catch (Exception $err) {
+    //         dd($err);
+    //     }
+    // }
+
     public function updateProfile(Request $request)
     {
         try {
             $user = User::find(session('id_user'));
+
             if (!$user) {
                 return response()->json(['success' => false, 'message' => 'User Tidak Ditemukan']);
-            } else {
-                $user->update($request->all());
-                session()->put([
-                    'username' => $request->fullname,
-                ]);
             }
+
+            // Validasi Input
+            $request->validate([
+                'fullname' => 'nullable|string|max:255',
+                'handphone' => 'nullable|string|max:15',
+                'gender' => 'nullable|string|in:male,female',
+                'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Maks 2MB
+            ]);
+
+            $dataToUpdate = [
+                'fullname' => $request->fullname ?? $user->fullname,
+                'handphone' => $request->handphone ?? $user->handphone,
+                'gender' => $request->gender ?? $user->gender,
+            ];
+
+            // Handle Profile Picture Upload
+            if ($request->hasFile('profile_picture')) {
+                // Delete old picture from storage if it exists
+                if ($user->profile_picture && \Storage::disk('public')->exists($user->profile_picture)) {
+                    \Storage::disk('public')->delete($user->profile_picture);
+                }
+
+                // Store new picture
+                $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+                $dataToUpdate['profile_picture'] = $imagePath;
+            }
+
+            $user->update($dataToUpdate);
+
+            session()->put([
+                'username' => $request->fullname ?? $user->fullname,
+            ]);
 
             session()->flash('after_update_profile');
             return redirect()->back();
-        } catch (Exception $err) {
-            dd($err);
+
+        } catch (\Exception $err) {
+            Log::error('Error update profile: ' . $err->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan sistem saat menyimpan profil.');
         }
     }
 
@@ -751,7 +801,7 @@ class UserController extends Controller
 
         return redirect()->back();
     }
-    
+
     public function updateShippingAddressGuest(Request $request)
     {
         try {
@@ -1030,7 +1080,7 @@ class UserController extends Controller
         }
     }
 
-    
+
 
     // ADMIN PAGE
     public function indexUserAdmin()
@@ -1089,7 +1139,7 @@ class UserController extends Controller
 
             $invoiceId = Order::where('id',$orderId)->value('invoice_id');
 
-            $this->merchant_ref_no  = Invoice::where('id', $invoiceId)->value('no_invoice'); 
+            $this->merchant_ref_no  = Invoice::where('id', $invoiceId)->value('no_invoice');
             $this->plink_ref_no     = Invoice::where('id', $invoiceId)->value('plink_ref_no');
             $transmission_date_time = Invoice::where('id', $invoiceId)->value('transmission_date_time');
 
@@ -1100,11 +1150,11 @@ class UserController extends Controller
                 "plink_ref_no" => $this->plink_ref_no,
                 "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
             ];
-    
+
             $jsonBody = json_encode($body);
             $secretKey = $this->secretKey;
             $mac = hash_hmac('sha256', $jsonBody, $secretKey);
-            
+
             // Log::info(['Body Check Status getPaymentStatus' => $body]);
             // Log::info(['mac Check Status getPaymentStatus : ' => $mac]);
             // Log::info(['secretkey Check Status getPaymentStatus : ' => $this->secretKey]);
@@ -1113,7 +1163,7 @@ class UserController extends Controller
                 'mac' => $mac,
                 'Content-Type' => 'application/json',
             ])->post($url, $body);
-    
+
             $result = json_decode($response->getBody(), true);
             // Log::info(['Hasil Pembayaran getPaymentStatus : ' => $result]);
             return $result;
