@@ -1748,7 +1748,7 @@
                                 @if ($product->sale != 0)
                                     <span class="sold-count"><i class="fas fa-fire me-1"></i> Terjual {{ $product->sale }}</span>
                                 @endif
-                                        <span class="text-muted fs-7 ms-auto text-end">
+                                        {{-- <span class="text-muted fs-7 ms-auto text-end">
                                             Stok: <strong class="text-dark">{{ $product->stock_quantity }}</strong>
                                             @php
                                                 $allStocks = collect();
@@ -1776,7 +1776,7 @@
                                                         class="{{ \Carbon\Carbon::parse($nearestExpired)->isPast() ? 'text-danger fw-bold' : 'text-dark fw-medium' }}">{{ \Carbon\Carbon::parse($nearestExpired)->format('d M Y') }}</span>
                                                 </span>
                                             @endif
-                                        </span>
+                                        </span> --}}
                             </div>
 
                             <div class="product-price-display" id="price-variant">
