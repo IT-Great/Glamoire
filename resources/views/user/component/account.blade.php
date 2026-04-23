@@ -11240,7 +11240,7 @@
                         <div class="tier-header">
                             <span class="tier-badge"><i class="fas fa-crown me-1"></i> {{ $tier }}</span>
                         </div>
-                        <h3 class="tier-points">{{ number_format($points, 0, ',', '.') }} <span>Pts</span></h3>
+                        <h3 class="tier-points text-yellow-400">{{ number_format($points, 0, ',', '.') }} <span>Pts</span></h3>
                         <div class="tier-progress-bg mt-3">
                             <div class="tier-progress-fill" style="width: {{ $progress }}%;"></div>
                         </div>
