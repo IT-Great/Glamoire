@@ -17,6 +17,7 @@ use App\Http\Controllers\DokuPaymentController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\OrderController;
@@ -40,7 +41,6 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GoogleController;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
@@ -188,6 +188,7 @@ Route::post('/voucher-new-user', [FormController::class, 'voucherNewUser'])->nam
 // ACCOUNT
 // Route::get('/{user}_account', [UserController::class, 'account'])->name('account');
 Route::put('/edit-account', [UserController::class, 'updateProfile'])->name('edit.account');
+Route::post('/account/update-password', [UserController::class, 'updatePassword'])->name('update.password');
 Route::post('/add-shipping-address', [UserController::class, 'actionAddShippingAddress'])->name('add.shipping.address');
 Route::post('/add-shipping-address-guest', [UserController::class, 'actionAddShippingAddressGuest'])->name('add.shipping.address.guest');
 Route::put('/edit-shipping-address', [UserController::class, 'updateShippingAddress'])->name('edit.shipping.address');
@@ -553,7 +554,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // USER & KELOLA PASSWORD
     Route::get('/user-admin', [UserController::class, 'indexUserAdmin'])->name('index-user-admin');
     Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
-    Route::post('/account/update-password', [UserController::class, 'updatePassword'])->name('update.password');
     Route::get('/user-admin-password', [UserController::class, 'passwordUserAdmin'])->name('password-user-admin');
     Route::post('/user-admin-password/change', [UserController::class, 'changePasswordUserAdmin'])->name('change-password-user-admin');
 
