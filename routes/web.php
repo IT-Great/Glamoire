@@ -353,6 +353,8 @@ Route::post('/admin/settings', [AuthenticateController::class, 'updateSettings']
 // Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
+Route::post('/order/cancel/{id}', [App\Http\Controllers\OrderController::class, 'cancelOrder'])->name('order.cancel');
+
 // Rute untuk Google Socialite
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');

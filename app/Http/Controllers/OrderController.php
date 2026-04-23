@@ -940,4 +940,69 @@ class OrderController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Membatalkan pesanan oleh user (Hanya untuk pesanan Pending)
+     */
+    public function cancelOrder($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Cari order berdasarkan ID dan pastikan itu milik user yang sedang login
+            $order = Order::with('orderItems')
+                ->where('id', $id)
+                ->where('user_id', session('id_user'))
+                ->firstOrFail();
+
+            // Validasi: Hanya pesanan dengan status 'pending' yang bisa dibatalkan
+            if ($order->status !== 'pending') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pesanan tidak dapat dibatalkan karena sedang diproses atau sudah dikirim.'
+                ]);
+            }
+
+            // Opsional: Jika sistem Anda memotong stok PADA SAAT CHECKOUT (sebelum pembayaran),
+            // buka komentar kode di bawah ini untuk mengembalikan (restore) stok produk:
+            /*
+            foreach ($order->orderItems as $item) {
+                if ($item->product_variant_id) {
+                    $variant = \App\Models\ProductVariations::lockForUpdate()->find($item->product_variant_id);
+                    if ($variant) {
+                        $variant->increment('variant_stock', $item->quantity);
+                        $variant->decrement('sale', $item->quantity);
+                    }
+                } else {
+                    $product = \App\Models\Product::lockForUpdate()->find($item->product_id);
+                    if ($product) {
+                        $product->increment('stock_quantity', $item->quantity);
+                        $product->decrement('sale', $item->quantity);
+                    }
+                }
+            }
+            */
+
+            // Update status pesanan menjadi dibatalkan
+            $order->update([
+                'status' => 'cancelled'
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pesanan berhasil dibatalkan.'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error Cancel Order by User: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem saat membatalkan pesanan.'
+            ], 500);
+        }
+    }
 }
