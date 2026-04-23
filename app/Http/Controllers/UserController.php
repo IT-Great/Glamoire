@@ -1103,6 +1103,43 @@ class UserController extends Controller
     //     return view('admin.user.index-password', compact('users'));
     // }
 
+    public function updatePassword(Request $request)
+    {
+        try {
+            $user = User::find(session('id_user'));
+
+            if (!$user) {
+                return response()->json(['success' => false, 'message' => 'User tidak ditemukan.']);
+            }
+
+            // Jika user mendaftar via Google dan belum pernah set password
+            if ($user->google_id && empty($user->password)) {
+                $request->validate([
+                    'new_password' => 'required|min:8|confirmed',
+                ]);
+            } else {
+                $request->validate([
+                    'old_password' => 'required',
+                    'new_password' => 'required|min:8|confirmed',
+                ]);
+
+                if (!Hash::check($request->old_password, $user->password)) {
+                    return response()->json(['success' => false, 'message' => 'Kata sandi lama tidak sesuai!']);
+                }
+            }
+
+            $user->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Kata sandi berhasil diperbarui!']);
+
+        } catch (\Exception $err) {
+            Log::error('Error update password: ' . $err->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan pada sistem.']);
+        }
+    }
+
     public function passwordUserAdmin()
     {
         $adminUsers = User::whereIn('role', ['admin', 'superadmin', 'accounting', 'gudang'])->get();
