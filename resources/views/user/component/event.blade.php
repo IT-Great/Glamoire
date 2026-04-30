@@ -78,7 +78,7 @@
     /* --- Editorial Timeline Layout --- */
     .event-container {
         padding: 5rem 0;
-        max-width: 1200px;
+        max-width: 1100px; /* Sedikit dikecilkan agar lebih proporsional */
         margin: 0 auto;
     }
 
@@ -86,7 +86,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 8rem;
-        gap: 4rem;
+        gap: 5rem; /* Jarak antara gambar dan teks diperlebar */
         opacity: 0;
         transform: translateY(50px);
         transition: var(--transition-smooth);
@@ -102,24 +102,27 @@
     }
 
     .event-gallery {
-        flex: 0 0 55%;
+        flex: 0 0 40%; /* PERBAIKAN: Dari 55% diperkecil menjadi 40% */
+        max-width: 480px; /* Batas maksimal lebar gambar di layar besar */
         position: relative;
     }
 
     /* --- RESPONSIVE SWIPER IMAGE --- */
     .event-swiper {
         width: 100%;
-        border-radius: 24px;
+        border-radius: 20px; /* Ujung gambar sedikit lebih halus */
         overflow: hidden;
         box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-        /* Default for Desktop: Portrait / Editorial Look */
-        aspect-ratio: 4/5;
+
+        /* PERBAIKAN: Rasio gambar lebih proporsional dan dibatasi tingginya */
+        aspect-ratio: 3/4;
+        max-height: 550px;
     }
 
     .event-swiper img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Gambar akan proporsional memenuhi area */
+        object-fit: cover;
         transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
@@ -131,13 +134,13 @@
     .swiper-pagination-bullet {
         background: #FFF;
         opacity: 0.7;
-        width: 10px;
-        height: 10px;
+        width: 8px;
+        height: 8px;
     }
     .swiper-pagination-bullet-active {
         background: var(--glamoire-gold);
         opacity: 1;
-        width: 25px;
+        width: 20px;
         border-radius: 10px;
     }
 
@@ -146,25 +149,25 @@
         padding: 2rem 0;
     }
     .event-season {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 3px;
+        letter-spacing: 2.5px;
         color: var(--glamoire-gold);
         font-weight: 700;
         margin-bottom: 1rem;
         display: inline-block;
         background: rgba(212, 175, 55, 0.1);
-        padding: 4px 12px;
+        padding: 5px 14px;
         border-radius: 50px;
     }
     .event-title {
-        font-size: clamp(2rem, 3.5vw, 3.5rem);
+        font-size: clamp(2rem, 3vw, 3rem);
         color: var(--glamoire-dark);
         margin-bottom: 1rem;
-        line-height: 1.1;
+        line-height: 1.2;
     }
     .event-date {
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
         margin-bottom: 2rem;
         display: flex;
@@ -174,11 +177,11 @@
         padding-bottom: 1rem;
         border-bottom: 1px solid #F3F4F6;
     }
-    .event-date i { color: var(--glamoire-dark); font-size: 1.2rem; }
+    .event-date i { color: var(--glamoire-dark); font-size: 1.1rem; }
     .event-desc {
         color: var(--text-main);
         line-height: 1.8;
-        font-size: 1.05rem;
+        font-size: 1rem;
         opacity: 0.9;
     }
 
@@ -193,10 +196,12 @@
         .event-gallery {
             flex: 1;
             width: 100%;
+            max-width: 100%;
         }
         /* Tablet: Ubah rasio jadi kotak agar tidak terlalu panjang ke bawah */
         .event-swiper {
             aspect-ratio: 1 / 1;
+            max-height: none;
         }
         .event-content {
             text-align: center;
@@ -214,7 +219,7 @@
             border-radius: 16px;
         }
         .event-title {
-            font-size: 2rem;
+            font-size: 1.8rem;
         }
         .event-desc {
             font-size: 0.95rem;
@@ -310,7 +315,7 @@
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.15 // Mempercepat sedikit pemicu animasinya
+            threshold: 0.15
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
