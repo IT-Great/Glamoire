@@ -14,6 +14,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactusController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokuPaymentController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\FinancialController;
 use App\Http\Controllers\FormController;
@@ -355,6 +356,8 @@ Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/da
 
 Route::post('/order/cancel/{id}', [App\Http\Controllers\OrderController::class, 'cancelOrder'])->name('order.cancel');
 
+Route::get('/events', [EventController::class, 'indexUser'])->name('user.events');
+
 // Rute untuk Google Socialite
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
@@ -599,6 +602,11 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
 
     // Route Rating & Review Admin
     Route::get('/rating-and-review-admin', [RatingAndReviewController::class, 'index'])->name('index-rating-review');
+
+    Route::get('/events', [EventController::class, 'indexAdmin'])->name('admin.event.index');
+    Route::post('/events/store', [EventController::class, 'store'])->name('admin.event.store');
+    Route::put('/events/update/{id}', [EventController::class, 'update'])->name('admin.event.update');
+    Route::delete('/events/destroy/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
 });
 
 // ACCOUNTING
