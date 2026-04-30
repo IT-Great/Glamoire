@@ -27,7 +27,7 @@ class EventController extends Controller
             'event_date'  => 'required|date',
             'season'      => 'nullable|string|max:255',
             'status'      => 'required|in:published,draft',
-            'images.*'    => 'image|mimes:jpeg,png,jpg|max:2048'
+            'images.*'    => 'image|mimes:jpeg,png,jpg'
         ]);
 
         try {
