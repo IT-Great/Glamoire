@@ -6736,7 +6736,7 @@
 
 @endsection --}}
 
-@extends('user.layouts.master')
+{{-- @extends('user.layouts.master')
 
 @section('content')
 
@@ -8430,6 +8430,1231 @@
                     },
                     error: function () {
                         btn.html('Daftar Sekarang').prop('disabled', false);
+                        Swal.fire({ icon: "error", title: "Gagal", text: "Terjadi kesalahan sistem, coba lagi nanti." });
+                    }
+                });
+            });
+        });
+    </script>
+
+@endsection --}}
+
+@extends('user.layouts.master')
+
+@section('content')
+
+    @php
+        $wishlist = session('id_user') && $data['wishlist'] !== null ? $data['wishlist'] : [];
+    @endphp
+
+    <style>
+        /* ==========================================
+           WORLD CLASS HOME STYLING (LUXURY GLAMOIRE)
+           ========================================== */
+        :root {
+            --glamoire-dark: #122212;
+            --glamoire-light: #FDFDFD;
+            --glamoire-accent: #1E3B1E;
+            --glamoire-gold: #D4AF37;
+            --glamoire-gold-light: #F9E596;
+            --glamoire-sand: #F7F5F0;
+            --text-main: #1C2321;
+            --text-muted: #6B7280;
+            --danger-main: #E11D48;
+            --success-main: #10B981;
+            --transition-smooth: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        body {
+            background-color: var(--glamoire-light);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: var(--text-main);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'The Seasons', serif;
+        }
+
+        /* --- Scroll Reveal Animations --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Global Utilities --- */
+        .section-padding { padding: 6rem 0; }
+        @media (max-width: 768px) { .section-padding { padding: 4rem 0; } }
+
+        /* --- ADVANCED CX: Infinite Gold Marquee --- */
+        .marquee-wrapper {
+            background: var(--glamoire-dark);
+            color: var(--glamoire-gold-light);
+            padding: 14px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            letter-spacing: 3px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .marquee-content span { margin: 0 2rem; display: inline-flex; align-items: center;}
+        .marquee-content i { font-size: 0.6rem; color: #FFF; margin-right: 2rem;}
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- ADVANCED CX: Cinematic Parallax Divider --- */
+        .parallax-section {
+            position: relative;
+            /* Menggunakan gambar high-end fashion/beauty dari unsplash sebagai efek kejut */
+            background-image: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=2000&auto=format&fit=crop');
+            background-attachment: fixed;
+            background-position: center 30%;
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 65vh;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #FFF;
+            margin: 4rem 0;
+        }
+        .parallax-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(18, 34, 18, 0.6); /* Glamoire dark transparan */
+        }
+        .parallax-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+        .parallax-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            color: var(--glamoire-gold);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .parallax-subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .parallax-btn {
+            background: transparent;
+            color: #FFF;
+            border: 1px solid var(--glamoire-gold);
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .parallax-btn:hover {
+            background: var(--glamoire-gold);
+            color: var(--glamoire-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        /* --- Hero Carousel Immersive --- */
+        .hero-carousel-wrapper {
+            width: 100%;
+            position: relative;
+            background: #000;
+        }
+        .hero-swiper {
+            width: 100%;
+            height: 85vh;
+            min-height: 500px;
+        }
+        .hero-swiper .swiper-slide {
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-swiper img, .hero-swiper video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 10s ease;
+            transform: scale(1.05);
+        }
+        .hero-swiper .swiper-slide-active img {
+            transform: scale(1);
+        }
+        .hero-swiper .swiper-pagination-bullet {
+            background: #FFF;
+            opacity: 0.5;
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+            transition: var(--transition-smooth);
+        }
+        .hero-swiper .swiper-pagination-bullet-active {
+            background: var(--glamoire-gold) !important;
+            opacity: 1;
+            width: 50px;
+        }
+
+        /* --- Floating Trust Badges --- */
+        .trust-floating-wrapper {
+            position: relative;
+            z-index: 20; /* Lebih tinggi dari marquee */
+            margin-top: -50px;
+            padding: 0 15px;
+            margin-bottom: 2rem;
+        }
+        .trust-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .trust-item {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+        }
+        .trust-item:hover { transform: translateY(-5px); }
+        .trust-icon {
+            width: 60px; height: 60px;
+            background: var(--glamoire-sand);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--glamoire-gold);
+            font-size: 1.5rem;
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.3);
+        }
+        .trust-text h4 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--glamoire-dark); }
+        .trust-text p { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-family: 'Poppins', sans-serif;}
+
+        @media (max-width: 768px) {
+            .trust-floating-wrapper { margin-top: -30px; }
+            .trust-bar { padding: 1.5rem 1rem; gap: 1.5rem;}
+            .trust-item { min-width: 140px; }
+            .trust-icon { width: 50px; height: 50px; font-size: 1.2rem;}
+            .trust-text h4 { font-size: 0.95rem; }
+        }
+
+        /* --- Custom Split Layout --- */
+        .split-section-wrapper { display: flex; align-items: flex-end; gap: 3rem; width: 100%; margin-bottom: 2rem;}
+        .split-section-left { flex: 0 0 300px; }
+        .split-section-right { flex: 1; min-width: 0; }
+        @media (max-width: 991px) {
+            .split-section-wrapper { flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; }
+            .split-section-left { flex: 0 0 auto; max-width: 100%; }
+        }
+
+        .section-title {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            line-height: 1.1;
+            margin-bottom: 1rem;
+        }
+        .section-desc { font-size: clamp(0.95rem, 1.5vw, 1rem); color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+        .link-gold {
+            color: var(--glamoire-dark);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            border-bottom: 2px solid var(--glamoire-gold);
+            padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
+            transition: var(--transition-smooth);
+        }
+        .link-gold:hover { color: var(--glamoire-gold); gap: 1rem; }
+
+        /* --- Full Width Header --- */
+        .full-section-header { text-align: center; margin-bottom: 3.5rem; }
+        .full-section-header h2 { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; color: var(--glamoire-dark); margin-bottom: 0.8rem; }
+        .full-section-header p { font-size: clamp(0.95rem, 1.5vw, 1.1rem); color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+
+        /* --- Universal Swiper Navigation --- */
+        .swiper-button-next, .swiper-button-prev {
+            color: var(--glamoire-dark) !important;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            width: 50px !important; height: 50px !important;
+            border-radius: 50%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: var(--transition-bounce);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .swiper-button-next:hover, .swiper-button-prev:hover {
+            background: var(--glamoire-dark);
+            transform: scale(1.1);
+            color: var(--glamoire-gold) !important;
+        }
+        .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.2rem !important; font-weight: 900; }
+        @media (max-width: 768px) { .swiper-button-next, .swiper-button-prev { display: none !important; } }
+
+        /* --- Luxury Product Card --- */
+        .luxury-product-card {
+            background: #FFF;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition-bounce);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .luxury-product-card:hover {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+        }
+        .lpc-img-box {
+            position: relative;
+            padding-top: 120%; /* Taller aspect ratio for luxury feel */
+            background: #F8F8F8;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .lpc-img-box img {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; transition: transform 1s ease;
+        }
+        .luxury-product-card:hover .lpc-img-box img { transform: scale(1.08); }
+        .lpc-img-box.dark-overlay img { filter: grayscale(100%) opacity(0.7); }
+
+        .lpc-badge {
+            position: absolute; top: 15px; left: 15px;
+            padding: 5px 12px; border-radius: 50px;
+            font-size: 0.7rem; font-weight: 800; z-index: 2;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .badge-discount { background: var(--danger-main); color: #FFF; }
+        .badge-gift { background: #000; color: var(--glamoire-gold); }
+
+        .lpc-wishlist {
+            position: absolute; top: 15px; right: 15px;
+            width: 38px; height: 38px;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #9CA3AF; z-index: 2; cursor: pointer;
+            transition: var(--transition-bounce);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border: none; padding: 0;
+        }
+        .lpc-wishlist:hover, .lpc-wishlist.active { color: var(--danger-main); transform: scale(1.15); }
+
+        .lpc-action-area {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 1.5rem 1rem 1rem;
+            background: linear-gradient(to top, rgba(255, 255, 255, 1) 40%, rgba(255,255,255,0.8) 70%, transparent);
+            transform: translateY(100%); opacity: 0;
+            transition: var(--transition-smooth); z-index: 3;
+            backdrop-filter: blur(2px);
+        }
+        @media (min-width: 992px) {
+            .luxury-product-card:hover .lpc-action-area { transform: translateY(0); opacity: 1; }
+        }
+        @media (max-width: 991px) {
+            .lpc-action-area {
+                position: static; transform: none; opacity: 1;
+                background: transparent; padding: 0 1rem 1rem 1rem; margin-top: auto; backdrop-filter: none;
+            }
+        }
+
+        .btn-lpc-action {
+            width: 100%; padding: 0.8rem; border-radius: 50px;
+            font-weight: 600; font-size: 0.85rem; border: none;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition-smooth); text-transform: uppercase; letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+        .btn-lpc-add { background: var(--glamoire-dark); color: #FFF; }
+        .btn-lpc-add:hover { background: var(--glamoire-gold); color: #000; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
+        .btn-lpc-added { background: var(--success-main); color: #FFF; }
+        .btn-lpc-notify { background: var(--text-main); color: #FFF; }
+
+        .lpc-info { padding: 1.5rem 1.25rem; display: flex; flex-direction: column; flex-grow: 1; cursor: pointer; text-align: center;}
+        .lpc-brand { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 0.5rem; }
+        .lpc-title {
+            font-size: 1.05rem; font-weight: 500; color: var(--text-main);
+            margin-bottom: 0.8rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; transition: color 0.2s;
+        }
+        .luxury-product-card:hover .lpc-title { color: var(--glamoire-gold); }
+
+        .lpc-price-box { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 2px;}
+        .lpc-price-current { font-size: 1.15rem; font-weight: 700; color: var(--glamoire-dark); }
+        .lpc-price-discounted { color: var(--danger-main); }
+        .lpc-price-strike { font-size: 0.85rem; color: #9CA3AF; text-decoration: line-through; }
+
+        /* --- Cinematic Flash Sale --- */
+        .flash-sale-wrapper {
+            background: linear-gradient(145deg, #0A110A 0%, #183018 100%);
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            color: #FFF;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+        }
+        .flash-sale-wrapper::before {
+            content: ''; position: absolute; top: -50%; right: -20%; width: 60%; height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .flash-header { position: relative; z-index: 2; }
+        .flash-title { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 700; color: var(--glamoire-gold-light); margin-bottom: 1rem; display: flex; align-items: center; gap: 15px; }
+        .timer-flex { display: flex; align-items: center; gap: 0.8rem; margin-top: 2rem; }
+        .timer-block {
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px;
+            padding: 0.8rem 1rem; text-align: center; min-width: 75px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .timer-val { font-size: 1.8rem; font-weight: 700; line-height: 1; color: #FFF; font-family: 'Poppins', sans-serif;}
+        .timer-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--glamoire-gold); margin-top: 4px; }
+        @media (max-width: 991px) {
+            .flash-sale-wrapper { padding: 3rem 1.5rem; border-radius: 20px;}
+            .flash-header { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 3rem;}
+        }
+
+        /* --- Promo Grid Banners --- */
+        .promo-grid-banner {
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/9;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: var(--transition-bounce);
+            cursor: pointer; background: #000;
+        }
+        .promo-grid-banner:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
+        .promo-grid-banner img, .promo-grid-banner video {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 1s ease, opacity 0.5s;
+        }
+        .promo-grid-banner:hover img, .promo-grid-banner:hover video { opacity: 1; transform: scale(1.05); }
+
+        /* --- Event Cards --- */
+        .promo-event-card {
+            background: #FFF; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0,0,0,0.03);
+            transition: var(--transition-bounce); cursor: pointer; height: 100%; display: flex; flex-direction: column;
+        }
+        .promo-event-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); }
+        .promo-event-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
+        .promo-event-body { padding: 2rem 1.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: center; text-align: center; background: #FFF;}
+        .promo-event-type { font-size: 0.75rem; color: var(--glamoire-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 1rem; }
+        .promo-event-title { font-size: 1.3rem; font-weight: 700; color: var(--glamoire-dark); margin-bottom: 1rem; line-height: 1.3; font-family: 'The Seasons', serif;}
+        .promo-event-date { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; font-family: 'Poppins', sans-serif;}
+
+        /* --- Brand Directory --- */
+        .brand-card {
+            background: #FFF; border-radius: 50%; border: 1px solid #F3F4F6;
+            width: 140px; height: 140px; margin: 0 auto;
+            transition: var(--transition-bounce); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            position: relative; overflow: hidden;
+        }
+        .brand-card:hover {
+            border-color: var(--glamoire-gold);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.15);
+        }
+        .brand-logo-box { width: 70%; height: 70%; display: flex; align-items: center; justify-content: center; }
+        .brand-logo-box img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(100%); transition: filter 0.3s; }
+        .brand-card:hover .brand-logo-box img { filter: grayscale(0%); }
+
+        /* --- Category Section --- */
+        .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
+        @media (max-width: 1200px) { .category-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (max-width: 768px) { .category-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
+        @media (max-width: 480px) { .category-grid { grid-template-columns: repeat(2, 1fr); } }
+
+        .cat-card-premium {
+            background: #FFF; border-radius: 20px; padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: var(--transition-bounce);
+            border: 1px solid rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02); position: relative; overflow: hidden; z-index: 1;
+        }
+        .cat-card-premium::before {
+            content: ''; position: absolute; inset: 0; background: var(--glamoire-dark); z-index: -1;
+            transform: translateY(100%); transition: transform 0.4s ease;
+        }
+        .cat-card-premium:hover { border-color: var(--glamoire-dark); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .cat-card-premium:hover::before { transform: translateY(0); }
+        .cat-icon-wrapper {
+            width: 70px; height: 70px; border-radius: 50%; background: var(--glamoire-sand);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem;
+            transition: var(--transition-smooth); font-size: 1.8rem;
+        }
+        .cat-card-premium:hover .cat-icon-wrapper { background: #FFF; transform: scale(1.1); color: var(--glamoire-gold) !important;}
+        .cat-name { font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin: 0; transition: color 0.3s;}
+        .cat-card-premium:hover .cat-name { color: #FFF; }
+
+        /* --- Article Section (Vogue Style) --- */
+        .article-highlight {
+            position: relative; border-radius: 24px; overflow: hidden; cursor: pointer; height: 500px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+        .article-highlight img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
+        .article-highlight:hover img { transform: scale(1.05); }
+        .article-overlay {
+            position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;
+        }
+        .article-overlay h3 { color: #FFF; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; line-height: 1.2; font-family: 'The Seasons', serif;}
+        .article-overlay p { color: var(--glamoire-gold); font-size: 0.9rem; font-weight: 500; font-family: 'Poppins', sans-serif; letter-spacing: 1px; text-transform: uppercase;}
+
+        .article-list-item {
+            display: flex; gap: 1.5rem; align-items: center; cursor: pointer; padding: 1.5rem; border-radius: 20px;
+            transition: var(--transition-bounce); border: 1px solid transparent; background: #FFF; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        .article-list-item:hover { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); border-color: #F3F4F6; transform: translateX(10px); }
+        .article-list-img { width: 120px; height: 120px; border-radius: 16px; overflow: hidden; flex-shrink: 0; }
+        .article-list-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;}
+        .article-list-item:hover .article-list-img img { transform: scale(1.1); }
+        .article-list-content h4 { font-size: 1.1rem; font-weight: 600; color: var(--glamoire-dark); margin-bottom: 0.8rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Poppins', sans-serif; transition: color 0.3s;}
+        .article-list-item:hover .article-list-content h4 { color: var(--glamoire-gold); }
+        .article-list-content .meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+
+        /* --- Editorial Newsletter Section --- */
+        .newsletter-premium {
+            background: var(--glamoire-sand); border-radius: 30px; padding: 6rem 2rem; text-align: center; color: var(--glamoire-dark);
+            position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.03);
+        }
+        .newsletter-premium::before {
+            content: ''; position: absolute; left: -10%; top: -50%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+        }
+        .nl-title { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 1rem; color: var(--glamoire-dark); }
+        .nl-desc { font-size: 1rem; color: var(--text-muted); max-width: 500px; margin: 0 auto 3rem; line-height: 1.6; font-family: 'Poppins', sans-serif;}
+
+        .nl-form { max-width: 500px; margin: 0 auto; position: relative; z-index: 2; }
+        .nl-input-group {
+            display: flex; background: #FFF; border-radius: 50px; padding: 0.4rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); border: 1px solid rgba(0,0,0,0.05);
+        }
+        .nl-input { border: none; background: transparent; padding: 1rem 1.5rem; width: 100%; font-size: 1rem; color: var(--text-main); outline: none; font-family: 'Poppins', sans-serif;}
+        .nl-btn {
+            background: var(--glamoire-dark); color: #FFF; border: none; padding: 0 2.5rem; border-radius: 50px;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition-bounce); cursor: pointer; white-space: nowrap; font-size: 0.85rem;
+        }
+        .nl-btn:hover { background: var(--glamoire-gold); color: #000; }
+        @media (max-width: 576px) {
+            .nl-input-group { flex-direction: column; background: transparent; box-shadow: none; gap: 15px; border: none;}
+            .nl-input { background: #FFF; border-radius: 50px; padding: 1.2rem; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
+            .nl-btn { padding: 1.2rem; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+        }
+    </style>
+
+    <!-- Welcome Modal -->
+    @if (!session('id_user') && $data['popups']->isNotEmpty())
+        <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 overflow-hidden" style="border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.4);">
+                    <div class="modal-body p-0 position-relative">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
+                            style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></button>
+                        @if ($data['popups'][0]->media_type === 'image')
+                            <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="w-100 h-auto" style="object-fit: cover; max-height: 450px;">
+                        @endif
+                        <div class="p-5 text-center" style="background: var(--glamoire-dark); color: white;">
+                            <h3 class="fw-bold mb-3" style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 2rem;">{{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
+                            <p class="mb-4" style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                                {{ $data['popups'][0]->description ?? 'Dapatkan penawaran eksklusif khusus pendaftaran pertama Anda hari ini.' }}
+                            </p>
+                            <a href="/login" class="btn btn-light rounded-pill px-5 py-3 fw-bold w-100" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--glamoire-dark);">Daftar & Klaim Sekarang</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Promo Modal -->
+    @if (session('id_user') && $data['promoModal'] !== null)
+        <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content border-0 bg-transparent">
+                    <div class="modal-body p-0 position-relative text-center">
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
+                            style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"></button>
+                        <a href="/{{ $data['promoModal']->promo_name }}-detail-promo">
+                            <img src="{{ Storage::url($data['promoModal']->image) }}"
+                                alt="{{ $data['promoModal']->promo_name }}"
+                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- 1. HERO SECTION -->
+    <div class="hero-carousel-wrapper reveal">
+        <div class="swiper hero-swiper">
+            <div class="swiper-wrapper">
+                @foreach ($data['promos'] as $promo)
+                    <div class="swiper-slide" onclick="window.location.href='/{{ $promo->promo_name }}-detail-promo'">
+                        <img src="{{ Storage::url($promo->image) }}" alt="{{ $promo->promo_name }}" loading="lazy">
+                    </div>
+                @endforeach
+                @foreach ($data['popups'] as $popup)
+                    @if ($popup->media_type === 'image' && $popup->display_type !== 'popup')
+                        <div class="swiper-slide">
+                            <img src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}" loading="lazy">
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+            <div class="swiper-button-next d-none d-md-flex"></div>
+            <div class="swiper-button-prev d-none d-md-flex"></div>
+            <div class="swiper-pagination mb-4"></div>
+        </div>
+    </div>
+
+    <!-- ADVANCED CX: INFINITE MARQUEE -->
+    <div class="marquee-wrapper reveal">
+        <div class="marquee-content">
+            <span><i class="fas fa-star"></i> 100% VEGAN</span>
+            <span><i class="fas fa-star"></i> CRUELTY FREE</span>
+            <span><i class="fas fa-star"></i> DERMATOLOGIST TESTED</span>
+            <span><i class="fas fa-star"></i> BPOM APPROVED</span>
+            <span><i class="fas fa-star"></i> LUXURY BEAUTY</span>
+            <span><i class="fas fa-star"></i> 100% ORIGINAL</span>
+
+            <!-- Duplikasi untuk ilusi infinite scroll mulus -->
+            <span><i class="fas fa-star"></i> 100% VEGAN</span>
+            <span><i class="fas fa-star"></i> CRUELTY FREE</span>
+            <span><i class="fas fa-star"></i> DERMATOLOGIST TESTED</span>
+            <span><i class="fas fa-star"></i> BPOM APPROVED</span>
+            <span><i class="fas fa-star"></i> LUXURY BEAUTY</span>
+            <span><i class="fas fa-star"></i> 100% ORIGINAL</span>
+        </div>
+    </div>
+
+    <!-- 2. TRUST BADGES -->
+    <div class="trust-floating-wrapper reveal">
+        <div class="container md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+            <div class="trust-bar">
+                <div class="trust-item">
+                    <div class="trust-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="trust-text">
+                        <h4>Plant-Based</h4>
+                        <p class="d-none d-md-block">100% Alami & Cruelty-Free</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="trust-text">
+                        <h4>BPOM Approved</h4>
+                        <p class="d-none d-md-block">Aman & Tersertifikasi</p>
+                    </div>
+                </div>
+                <div class="trust-item">
+                    <div class="trust-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="trust-text">
+                        <h4>Pasti Asli</h4>
+                        <p class="d-none d-md-block">Garansi 100% Original</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+
+        <!-- 3. TOP SELLING -->
+        <section class="section-padding reveal">
+            <div class="container-fluid p-0">
+                <div class="split-section-wrapper">
+                    <div class="split-section-left">
+                        <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
+                        <p class="section-desc">Koleksi produk favorit yang paling banyak dicintai pelanggan setia Glamoire. Saatnya temukan kilau sejati Anda.</p>
+                        <a href="/shop" class="link-gold">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="split-section-right">
+                        <div class="swiper top-selling-slider product-slider" style="padding-bottom: 2rem; padding-top: 1rem;">
+                            <div class="swiper-wrapper">
+                                @foreach ($data['topsell'] as $product)
+                                    @php
+                                        $activePromo = $product->promos->first();
+                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                        $discountPercent = ($discountedPrice && $product->regular_price > 0) ? round((($product->regular_price - $discountedPrice) / $product->regular_price) * 100) : 0;
+                                        $inWishlist = collect($wishlist)->contains('product_id', $product->id);
+                                        $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
+                                    @endphp
+
+                                    <div class="swiper-slide h-auto">
+                                        <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
+                                            <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
+                                                @if ($product->is_gift ?? false)
+                                                    <span class="lpc-badge badge-gift"><i class="fas fa-gift me-1"></i> Gift</span>
+                                                @elseif ($discountPercent > 0)
+                                                    <span class="lpc-badge badge-discount">-{{ $discountPercent }}%</span>
+                                                @endif
+
+                                                <button class="lpc-wishlist {{ $inWishlist ? 'active' : '' }}" onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
+                                                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                                                </button>
+
+                                                <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+
+                                                <div class="lpc-action-area">
+                                                    @if (session('id_user'))
+                                                        @if ($product->stock_quantity == 0)
+                                                            <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-lpc-action btn-lpc-notify">
+                                                                <i class="fas fa-bell"></i> Beritahu
+                                                            </button>
+                                                        @else
+                                                            @if($inCart)
+                                                                <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-lpc-action btn-lpc-added">
+                                                                    <i class="fas fa-check"></i> Keranjang
+                                                                </button>
+                                                            @else
+                                                                <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-lpc-action btn-lpc-add">
+                                                                    <i class="fas fa-shopping-bag"></i> Tambah
+                                                                </button>
+                                                            @endif
+                                                        @endif
+                                                    @else
+                                                        <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-lpc-action btn-lpc-add">
+                                                            Login Beli
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="lpc-info">
+                                                <div class="lpc-brand">{{ $product->brand ? $product->brand->name : 'Glamoire' }}</div>
+                                                <a href="/{{ $product->product_code }}_product" class="lpc-title">{{ $product->product_name }}</a>
+                                                <div class="lpc-price-box">
+                                                    @if ($product->priceVariation !== null)
+                                                        <span class="lpc-price-current">{{ $product->priceVariation }}</span>
+                                                    @else
+                                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                                            <span class="lpc-price-strike">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                            <span class="lpc-price-current lpc-price-discounted">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                        @else
+                                                            <span class="lpc-price-current">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-next d-none d-md-flex"></div>
+                            <div class="swiper-button-prev d-none d-md-flex"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. BANNER PROMO GRID -->
+        @if(count($data['popupsBanner']) > 0)
+            <section class="section-padding pt-0 reveal">
+                <div class="container-fluid p-0">
+                    <div class="row g-4">
+                        @foreach ($data['popupsBanner'] as $index => $popup)
+                            <div class="col-12 col-md-6">
+                                <div class="promo-grid-banner">
+                                    @if ($popup->media_type === 'image')
+                                        <img src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}">
+                                    @elseif ($popup->media_type === 'video')
+                                        <video autoplay loop muted playsinline>
+                                            <source src="{{ Storage::url($popup->media_popup) }}" type="video/mp4">
+                                        </video>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <!-- 5. FLASH SALE -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="flash-sale-wrapper">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-xl-3 flash-header">
+                            <h2 class="flash-title"><i class="fas fa-bolt text-warning"></i> Flash Sale</h2>
+                            <p class="mb-0" style="font-size: 1.05rem; opacity:0.9;">Penawaran super kilat eksklusif. Jangan sampai terlewatkan!</p>
+                            <div class="timer-flex">
+                                <div class="timer-block">
+                                    <div class="timer-val">08</div>
+                                    <div class="timer-lbl">Jam</div>
+                                </div>
+                                <span class="fs-2 fw-bold" style="color: var(--glamoire-gold);">:</span>
+                                <div class="timer-block">
+                                    <div class="timer-val">45</div>
+                                    <div class="timer-lbl">Mnt</div>
+                                </div>
+                                <span class="fs-2 fw-bold" style="color: var(--glamoire-gold);">:</span>
+                                <div class="timer-block">
+                                    <div class="timer-val">12</div>
+                                    <div class="timer-lbl">Dtk</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-9">
+                            <div class="swiper flash-sale-slider product-slider pb-0" style="padding-top: 1rem; padding-bottom: 2rem;">
+                                <div class="swiper-wrapper">
+                                    @foreach ($data['new']->take(6) as $product)
+                                        @php
+                                            $activePromo = $product->promos->first();
+                                            $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : ($product->regular_price * 0.75); // Mock flash discount
+                                            $discountPercent = round((($product->regular_price - $discountedPrice) / $product->regular_price) * 100);
+                                        @endphp
+                                        <div class="swiper-slide h-auto">
+                                            <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
+                                                <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
+                                                    <span class="lpc-badge bg-warning text-dark"><i class="fas fa-bolt me-1"></i> {{ $discountPercent }}%</span>
+                                                    <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+
+                                                    <!-- Stock Progress Bar -->
+                                                    <div class="position-absolute bottom-0 start-0 w-100 px-3 pb-3 z-3">
+                                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                                            <span class="text-danger fw-bold shadow-sm" style="font-size: 0.65rem; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 4px; text-transform:uppercase; letter-spacing: 0.5px;">Sisa Terbatas</span>
+                                                        </div>
+                                                        <div class="progress" style="height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                                                            <div class="progress-bar bg-danger" style="width: 85%; border-radius: 10px;"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="lpc-info pb-4 text-center">
+                                                    <div class="lpc-price-box">
+                                                        <span class="lpc-price-strike">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                        <span class="lpc-price-current lpc-price-discounted fs-5">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PROMO EVENT -->
+        @if ($data['promos']->count() > 0)
+            <section class="section-padding pt-0 reveal">
+                <div class="container-fluid p-0">
+                    <div class="full-section-header">
+                        <h2>Exclusive Offers</h2>
+                        <p>Dapatkan voucher dan penawaran spesial untuk melengkapi ritual kecantikan Anda.</p>
+                    </div>
+
+                    <div class="swiper promo-special-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                        <div class="swiper-wrapper">
+                            @foreach ($data['promos']->sortByDesc('created_at') as $promo)
+                                <div class="swiper-slide h-auto">
+                                    <div class="promo-event-card" onclick="window.location.href='/{{ $promo->promo_name }}-detail-promo'">
+                                        <img class="promo-event-img" src="{{ $promo->image ? Storage::url($promo->image) : asset('images/no-image.png') }}" alt="{{ $promo->promo_name }}">
+                                        <div class="promo-event-body">
+                                            <span class="promo-event-type">{{ $promo->type }}</span>
+                                            <h3 class="promo-event-title">{{ $promo->promo_name }}</h3>
+                                            <div class="promo-event-date">
+                                                <i class="far fa-calendar-alt" style="color:var(--glamoire-gold);"></i>
+                                                @if($promo->start_date && $promo->end_date)
+                                                    {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d M Y') }}
+                                                @endif
+                                            </div>
+                                            <span class="btn-lpc-action btn-lpc-add mt-auto px-4 w-auto">Eksplor Penawaran</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="swiper-button-next d-none d-md-flex"></div>
+                        <div class="swiper-button-prev d-none d-md-flex"></div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <!-- 7. BRAND DIRECTORY -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="split-section-wrapper" style="align-items: center;">
+                    <div class="split-section-left">
+                        <h2 class="section-title" style="font-size: 2.5rem;">The <span style="color:var(--glamoire-gold); font-style:italic;">Brands</span></h2>
+                        <p class="section-desc">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk memenuhi standar Anda.</p>
+                    </div>
+                    <div class="split-section-right">
+                        <div class="swiper brand-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                            <div class="swiper-wrapper">
+                                @foreach ($data['brands'] as $brand)
+                                    <div class="swiper-slide h-auto pb-3">
+                                        <div class="brand-card" onclick="window.location.href = '/{{ $brand->name }}_brand'">
+                                            <div class="brand-logo-box">
+                                                <img src="{{ $brand->brand_logo ? Storage::url($brand->brand_logo) : asset('images/no-brand.png') }}" alt="{{ $brand->name }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-next d-none d-md-flex"></div>
+                            <div class="swiper-button-prev d-none d-md-flex"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div><!-- End Wrap -->
+
+    <!-- ADVANCED CX: Cinematic Parallax Divider -->
+    <section class="parallax-section reveal">
+        <div class="parallax-overlay"></div>
+        <div class="parallax-content">
+            <h2 class="parallax-title">Embrace Your True Radiance</h2>
+            <p class="parallax-subtitle">Kecantikan sejati bermula dari perawatan yang otentik. Temukan rahasia kulit bercahaya dengan koleksi eksklusif kami yang diformulasikan dari bahan alami terbaik.</p>
+            <a href="/shop" class="parallax-btn">Eksplorasi Koleksi</a>
+        </div>
+    </section>
+
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+
+        <!-- 8. RECOMMENDED (COCOK UNTUK KAMU) -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="full-section-header">
+                    <h2>Curated For You</h2>
+                    <p>Rekomendasi personal berdasarkan preferensi dan gaya kecantikan elegan Anda.</p>
+                </div>
+
+                <div class="swiper curated-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                    <div class="swiper-wrapper">
+                        @foreach ($data['new'] as $product)
+                            @php
+                                $activePromo = $product->promos->first();
+                                $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                $discountPercent = ($discountedPrice && $product->regular_price > 0) ? round((($product->regular_price - $discountedPrice) / $product->regular_price) * 100) : 0;
+                                $inWishlist = collect($wishlist)->contains('product_id', $product->id);
+                                $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
+                            @endphp
+
+                            <div class="swiper-slide h-auto">
+                                <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
+                                    <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
+                                        @if ($product->is_gift ?? false)
+                                            <span class="lpc-badge badge-gift"><i class="fas fa-gift me-1"></i> Gift</span>
+                                        @elseif ($discountPercent > 0)
+                                            <span class="lpc-badge badge-discount">-{{ $discountPercent }}%</span>
+                                        @endif
+
+                                        <button class="lpc-wishlist {{ $inWishlist ? 'active' : '' }}" onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
+                                            <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                                        </button>
+
+                                        <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+
+                                        <div class="lpc-action-area">
+                                            @if (session('id_user'))
+                                                @if ($product->stock_quantity == 0)
+                                                    <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-lpc-action btn-lpc-notify">
+                                                        <i class="fas fa-bell"></i> Beritahu
+                                                    </button>
+                                                @else
+                                                    @if($inCart)
+                                                        <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-lpc-action btn-lpc-added">
+                                                            <i class="fas fa-check"></i> Keranjang
+                                                        </button>
+                                                    @else
+                                                        <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-lpc-action btn-lpc-add">
+                                                            <i class="fas fa-shopping-bag"></i> Tambah
+                                                        </button>
+                                                    @endif
+                                                @endif
+                                            @else
+                                                <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-lpc-action btn-lpc-add">
+                                                    Login Beli
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="lpc-info">
+                                        <div class="lpc-brand">{{ $product->brand ? $product->brand->name : 'Glamoire' }}</div>
+                                        <a href="/{{ $product->product_code }}_product" class="lpc-title">{{ $product->product_name }}</a>
+                                        <div class="lpc-price-box">
+                                            @if ($product->priceVariation !== null)
+                                                <span class="lpc-price-current">{{ $product->priceVariation }}</span>
+                                            @else
+                                                @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                                    <span class="lpc-price-strike">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                    <span class="lpc-price-current lpc-price-discounted">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                @else
+                                                    <span class="lpc-price-current">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <div class="swiper-button-next d-none d-md-flex"></div>
+                    <div class="swiper-button-prev d-none d-md-flex"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CATEGORIES -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="full-section-header mb-5">
+                    <h2>Shop by Category</h2>
+                </div>
+
+                <div class="category-grid">
+                    @foreach ($data['categories']->sortByDesc('created_at')->take(6) as $index => $category)
+                        @php
+                            // Premium muted colors for luxury feel
+                            $iconColors = ['#D4AF37', '#607D8B', '#9CA3AF', '#1E3B1E', '#D97706', '#4B5563'];
+                            $icons = ['bi-stars', 'bi-droplet-half', 'bi-magic', 'bi-flower1', 'bi-palette', 'bi-suit-heart'];
+                            $iconColor = $iconColors[$index % 6];
+                            $iconClass = $icons[$index % 6];
+                        @endphp
+                        <div class="cat-card-premium" onclick="window.location.href='/belanja-{{ $category->name }}'">
+                            <div class="cat-icon-wrapper" style="color: {{ $iconColor }}; box-shadow: 0 5px 15px {{ $iconColor }}30;">
+                                <i class="bi {{ $iconClass }}"></i>
+                            </div>
+                            <h3 class="cat-name">{{ $category->name }}</h3>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. ARTICLES / JOURNAL -->
+        @if (count($data['articles']) > 0)
+            <section class="section-padding pt-0 reveal">
+                <div class="container-fluid p-0">
+                    <div class="full-section-header">
+                        <h2>The Glamoire Journal</h2>
+                        <a href="/newsletter" class="link-gold mx-auto mt-2">Baca Semua Jurnal <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-12 col-lg-7">
+                            <div class="article-highlight" onclick="window.location.href='/{{ $data['articles'][0]->title }}_detailnewsletter'">
+                                <img src="{{ $data['articles'][0]->image ? Storage::url($data['articles'][0]->image) : asset('images/no-image.png') }}" alt="{{ $data['articles'][0]->title }}">
+                                <div class="article-overlay">
+                                    <p>{{ optional($data['articles'][0]->categoryArticle)->name ?? 'Beauty & Lifestyle' }}</p>
+                                    <h3>{{ $data['articles'][0]->title }}</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-5">
+                            <div class="d-flex flex-column gap-3 h-100 justify-content-between">
+                                @foreach ($data['articles']->skip(1)->take(3) as $article)
+                                    <div class="article-list-item" onclick="window.location.href='/{{ $article->title }}_detailnewsletter'">
+                                        <div class="article-list-img">
+                                            <img src="{{ $article->image ? Storage::url($article->image) : asset('images/no-image.png') }}" alt="{{ $article->title }}">
+                                        </div>
+                                        <div class="article-list-content">
+                                            <div class="meta mb-2">{{ optional($article->categoryArticle)->name ?? 'Tips' }} • {{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}</div>
+                                            <h4>{{ $article->title }}</h4>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        @endif
+
+        <!-- 11. NEWSLETTER -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="newsletter-premium">
+                    <h2 class="nl-title">Stay Glamorous</h2>
+                    <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo rahasia, dan jurnal kecantikan langsung di inbox Anda.</p>
+
+                    <form id="subscribe-form" class="nl-form">
+                        @csrf
+                        <div class="nl-input-group">
+                            <input type="email" id="subscribe_email" class="nl-input" placeholder="Masukkan alamat email Anda..." required autocomplete="off">
+                            <button type="submit" id="subscribe-btn" class="nl-btn">Subscribe</button>
+                        </div>
+                        <div id="validationEmailSubscribe" class="text-danger mt-3 fw-semibold text-center" style="display: none; font-size:0.9rem;"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Intersection Observer for Reveal Animation
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { root: null, rootMargin: '0px', threshold: 0.1 });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // Swiper Initializations
+            new Swiper('.hero-swiper', {
+                slidesPerView: 1, loop: true, effect: 'fade', fadeEffect: { crossFade: true },
+                autoplay: { delay: 6000, disableOnInteraction: false },
+                pagination: { el: '.hero-swiper .swiper-pagination', clickable: true },
+                navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' },
+            });
+
+            new Swiper(".top-selling-slider", {
+                slidesPerView: 1.5, spaceBetween: 15,
+                navigation: { nextEl: ".top-selling-slider .swiper-button-next", prevEl: ".top-selling-slider .swiper-button-prev" },
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 2.5, spaceBetween: 20 }, 992: { slidesPerView: 3.5, spaceBetween: 24 }, 1200: { slidesPerView: 4.5, spaceBetween: 24 } }
+            });
+
+            new Swiper(".flash-sale-slider", {
+                slidesPerView: 1.5, spaceBetween: 15,
+                navigation: { nextEl: ".flash-sale-slider .swiper-button-next", prevEl: ".flash-sale-slider .swiper-button-prev" },
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 2.5, spaceBetween: 20 }, 992: { slidesPerView: 3.5, spaceBetween: 20 }, 1200: { slidesPerView: 4.5, spaceBetween: 24 } }
+            });
+
+            new Swiper(".promo-special-slider", {
+                slidesPerView: 1.2, spaceBetween: 16,
+                navigation: { nextEl: ".promo-special-slider .swiper-button-next", prevEl: ".promo-special-slider .swiper-button-prev" },
+                breakpoints: { 576: { slidesPerView: 2 }, 768: { slidesPerView: 2.5 }, 992: { slidesPerView: 3 }, 1200: { slidesPerView: 4 } }
+            });
+
+            new Swiper(".brand-slider", {
+                slidesPerView: 2.2, spaceBetween: 15,
+                navigation: { nextEl: ".brand-slider .swiper-button-next", prevEl: ".brand-slider .swiper-button-prev" },
+                breakpoints: { 576: { slidesPerView: 3.2 }, 768: { slidesPerView: 4.5 }, 992: { slidesPerView: 5.5 }, 1200: { slidesPerView: 6.5 } }
+            });
+
+            new Swiper(".curated-slider", {
+                slidesPerView: 1.5, spaceBetween: 15,
+                navigation: { nextEl: ".curated-slider .swiper-button-next", prevEl: ".curated-slider .swiper-button-prev" },
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 3.2, spaceBetween: 20 }, 992: { slidesPerView: 4.5, spaceBetween: 24 }, 1200: { slidesPerView: 5.5, spaceBetween: 24 } }
+            });
+
+            // Modals Auto Show Logic
+            @if (!session('id_user') && $data['popups']->isNotEmpty())
+                var myModal = new bootstrap.Modal(document.getElementById('firstUser'));
+                myModal.show();
+            @endif
+
+            @if (session('id_user') && $data['promoModal'] !== null)
+                var promoModal = new bootstrap.Modal(document.getElementById('promoModal'));
+                promoModal.show();
+            @endif
+        });
+
+        // AJAX Subscribe Logic
+        $(document).ready(function () {
+            $('#subscribe_email').on('keyup', function () {
+                var email = $(this).val();
+                if (email) {
+                    $.ajax({
+                        url: "{{ route('check.email.subscribe') }}",
+                        method: "POST",
+                        data: { "_token": "{{ csrf_token() }}", email: email },
+                        success: function (response) {
+                            if (response.exists) {
+                                $('#validationEmailSubscribe').html('<i class="fas fa-exclamation-circle"></i> Email ini sudah terdaftar.').show();
+                                $('#subscribe-btn').prop('disabled', true).css('opacity', '0.5');
+                            } else {
+                                $('#validationEmailSubscribe').hide();
+                                $('#subscribe-btn').prop('disabled', false).css('opacity', '1');
+                            }
+                        }
+                    });
+                } else {
+                    $('#validationEmailSubscribe').hide();
+                }
+            });
+
+            $("#subscribe-form").on("submit", function (e) {
+                e.preventDefault();
+                let email = $("#subscribe_email").val();
+                let btn = $('#subscribe-btn');
+
+                btn.html('<i class="fas fa-spinner fa-spin"></i> Proses...');
+                btn.prop('disabled', true);
+
+                $.ajax({
+                    url: "{{ route('subscribe') }}",
+                    type: "POST",
+                    data: { _token: "{{ csrf_token() }}", email: email },
+                    success: function (response) {
+                        btn.html('Subscribe').prop('disabled', false);
+                        if (response.success) {
+                            Swal.fire({ icon: "success", title: "Welcome to Glamoire!", text: response.message, confirmButtonColor: "#183018" });
+                            $("#subscribe_email").val('');
+                        } else {
+                            Swal.fire({ icon: "error", title: "Oops!", text: response.message });
+                        }
+                    },
+                    error: function () {
+                        btn.html('Subscribe').prop('disabled', false);
                         Swal.fire({ icon: "error", title: "Gagal", text: "Terjadi kesalahan sistem, coba lagi nanti." });
                     }
                 });
