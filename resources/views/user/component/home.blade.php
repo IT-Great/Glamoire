@@ -8493,100 +8493,6 @@
         .section-padding { padding: 6rem 0; }
         @media (max-width: 768px) { .section-padding { padding: 4rem 0; } }
 
-        /* --- ADVANCED CX: Infinite Gold Marquee --- */
-        .marquee-wrapper {
-            background: var(--glamoire-dark);
-            color: var(--glamoire-gold-light);
-            padding: 14px 0;
-            overflow: hidden;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-            position: relative;
-            z-index: 10;
-        }
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 30s linear infinite;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            letter-spacing: 3px;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-        }
-        .marquee-content span { margin: 0 2rem; display: inline-flex; align-items: center;}
-        .marquee-content i { font-size: 0.6rem; color: #FFF; margin-right: 2rem;}
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* --- ADVANCED CX: Cinematic Parallax Divider --- */
-        .parallax-section {
-            position: relative;
-            /* Menggunakan gambar high-end fashion/beauty dari unsplash sebagai efek kejut */
-            background-image: url('https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?q=80&w=2000&auto=format&fit=crop');
-            background-attachment: fixed;
-            background-position: center 30%;
-            background-repeat: no-repeat;
-            background-size: cover;
-            height: 65vh;
-            min-height: 400px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #FFF;
-            margin: 4rem 0;
-        }
-        .parallax-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(18, 34, 18, 0.6); /* Glamoire dark transparan */
-        }
-        .parallax-content {
-            position: relative;
-            z-index: 2;
-            max-width: 800px;
-            padding: 0 2rem;
-        }
-        .parallax-title {
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            color: var(--glamoire-gold);
-            margin-bottom: 1.5rem;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .parallax-subtitle {
-            font-size: clamp(1rem, 2vw, 1.2rem);
-            line-height: 1.8;
-            margin-bottom: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 1px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .parallax-btn {
-            background: transparent;
-            color: #FFF;
-            border: 1px solid var(--glamoire-gold);
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.9rem;
-            transition: var(--transition-smooth);
-            text-decoration: none;
-            display: inline-block;
-        }
-        .parallax-btn:hover {
-            background: var(--glamoire-gold);
-            color: var(--glamoire-dark);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
-        }
-
         /* --- Hero Carousel Immersive --- */
         .hero-carousel-wrapper {
             width: 100%;
@@ -8595,8 +8501,8 @@
         }
         .hero-swiper {
             width: 100%;
-            height: 85vh;
-            min-height: 500px;
+            height: 90vh; /* Extremely immersive height */
+            min-height: 600px;
         }
         .hero-swiper .swiper-slide {
             overflow: hidden;
@@ -8611,118 +8517,109 @@
             height: 100%;
             object-fit: cover;
             object-position: center;
-            transition: transform 10s ease;
-            transform: scale(1.05);
+            transition: transform 12s ease;
+            transform: scale(1.08);
         }
         .hero-swiper .swiper-slide-active img {
             transform: scale(1);
         }
+        .hero-swiper .swiper-slide::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
+            pointer-events: none;
+        }
         .hero-swiper .swiper-pagination-bullet {
             background: #FFF;
             opacity: 0.5;
-            width: 30px;
-            height: 4px;
-            border-radius: 2px;
+            width: 40px;
+            height: 3px;
+            border-radius: 0;
             transition: var(--transition-smooth);
         }
         .hero-swiper .swiper-pagination-bullet-active {
             background: var(--glamoire-gold) !important;
             opacity: 1;
-            width: 50px;
+            width: 80px;
         }
 
-        /* --- Floating Trust Badges --- */
-        .trust-floating-wrapper {
-            position: relative;
-            z-index: 20; /* Lebih tinggi dari marquee */
-            margin-top: -50px;
-            padding: 0 15px;
-            margin-bottom: 2rem;
-        }
-        .trust-bar {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-            padding: 2rem 1rem;
+        /* --- NEW: The Glamoire Promise (Replacing boring Trust Badges) --- */
+        .glamoire-promise-bar {
+            background: var(--glamoire-dark);
+            padding: 2.5rem 0;
+            overflow: hidden;
+            white-space: nowrap;
             display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-        .trust-item {
-            flex: 1;
-            min-width: 200px;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            text-align: center;
-            gap: 1rem;
-            transition: var(--transition-smooth);
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
         }
-        .trust-item:hover { transform: translateY(-5px); }
-        .trust-icon {
-            width: 60px; height: 60px;
-            background: var(--glamoire-sand);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+        .promise-track {
+            display: inline-block;
+            animation: scrollText 30s linear infinite;
+        }
+        .promise-item {
+            display: inline-flex;
+            align-items: center;
             color: var(--glamoire-gold);
+            font-family: 'The Seasons', serif;
             font-size: 1.5rem;
-            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-right: 4rem;
         }
-        .trust-text h4 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--glamoire-dark); }
-        .trust-text p { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-family: 'Poppins', sans-serif;}
-
-        @media (max-width: 768px) {
-            .trust-floating-wrapper { margin-top: -30px; }
-            .trust-bar { padding: 1.5rem 1rem; gap: 1.5rem;}
-            .trust-item { min-width: 140px; }
-            .trust-icon { width: 50px; height: 50px; font-size: 1.2rem;}
-            .trust-text h4 { font-size: 0.95rem; }
+        .promise-item i {
+            font-size: 1rem;
+            margin: 0 1.5rem;
+            color: rgba(255,255,255,0.3);
+        }
+        @keyframes scrollText {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
         /* --- Custom Split Layout --- */
-        .split-section-wrapper { display: flex; align-items: flex-end; gap: 3rem; width: 100%; margin-bottom: 2rem;}
-        .split-section-left { flex: 0 0 300px; }
+        .split-section-wrapper { display: flex; align-items: flex-end; gap: 4rem; width: 100%; margin-bottom: 2rem;}
+        .split-section-left { flex: 0 0 350px; }
         .split-section-right { flex: 1; min-width: 0; }
         @media (max-width: 991px) {
-            .split-section-wrapper { flex-direction: column; align-items: center; text-align: center; gap: 1.5rem; }
+            .split-section-wrapper { flex-direction: column; align-items: center; text-align: center; gap: 2rem; }
             .split-section-left { flex: 0 0 auto; max-width: 100%; }
         }
 
         .section-title {
-            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
             font-weight: 700;
             color: var(--glamoire-dark);
-            line-height: 1.1;
-            margin-bottom: 1rem;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
         }
-        .section-desc { font-size: clamp(0.95rem, 1.5vw, 1rem); color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem; }
+        .section-desc { font-size: clamp(1rem, 1.5vw, 1.1rem); color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem; }
         .link-gold {
             color: var(--glamoire-dark);
             font-weight: 600;
             text-decoration: none;
             display: inline-flex; align-items: center; gap: 0.5rem;
             border-bottom: 2px solid var(--glamoire-gold);
-            padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;
+            padding-bottom: 6px; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.9rem;
             transition: var(--transition-smooth);
         }
-        .link-gold:hover { color: var(--glamoire-gold); gap: 1rem; }
+        .link-gold:hover { color: var(--glamoire-gold); gap: 1.2rem; }
 
         /* --- Full Width Header --- */
-        .full-section-header { text-align: center; margin-bottom: 3.5rem; }
-        .full-section-header h2 { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; color: var(--glamoire-dark); margin-bottom: 0.8rem; }
-        .full-section-header p { font-size: clamp(0.95rem, 1.5vw, 1.1rem); color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        .full-section-header { text-align: center; margin-bottom: 4rem; }
+        .full-section-header h2 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: var(--glamoire-dark); margin-bottom: 1rem; }
+        .full-section-header p { font-size: clamp(1rem, 1.5vw, 1.1rem); color: var(--text-muted); max-width: 700px; margin: 0 auto; line-height: 1.8;}
 
         /* --- Universal Swiper Navigation --- */
         .swiper-button-next, .swiper-button-prev {
             color: var(--glamoire-dark) !important;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-            width: 50px !important; height: 50px !important;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            width: 55px !important; height: 55px !important;
             border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: var(--transition-bounce);
             border: 1px solid rgba(0,0,0,0.05);
         }
@@ -8731,7 +8628,7 @@
             transform: scale(1.1);
             color: var(--glamoire-gold) !important;
         }
-        .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.2rem !important; font-weight: 900; }
+        .swiper-button-next::after, .swiper-button-prev::after { font-size: 1.3rem !important; font-weight: 900; }
         @media (max-width: 768px) { .swiper-button-next, .swiper-button-prev { display: none !important; } }
 
         /* --- Luxury Product Card --- */
@@ -8744,31 +8641,32 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
             border: 1px solid rgba(0,0,0,0.03);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.02);
         }
         .luxury-product-card:hover {
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-            transform: translateY(-8px);
+            transform: translateY(-10px);
+            border-color: rgba(212, 175, 55, 0.3);
         }
         .lpc-img-box {
             position: relative;
-            padding-top: 120%; /* Taller aspect ratio for luxury feel */
-            background: #F8F8F8;
+            padding-top: 130%; /* Very tall, editorial aspect ratio */
+            background: #FAFAFA;
             overflow: hidden;
             cursor: pointer;
         }
         .lpc-img-box img {
             position: absolute; inset: 0; width: 100%; height: 100%;
-            object-fit: cover; transition: transform 1s ease;
+            object-fit: cover; transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .luxury-product-card:hover .lpc-img-box img { transform: scale(1.08); }
+        .luxury-product-card:hover .lpc-img-box img { transform: scale(1.1); }
         .lpc-img-box.dark-overlay img { filter: grayscale(100%) opacity(0.7); }
 
         .lpc-badge {
             position: absolute; top: 15px; left: 15px;
-            padding: 5px 12px; border-radius: 50px;
-            font-size: 0.7rem; font-weight: 800; z-index: 2;
+            padding: 6px 14px; border-radius: 50px;
+            font-size: 0.75rem; font-weight: 800; z-index: 2;
             text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
@@ -8777,8 +8675,8 @@
 
         .lpc-wishlist {
             position: absolute; top: 15px; right: 15px;
-            width: 38px; height: 38px;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px);
+            width: 40px; height: 40px;
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             color: #9CA3AF; z-index: 2; cursor: pointer;
             transition: var(--transition-bounce);
@@ -8789,11 +8687,10 @@
 
         .lpc-action-area {
             position: absolute; bottom: 0; left: 0; width: 100%;
-            padding: 1.5rem 1rem 1rem;
-            background: linear-gradient(to top, rgba(255, 255, 255, 1) 40%, rgba(255,255,255,0.8) 70%, transparent);
+            padding: 2rem 1.5rem 1.5rem;
+            background: linear-gradient(to top, rgba(255, 255, 255, 1) 30%, rgba(255,255,255,0.9) 60%, transparent);
             transform: translateY(100%); opacity: 0;
             transition: var(--transition-smooth); z-index: 3;
-            backdrop-filter: blur(2px);
         }
         @media (min-width: 992px) {
             .luxury-product-card:hover .lpc-action-area { transform: translateY(0); opacity: 1; }
@@ -8801,192 +8698,267 @@
         @media (max-width: 991px) {
             .lpc-action-area {
                 position: static; transform: none; opacity: 1;
-                background: transparent; padding: 0 1rem 1rem 1rem; margin-top: auto; backdrop-filter: none;
+                background: transparent; padding: 0 1rem 1rem 1rem; margin-top: auto;
             }
         }
 
         .btn-lpc-action {
-            width: 100%; padding: 0.8rem; border-radius: 50px;
-            font-weight: 600; font-size: 0.85rem; border: none;
+            width: 100%; padding: 1rem; border-radius: 50px;
+            font-weight: 700; font-size: 0.9rem; border: none;
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: var(--transition-smooth); text-transform: uppercase; letter-spacing: 0.5px;
+            transition: var(--transition-smooth); text-transform: uppercase; letter-spacing: 1px;
             cursor: pointer;
         }
         .btn-lpc-add { background: var(--glamoire-dark); color: #FFF; }
-        .btn-lpc-add:hover { background: var(--glamoire-gold); color: #000; box-shadow: 0 8px 20px rgba(212, 175, 55, 0.3); }
+        .btn-lpc-add:hover { background: var(--glamoire-gold); color: var(--glamoire-dark); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); }
         .btn-lpc-added { background: var(--success-main); color: #FFF; }
         .btn-lpc-notify { background: var(--text-main); color: #FFF; }
 
-        .lpc-info { padding: 1.5rem 1.25rem; display: flex; flex-direction: column; flex-grow: 1; cursor: pointer; text-align: center;}
-        .lpc-brand { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-bottom: 0.5rem; }
+        .lpc-info { padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1; cursor: pointer; text-align: center;}
+        .lpc-brand { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2.5px; font-weight: 700; margin-bottom: 0.8rem; }
         .lpc-title {
-            font-size: 1.05rem; font-weight: 500; color: var(--text-main);
-            margin-bottom: 0.8rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; transition: color 0.2s;
+            font-size: 1.15rem; font-weight: 500; color: var(--text-main);
+            margin-bottom: 1rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-decoration: none; transition: color 0.3s;
         }
         .luxury-product-card:hover .lpc-title { color: var(--glamoire-gold); }
 
-        .lpc-price-box { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 2px;}
-        .lpc-price-current { font-size: 1.15rem; font-weight: 700; color: var(--glamoire-dark); }
+        .lpc-price-box { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 4px;}
+        .lpc-price-current { font-size: 1.25rem; font-weight: 700; color: var(--glamoire-dark); font-family: 'Poppins', sans-serif;}
         .lpc-price-discounted { color: var(--danger-main); }
-        .lpc-price-strike { font-size: 0.85rem; color: #9CA3AF; text-decoration: line-through; }
+        .lpc-price-strike { font-size: 0.9rem; color: #9CA3AF; text-decoration: line-through; }
+
+        /* --- NEW: PARALLAX CAMPAIGN DIVIDER --- */
+        .campaign-parallax {
+            height: 70vh;
+            min-height: 400px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            clip-path: inset(0); /* Crucial for parallax effect */
+        }
+        .campaign-parallax video {
+            position: fixed; /* Parallax magic */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            filter: brightness(0.6);
+        }
+        /* Fallback if video is not available, we use a dark aesthetic background */
+        .campaign-fallback {
+            background: url('https://images.unsplash.com/photo-1615397323385-05d53a99257e?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .campaign-content {
+            text-align: center;
+            color: white;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        .campaign-content h2 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--glamoire-gold);
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .campaign-content p {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .btn-campaign {
+            background: transparent;
+            color: #FFF;
+            border: 1px solid #FFF;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-campaign:hover {
+            background: #FFF;
+            color: var(--glamoire-dark);
+        }
 
         /* --- Cinematic Flash Sale --- */
         .flash-sale-wrapper {
-            background: linear-gradient(145deg, #0A110A 0%, #183018 100%);
-            border-radius: 30px;
-            padding: 4rem 3rem;
+            background: linear-gradient(145deg, #050A05 0%, #183018 100%);
+            border-radius: 40px;
+            padding: 5rem 4rem;
             color: #FFF;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
         }
         .flash-sale-wrapper::before {
-            content: ''; position: absolute; top: -50%; right: -20%; width: 60%; height: 200%;
+            content: ''; position: absolute; top: -50%; right: -20%; width: 70%; height: 200%;
             background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 60%);
             pointer-events: none;
         }
         .flash-header { position: relative; z-index: 2; }
-        .flash-title { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 700; color: var(--glamoire-gold-light); margin-bottom: 1rem; display: flex; align-items: center; gap: 15px; }
-        .timer-flex { display: flex; align-items: center; gap: 0.8rem; margin-top: 2rem; }
+        .flash-title { font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 700; color: var(--glamoire-gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 15px; }
+        .timer-flex { display: flex; align-items: center; gap: 1rem; margin-top: 2.5rem; }
         .timer-block {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px;
-            padding: 0.8rem 1rem; text-align: center; min-width: 75px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 16px;
+            padding: 1rem 1.2rem; text-align: center; min-width: 85px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-        .timer-val { font-size: 1.8rem; font-weight: 700; line-height: 1; color: #FFF; font-family: 'Poppins', sans-serif;}
-        .timer-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--glamoire-gold); margin-top: 4px; }
+        .timer-val { font-size: 2.2rem; font-weight: 700; line-height: 1; color: #FFF; font-family: 'Poppins', monospace;}
+        .timer-lbl { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--glamoire-gold); margin-top: 8px; }
         @media (max-width: 991px) {
-            .flash-sale-wrapper { padding: 3rem 1.5rem; border-radius: 20px;}
+            .flash-sale-wrapper { padding: 3rem 1.5rem; border-radius: 24px;}
             .flash-header { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 3rem;}
         }
 
         /* --- Promo Grid Banners --- */
         .promo-grid-banner {
-            border-radius: 24px;
+            border-radius: 30px;
             overflow: hidden;
             position: relative;
             aspect-ratio: 16/9;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             transition: var(--transition-bounce);
             cursor: pointer; background: #000;
         }
-        .promo-grid-banner:hover { transform: translateY(-10px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); }
+        .promo-grid-banner:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2); }
         .promo-grid-banner img, .promo-grid-banner video {
-            width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 1s ease, opacity 0.5s;
+            width: 100%; height: 100%; object-fit: cover; opacity: 0.85; transition: transform 1.5s ease, opacity 0.5s;
         }
-        .promo-grid-banner:hover img, .promo-grid-banner:hover video { opacity: 1; transform: scale(1.05); }
+        .promo-grid-banner:hover img, .promo-grid-banner:hover video { opacity: 1; transform: scale(1.08); }
 
         /* --- Event Cards --- */
         .promo-event-card {
-            background: #FFF; border-radius: 20px; overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03); border: 1px solid rgba(0,0,0,0.03);
+            background: #FFF; border-radius: 24px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); border: 1px solid rgba(0,0,0,0.02);
             transition: var(--transition-bounce); cursor: pointer; height: 100%; display: flex; flex-direction: column;
         }
-        .promo-event-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); }
+        .promo-event-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1); }
         .promo-event-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; }
-        .promo-event-body { padding: 2rem 1.5rem; display: flex; flex-direction: column; flex-grow: 1; align-items: center; text-align: center; background: #FFF;}
-        .promo-event-type { font-size: 0.75rem; color: var(--glamoire-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 1rem; }
-        .promo-event-title { font-size: 1.3rem; font-weight: 700; color: var(--glamoire-dark); margin-bottom: 1rem; line-height: 1.3; font-family: 'The Seasons', serif;}
-        .promo-event-date { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.5rem; font-family: 'Poppins', sans-serif;}
+        .promo-event-body { padding: 2.5rem 2rem; display: flex; flex-direction: column; flex-grow: 1; align-items: center; text-align: center; background: #FFF;}
+        .promo-event-type { font-size: 0.8rem; color: var(--glamoire-gold); text-transform: uppercase; font-weight: 700; letter-spacing: 2px; margin-bottom: 1rem; }
+        .promo-event-title { font-size: 1.5rem; font-weight: 700; color: var(--glamoire-dark); margin-bottom: 1.2rem; line-height: 1.3; font-family: 'The Seasons', serif;}
+        .promo-event-date { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2rem; font-family: 'Poppins', sans-serif;}
 
         /* --- Brand Directory --- */
         .brand-card {
             background: #FFF; border-radius: 50%; border: 1px solid #F3F4F6;
-            width: 140px; height: 140px; margin: 0 auto;
+            width: 160px; height: 160px; margin: 0 auto;
             transition: var(--transition-bounce); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
             position: relative; overflow: hidden;
         }
         .brand-card:hover {
             border-color: var(--glamoire-gold);
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.15);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(212, 175, 55, 0.2);
         }
-        .brand-logo-box { width: 70%; height: 70%; display: flex; align-items: center; justify-content: center; }
-        .brand-logo-box img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(100%); transition: filter 0.3s; }
+        .brand-logo-box { width: 75%; height: 75%; display: flex; align-items: center; justify-content: center; }
+        .brand-logo-box img { width: 100%; height: 100%; object-fit: contain; filter: grayscale(100%); transition: filter 0.4s; }
         .brand-card:hover .brand-logo-box img { filter: grayscale(0%); }
 
         /* --- Category Section --- */
-        .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.5rem; }
-        @media (max-width: 1200px) { .category-grid { grid-template-columns: repeat(4, 1fr); } }
+        .category-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 2rem; }
+        @media (max-width: 1200px) { .category-grid { grid-template-columns: repeat(4, 1fr); gap: 1.5rem;} }
         @media (max-width: 768px) { .category-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } }
         @media (max-width: 480px) { .category-grid { grid-template-columns: repeat(2, 1fr); } }
 
         .cat-card-premium {
-            background: #FFF; border-radius: 20px; padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: var(--transition-bounce);
+            background: #FFF; border-radius: 24px; padding: 3rem 1.5rem; text-align: center; cursor: pointer; transition: var(--transition-bounce);
             border: 1px solid rgba(0,0,0,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02); position: relative; overflow: hidden; z-index: 1;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02); position: relative; overflow: hidden; z-index: 1;
         }
         .cat-card-premium::before {
             content: ''; position: absolute; inset: 0; background: var(--glamoire-dark); z-index: -1;
-            transform: translateY(100%); transition: transform 0.4s ease;
+            transform: translateY(100%); transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .cat-card-premium:hover { border-color: var(--glamoire-dark); transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .cat-card-premium:hover { border-color: var(--glamoire-dark); transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .cat-card-premium:hover::before { transform: translateY(0); }
         .cat-icon-wrapper {
-            width: 70px; height: 70px; border-radius: 50%; background: var(--glamoire-sand);
-            display: flex; align-items: center; justify-content: center; margin-bottom: 1.2rem;
-            transition: var(--transition-smooth); font-size: 1.8rem;
+            width: 80px; height: 80px; border-radius: 50%; background: var(--glamoire-sand);
+            display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;
+            transition: var(--transition-smooth); font-size: 2rem;
         }
-        .cat-card-premium:hover .cat-icon-wrapper { background: #FFF; transform: scale(1.1); color: var(--glamoire-gold) !important;}
-        .cat-name { font-size: 0.95rem; font-weight: 600; color: var(--text-main); margin: 0; transition: color 0.3s;}
-        .cat-card-premium:hover .cat-name { color: #FFF; }
+        .cat-card-premium:hover .cat-icon-wrapper { background: #FFF; transform: scale(1.15) rotate(5deg); }
+        .cat-name { font-size: 1.05rem; font-weight: 600; color: var(--text-main); margin: 0; transition: color 0.4s; font-family: 'Poppins', sans-serif;}
+        .cat-card-premium:hover .cat-name { color: var(--glamoire-gold); }
 
-        /* --- Article Section (Vogue Style) --- */
+        /* --- Article Section (Editorial Vogue Style) --- */
         .article-highlight {
-            position: relative; border-radius: 24px; overflow: hidden; cursor: pointer; height: 500px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative; border-radius: 30px; overflow: hidden; cursor: pointer; height: 550px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
         }
-        .article-highlight img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s ease; }
-        .article-highlight:hover img { transform: scale(1.05); }
+        .article-highlight img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s ease; }
+        .article-highlight:hover img { transform: scale(1.08); }
         .article-overlay {
-            position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 3rem;
+            position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 4rem;
         }
-        .article-overlay h3 { color: #FFF; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; line-height: 1.2; font-family: 'The Seasons', serif;}
-        .article-overlay p { color: var(--glamoire-gold); font-size: 0.9rem; font-weight: 500; font-family: 'Poppins', sans-serif; letter-spacing: 1px; text-transform: uppercase;}
+        .article-overlay h3 { color: #FFF; font-size: clamp(2rem, 3vw, 3rem); font-weight: 700; margin-bottom: 1rem; line-height: 1.2; font-family: 'The Seasons', serif;}
+        .article-overlay p { color: var(--glamoire-gold); font-size: 1rem; font-weight: 500; font-family: 'Poppins', sans-serif; letter-spacing: 2px; text-transform: uppercase;}
 
         .article-list-item {
-            display: flex; gap: 1.5rem; align-items: center; cursor: pointer; padding: 1.5rem; border-radius: 20px;
-            transition: var(--transition-bounce); border: 1px solid transparent; background: #FFF; box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            display: flex; gap: 2rem; align-items: center; cursor: pointer; padding: 1.5rem; border-radius: 24px;
+            transition: var(--transition-bounce); border: 1px solid transparent; background: #FFF; box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+            height: 100%;
         }
-        .article-list-item:hover { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); border-color: #F3F4F6; transform: translateX(10px); }
-        .article-list-img { width: 120px; height: 120px; border-radius: 16px; overflow: hidden; flex-shrink: 0; }
-        .article-list-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;}
-        .article-list-item:hover .article-list-img img { transform: scale(1.1); }
-        .article-list-content h4 { font-size: 1.1rem; font-weight: 600; color: var(--glamoire-dark); margin-bottom: 0.8rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Poppins', sans-serif; transition: color 0.3s;}
+        .article-list-item:hover { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); border-color: #F3F4F6; transform: translateX(10px); }
+        .article-list-img { width: 140px; height: 140px; border-radius: 16px; overflow: hidden; flex-shrink: 0; }
+        .article-list-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s;}
+        .article-list-item:hover .article-list-img img { transform: scale(1.15); }
+        .article-list-content h4 { font-size: 1.2rem; font-weight: 600; color: var(--glamoire-dark); margin-bottom: 1rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-family: 'Poppins', sans-serif; transition: color 0.3s;}
         .article-list-item:hover .article-list-content h4 { color: var(--glamoire-gold); }
-        .article-list-content .meta { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+        .article-list-content .meta { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 1px;}
+        @media (max-width: 576px) { .article-overlay { padding: 2rem; } .article-list-item { flex-direction: column; align-items: flex-start;} .article-list-img { width: 100%; height: 200px;} }
 
         /* --- Editorial Newsletter Section --- */
         .newsletter-premium {
-            background: var(--glamoire-sand); border-radius: 30px; padding: 6rem 2rem; text-align: center; color: var(--glamoire-dark);
-            position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.03);
+            background: var(--glamoire-dark); border-radius: 40px; padding: 7rem 2rem; text-align: center; color: #FFF;
+            position: relative; overflow: hidden; box-shadow: 0 30px 60px rgba(24,48,24,0.3); margin-top: 2rem;
         }
         .newsletter-premium::before {
-            content: ''; position: absolute; left: -10%; top: -50%; width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            content: ''; position: absolute; left: -10%; top: -50%; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, transparent 70%);
         }
-        .nl-title { font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 700; margin-bottom: 1rem; color: var(--glamoire-dark); }
-        .nl-desc { font-size: 1rem; color: var(--text-muted); max-width: 500px; margin: 0 auto 3rem; line-height: 1.6; font-family: 'Poppins', sans-serif;}
+        .newsletter-premium::after {
+            content: ''; position: absolute; right: -5%; bottom: -30%; width: 300px; height: 300px;
+            background: url('{{ asset('images/pattern-right.png') }}') no-repeat center; background-size: contain; opacity: 0.05; transform: rotate(-15deg);
+        }
+        .nl-title { font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 700; margin-bottom: 1rem; color: var(--glamoire-gold); position: relative; z-index: 2;}
+        .nl-desc { font-size: 1.1rem; color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto 3.5rem; line-height: 1.8; font-family: 'Poppins', sans-serif; position: relative; z-index: 2;}
 
-        .nl-form { max-width: 500px; margin: 0 auto; position: relative; z-index: 2; }
+        .nl-form { max-width: 600px; margin: 0 auto; position: relative; z-index: 2; }
         .nl-input-group {
-            display: flex; background: #FFF; border-radius: 50px; padding: 0.4rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); border: 1px solid rgba(0,0,0,0.05);
+            display: flex; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border-radius: 50px; padding: 0.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.2);
         }
-        .nl-input { border: none; background: transparent; padding: 1rem 1.5rem; width: 100%; font-size: 1rem; color: var(--text-main); outline: none; font-family: 'Poppins', sans-serif;}
+        .nl-input { border: none; background: transparent; padding: 1.2rem 2rem; width: 100%; font-size: 1.05rem; color: #FFF; outline: none; font-family: 'Poppins', sans-serif;}
+        .nl-input::placeholder { color: rgba(255,255,255,0.6); }
         .nl-btn {
-            background: var(--glamoire-dark); color: #FFF; border: none; padding: 0 2.5rem; border-radius: 50px;
-            font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: var(--transition-bounce); cursor: pointer; white-space: nowrap; font-size: 0.85rem;
+            background: var(--glamoire-gold); color: var(--glamoire-dark); border: none; padding: 0 3rem; border-radius: 50px;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: var(--transition-bounce); cursor: pointer; white-space: nowrap; font-size: 0.9rem;
         }
-        .nl-btn:hover { background: var(--glamoire-gold); color: #000; }
+        .nl-btn:hover { background: #FFF; transform: scale(1.05); }
         @media (max-width: 576px) {
-            .nl-input-group { flex-direction: column; background: transparent; box-shadow: none; gap: 15px; border: none;}
-            .nl-input { background: #FFF; border-radius: 50px; padding: 1.2rem; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.05);}
-            .nl-btn { padding: 1.2rem; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+            .nl-input-group { flex-direction: column; background: transparent; box-shadow: none; gap: 15px; border: none; padding: 0;}
+            .nl-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 1.2rem; text-align: center;}
+            .nl-btn { padding: 1.2rem; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
         }
     </style>
 
@@ -9002,11 +8974,11 @@
                             <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="w-100 h-auto" style="object-fit: cover; max-height: 450px;">
                         @endif
                         <div class="p-5 text-center" style="background: var(--glamoire-dark); color: white;">
-                            <h3 class="fw-bold mb-3" style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 2rem;">{{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
-                            <p class="mb-4" style="font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                            <h3 class="fw-bold mb-3" style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 2.2rem;">{{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
+                            <p class="mb-4 opacity-85" style="font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
                                 {{ $data['popups'][0]->description ?? 'Dapatkan penawaran eksklusif khusus pendaftaran pertama Anda hari ini.' }}
                             </p>
-                            <a href="/login" class="btn btn-light rounded-pill px-5 py-3 fw-bold w-100" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--glamoire-dark);">Daftar & Klaim Sekarang</a>
+                            <a href="/login" class="btn btn-light rounded-pill px-5 py-3 fw-bold w-100" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.3s;" onmouseover="this.style.background='var(--glamoire-gold)'; this.style.color='var(--glamoire-dark)';" onmouseout="this.style.background='white'; this.style.color='black';">Daftar & Klaim Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -9025,7 +8997,7 @@
                         <a href="/{{ $data['promoModal']->promo_name }}-detail-promo">
                             <img src="{{ Storage::url($data['promoModal']->image) }}"
                                 alt="{{ $data['promoModal']->promo_name }}"
-                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
                         </a>
                     </div>
                 </div>
@@ -9034,7 +9006,7 @@
     @endif
 
     <!-- 1. HERO SECTION -->
-    <div class="hero-carousel-wrapper reveal">
+    <div class="hero-carousel-wrapper">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 @foreach ($data['promos'] as $promo)
@@ -9056,52 +9028,19 @@
         </div>
     </div>
 
-    <!-- ADVANCED CX: INFINITE MARQUEE -->
-    <div class="marquee-wrapper reveal">
-        <div class="marquee-content">
-            <span><i class="fas fa-star"></i> 100% VEGAN</span>
-            <span><i class="fas fa-star"></i> CRUELTY FREE</span>
-            <span><i class="fas fa-star"></i> DERMATOLOGIST TESTED</span>
-            <span><i class="fas fa-star"></i> BPOM APPROVED</span>
-            <span><i class="fas fa-star"></i> LUXURY BEAUTY</span>
-            <span><i class="fas fa-star"></i> 100% ORIGINAL</span>
+    <!-- 2. THE GLAMOIRE PROMISE (Scrolling Marquee) -->
+    <div class="glamoire-promise-bar">
+        <div class="promise-track">
+            <!-- Repeated for seamless loop -->
+            <span class="promise-item"><i class="fas fa-leaf"></i> 100% Plant-Based</span>
+            <span class="promise-item"><i class="fas fa-check-circle"></i> BPOM Approved</span>
+            <span class="promise-item"><i class="fas fa-gem"></i> Guaranteed Authentic</span>
+            <span class="promise-item"><i class="fas fa-paw"></i> Cruelty Free</span>
 
-            <!-- Duplikasi untuk ilusi infinite scroll mulus -->
-            <span><i class="fas fa-star"></i> 100% VEGAN</span>
-            <span><i class="fas fa-star"></i> CRUELTY FREE</span>
-            <span><i class="fas fa-star"></i> DERMATOLOGIST TESTED</span>
-            <span><i class="fas fa-star"></i> BPOM APPROVED</span>
-            <span><i class="fas fa-star"></i> LUXURY BEAUTY</span>
-            <span><i class="fas fa-star"></i> 100% ORIGINAL</span>
-        </div>
-    </div>
-
-    <!-- 2. TRUST BADGES -->
-    <div class="trust-floating-wrapper reveal">
-        <div class="container md:px-20 lg:px-24 xl:px-24 2xl:px-48">
-            <div class="trust-bar">
-                <div class="trust-item">
-                    <div class="trust-icon"><i class="fas fa-leaf"></i></div>
-                    <div class="trust-text">
-                        <h4>Plant-Based</h4>
-                        <p class="d-none d-md-block">100% Alami & Cruelty-Free</p>
-                    </div>
-                </div>
-                <div class="trust-item">
-                    <div class="trust-icon"><i class="fas fa-check-circle"></i></div>
-                    <div class="trust-text">
-                        <h4>BPOM Approved</h4>
-                        <p class="d-none d-md-block">Aman & Tersertifikasi</p>
-                    </div>
-                </div>
-                <div class="trust-item">
-                    <div class="trust-icon"><i class="fas fa-box-open"></i></div>
-                    <div class="trust-text">
-                        <h4>Pasti Asli</h4>
-                        <p class="d-none d-md-block">Garansi 100% Original</p>
-                    </div>
-                </div>
-            </div>
+            <span class="promise-item"><i class="fas fa-leaf"></i> 100% Plant-Based</span>
+            <span class="promise-item"><i class="fas fa-check-circle"></i> BPOM Approved</span>
+            <span class="promise-item"><i class="fas fa-gem"></i> Guaranteed Authentic</span>
+            <span class="promise-item"><i class="fas fa-paw"></i> Cruelty Free</span>
         </div>
     </div>
 
@@ -9113,12 +9052,12 @@
                 <div class="split-section-wrapper">
                     <div class="split-section-left">
                         <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
-                        <p class="section-desc">Koleksi produk favorit yang paling banyak dicintai pelanggan setia Glamoire. Saatnya temukan kilau sejati Anda.</p>
-                        <a href="/shop" class="link-gold">Lihat Semua <i class="fas fa-arrow-right"></i></a>
+                        <p class="section-desc">Koleksi mahakarya yang paling dicintai. Elevasi rutinitas kecantikan Anda dengan produk ikonis Glamoire.</p>
+                        <a href="/shop" class="link-gold">Shop The Collection <i class="fas fa-arrow-right"></i></a>
                     </div>
 
                     <div class="split-section-right">
-                        <div class="swiper top-selling-slider product-slider" style="padding-bottom: 2rem; padding-top: 1rem;">
+                        <div class="swiper top-selling-slider product-slider" style="padding-bottom: 3rem; padding-top: 1rem;">
                             <div class="swiper-wrapper">
                                 @foreach ($data['topsell'] as $product)
                                     @php
@@ -9148,22 +9087,22 @@
                                                     @if (session('id_user'))
                                                         @if ($product->stock_quantity == 0)
                                                             <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-lpc-action btn-lpc-notify">
-                                                                <i class="fas fa-bell"></i> Beritahu
+                                                                <i class="fas fa-bell"></i> Notify Me
                                                             </button>
                                                         @else
                                                             @if($inCart)
                                                                 <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-lpc-action btn-lpc-added">
-                                                                    <i class="fas fa-check"></i> Keranjang
+                                                                    <i class="fas fa-check"></i> In Cart
                                                                 </button>
                                                             @else
                                                                 <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-lpc-action btn-lpc-add">
-                                                                    <i class="fas fa-shopping-bag"></i> Tambah
+                                                                    <i class="fas fa-shopping-bag"></i> Add to Cart
                                                                 </button>
                                                             @endif
                                                         @endif
                                                     @else
                                                         <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-lpc-action btn-lpc-add">
-                                                            Login Beli
+                                                            Login to Buy
                                                         </button>
                                                     @endif
                                                 </div>
@@ -9220,33 +9159,50 @@
             </section>
         @endif
 
-        <!-- 5. FLASH SALE -->
-        <section class="section-padding pt-0 reveal">
+    </div> <!-- Close Container for full width parallax -->
+
+    <!-- NEW: PARALLAX CAMPAIGN DIVIDER -->
+    <div class="campaign-parallax reveal">
+        <!-- Using a placeholder luxury beauty video. Replace src with your actual campaign video url -->
+        <video autoplay loop muted playsinline>
+            <source src="https://cdn.pixabay.com/vimeo/74735398/makeup-131102.mp4?width=1280&hash=8b584d4367c30d310e53cd270e599b531475759e" type="video/mp4">
+        </video>
+        <div class="campaign-content">
+            <h2>Discover Your Radiance</h2>
+            <p>Memadukan kemurnian alam dengan inovasi sains. Glamoire menghadirkan perawatan kulit yang mentransformasi kecantikan sejati Anda.</p>
+            <a href="/about" class="btn-campaign">Our Story</a>
+        </div>
+    </div>
+
+    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+
+        <!-- 5. FLASH SALE (Cinematic) -->
+        <section class="section-padding reveal">
             <div class="container-fluid p-0">
                 <div class="flash-sale-wrapper">
                     <div class="row align-items-center">
-                        <div class="col-12 col-xl-3 flash-header">
-                            <h2 class="flash-title"><i class="fas fa-bolt text-warning"></i> Flash Sale</h2>
-                            <p class="mb-0" style="font-size: 1.05rem; opacity:0.9;">Penawaran super kilat eksklusif. Jangan sampai terlewatkan!</p>
+                        <div class="col-12 col-xl-4 flash-header">
+                            <h2 class="flash-title"><i class="fas fa-bolt"></i> Flash Sale</h2>
+                            <p class="mb-0" style="font-size: 1.1rem; opacity:0.8; font-family:'Poppins', sans-serif;">Penawaran super kilat eksklusif. Kesempatan terbatas untuk mengoleksi produk impian Anda.</p>
                             <div class="timer-flex">
                                 <div class="timer-block">
                                     <div class="timer-val">08</div>
-                                    <div class="timer-lbl">Jam</div>
+                                    <div class="timer-lbl">Hours</div>
                                 </div>
                                 <span class="fs-2 fw-bold" style="color: var(--glamoire-gold);">:</span>
                                 <div class="timer-block">
                                     <div class="timer-val">45</div>
-                                    <div class="timer-lbl">Mnt</div>
+                                    <div class="timer-lbl">Mins</div>
                                 </div>
                                 <span class="fs-2 fw-bold" style="color: var(--glamoire-gold);">:</span>
                                 <div class="timer-block">
                                     <div class="timer-val">12</div>
-                                    <div class="timer-lbl">Dtk</div>
+                                    <div class="timer-lbl">Secs</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 col-xl-9">
+                        <div class="col-12 col-xl-8 mt-5 mt-xl-0">
                             <div class="swiper flash-sale-slider product-slider pb-0" style="padding-top: 1rem; padding-bottom: 2rem;">
                                 <div class="swiper-wrapper">
                                     @foreach ($data['new']->take(6) as $product)
@@ -9262,19 +9218,19 @@
                                                     <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
 
                                                     <!-- Stock Progress Bar -->
-                                                    <div class="position-absolute bottom-0 start-0 w-100 px-3 pb-3 z-3">
-                                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                                            <span class="text-danger fw-bold shadow-sm" style="font-size: 0.65rem; background: rgba(255,255,255,0.95); padding: 2px 8px; border-radius: 4px; text-transform:uppercase; letter-spacing: 0.5px;">Sisa Terbatas</span>
+                                                    <div class="position-absolute bottom-0 start-0 w-100 px-4 pb-4 z-3">
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span class="text-danger fw-bold" style="font-size: 0.75rem; background: rgba(255,255,255,0.95); padding: 4px 12px; border-radius: 50px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">Hampir Habis!</span>
                                                         </div>
-                                                        <div class="progress" style="height: 6px; background: rgba(0,0,0,0.3); border-radius: 10px;">
+                                                        <div class="progress" style="height: 6px; background: rgba(0,0,0,0.4); border-radius: 10px; backdrop-filter:blur(4px);">
                                                             <div class="progress-bar bg-danger" style="width: 85%; border-radius: 10px;"></div>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="lpc-info pb-4 text-center">
                                                     <div class="lpc-price-box">
-                                                        <span class="lpc-price-strike">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                                        <span class="lpc-price-current lpc-price-discounted fs-5">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                        <span class="lpc-price-strike" style="font-size:0.95rem;">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                        <span class="lpc-price-current lpc-price-discounted" style="font-size: 1.5rem;">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -9294,10 +9250,10 @@
                 <div class="container-fluid p-0">
                     <div class="full-section-header">
                         <h2>Exclusive Offers</h2>
-                        <p>Dapatkan voucher dan penawaran spesial untuk melengkapi ritual kecantikan Anda.</p>
+                        <p>Dapatkan voucher dan penawaran spesial untuk melengkapi ritual kecantikan harian Anda.</p>
                     </div>
 
-                    <div class="swiper promo-special-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                    <div class="swiper promo-special-slider product-slider" style="padding-top: 1rem; padding-bottom: 3rem;">
                         <div class="swiper-wrapper">
                             @foreach ($data['promos']->sortByDesc('created_at') as $promo)
                                 <div class="swiper-slide h-auto">
@@ -9312,7 +9268,7 @@
                                                     {{ \Carbon\Carbon::parse($promo->start_date)->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d M Y') }}
                                                 @endif
                                             </div>
-                                            <span class="btn-lpc-action btn-lpc-add mt-auto px-4 w-auto">Eksplor Penawaran</span>
+                                            <span class="btn-lpc-action btn-lpc-add mt-auto px-5 w-auto">Eksplor Penawaran</span>
                                         </div>
                                     </div>
                                 </div>
@@ -9330,11 +9286,11 @@
             <div class="container-fluid p-0">
                 <div class="split-section-wrapper" style="align-items: center;">
                     <div class="split-section-left">
-                        <h2 class="section-title" style="font-size: 2.5rem;">The <span style="color:var(--glamoire-gold); font-style:italic;">Brands</span></h2>
+                        <h2 class="section-title" style="font-size: 3.5rem;">The <br><span style="color:var(--glamoire-gold); font-style:italic;">Brands.</span></h2>
                         <p class="section-desc">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk memenuhi standar Anda.</p>
                     </div>
                     <div class="split-section-right">
-                        <div class="swiper brand-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                        <div class="swiper brand-slider product-slider" style="padding-top: 1.5rem; padding-bottom: 2.5rem;">
                             <div class="swiper-wrapper">
                                 @foreach ($data['brands'] as $brand)
                                     <div class="swiper-slide h-auto pb-3">
@@ -9354,20 +9310,6 @@
             </div>
         </section>
 
-    </div><!-- End Wrap -->
-
-    <!-- ADVANCED CX: Cinematic Parallax Divider -->
-    <section class="parallax-section reveal">
-        <div class="parallax-overlay"></div>
-        <div class="parallax-content">
-            <h2 class="parallax-title">Embrace Your True Radiance</h2>
-            <p class="parallax-subtitle">Kecantikan sejati bermula dari perawatan yang otentik. Temukan rahasia kulit bercahaya dengan koleksi eksklusif kami yang diformulasikan dari bahan alami terbaik.</p>
-            <a href="/shop" class="parallax-btn">Eksplorasi Koleksi</a>
-        </div>
-    </section>
-
-    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
-
         <!-- 8. RECOMMENDED (COCOK UNTUK KAMU) -->
         <section class="section-padding pt-0 reveal">
             <div class="container-fluid p-0">
@@ -9376,7 +9318,7 @@
                     <p>Rekomendasi personal berdasarkan preferensi dan gaya kecantikan elegan Anda.</p>
                 </div>
 
-                <div class="swiper curated-slider product-slider" style="padding-top: 1rem; padding-bottom: 2rem;">
+                <div class="swiper curated-slider product-slider" style="padding-top: 1rem; padding-bottom: 3rem;">
                     <div class="swiper-wrapper">
                         @foreach ($data['new'] as $product)
                             @php
@@ -9406,22 +9348,22 @@
                                             @if (session('id_user'))
                                                 @if ($product->stock_quantity == 0)
                                                     <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-lpc-action btn-lpc-notify">
-                                                        <i class="fas fa-bell"></i> Beritahu
+                                                        <i class="fas fa-bell"></i> Notify Me
                                                     </button>
                                                 @else
                                                     @if($inCart)
                                                         <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-lpc-action btn-lpc-added">
-                                                            <i class="fas fa-check"></i> Keranjang
+                                                            <i class="fas fa-check"></i> In Cart
                                                         </button>
                                                     @else
                                                         <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-lpc-action btn-lpc-add">
-                                                            <i class="fas fa-shopping-bag"></i> Tambah
+                                                            <i class="fas fa-shopping-bag"></i> Add to Cart
                                                         </button>
                                                     @endif
                                                 @endif
                                             @else
                                                 <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-lpc-action btn-lpc-add">
-                                                    Login Beli
+                                                    Login to Buy
                                                 </button>
                                             @endif
                                         </div>
@@ -9470,7 +9412,7 @@
                             $iconClass = $icons[$index % 6];
                         @endphp
                         <div class="cat-card-premium" onclick="window.location.href='/belanja-{{ $category->name }}'">
-                            <div class="cat-icon-wrapper" style="color: {{ $iconColor }}; box-shadow: 0 5px 15px {{ $iconColor }}30;">
+                            <div class="cat-icon-wrapper" style="color: {{ $iconColor }}; box-shadow: inset 0 0 0 1px {{ $iconColor }}40;">
                                 <i class="bi {{ $iconClass }}"></i>
                             </div>
                             <h3 class="cat-name">{{ $category->name }}</h3>
@@ -9501,7 +9443,7 @@
                         </div>
 
                         <div class="col-12 col-lg-5">
-                            <div class="d-flex flex-column gap-3 h-100 justify-content-between">
+                            <div class="d-flex flex-column gap-4 h-100 justify-content-between">
                                 @foreach ($data['articles']->skip(1)->take(3) as $article)
                                     <div class="article-list-item" onclick="window.location.href='/{{ $article->title }}_detailnewsletter'">
                                         <div class="article-list-img">
@@ -9524,8 +9466,8 @@
         <section class="section-padding pt-0 reveal">
             <div class="container-fluid p-0">
                 <div class="newsletter-premium">
-                    <h2 class="nl-title">Stay Glamorous</h2>
-                    <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo rahasia, dan jurnal kecantikan langsung di inbox Anda.</p>
+                    <h2 class="nl-title">Stay Glamorous.</h2>
+                    <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo rahasia, dan jurnal kecantikan langsung di kotak masuk Anda.</p>
 
                     <form id="subscribe-form" class="nl-form">
                         @csrf
@@ -9545,7 +9487,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
-            // Intersection Observer for Reveal Animation
+            // Intersection Observer for Reveal Animation (The "Wah" entrance effect)
             const revealElements = document.querySelectorAll('.reveal');
             const revealObserver = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
@@ -9554,46 +9496,54 @@
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { root: null, rootMargin: '0px', threshold: 0.1 });
+            }, { root: null, rootMargin: '0px', threshold: 0.15 });
 
             revealElements.forEach(el => revealObserver.observe(el));
+
+            // Parallax Effect for Campaign Video
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallaxVideo = document.querySelector('.campaign-parallax video');
+                if(parallaxVideo) {
+                    parallaxVideo.style.transform = `translateY(${scrolled * 0.3}px)`;
+                }
+            });
 
             // Swiper Initializations
             new Swiper('.hero-swiper', {
                 slidesPerView: 1, loop: true, effect: 'fade', fadeEffect: { crossFade: true },
                 autoplay: { delay: 6000, disableOnInteraction: false },
                 pagination: { el: '.hero-swiper .swiper-pagination', clickable: true },
-                navigation: { nextEl: '.hero-swiper .swiper-button-next', prevEl: '.hero-swiper .swiper-button-prev' },
             });
 
             new Swiper(".top-selling-slider", {
-                slidesPerView: 1.5, spaceBetween: 15,
+                slidesPerView: 1.5, spaceBetween: 20,
                 navigation: { nextEl: ".top-selling-slider .swiper-button-next", prevEl: ".top-selling-slider .swiper-button-prev" },
-                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 2.5, spaceBetween: 20 }, 992: { slidesPerView: 3.5, spaceBetween: 24 }, 1200: { slidesPerView: 4.5, spaceBetween: 24 } }
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 24 }, 768: { slidesPerView: 2.5, spaceBetween: 24 }, 992: { slidesPerView: 3.5, spaceBetween: 30 }, 1200: { slidesPerView: 4.5, spaceBetween: 30 } }
             });
 
             new Swiper(".flash-sale-slider", {
-                slidesPerView: 1.5, spaceBetween: 15,
+                slidesPerView: 1.5, spaceBetween: 20,
                 navigation: { nextEl: ".flash-sale-slider .swiper-button-next", prevEl: ".flash-sale-slider .swiper-button-prev" },
-                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 2.5, spaceBetween: 20 }, 992: { slidesPerView: 3.5, spaceBetween: 20 }, 1200: { slidesPerView: 4.5, spaceBetween: 24 } }
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 24 }, 768: { slidesPerView: 2.5, spaceBetween: 24 }, 992: { slidesPerView: 3.5, spaceBetween: 24 }, 1200: { slidesPerView: 3.5, spaceBetween: 30 } }
             });
 
             new Swiper(".promo-special-slider", {
-                slidesPerView: 1.2, spaceBetween: 16,
+                slidesPerView: 1.2, spaceBetween: 20,
                 navigation: { nextEl: ".promo-special-slider .swiper-button-next", prevEl: ".promo-special-slider .swiper-button-prev" },
                 breakpoints: { 576: { slidesPerView: 2 }, 768: { slidesPerView: 2.5 }, 992: { slidesPerView: 3 }, 1200: { slidesPerView: 4 } }
             });
 
             new Swiper(".brand-slider", {
-                slidesPerView: 2.2, spaceBetween: 15,
+                slidesPerView: 2.5, spaceBetween: 20,
                 navigation: { nextEl: ".brand-slider .swiper-button-next", prevEl: ".brand-slider .swiper-button-prev" },
-                breakpoints: { 576: { slidesPerView: 3.2 }, 768: { slidesPerView: 4.5 }, 992: { slidesPerView: 5.5 }, 1200: { slidesPerView: 6.5 } }
+                breakpoints: { 576: { slidesPerView: 3.5 }, 768: { slidesPerView: 4.5 }, 992: { slidesPerView: 5.5 }, 1200: { slidesPerView: 6.5 } }
             });
 
             new Swiper(".curated-slider", {
-                slidesPerView: 1.5, spaceBetween: 15,
+                slidesPerView: 1.5, spaceBetween: 20,
                 navigation: { nextEl: ".curated-slider .swiper-button-next", prevEl: ".curated-slider .swiper-button-prev" },
-                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 20 }, 768: { slidesPerView: 3.2, spaceBetween: 20 }, 992: { slidesPerView: 4.5, spaceBetween: 24 }, 1200: { slidesPerView: 5.5, spaceBetween: 24 } }
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 24 }, 768: { slidesPerView: 3.2, spaceBetween: 24 }, 992: { slidesPerView: 4.5, spaceBetween: 30 }, 1200: { slidesPerView: 5.5, spaceBetween: 30 } }
             });
 
             // Modals Auto Show Logic
