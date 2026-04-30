@@ -21,34 +21,10 @@
     <!-- Menggunakan CDN untuk FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!-- PERBAIKAN: Meletakkan fungsi Dummy/Safety di Head agar dieksekusi sebelum Navbar/Sidebar -->
+    <!-- PERBAIKAN: Fungsi global dideklarasikan secara mutlak di sini -->
     <script>
-        // 1. Mencegah error 'updateContactUsNotifications is not defined' yang dipanggil di navbar/sidebar
-        window.updateContactUsNotifications = function() {
-            // Function ini sengaja dikosongkan untuk bypass error
-            return true;
-        };
-
-        // 2. Mencegah error 'updateStockAlerts is not defined' jika ada
-        window.updateStockAlerts = function() {
-            return true;
-        };
-
-        // 3. Menambahkan elemen dummy sebelum DOM selesai untuk menghindari Cannot set properties of null
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!document.getElementById('notif-badge-stock')) {
-                let dummyStock = document.createElement('div');
-                dummyStock.id = 'notif-badge-stock';
-                dummyStock.style.display = 'none';
-                document.body.appendChild(dummyStock);
-            }
-            if (!document.getElementById('notif-badge-contact')) {
-                let dummyContact = document.createElement('div');
-                dummyContact.id = 'notif-badge-contact';
-                dummyContact.style.display = 'none';
-                document.body.appendChild(dummyContact);
-            }
-        });
+        function updateContactUsNotifications() { return true; }
+        function updateStockAlerts() { return true; }
     </script>
 
     <style>
@@ -236,6 +212,10 @@
 </head>
 
 <body>
+    <!-- PERBAIKAN: Elemen dummy ditulis langsung di HTML agar langsung eksis saat dirender -->
+    <div id="notif-badge-stock" style="display: none;">0</div>
+    <div id="notif-badge-contact" style="display: none;">0</div>
+
     <div id="app">
         @include('admin.layouts.sidebar')
         @include('admin.layouts.navbar')
@@ -470,7 +450,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- PENTING: Script bawaan template (main.js) dipanggil lebih dulu sebelum script custom -->
+    <!-- Script bawaan template -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <script>
