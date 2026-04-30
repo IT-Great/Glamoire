@@ -8493,16 +8493,15 @@
         .section-padding { padding: 6rem 0; }
         @media (max-width: 768px) { .section-padding { padding: 4rem 0; } }
 
-        /* --- Hero Carousel Immersive --- */
+        /* --- Hero Carousel Immersive (PERBAIKAN GAMBAR TERPOTONG) --- */
         .hero-carousel-wrapper {
             width: 100%;
             position: relative;
-            background: #000;
+            background: var(--glamoire-dark); /* Background gelap agar saat contain tetap elegan */
         }
         .hero-swiper {
             width: 100%;
-            height: 90vh; /* Extremely immersive height */
-            min-height: 600px;
+            height: auto; /* Membiarkan tinggi menyesuaikan gambar otomatis */
         }
         .hero-swiper .swiper-slide {
             overflow: hidden;
@@ -8514,11 +8513,12 @@
         }
         .hero-swiper img, .hero-swiper video {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: auto;
+            max-height: 80vh; /* Batasi maksimal 80% tinggi layar laptop agar tidak kebesaran */
+            object-fit: contain; /* Mengubah dari cover menjadi contain agar TIDAK TERPOTONG */
             object-position: center;
             transition: transform 12s ease;
-            transform: scale(1.08);
+            transform: scale(1.02); /* Scale sangat tipis agar tidak merusak sisi gambar */
         }
         .hero-swiper .swiper-slide-active img {
             transform: scale(1);
@@ -8527,7 +8527,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
+            background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 35%);
             pointer-events: none;
         }
         .hero-swiper .swiper-pagination-bullet {
@@ -8544,39 +8544,54 @@
             width: 80px;
         }
 
-        /* --- NEW: The Glamoire Promise (Replacing boring Trust Badges) --- */
-        .glamoire-promise-bar {
-            background: var(--glamoire-dark);
-            padding: 2.5rem 0;
-            overflow: hidden;
-            white-space: nowrap;
+        /* --- Floating Trust Badges --- */
+        .trust-floating-wrapper {
+            position: relative;
+            z-index: 10;
+            margin-top: -50px;
+            padding: 0 15px;
+        }
+        .trust-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            padding: 2rem 1rem;
             display: flex;
-            align-items: center;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        .promise-track {
-            display: inline-block;
-            animation: scrollText 30s linear infinite;
-        }
-        .promise-item {
-            display: inline-flex;
+        .trust-item {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+        }
+        .trust-item:hover { transform: translateY(-5px); }
+        .trust-icon {
+            width: 60px; height: 60px;
+            background: var(--glamoire-sand);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             color: var(--glamoire-gold);
-            font-family: 'The Seasons', serif;
             font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-right: 4rem;
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.3);
         }
-        .promise-item i {
-            font-size: 1rem;
-            margin: 0 1.5rem;
-            color: rgba(255,255,255,0.3);
-        }
-        @keyframes scrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .trust-text h4 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--glamoire-dark); }
+        .trust-text p { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-family: 'Poppins', sans-serif;}
+
+        @media (max-width: 768px) {
+            .trust-floating-wrapper { margin-top: -30px; }
+            .trust-bar { padding: 1.5rem 1rem; gap: 1.5rem;}
+            .trust-item { min-width: 140px; }
+            .trust-icon { width: 50px; height: 50px; font-size: 1.2rem;}
+            .trust-text h4 { font-size: 0.95rem; }
         }
 
         /* --- Custom Split Layout --- */
@@ -8651,7 +8666,7 @@
         }
         .lpc-img-box {
             position: relative;
-            padding-top: 130%; /* Very tall, editorial aspect ratio */
+            padding-top: 130%;
             background: #FAFAFA;
             overflow: hidden;
             cursor: pointer;
@@ -8727,7 +8742,7 @@
         .lpc-price-discounted { color: var(--danger-main); }
         .lpc-price-strike { font-size: 0.9rem; color: #9CA3AF; text-decoration: line-through; }
 
-        /* --- NEW: PARALLAX CAMPAIGN DIVIDER --- */
+        /* --- PARALLAX CAMPAIGN DIVIDER --- */
         .campaign-parallax {
             height: 70vh;
             min-height: 400px;
@@ -8737,10 +8752,10 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            clip-path: inset(0); /* Crucial for parallax effect */
+            clip-path: inset(0);
         }
         .campaign-parallax video {
-            position: fixed; /* Parallax magic */
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -8748,11 +8763,6 @@
             object-fit: cover;
             z-index: -1;
             filter: brightness(0.6);
-        }
-        /* Fallback if video is not available, we use a dark aesthetic background */
-        .campaign-fallback {
-            background: url('https://images.unsplash.com/photo-1615397323385-05d53a99257e?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
-            background-size: cover;
         }
         .campaign-content {
             text-align: center;
@@ -8962,23 +8972,23 @@
         }
     </style>
 
-    <!-- Welcome Modal -->
+    <!-- Welcome Modal PERBAIKAN UKURAN (Tambahan scrollable & resize image) -->
     @if (!session('id_user') && $data['popups']->isNotEmpty())
         <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 overflow-hidden" style="border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.4);">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content border-0 overflow-hidden" style="border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
                     <div class="modal-body p-0 position-relative">
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
                             style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></button>
                         @if ($data['popups'][0]->media_type === 'image')
-                            <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="w-100 h-auto" style="object-fit: cover; max-height: 450px;">
+                            <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="w-100 h-auto" style="object-fit: cover; max-height: 280px;">
                         @endif
-                        <div class="p-5 text-center" style="background: var(--glamoire-dark); color: white;">
-                            <h3 class="fw-bold mb-3" style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 2.2rem;">{{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
-                            <p class="mb-4 opacity-85" style="font-size: 1rem; line-height: 1.6; color: rgba(255,255,255,0.8);">
+                        <div class="p-4 text-center" style="background: var(--glamoire-dark); color: white;">
+                            <h3 class="fw-bold mb-2" style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 1.7rem;">{{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
+                            <p class="mb-3 opacity-85" style="font-size: 0.9rem; line-height: 1.5; color: rgba(255,255,255,0.8);">
                                 {{ $data['popups'][0]->description ?? 'Dapatkan penawaran eksklusif khusus pendaftaran pertama Anda hari ini.' }}
                             </p>
-                            <a href="/login" class="btn btn-light rounded-pill px-5 py-3 fw-bold w-100" style="font-size: 1rem; text-transform: uppercase; letter-spacing: 1.5px; transition: all 0.3s;" onmouseover="this.style.background='var(--glamoire-gold)'; this.style.color='var(--glamoire-dark)';" onmouseout="this.style.background='white'; this.style.color='black';">Daftar & Klaim Sekarang</a>
+                            <a href="/login" class="btn btn-light rounded-pill px-4 py-2 fw-bold w-100" style="font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;" onmouseover="this.style.background='var(--glamoire-gold)'; this.style.color='var(--glamoire-dark)';" onmouseout="this.style.background='white'; this.style.color='black';">Daftar & Klaim Sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -8986,7 +8996,7 @@
         </div>
     @endif
 
-    <!-- Promo Modal -->
+    <!-- Promo Modal PERBAIKAN UKURAN -->
     @if (session('id_user') && $data['promoModal'] !== null)
         <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -8997,7 +9007,7 @@
                         <a href="/{{ $data['promoModal']->promo_name }}-detail-promo">
                             <img src="{{ Storage::url($data['promoModal']->image) }}"
                                 alt="{{ $data['promoModal']->promo_name }}"
-                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="transition: transform 0.5s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="max-height: 85vh; object-fit: contain; transition: transform 0.4s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         </a>
                     </div>
                 </div>
@@ -9006,7 +9016,7 @@
     @endif
 
     <!-- 1. HERO SECTION -->
-    <div class="hero-carousel-wrapper">
+    <div class="hero-carousel-wrapper reveal">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 @foreach ($data['promos'] as $promo)
@@ -9024,12 +9034,12 @@
             </div>
             <div class="swiper-button-next d-none d-md-flex"></div>
             <div class="swiper-button-prev d-none d-md-flex"></div>
-            <div class="swiper-pagination mb-4"></div>
+            <div class="swiper-pagination mb-3"></div>
         </div>
     </div>
 
     <!-- 2. THE GLAMOIRE PROMISE (Scrolling Marquee) -->
-    <div class="glamoire-promise-bar">
+    <div class="glamoire-promise-bar reveal">
         <div class="promise-track">
             <!-- Repeated for seamless loop -->
             <span class="promise-item"><i class="fas fa-leaf"></i> 100% Plant-Based</span>
@@ -9525,7 +9535,7 @@
             new Swiper(".flash-sale-slider", {
                 slidesPerView: 1.5, spaceBetween: 20,
                 navigation: { nextEl: ".flash-sale-slider .swiper-button-next", prevEl: ".flash-sale-slider .swiper-button-prev" },
-                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 24 }, 768: { slidesPerView: 2.5, spaceBetween: 24 }, 992: { slidesPerView: 3.5, spaceBetween: 24 }, 1200: { slidesPerView: 3.5, spaceBetween: 30 } }
+                breakpoints: { 576: { slidesPerView: 2.2, spaceBetween: 24 }, 768: { slidesPerView: 2.5, spaceBetween: 24 }, 992: { slidesPerView: 3.5, spaceBetween: 20 }, 1200: { slidesPerView: 4.5, spaceBetween: 24 } }
             });
 
             new Swiper(".promo-special-slider", {
