@@ -9678,7 +9678,22 @@
         .section-padding { padding: 6rem 0; }
         @media (max-width: 768px) { .section-padding { padding: 4rem 0; } }
 
-        /* --- Hero Carousel Immersive --- */
+        /* --- Modal Perfect Centering Fix --- */
+        .modal {
+            padding: 0 !important; /* Mencegah bootstrap menambahkan padding-right yang membuat modal bergeser ke kiri */
+        }
+        .modal-dialog.modal-dialog-centered {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 0 auto !important;
+            min-height: 100vh !important; /* Memaksa modal penuh 100% layar secara vertikal */
+        }
+        .modal-dialog.modal-dialog-centered .modal-content {
+            margin: auto !important;
+        }
+
+        /* --- Hero Carousel Immersive (PERBAIKAN GAMBAR TERPOTONG) --- */
         .hero-carousel-wrapper {
             width: 100%;
             position: relative;
@@ -9729,39 +9744,54 @@
             width: 80px;
         }
 
-        /* --- The Glamoire Promise (Scrolling Marquee) --- */
-        .glamoire-promise-bar {
-            background: var(--glamoire-dark);
-            padding: 2.5rem 0;
-            overflow: hidden;
-            white-space: nowrap;
+        /* --- Floating Trust Badges --- */
+        .trust-floating-wrapper {
+            position: relative;
+            z-index: 10;
+            margin-top: -50px;
+            padding: 0 15px;
+        }
+        .trust-bar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            padding: 2rem 1rem;
             display: flex;
-            align-items: center;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.5);
         }
-        .promise-track {
-            display: inline-block;
-            animation: scrollText 30s linear infinite;
-        }
-        .promise-item {
-            display: inline-flex;
+        .trust-item {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
+            gap: 1rem;
+            transition: var(--transition-smooth);
+        }
+        .trust-item:hover { transform: translateY(-5px); }
+        .trust-icon {
+            width: 60px; height: 60px;
+            background: var(--glamoire-sand);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
             color: var(--glamoire-gold);
-            font-family: 'The Seasons', serif;
             font-size: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-right: 4rem;
+            box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.3);
         }
-        .promise-item i {
-            font-size: 1rem;
-            margin: 0 1.5rem;
-            color: rgba(255,255,255,0.3);
-        }
-        @keyframes scrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .trust-text h4 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--glamoire-dark); }
+        .trust-text p { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-family: 'Poppins', sans-serif;}
+
+        @media (max-width: 768px) {
+            .trust-floating-wrapper { margin-top: -30px; }
+            .trust-bar { padding: 1.5rem 1rem; gap: 1.5rem;}
+            .trust-item { min-width: 140px; }
+            .trust-icon { width: 50px; height: 50px; font-size: 1.2rem;}
+            .trust-text h4 { font-size: 0.95rem; }
         }
 
         /* --- Custom Split Layout --- */
@@ -9836,7 +9866,7 @@
         }
         .lpc-img-box {
             position: relative;
-            padding-top: 130%;
+            padding-top: 130%; /* Very tall, editorial aspect ratio */
             background: #FAFAFA;
             overflow: hidden;
             cursor: pointer;
@@ -9922,10 +9952,10 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            clip-path: inset(0);
+            clip-path: inset(0); /* Crucial for parallax effect */
         }
         .campaign-parallax video {
-            position: fixed;
+            position: fixed; /* Parallax magic */
             top: 0;
             left: 0;
             width: 100%;
@@ -10140,33 +10170,12 @@
             .nl-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 1.2rem; text-align: center;}
             .nl-btn { padding: 1.2rem; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
         }
-
-        /* --- Modal Custom Fix --- */
-        .modal-custom-center {
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-custom-center .modal-dialog {
-            margin: 0 !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        /* Remove default bootstrap margin behavior */
-        .modal-dialog-centered {
-            margin-right: auto;
-            margin-left: auto;
-        }
     </style>
 
-    <!-- Welcome Modal PERBAIKAN UKURAN DAN POSISI TENGAH -->
+    <!-- Welcome Modal PERBAIKAN UKURAN (Tambahan scrollable & resize image) -->
     @if (!session('id_user') && $data['popups']->isNotEmpty())
-        <div class="modal fade modal-custom-center" id="firstUser" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable mx-auto" style="max-width: 500px;">
                 <div class="modal-content border-0 overflow-hidden" style="border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
                     <div class="modal-body p-0 position-relative">
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
@@ -10187,18 +10196,18 @@
         </div>
     @endif
 
-    <!-- Promo Modal PERBAIKAN UKURAN DAN POSISI TENGAH -->
+    <!-- Promo Modal PERBAIKAN UKURAN -->
     @if (session('id_user') && $data['promoModal'] !== null)
-        <div class="modal fade modal-custom-center" id="promoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content border-0 bg-transparent">
-                    <div class="modal-body p-0 position-relative text-center d-flex justify-content-center">
+        <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered mx-auto">
+                <div class="modal-content border-0 bg-transparent" style="max-width: 600px;">
+                    <div class="modal-body p-0 position-relative text-center">
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal"
                             style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"></button>
                         <a href="/{{ $data['promoModal']->promo_name }}-detail-promo">
                             <img src="{{ Storage::url($data['promoModal']->image) }}"
                                 alt="{{ $data['promoModal']->promo_name }}"
-                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="max-height: 85vh; object-fit: contain; transition: transform 0.4s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                                class="img-fluid rounded-4 shadow-lg cursor-pointer" style="max-height: 80vh; object-fit: contain; transition: transform 0.4s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         </a>
                     </div>
                 </div>
@@ -10362,7 +10371,7 @@
 
     </div> <!-- Close Container for full width parallax -->
 
-    <!-- PARALLAX CAMPAIGN DIVIDER -->
+    <!-- NEW: PARALLAX CAMPAIGN DIVIDER -->
     <div class="campaign-parallax reveal">
         <!-- Using a placeholder luxury beauty video. Replace src with your actual campaign video url -->
         <video autoplay loop muted playsinline>
