@@ -1,4 +1,5 @@
-@extends('admin.layouts.master')
+@extends('admin.layouts.sidebar')
+@extends('admin.layouts.navbar')
 
 @section('content')
 <div class="page-heading">
