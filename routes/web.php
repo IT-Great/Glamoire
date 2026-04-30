@@ -603,10 +603,10 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     // Route Rating & Review Admin
     Route::get('/rating-and-review-admin', [RatingAndReviewController::class, 'index'])->name('index-rating-review');
 
-    Route::get('/events', [EventController::class, 'indexAdmin'])->name('admin.event.index');
-    Route::post('/events/store', [EventController::class, 'store'])->name('admin.event.store');
-    Route::put('/events/update/{id}', [EventController::class, 'update'])->name('admin.event.update');
-    Route::delete('/events/destroy/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
+    Route::get('/admin/events', [EventController::class, 'indexAdmin'])->name('admin.event.index');
+    Route::post('/admin/events/store', [EventController::class, 'store'])->name('admin.event.store');
+    Route::put('/admin/events/update/{id}', [EventController::class, 'update'])->name('admin.event.update');
+    Route::delete('/admin/events/destroy/{id}', [EventController::class, 'destroy'])->name('admin.event.destroy');
 });
 
 // ACCOUNTING
