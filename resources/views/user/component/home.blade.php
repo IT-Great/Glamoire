@@ -9179,7 +9179,7 @@
         </video>
         <div class="campaign-content">
             <h2>Discover Your Radiance</h2>
-            <p>Memadukan kemurnian alam dengan inovasi sains. Glamoire menghadirkan perawatan kulit yang mentransformasi kecantikan sejati Anda.</p>
+            <p class="text-black">Memadukan kemurnian alam dengan inovasi sains. Glamoire menghadirkan perawatan kulit yang mentransformasi kecantikan sejati Anda.</p>
             <a href="/about" class="btn-campaign">Our Story</a>
         </div>
     </div>
