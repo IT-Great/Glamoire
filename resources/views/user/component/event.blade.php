@@ -2,6 +2,26 @@
 
 @section('content')
 
+<!-- ======================================================== -->
+<!-- SAFETY SHIELD: PENANGKAL ERROR JS DARI NAVBAR/MASTER     -->
+<!-- ======================================================== -->
+<div id="notif-badge-stock" style="display: none;">0</div>
+<div id="notif-badge-contact" style="display: none;">0</div>
+<div id="low-stock-alert" style="display: none;"></div>
+<div id="out-of-stock-alert" style="display: none;"></div>
+<div id="stock-update-time" style="display: none;"></div>
+<script>
+    if (typeof window.updateContactUsNotifications !== 'function') {
+        window.updateContactUsNotifications = function() { return true; };
+    }
+    if (typeof window.updateStockAlerts !== 'function') {
+        window.updateStockAlerts = function() { return true; };
+    }
+</script>
+
+<!-- WAJIB ADA: Swiper CSS untuk fungsionalitas Slider -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
 <style>
     /* ==========================================
        GLAMOIRE EVENT EDITORIAL STYLING
@@ -86,26 +106,39 @@
         position: relative;
     }
 
-    /* Swiper Styling within Event */
+    /* --- RESPONSIVE SWIPER IMAGE --- */
     .event-swiper {
         width: 100%;
-        border-radius: 20px;
+        border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        /* Default for Desktop: Portrait / Editorial Look */
         aspect-ratio: 4/5;
     }
+
     .event-swiper img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: cover; /* Gambar akan proporsional memenuhi area */
+        transition: transform 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
+
+    /* Efek Zoom Lembut saat Card di-hover */
+    .event-card:hover .event-swiper img {
+        transform: scale(1.05);
+    }
+
     .swiper-pagination-bullet {
         background: #FFF;
         opacity: 0.7;
+        width: 10px;
+        height: 10px;
     }
     .swiper-pagination-bullet-active {
         background: var(--glamoire-gold);
         opacity: 1;
+        width: 25px;
+        border-radius: 10px;
     }
 
     .event-content {
@@ -119,40 +152,51 @@
         color: var(--glamoire-gold);
         font-weight: 700;
         margin-bottom: 1rem;
-        display: block;
+        display: inline-block;
+        background: rgba(212, 175, 55, 0.1);
+        padding: 4px 12px;
+        border-radius: 50px;
     }
     .event-title {
-        font-size: clamp(2rem, 3.5vw, 3rem);
+        font-size: clamp(2rem, 3.5vw, 3.5rem);
         color: var(--glamoire-dark);
         margin-bottom: 1rem;
         line-height: 1.1;
     }
     .event-date {
-        font-size: 0.95rem;
+        font-size: 1rem;
         color: var(--text-muted);
         margin-bottom: 2rem;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
         font-weight: 500;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #F3F4F6;
     }
-    .event-date i { color: var(--glamoire-dark); }
+    .event-date i { color: var(--glamoire-dark); font-size: 1.2rem; }
     .event-desc {
         color: var(--text-main);
         line-height: 1.8;
-        font-size: 1rem;
+        font-size: 1.05rem;
         opacity: 0.9;
     }
 
+    /* --- RESPONSIVE BREAKPOINTS --- */
     @media (max-width: 991px) {
         .event-card, .event-card:nth-child(even) {
             flex-direction: column;
-            gap: 2rem;
-            margin-bottom: 5rem;
+            gap: 2.5rem;
+            margin-bottom: 6rem;
+            padding: 0 1rem;
         }
         .event-gallery {
             flex: 1;
             width: 100%;
+        }
+        /* Tablet: Ubah rasio jadi kotak agar tidak terlalu panjang ke bawah */
+        .event-swiper {
+            aspect-ratio: 1 / 1;
         }
         .event-content {
             text-align: center;
@@ -163,13 +207,27 @@
         }
     }
 
+    @media (max-width: 576px) {
+        /* Mobile: Ubah rasio jadi memanjang horizontal (Landscape) seperti TV */
+        .event-swiper {
+            aspect-ratio: 4 / 3;
+            border-radius: 16px;
+        }
+        .event-title {
+            font-size: 2rem;
+        }
+        .event-desc {
+            font-size: 0.95rem;
+        }
+    }
+
     .empty-event {
         text-align: center;
-        padding: 5rem 0;
+        padding: 5rem 1rem;
     }
     .empty-event i {
         font-size: 4rem;
-        color: var(--glamoire-sand);
+        color: #D1D5DB;
         margin-bottom: 1rem;
     }
 </style>
@@ -219,7 +277,7 @@
     @else
         <div class="empty-event fade-up">
             <i class="fas fa-glass-cheers"></i>
-            <h3 class="editorial-font">Menanti Kisah Berikutnya</h3>
+            <h3 class="editorial-font" style="color: var(--glamoire-dark);">Menanti Kisah Berikutnya</h3>
             <p class="text-muted">Saat ini belum ada acara yang ditampilkan. Terus ikuti kami untuk pembaruan eksklusif.</p>
         </div>
     @endif
@@ -230,7 +288,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-        // Initialize swiper for each event gallery dynamically
+        // 1. Initialize swiper for each event gallery dynamically
         const swipers = document.querySelectorAll('.event-swiper');
         swipers.forEach(function(swiperElement) {
             new Swiper(swiperElement, {
@@ -238,7 +296,7 @@
                 loop: true,
                 effect: "fade",
                 autoplay: {
-                    delay: 4000,
+                    delay: 4500,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -248,11 +306,11 @@
             });
         });
 
-        // Scroll Reveal Animation (Fade Up)
+        // 2. Scroll Reveal Animation (Fade Up)
         const observerOptions = {
             root: null,
             rootMargin: '0px',
-            threshold: 0.2
+            threshold: 0.15 // Mempercepat sedikit pemicu animasinya
         };
 
         const observer = new IntersectionObserver((entries, observer) => {
