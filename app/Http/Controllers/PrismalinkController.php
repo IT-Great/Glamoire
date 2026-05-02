@@ -3345,6 +3345,637 @@
 //     }
 // }
 
+// namespace App\Http\Controllers;
+
+// use Exception;
+// use Carbon\Carbon;
+// use App\Models\User;
+// use App\Models\Cart;
+// use App\Models\Order;
+// use App\Models\Promo;
+// use GuzzleHttp\Client;
+// use App\Models\Buynow;
+// use App\Models\Invoice;
+// use App\Models\Payment;
+// use App\Models\Product;
+// use App\Models\Cart_item;
+// use App\Models\OrderItem;
+// use Illuminate\Support\Str;
+// use Illuminate\Http\Request;
+// use App\Models\ProductStocks;
+// use App\Models\VoucherNewUser;
+// use App\Models\Shipping_address;
+// use App\Models\ProductVariations;
+// use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\Log;
+// use App\Services\PrismalinkService;
+// use App\Http\Controllers\Controller;
+// use Illuminate\Support\Facades\Http;
+
+// class PrismalinkController extends Controller
+// {
+//     private $merchantKeyId;
+//     private $merchantId;
+//     private $backendCallbackUrl;
+//     private $frontendCallbackUrl;
+//     private $secretKey;
+//     private $transactionUrl;
+//     private $status;
+//     private $merchant_ref_no;
+//     private $plink_ref_no;
+//     private $trasmission_date_time;
+//     private $order_data;
+//     private $id_user;
+//     private $condition;
+//     private $order_id;
+
+//     public function __construct()
+//     {
+//         $this->status = config('app.env');
+//         $this->id_user = session('id_user');
+
+//         $this->merchantKeyId = config('services.prismalink.merch_key_id');
+//         $this->merchantId = config('services.prismalink.merch_id');
+//         $this->backendCallbackUrl = config('services.prismalink.backend_callback');
+//         $this->frontendCallbackUrl = config('services.prismalink.frontend_callback');
+//         $this->secretKey = config('services.prismalink.secret_key');
+//         $this->transactionUrl = config('services.prismalink.transaction_api');
+//     }
+
+//     public function submitPayment(Request $request)
+//     {
+//         if ($request->condition !== "guest") {
+//             $cartId = Cart::where('user_id', session('id_user'))->value('id');
+//             $cartItems = Cart_item::where('cart_id', $cartId)
+//                 ->where('is_choose', true)
+//                 ->leftJoin('products', 'cart_items.product_id', '=', 'products.id')
+//                 ->select(
+//                     'cart_items.product_id as item_code',
+//                     'cart_items.quantity as quantity',
+//                     'cart_items.price as total',
+//                     'products.product_name as item_title'
+//                 )
+//                 ->get()
+//                 ->map(function ($item) {
+//                     $item->currency = 'IDR';
+//                     return $item;
+//                 })
+//                 ->toArray();
+//         }
+
+//         $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+
+//         if ($lastInvoice) {
+//             $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
+//             $invoiceNumber = $lastNoInvoice + 1;
+//         } else {
+//             $invoiceNumber = 1;
+//         }
+
+//         $day = date('d');
+//         $month = date('m');
+//         $year = date('Y');
+//         $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
+
+//         $invoiceCreate = Invoice::create([
+//             'no_invoice' => $formattedInvoice,
+//             'plink_ref_no' => null,
+//         ]);
+
+//         $username = session('username');
+//         $handphone = User::where('id', $this->id_user)->value('handphone');
+//         $this->condition = $request->condition;
+
+//         // if ($request->condition == "buynow") {
+//         //     $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
+//         //     session(['productBuyNow' => $request->products]);
+//         //     $body = [
+//         //         "merchant_key_id" => $this->merchantKeyId,
+//         //         "merchant_id" => $this->merchantId,
+//         //         "merchant_ref_no" => "$invoiceCreate->no_invoice",
+//         //         "backend_callback_url" => $this->backendCallbackUrl,
+//         //         "frontend_callback_url" => $this->frontendCallbackUrl,
+//         //         "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
+//         //         "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
+//         //         "transaction_currency" => "IDR",
+//         //         "transaction_amount" => $request->total_amount,
+//         //         "product_details" => json_encode([
+//         //             [
+//         //                 "item_code" => $request->products[0]['product_id'],
+//         //                 "item_title" => $productName,
+//         //                 "quantity" => $request->products[0]['quantity'],
+//         //                 "total" => $request->products[0]['price'],
+//         //             ]
+//         //         ]),
+//         //         "va_name" => "$username",
+//         //         "user_name" => "$username",
+//         //         "user_phone_number" => "+$handphone",
+//         //         "user_ip_address" => $request->ip(),
+//         //         "other_bills" => json_encode([
+//         //             [
+//         //                 "title" => "Ongkos kirim",
+//         //                 "value" => $request->shipping_cost,
+//         //             ]
+//         //         ]),
+//         //         "invoice_number" => "$invoiceCreate->no_invoice",
+//         //         "integration_type" => "01",
+//         //         "external_id" => "$invoiceCreate->no_invoice",
+//         //     ];
+//         // } elseif ($request->condition == "standard") {
+//         //     $body = [
+//         //         "merchant_key_id" => $this->merchantKeyId,
+//         //         "merchant_id" => $this->merchantId,
+//         //         "merchant_ref_no" => "$invoiceCreate->no_invoice",
+//         //         "backend_callback_url" => $this->backendCallbackUrl,
+//         //         "frontend_callback_url" => $this->frontendCallbackUrl,
+//         //         "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
+//         //         "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
+//         //         "transaction_currency" => "IDR",
+//         //         "transaction_amount" => $request->total_amount == 0 ? 1 : $request->total_amount,
+//         //         "product_details" => json_encode($cartItems),
+//         //         "va_name" => "$username",
+//         //         "user_name" => "$username",
+//         //         "user_phone_number" => "+$handphone",
+//         //         "user_ip_address" => $request->ip(),
+//         //         "other_bills" => json_encode([
+//         //             [
+//         //                 "title" => "Ongkos kirim",
+//         //                 "value" => $request->shipping_cost,
+//         //             ]
+//         //         ]),
+//         //         "invoice_number" => "$invoiceCreate->no_invoice",
+//         //         "integration_type" => "01",
+//         //         "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
+//         //         "external_id" => "$invoiceCreate->no_invoice",
+//         //     ];
+//         // }
+
+//                 if ($request->condition == 'buynow') {
+//             $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
+//             session(['productBuyNow' => $request->products]);
+//             $body = [
+//                 'merchant_key_id' => $this->merchantKeyId,
+//                 'merchant_id' => $this->merchantId,
+//                 'merchant_ref_no' => "$invoiceCreate->no_invoice",
+//                 'backend_callback_url' => $this->backendCallbackUrl,
+//                 'frontend_callback_url' => $this->frontendCallbackUrl,
+//                 'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                 'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                 'transaction_currency' => 'IDR',
+//                 'transaction_amount' => $request->total_amount,
+//                 'product_details' => json_encode([
+//                     [
+//                         'item_code' => $request->products[0]['product_id'],
+//                         'item_title' => $productName,
+//                         'quantity' => $request->products[0]['quantity'],
+//                         'total' => $request->products[0]['price'],
+//                     ]
+//                 ]),
+//                 'va_name' => "$username",
+//                 'user_name' => "$username",
+//                 'user_email' => '',
+//                 'user_phone_number' => "+$handphone",
+//                 'user_id' => '',
+//                 'remarks' => '',
+//                 'user_device_id' => $request->header('User-Agent'),
+//                 'user_ip_address' => $request->ip(),
+//                 'shipping_details' => '',
+//                 'payment_method' => '',
+//                 'other_bills' => json_encode([
+//                     [
+//                         'title' => 'Ongkos kirim',
+//                         'value' => $request->shipping_cost,
+//                     ]
+//                 ]),
+//                 'invoice_number' => "$invoiceCreate->no_invoice",
+//                 'integration_type' => '01',
+//                 'external_id' => "$invoiceCreate->no_invoice",
+//                 'bank_id' => ''
+//             ];
+//         }
+//         // KERANJANG -> BUY
+//         elseif ($request->condition == 'standard') {
+//             if ($request->total_amount == 0) {
+//                 $body = [
+//                     'merchant_key_id' => $this->merchantKeyId,
+//                     'merchant_id' => $this->merchantId,
+//                     'merchant_ref_no' => "$invoiceCreate->no_invoice",
+//                     'backend_callback_url' => $this->backendCallbackUrl,
+//                     'frontend_callback_url' => $this->frontendCallbackUrl,
+//                     'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                     'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                     'transaction_currency' => 'IDR',
+//                     'transaction_amount' => 1,
+//                     'product_details' => json_encode($cartItems),
+//                     'va_name' => "$username",
+//                     'user_name' => "$username",
+//                     'user_email' => '',
+//                     'user_phone_number' => "+$handphone",
+//                     'user_id' => '',
+//                     'remarks' => '',
+//                     'user_device_id' => $request->header('User-Agent'),
+//                     'user_ip_address' => $request->ip(),
+//                     'shipping_details' => '',
+//                     'payment_method' => '',
+//                     // "payment_method" => "DD",
+//                     'other_bills' => json_encode([
+//                         [
+//                             'title' => 'Ongkos kirim',
+//                             'value' => $request->shipping_cost,
+//                         ]
+//                     ]),
+//                     'invoice_number' => "$invoiceCreate->no_invoice",
+//                     'integration_type' => '01',
+//                     // "integration_type" => "03",
+//                     'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
+//                     'external_id' => "$invoiceCreate->no_invoice",
+//                     'bank_id' => ''
+//                     // "bank_id" => "022"
+//                 ];
+//             } else {
+//                 $body = [
+//                     'merchant_key_id' => $this->merchantKeyId,
+//                     'merchant_id' => $this->merchantId,
+//                     'merchant_ref_no' => "$invoiceCreate->no_invoice",
+//                     'backend_callback_url' => $this->backendCallbackUrl,
+//                     'frontend_callback_url' => $this->frontendCallbackUrl,
+//                     'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                     'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
+//                     'transaction_currency' => 'IDR',
+//                     'transaction_amount' => $request->total_amount,
+//                     'product_details' => json_encode($cartItems),
+//                     'va_name' => "$username",
+//                     'user_name' => "$username",
+//                     'user_email' => '',
+//                     'user_phone_number' => "+$handphone",
+//                     'user_id' => '',
+//                     'remarks' => '',
+//                     'user_device_id' => $request->header('User-Agent'),
+//                     'user_ip_address' => $request->ip(),
+//                     'shipping_details' => '',
+//                     'payment_method' => '',
+//                     // "payment_method" => "DD",
+//                     'other_bills' => json_encode([
+//                         [
+//                             'title' => 'Ongkos kirim',
+//                             'value' => $request->shipping_cost,
+//                         ]
+//                     ]),
+//                     'invoice_number' => "$invoiceCreate->no_invoice",
+//                     'integration_type' => '01',
+//                     // "integration_type" => "03",
+//                     'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
+//                     'external_id' => "$invoiceCreate->no_invoice",
+//                     'bank_id' => ''
+//                     // "bank_id" => "022"
+//                 ];
+//             }
+//         }
+
+//         $jsonBody = json_encode($body);
+//         $mac = hash_hmac('sha256', $jsonBody, $this->secretKey);
+
+//         $response = Http::withHeaders([
+//             'mac' => $mac,
+//             'Content-Type' => 'application/json',
+//         ])
+//             ->withoutVerifying()
+//             ->timeout(45)
+//             ->retry(2, 2000)
+//             ->post($this->transactionUrl, $body);
+
+//         $status = $response->json();
+
+//         // Validasi response prismalink
+//         if ($status && isset($status['response_code']) && $status['response_code'] == "PL000") {
+//             $data = $response->json();
+
+//             $this->merchant_ref_no = $invoiceCreate->no_invoice;
+//             $this->plink_ref_no = $data['plink_ref_no'];
+//             $this->trasmission_date_time = $data['validity'];
+
+//             if (isset($data['payment_page_url'])) {
+//                 $paymentBaseUrl = $this->status == 'local' ? 'https://secure2-staging.plink.co.id' : 'https://secure3.plink.co.id';
+//                 $fullPaymentPageUrl = $paymentBaseUrl . $data['payment_page_url'];
+//                 $orderId = 'ORDER-' . time() . '-' . Str::random(5);
+
+//                 // Kirim request MURNI dari Frontend ke Order Data untuk diproses FEFO ($request->products)
+//                 $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products);
+
+//                 $this->order_data = $orderData;
+//                 $this->createNewOrder($this->order_data);
+
+//                 $deadline = Carbon::parse($data['validity']);
+//                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
+
+//                 return response()->json([
+//                     'success' => true,
+//                     'payment_url' => $fullPaymentPageUrl,
+//                     'deadline' => $formattedDeadline,
+//                 ]);
+//             }
+//             return response()->json(['success' => false, 'message' => 'Response received, but no payment page URL was found.']);
+//         } else {
+//             Log::error('User ' . $this->id_user . ' failed request payment', [
+//                 'status' => $response->status(),
+//                 'body' => $response->body(),
+//             ]);
+
+//             return response()->json(['success' => false, 'message' => 'API Prismalink menolak Payload']);
+//         }
+//     }
+
+//     public function callback(Request $request)
+//     {
+//         try {
+//             if ($this->status == 'local') {
+//                 return redirect()->route('account');
+//             } else {
+//                 return redirect('https://glamoire.co.id/account');
+//             }
+//         } catch (\Exception $e) {
+//             return redirect('https://glamoire.co.id/account')->with('error', 'An error occurred: ' . $e->getMessage());
+//         }
+//     }
+
+//     private function createNewOrder(array $orderData)
+//     {
+//         $getInvoiceId = Invoice::where('no_invoice', $this->merchant_ref_no)->value('id');
+
+//         Invoice::where('id', $getInvoiceId)->update([
+//             'plink_ref_no' => $this->plink_ref_no,
+//             'transmission_date_time' => $this->trasmission_date_time,
+//         ]);
+
+//         $order = Order::create([
+//             'invoice_id' => $getInvoiceId,
+//             'user_id' => auth()->id(),
+//             'shipping_address_id' => $orderData['shippingAddressId'],
+//             'shipping_cost' => $orderData['shippingCost'],
+//             'discount_amount' => $orderData['discountAmount'] ?? 0,
+//             'discount_ongkir' => $orderData['discountOngkir'] ?? 0,
+//             'total_amount' => $orderData['totalAmount'],
+//             'voucher_promo' => $orderData['voucherPromo'],
+//             'voucher_ongkir' => $orderData['voucherOngkir'],
+//             'order_date' => now(),
+//             'total_item' => $orderData['totalItem'],
+//             'total_item_price' => $orderData['totalItemPrice'],
+//             'destination_area' => $orderData['destiantionArea'],
+//             'origin_area' => $orderData['originArea'],
+//             'kurir' => $orderData['courier'],
+//             'etd' => $orderData['etd'],
+//             'layanan' => $orderData['description'],
+//             'postal_code_customer' => $orderData['destinationPostalCode'],
+//         ]);
+
+//         $this->order_id = $order->id;
+//         $cartItems = collect();
+
+//         if ($this->condition == 'standard') {
+//             $cartId = Cart::where('user_id', $this->id_user)->value('id');
+//             $cartItems = Cart_item::where('cart_id', $cartId)
+//                 ->where('is_choose', true)
+//                 ->with(['product.brand'])
+//                 ->get();
+//         } elseif ($this->condition == 'buynow') {
+//             $cartItems = Buynow::where('user_id', $this->id_user)
+//                 ->where('is_buy', false)
+//                 ->with(['product.brand'])
+//                 ->get();
+//         }
+
+//         foreach ($cartItems as $item) {
+//             $item->bundle_price = null; // Default
+//             if ($item->product && $item->product->promos->where('status', 'Active')) {
+//                 foreach ($item->product->promos->where('status', 'Active') as $promo) {
+//                     if ($promo->tiers) {
+//                         foreach ($promo->tiers as $tier) {
+//                             switch ($tier->discount_type) {
+//                                 case 'percentage':
+//                                     if ($item->quantity == $tier->min_quantity) {
+//                                         $item->bundle_price = $item->total * ((100 - $tier->discount_value) / 100);
+//                                     }
+//                                     break;
+//                                 case 'nominal':
+//                                     if ($item->quantity == $tier->min_quantity) {
+//                                         $item->bundle_price = $item->total - $tier->discount_value;
+//                                     }
+//                                     break;
+//                                 case 'package':
+//                                     if ($item->quantity == $tier->min_quantity) {
+//                                         $item->bundle_price = $tier->package_price;
+//                                     }
+//                                     break;
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+
+//             // PERHATIAN: DISINILAH OBSERVER BIASANYA MEMOTONG STOK UTAMA!
+//             OrderItem::create([
+//                 'order_id'   => $order->id,
+//                 'product_id' => $item->product_id,
+//                 'product_variant_id' => $item->product_variant_id,
+//                 'quantity' => $item->quantity,
+//                 'price' => $item->price,
+//                 'is_tier' => $item->bundle_price !== null ? 1 : 0,
+//                 'subtotal' => $item->bundle_price !== null ? $item->bundle_price : $item->quantity * $item->price,
+//             ]);
+//         }
+
+//         $payment = Payment::create([
+//             'user_id'        => $this->id_user,
+//             'order_id'       => $order->id,
+//             'payment_method' => "",
+//             'transaction_id' => "",
+//             'status'         => 'pending',
+//             'amount'         => $orderData['totalAmount'],
+//         ]);
+
+//         $useVoucherNewUser = VoucherNewUser::where('user_id', $this->id_user)->where('code', $orderData['voucherPromo'])->first();
+//         if ($useVoucherNewUser) {
+//             $useVoucherNewUser->is_use = 1;
+//             $useVoucherNewUser->save();
+//         }
+
+//         $voucherUsed = $useVoucherNewUser == NULL ? Promo::where('promo_code', $orderData['voucherPromo'])->first() : NULL;
+//         $ongkirUsed = $orderData['voucherOngkir'] !== null ? Promo::where('promo_code', $orderData['voucherOngkir'])->first() : null;
+
+//         if ($payment->status == "completed" || $payment->status == "pending") {
+//             if ($voucherUsed !== NULL) $voucherUsed->increment('total_used');
+//             if ($ongkirUsed !== NULL) $ongkirUsed->increment('total_used');
+
+//             // KUMPULKAN DATA MURNI DARI FRONTEND DAN FILTER TEKS "null"
+//             $frontendProducts = $orderData['frontendProducts'];
+
+//             if (!empty($frontendProducts)) {
+//                 $groupedProducts = collect($frontendProducts)->groupBy(function ($item) {
+//                     $vid = isset($item['product_variant_id']) ? $item['product_variant_id'] : 'null';
+//                     if ($vid === 'null' || $vid === '') $vid = 'null';
+//                     return $item['product_id'] . '_' . $vid;
+//                 })->map(function ($group) {
+//                     $first = $group->first();
+//                     $vid = isset($first['product_variant_id']) ? $first['product_variant_id'] : null;
+//                     if ($vid === 'null' || $vid === '') $vid = null;
+
+//                     return [
+//                         'product_id' => $first['product_id'],
+//                         'product_variant_id' => $vid,
+//                         'quantity' => $group->sum('quantity')
+//                     ];
+//                 });
+
+//                 foreach ($groupedProducts as $prod) {
+//                     $this->applyFifoStockDeduction($prod['product_id'], $prod['product_variant_id'], $prod['quantity']);
+//                 }
+//             }
+
+//             // Hapus isi Cart / Buynow agar tidak numpuk
+//             if ($this->condition == 'standard') {
+//                 $cartId = Cart::where('user_id', $this->id_user)->value('id');
+//                 Cart_item::where('cart_id', $cartId)->where('is_choose', true)->delete();
+//             } elseif ($this->condition == 'buynow') {
+//                 Buynow::where('user_id', $this->id_user)->where('is_buy', false)->update(['is_buy' => true]);
+//             }
+
+//             session(['activeTab' => '#my-order']);
+//         }
+
+//         return $order;
+//     }
+
+//     private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode, $frontendProducts = [])
+//     {
+//         return [
+//             'orderId' => $orderId,
+//             'totalAmount' => $totalAmount,
+//             'shippingAddressId' => $shippingAddressId,
+//             'shippingCost' => $shippingCost,
+//             'discountAmount' => $discountAmount,
+//             'discountOngkir' => $discountOngkir,
+//             'totalItem' => $totalItem,
+//             'totalItemPrice' => $totalItemPrice,
+//             'voucherPromo' => $voucherPromo,
+//             'voucherOngkir' => $voucherOngkir,
+//             'destiantionArea' => $destinationArea,
+//             'originArea' => $originArea,
+//             'courier' => $courier,
+//             'etd' => $etd,
+//             'description' => $description,
+//             'destinationPostalCode' => $destinationPostalCode,
+//             'frontendProducts' => $frontendProducts // Menyimpan request murni
+//         ];
+//     }
+
+//     private function checkStatus($merchant_ref_no, $plink_ref_no, $transmission_date_time)
+//     {
+//         return [
+//             'merchant_ref_no' => $merchant_ref_no,
+//             'plink_ref_no' => $plink_ref_no,
+//             'transmission_date_time' => $transmission_date_time,
+//         ];
+//     }
+
+//     /**
+//      * Logika Pemotongan Stok MURNI FEFO DETAIL SAJA
+//      */
+//     private function applyFifoStockDeduction($productId, $variantId, $quantityNeeded)
+//     {
+//         DB::transaction(function () use ($productId, $variantId, $quantityNeeded) {
+//             $remainingNeeded = (int) $quantityNeeded;
+
+//             // FIX "null" string bug dari Javascript Frontend
+//             if ($variantId === 'null' || $variantId === '' || $variantId == 0) {
+//                 $variantId = null;
+//             }
+
+//             if ($variantId) {
+//                 $aggregate = ProductVariations::where('id', $variantId)->lockForUpdate()->first();
+//                 $updateBatches = ProductStocks::where('variation_id', $variantId)
+//                     ->where('quantity', '>', 0)
+//                     ->lockForUpdate()
+//                     ->get();
+//             } else {
+//                 $aggregate = Product::where('id', $productId)->lockForUpdate()->first();
+//                 $updateBatches = ProductStocks::where('product_id', $productId)
+//                     ->where(function($q) {
+//                         $q->whereNull('variation_id')->orWhere('variation_id', 0)->orWhere('variation_id', '');
+//                     })
+//                     ->where('quantity', '>', 0)
+//                     ->lockForUpdate()
+//                     ->get();
+//             }
+
+//             if (!$aggregate) {
+//                 Log::error("FEFO Gagal: Produk tidak ditemukan. ID: $productId");
+//                 return;
+//             }
+
+//             // KARENA OBSERVER (di OrderItem) SUDAH MEMOTONG STOK UTAMA LEBIH DULU,
+//             // Maka currentTotalStock yang kita dapat disini adalah "Sisa Stok Setelah Dibeli".
+//             // Untuk menghitung Sisa Stok Awal secara akurat, kita KEMBALIKAN dulu nilainya ke waktu sebelum dibeli.
+//             $currentTotalStock = $variantId ? $aggregate->variant_stock : $aggregate->stock_quantity;
+//             $trueTotalStockBeforeOrder = (int) $currentTotalStock + $remainingNeeded;
+
+//             $rawExpired = $variantId ? $aggregate->variant_expired : $aggregate->date_expired;
+//             $initialExpired = (!empty($rawExpired) && trim($rawExpired) !== '') ? trim($rawExpired) : '9999-12-31';
+
+//             // Jika stok total (termasuk sebelum dipotong) tetap kurang
+//             if ($trueTotalStockBeforeOrder < $remainingNeeded) {
+//                 Log::error("FEFO Gagal: Stok tidak mencukupi untuk Product ID: $productId");
+//                 return;
+//             }
+
+//             $totalUpdateStocks = (int) $updateBatches->sum('quantity');
+//             $initialStockQty = $trueTotalStockBeforeOrder - $totalUpdateStocks;
+
+//             $allBatches = collect();
+
+//             if ($initialStockQty > 0) {
+//                 $allBatches->push((object)[
+//                     'type'         => 'initial',
+//                     'model'        => null,
+//                     'quantity'     => $initialStockQty,
+//                     'date_expired' => $initialExpired
+//                 ]);
+//             }
+
+//             foreach ($updateBatches as $ub) {
+//                 $exp = (!empty($ub->date_expired) && trim($ub->date_expired) !== '') ? trim($ub->date_expired) : '9999-12-31';
+//                 $allBatches->push((object)[
+//                     'type'         => 'update',
+//                     'model'        => $ub,
+//                     'quantity'     => (int) $ub->quantity,
+//                     'date_expired' => $exp
+//                 ]);
+//             }
+
+//             // Gunakan strtotime agar pengurutan tanggal absolut berhasil
+//             $sortedBatches = $allBatches->sortBy(function ($batch) {
+//                 return strtotime($batch->date_expired);
+//             })->values();
+
+//             foreach ($sortedBatches as $batch) {
+//                 if ($remainingNeeded <= 0) break;
+
+//                 $deduct = min($batch->quantity, $remainingNeeded);
+
+//                 // Eksekusi potong stok update ke DB. Stok Awal ('initial') tidak perlu di-save
+//                 // karena dia hanyalah angka virtual yang otomatis mengikuti total stok utama.
+//                 if ($batch->type === 'update') {
+//                     $batch->model->quantity -= $deduct;
+//                     $batch->model->save();
+//                 }
+
+//                 $remainingNeeded -= $deduct;
+//             }
+
+//             Log::info("FEFO Detail Berhasil. Product: $productId, Varian: $variantId, Dipotong: $quantityNeeded");
+//         });
+//     }
+// }
+
 namespace App\Http\Controllers;
 
 use Exception;
@@ -3392,8 +4023,6 @@ class PrismalinkController extends Controller
     public function __construct()
     {
         $this->status = config('app.env');
-        $this->id_user = session('id_user');
-
         $this->merchantKeyId = config('services.prismalink.merch_key_id');
         $this->merchantId = config('services.prismalink.merch_id');
         $this->backendCallbackUrl = config('services.prismalink.backend_callback');
@@ -3404,8 +4033,11 @@ class PrismalinkController extends Controller
 
     public function submitPayment(Request $request)
     {
+        // PERBAIKAN: Ambil ID user langsung di dalam metode agar tidak null saat dipanggil via API/AJAX
+        $this->id_user = auth()->id() ?? session('id_user');
+
         if ($request->condition !== "guest") {
-            $cartId = Cart::where('user_id', session('id_user'))->value('id');
+            $cartId = Cart::where('user_id', $this->id_user)->value('id');
             $cartItems = Cart_item::where('cart_id', $cartId)
                 ->where('is_choose', true)
                 ->leftJoin('products', 'cart_items.product_id', '=', 'products.id')
@@ -3442,75 +4074,11 @@ class PrismalinkController extends Controller
             'plink_ref_no' => null,
         ]);
 
-        $username = session('username');
+        $username = session('username') ?? User::where('id', $this->id_user)->value('name');
         $handphone = User::where('id', $this->id_user)->value('handphone');
         $this->condition = $request->condition;
 
-        // if ($request->condition == "buynow") {
-        //     $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
-        //     session(['productBuyNow' => $request->products]);
-        //     $body = [
-        //         "merchant_key_id" => $this->merchantKeyId,
-        //         "merchant_id" => $this->merchantId,
-        //         "merchant_ref_no" => "$invoiceCreate->no_invoice",
-        //         "backend_callback_url" => $this->backendCallbackUrl,
-        //         "frontend_callback_url" => $this->frontendCallbackUrl,
-        //         "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transaction_currency" => "IDR",
-        //         "transaction_amount" => $request->total_amount,
-        //         "product_details" => json_encode([
-        //             [
-        //                 "item_code" => $request->products[0]['product_id'],
-        //                 "item_title" => $productName,
-        //                 "quantity" => $request->products[0]['quantity'],
-        //                 "total" => $request->products[0]['price'],
-        //             ]
-        //         ]),
-        //         "va_name" => "$username",
-        //         "user_name" => "$username",
-        //         "user_phone_number" => "+$handphone",
-        //         "user_ip_address" => $request->ip(),
-        //         "other_bills" => json_encode([
-        //             [
-        //                 "title" => "Ongkos kirim",
-        //                 "value" => $request->shipping_cost,
-        //             ]
-        //         ]),
-        //         "invoice_number" => "$invoiceCreate->no_invoice",
-        //         "integration_type" => "01",
-        //         "external_id" => "$invoiceCreate->no_invoice",
-        //     ];
-        // } elseif ($request->condition == "standard") {
-        //     $body = [
-        //         "merchant_key_id" => $this->merchantKeyId,
-        //         "merchant_id" => $this->merchantId,
-        //         "merchant_ref_no" => "$invoiceCreate->no_invoice",
-        //         "backend_callback_url" => $this->backendCallbackUrl,
-        //         "frontend_callback_url" => $this->frontendCallbackUrl,
-        //         "transaction_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transmission_date_time" => now()->format('Y-m-d H:i:s.v O'),
-        //         "transaction_currency" => "IDR",
-        //         "transaction_amount" => $request->total_amount == 0 ? 1 : $request->total_amount,
-        //         "product_details" => json_encode($cartItems),
-        //         "va_name" => "$username",
-        //         "user_name" => "$username",
-        //         "user_phone_number" => "+$handphone",
-        //         "user_ip_address" => $request->ip(),
-        //         "other_bills" => json_encode([
-        //             [
-        //                 "title" => "Ongkos kirim",
-        //                 "value" => $request->shipping_cost,
-        //             ]
-        //         ]),
-        //         "invoice_number" => "$invoiceCreate->no_invoice",
-        //         "integration_type" => "01",
-        //         "validity" => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
-        //         "external_id" => "$invoiceCreate->no_invoice",
-        //     ];
-        // }
-
-                if ($request->condition == 'buynow') {
+        if ($request->condition == 'buynow') {
             $productName = Product::where('id', $request->products[0]['product_id'])->value('product_name');
             session(['productBuyNow' => $request->products]);
             $body = [
@@ -3555,81 +4123,39 @@ class PrismalinkController extends Controller
         }
         // KERANJANG -> BUY
         elseif ($request->condition == 'standard') {
-            if ($request->total_amount == 0) {
-                $body = [
-                    'merchant_key_id' => $this->merchantKeyId,
-                    'merchant_id' => $this->merchantId,
-                    'merchant_ref_no' => "$invoiceCreate->no_invoice",
-                    'backend_callback_url' => $this->backendCallbackUrl,
-                    'frontend_callback_url' => $this->frontendCallbackUrl,
-                    'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
-                    'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
-                    'transaction_currency' => 'IDR',
-                    'transaction_amount' => 1,
-                    'product_details' => json_encode($cartItems),
-                    'va_name' => "$username",
-                    'user_name' => "$username",
-                    'user_email' => '',
-                    'user_phone_number' => "+$handphone",
-                    'user_id' => '',
-                    'remarks' => '',
-                    'user_device_id' => $request->header('User-Agent'),
-                    'user_ip_address' => $request->ip(),
-                    'shipping_details' => '',
-                    'payment_method' => '',
-                    // "payment_method" => "DD",
-                    'other_bills' => json_encode([
-                        [
-                            'title' => 'Ongkos kirim',
-                            'value' => $request->shipping_cost,
-                        ]
-                    ]),
-                    'invoice_number' => "$invoiceCreate->no_invoice",
-                    'integration_type' => '01',
-                    // "integration_type" => "03",
-                    'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
-                    'external_id' => "$invoiceCreate->no_invoice",
-                    'bank_id' => ''
-                    // "bank_id" => "022"
-                ];
-            } else {
-                $body = [
-                    'merchant_key_id' => $this->merchantKeyId,
-                    'merchant_id' => $this->merchantId,
-                    'merchant_ref_no' => "$invoiceCreate->no_invoice",
-                    'backend_callback_url' => $this->backendCallbackUrl,
-                    'frontend_callback_url' => $this->frontendCallbackUrl,
-                    'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
-                    'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
-                    'transaction_currency' => 'IDR',
-                    'transaction_amount' => $request->total_amount,
-                    'product_details' => json_encode($cartItems),
-                    'va_name' => "$username",
-                    'user_name' => "$username",
-                    'user_email' => '',
-                    'user_phone_number' => "+$handphone",
-                    'user_id' => '',
-                    'remarks' => '',
-                    'user_device_id' => $request->header('User-Agent'),
-                    'user_ip_address' => $request->ip(),
-                    'shipping_details' => '',
-                    'payment_method' => '',
-                    // "payment_method" => "DD",
-                    'other_bills' => json_encode([
-                        [
-                            'title' => 'Ongkos kirim',
-                            'value' => $request->shipping_cost,
-                        ]
-                    ]),
-                    'invoice_number' => "$invoiceCreate->no_invoice",
-                    'integration_type' => '01',
-                    // "integration_type" => "03",
-                    'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
-                    'external_id' => "$invoiceCreate->no_invoice",
-                    'bank_id' => ''
-                    // "bank_id" => "022"
-                ];
-            }
+            $body = [
+                'merchant_key_id' => $this->merchantKeyId,
+                'merchant_id' => $this->merchantId,
+                'merchant_ref_no' => "$invoiceCreate->no_invoice",
+                'backend_callback_url' => $this->backendCallbackUrl,
+                'frontend_callback_url' => $this->frontendCallbackUrl,
+                'transaction_date_time' => now()->format('Y-m-d H:i:s.v O'),
+                'transmission_date_time' => now()->format('Y-m-d H:i:s.v O'),
+                'transaction_currency' => 'IDR',
+                'transaction_amount' => $request->total_amount == 0 ? 1 : $request->total_amount,
+                'product_details' => json_encode($cartItems),
+                'va_name' => "$username",
+                'user_name' => "$username",
+                'user_email' => '',
+                'user_phone_number' => "+$handphone",
+                'user_id' => '',
+                'remarks' => '',
+                'user_device_id' => $request->header('User-Agent'),
+                'user_ip_address' => $request->ip(),
+                'shipping_details' => '',
+                'payment_method' => '',
+                'other_bills' => json_encode([
+                    [
+                        'title' => 'Ongkos kirim',
+                        'value' => $request->shipping_cost,
+                    ]
+                ]),
+                'invoice_number' => "$invoiceCreate->no_invoice",
+                'integration_type' => '01',
+                'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'), // Waktu kadaluarsa (60 menit)
+                'external_id' => "$invoiceCreate->no_invoice",
+                'bank_id' => ''
+            ];
         }
 
         $jsonBody = json_encode($body);
@@ -3652,20 +4178,22 @@ class PrismalinkController extends Controller
 
             $this->merchant_ref_no = $invoiceCreate->no_invoice;
             $this->plink_ref_no = $data['plink_ref_no'];
-            $this->trasmission_date_time = $data['validity'];
+            $this->trasmission_date_time = $data['validity'] ?? now()->addMinutes(60)->format('Y-m-d H:i:s');
 
             if (isset($data['payment_page_url'])) {
                 $paymentBaseUrl = $this->status == 'local' ? 'https://secure2-staging.plink.co.id' : 'https://secure3.plink.co.id';
                 $fullPaymentPageUrl = $paymentBaseUrl . $data['payment_page_url'];
                 $orderId = 'ORDER-' . time() . '-' . Str::random(5);
 
-                // Kirim request MURNI dari Frontend ke Order Data untuk diproses FEFO ($request->products)
-                $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products);
+                // PERBAIKAN: Sisipkan $fullPaymentPageUrl di parameter terakhir
+                $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products, $fullPaymentPageUrl);
 
                 $this->order_data = $orderData;
+
+                // PANGGIL createNewOrder yang akan langsung menyimpan data ke tabel
                 $this->createNewOrder($this->order_data);
 
-                $deadline = Carbon::parse($data['validity']);
+                $deadline = Carbon::parse($data['validity'] ?? now()->addMinutes(60));
                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
 
                 return response()->json([
@@ -3709,7 +4237,7 @@ class PrismalinkController extends Controller
 
         $order = Order::create([
             'invoice_id' => $getInvoiceId,
-            'user_id' => auth()->id(),
+            'user_id' => $this->id_user,
             'shipping_address_id' => $orderData['shippingAddressId'],
             'shipping_cost' => $orderData['shippingCost'],
             'discount_amount' => $orderData['discountAmount'] ?? 0,
@@ -3726,6 +4254,7 @@ class PrismalinkController extends Controller
             'etd' => $orderData['etd'],
             'layanan' => $orderData['description'],
             'postal_code_customer' => $orderData['destinationPostalCode'],
+            'status' => 'pending', // Order dimulai dengan status pending
         ]);
 
         $this->order_id = $order->id;
@@ -3772,7 +4301,6 @@ class PrismalinkController extends Controller
                 }
             }
 
-            // PERHATIAN: DISINILAH OBSERVER BIASANYA MEMOTONG STOK UTAMA!
             OrderItem::create([
                 'order_id'   => $order->id,
                 'product_id' => $item->product_id,
@@ -3784,14 +4312,18 @@ class PrismalinkController extends Controller
             ]);
         }
 
+        // PERBAIKAN: Menyimpan link Prismalink ke dalam `transaction_id` agar User bisa membukanya kembali
         $payment = Payment::create([
             'user_id'        => $this->id_user,
             'order_id'       => $order->id,
-            'payment_method' => "",
-            'transaction_id' => "",
+            'payment_method' => "Prismalink",
+            'transaction_id' => $orderData['paymentUrl'], // <- URL Pembayaran Disimpan Di Sini!
             'status'         => 'pending',
             'amount'         => $orderData['totalAmount'],
         ]);
+
+        // PERBAIKAN: Tautkan ID payment ke tabel Order
+        $order->update(['payment_id' => $payment->id]);
 
         $useVoucherNewUser = VoucherNewUser::where('user_id', $this->id_user)->where('code', $orderData['voucherPromo'])->first();
         if ($useVoucherNewUser) {
@@ -3806,9 +4338,8 @@ class PrismalinkController extends Controller
             if ($voucherUsed !== NULL) $voucherUsed->increment('total_used');
             if ($ongkirUsed !== NULL) $ongkirUsed->increment('total_used');
 
-            // KUMPULKAN DATA MURNI DARI FRONTEND DAN FILTER TEKS "null"
             $frontendProducts = $orderData['frontendProducts'];
-            
+
             if (!empty($frontendProducts)) {
                 $groupedProducts = collect($frontendProducts)->groupBy(function ($item) {
                     $vid = isset($item['product_variant_id']) ? $item['product_variant_id'] : 'null';
@@ -3818,7 +4349,7 @@ class PrismalinkController extends Controller
                     $first = $group->first();
                     $vid = isset($first['product_variant_id']) ? $first['product_variant_id'] : null;
                     if ($vid === 'null' || $vid === '') $vid = null;
-                    
+
                     return [
                         'product_id' => $first['product_id'],
                         'product_variant_id' => $vid,
@@ -3845,7 +4376,8 @@ class PrismalinkController extends Controller
         return $order;
     }
 
-    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode, $frontendProducts = [])
+    // PERBAIKAN: Tambahkan argumen $paymentUrl di urutan terakhir
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode, $frontendProducts = [], $paymentUrl = null)
     {
         return [
             'orderId' => $orderId,
@@ -3864,7 +4396,8 @@ class PrismalinkController extends Controller
             'etd' => $etd,
             'description' => $description,
             'destinationPostalCode' => $destinationPostalCode,
-            'frontendProducts' => $frontendProducts // Menyimpan request murni
+            'frontendProducts' => $frontendProducts,
+            'paymentUrl' => $paymentUrl // <- URL Ditambahkan ke dalam Array Data
         ];
     }
 
@@ -3877,15 +4410,11 @@ class PrismalinkController extends Controller
         ];
     }
 
-    /**
-     * Logika Pemotongan Stok MURNI FEFO DETAIL SAJA
-     */
     private function applyFifoStockDeduction($productId, $variantId, $quantityNeeded)
     {
         DB::transaction(function () use ($productId, $variantId, $quantityNeeded) {
             $remainingNeeded = (int) $quantityNeeded;
 
-            // FIX "null" string bug dari Javascript Frontend
             if ($variantId === 'null' || $variantId === '' || $variantId == 0) {
                 $variantId = null;
             }
@@ -3912,16 +4441,12 @@ class PrismalinkController extends Controller
                 return;
             }
 
-            // KARENA OBSERVER (di OrderItem) SUDAH MEMOTONG STOK UTAMA LEBIH DULU,
-            // Maka currentTotalStock yang kita dapat disini adalah "Sisa Stok Setelah Dibeli".
-            // Untuk menghitung Sisa Stok Awal secara akurat, kita KEMBALIKAN dulu nilainya ke waktu sebelum dibeli.
             $currentTotalStock = $variantId ? $aggregate->variant_stock : $aggregate->stock_quantity;
             $trueTotalStockBeforeOrder = (int) $currentTotalStock + $remainingNeeded;
-            
+
             $rawExpired = $variantId ? $aggregate->variant_expired : $aggregate->date_expired;
             $initialExpired = (!empty($rawExpired) && trim($rawExpired) !== '') ? trim($rawExpired) : '9999-12-31';
 
-            // Jika stok total (termasuk sebelum dipotong) tetap kurang
             if ($trueTotalStockBeforeOrder < $remainingNeeded) {
                 Log::error("FEFO Gagal: Stok tidak mencukupi untuk Product ID: $productId");
                 return;
@@ -3951,7 +4476,6 @@ class PrismalinkController extends Controller
                 ]);
             }
 
-            // Gunakan strtotime agar pengurutan tanggal absolut berhasil
             $sortedBatches = $allBatches->sortBy(function ($batch) {
                 return strtotime($batch->date_expired);
             })->values();
@@ -3961,8 +4485,6 @@ class PrismalinkController extends Controller
 
                 $deduct = min($batch->quantity, $remainingNeeded);
 
-                // Eksekusi potong stok update ke DB. Stok Awal ('initial') tidak perlu di-save
-                // karena dia hanyalah angka virtual yang otomatis mengikuti total stok utama.
                 if ($batch->type === 'update') {
                     $batch->model->quantity -= $deduct;
                     $batch->model->save();
