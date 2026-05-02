@@ -18893,12 +18893,12 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
             cursor: pointer;
         }
 
         .wishlist-card:hover {
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
             transform: translateY(-5px);
             border-color: var(--glamoire-gold);
         }
@@ -18930,7 +18930,7 @@
             right: 12px;
             width: 34px;
             height: 34px;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255,255,255,0.95);
             backdrop-filter: blur(4px);
             border-radius: 50%;
             display: flex;
@@ -18943,7 +18943,7 @@
             transition: var(--transition-smooth);
             opacity: 0;
             transform: scale(0.8);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
         .wishlist-card:hover .wishlist-remove-btn {
@@ -19192,8 +19192,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="{{ $profile->email }}"
-                                            disabled readonly style="background-color: #F3F4F6;">
+                                        <input type="email" class="form-control" value="{{ $profile->email }}" disabled
+                                            readonly style="background-color: #F3F4F6;">
                                         <small class="text-muted" style="font-size: 0.75rem;"><i
                                                 class="fas fa-lock me-1"></i> Email tidak dapat diubah</small>
                                     </div>
@@ -19347,7 +19347,6 @@
                                                     $statusText = '';
                                                     $statusClass = '';
 
-                                                    // Mapping logic for stepper
                                                     $step1 = false;
                                                     $step2 = false;
                                                     $step3 = false;
@@ -19445,8 +19444,14 @@
 
                                         <div class="order-body">
                                             @foreach ($order->items as $item)
+                                                <!-- PERBAIKAN: Mengganti inline ternary yang rentan rusak menjadi struktur blade if-else yang bersih -->
                                                 <div class="order-item-row"
-                                                    onclick="{{ $item->product_variant_id ? "detailProductVariant('" . $item->product->product_code . "', '" . $item->productVariant->sku . "')" : "detailProduct('" . $item->product->product_code . "')" }}">
+                                                    @if($item->product_variant_id)
+                                                        onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
+                                                    @else
+                                                        onclick="detailProduct('{{ $item->product->product_code }}')"
+                                                    @endif
+                                                >
 
                                                     <img class="order-item-img"
                                                         src="{{ Storage::url($item->product_variant_id ? $item->productVariant->variant_image : $item->product->main_image) }}"
@@ -19486,13 +19491,11 @@
                                                     </a>
                                                 @endif
 
-                                                <!-- PERBAIKAN: Tombol Aksi Untuk Status Pending -->
-                                                {{-- @if ($order->status == 'pending')
+                                                @if ($order->status == 'pending')
                                                     @php
-                                                        // Standar Prismalink biasanya 60 Menit
                                                         $expiryTime = \Carbon\Carbon::parse($order->created_at)->addMinutes(60);
                                                         $isExpired = now()->greaterThan($expiryTime);
-                                                        $paymentUrl = $order->payment ? $order->payment->transaction_id : '#';
+                                                        $paymentUrl = session('payment_url_' . $order->id) ?? '#';
                                                     @endphp
 
                                                     @if (!$isExpired)
@@ -19504,53 +19507,17 @@
                                                                 <button class="btn btn-outline-danger" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="cancelOrder('{{ $order->id }}')">
                                                                     <i class="fas fa-times me-1"></i> Batal
                                                                 </button>
-                                                                <a href="{{ $paymentUrl }}" class="btn-glamoire text-decoration-none" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;">
-                                                                    <i class="fas fa-wallet me-1"></i> Bayar
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    @else
-                                                        <div class="d-flex flex-column align-items-end gap-2">
-                                                            <span class="badge bg-danger">Waktu Pembayaran Habis</span>
-                                                            <button class="btn btn-outline-danger" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="cancelOrder('{{ $order->id }}')">
-                                                                <i class="fas fa-times me-1"></i> Batal & Buang
-                                                            </button>
-                                                        </div>
-                                                    @endif
-                                                @endif --}}
 
-                                                <!-- PERBAIKAN: Tombol Aksi Untuk Status Pending -->
-                                                @if ($order->status == 'pending')
-                                                    @php
-                                                        // Standar Prismalink biasanya 60 Menit
-                                                        $expiryTime = \Carbon\Carbon::parse(
-                                                            $order->created_at,
-                                                        )->addMinutes(60);
-                                                        $isExpired = now()->greaterThan($expiryTime);
-
-                                                        // PERUBAHAN DI SINI: Panggil URL pembayaran dari Session
-                                                        $paymentUrl = session('payment_url_' . $order->id) ?? '#';
-                                                    @endphp
-
-                                                    @if (!$isExpired)
-                                                        <div class="d-flex flex-column align-items-end gap-2">
-                                                            <span class="badge bg-warning text-dark countdown-timer"
-                                                                data-expiry="{{ $expiryTime->timestamp * 1000 }}">
-                                                                <i class="far fa-clock"></i> <span
-                                                                    class="time-left">Menghitung...</span>
-                                                            </span>
-                                                            <div class="d-flex gap-2">
-                                                                <button class="btn btn-outline-danger"
-                                                                    style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
-                                                                    onclick="cancelOrder('{{ $order->id }}')">
-                                                                    <i class="fas fa-times me-1"></i> Batal
-                                                                </button>
-                                                                <a href="{{ $paymentUrl }}"
-                                                                    class="btn-glamoire text-decoration-none"
-                                                                    style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
-                                                                    {{ $paymentUrl == '#' ? 'disabled onclick="event.preventDefault(); alert(\'URL Pembayaran sudah tidak tersedia.\');"' : '' }}>
-                                                                    <i class="fas fa-wallet me-1"></i> Bayar
-                                                                </a>
+                                                                <!-- PERBAIKAN: Menghindari inline HTML attribut injection untuk payment URL -->
+                                                                @if($paymentUrl == '#')
+                                                                    <button type="button" class="btn btn-secondary" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="Swal.fire('Oops', 'URL Pembayaran sudah tidak tersedia.', 'error')">
+                                                                        <i class="fas fa-wallet me-1"></i> Bayar
+                                                                    </button>
+                                                                @else
+                                                                    <a href="{{ $paymentUrl }}" class="btn-glamoire text-decoration-none" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;">
+                                                                        <i class="fas fa-wallet me-1"></i> Bayar
+                                                                    </a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     @else
@@ -19612,8 +19579,9 @@
                                                             })
                                                             ->toJson();
                                                     @endphp
+                                                    <!-- PERBAIKAN: Gunakan tanda kutip ganda (") untuk JSON data attribute agar aman diproses jQuery -->
                                                     <button class="btn-glamoire py-2 px-4 btn-beli-lagi"
-                                                        data-items='{{ $orderItemsPayload }}'>
+                                                        data-items="{{ $orderItemsPayload }}">
                                                         <i class="fas fa-redo-alt me-2"></i> Beli Lagi
                                                     </button>
                                                 @endif
@@ -19982,7 +19950,6 @@
     @endforeach
 
     <script>
-        // Logika Toggle View Password Modal Ganti Password
         function togglePassword(inputId, icon) {
             let input = document.getElementById(inputId);
             if (input.type === "password") {
@@ -19996,7 +19963,6 @@
             }
         }
 
-        // AJAX Update Password
         $(document).on("submit", "#changePasswordForm", function(e) {
             e.preventDefault();
             let formData = $(this).serialize();
@@ -20048,7 +20014,6 @@
             });
         });
 
-        // --- NEW: LOGIKA COUNTDOWN TIMER UNTUK PESANAN PENDING ---
         function updateTimers() {
             $('.countdown-timer').each(function() {
                 let expiryData = parseInt($(this).data('expiry'), 10);
@@ -20059,16 +20024,12 @@
                 let distance = expiry - now;
 
                 if (distance < 0) {
-                    // Jika waktu habis, ubah tampilan dan sembunyikan tombol bayar
-                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html(
-                        '<i class="fas fa-times-circle"></i> Kadaluarsa');
+                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html('<i class="fas fa-times-circle"></i> Kadaluarsa');
                     $(this).closest('div.d-flex.flex-column').find('.btn-glamoire').hide();
                 } else {
-                    // Jika waktu masih ada, hitung mundur
                     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-                    // Tambahkan angka 0 di depan jika di bawah 10
                     minutes = minutes < 10 ? "0" + minutes : minutes;
                     seconds = seconds < 10 ? "0" + seconds : seconds;
 
@@ -20077,9 +20038,8 @@
             });
         }
 
-        // Jalankan timer setiap 1 detik
         setInterval(updateTimers, 1000);
-        updateTimers(); // Jalankan sekali saat load
+        updateTimers();
     </script>
 
     <script>
@@ -20106,7 +20066,6 @@
     </script>
 
     <script>
-        // Profile Image Preview Logic
         document.getElementById('profile_picture').addEventListener('change', function(e) {
             if (e.target.files && e.target.files[0]) {
                 const reader = new FileReader();
@@ -20155,18 +20114,15 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.',
-                                    'success').then(() => {
+                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.', 'success').then(() => {
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.',
-                                    'error');
+                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.', 'error');
                             }
                         },
                         error: function(xhr) {
-                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.',
-                                'error');
+                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.', 'error');
                         }
                     });
                 }
