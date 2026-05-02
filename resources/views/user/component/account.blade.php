@@ -18893,12 +18893,12 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             cursor: pointer;
         }
 
         .wishlist-card:hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
             transform: translateY(-5px);
             border-color: var(--glamoire-gold);
         }
@@ -18930,7 +18930,7 @@
             right: 12px;
             width: 34px;
             height: 34px;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(4px);
             border-radius: 50%;
             display: flex;
@@ -18943,7 +18943,7 @@
             transition: var(--transition-smooth);
             opacity: 0;
             transform: scale(0.8);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .wishlist-card:hover .wishlist-remove-btn {
@@ -19192,8 +19192,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="{{ $profile->email }}" disabled
-                                            readonly style="background-color: #F3F4F6;">
+                                        <input type="email" class="form-control" value="{{ $profile->email }}"
+                                            disabled readonly style="background-color: #F3F4F6;">
                                         <small class="text-muted" style="font-size: 0.75rem;"><i
                                                 class="fas fa-lock me-1"></i> Email tidak dapat diubah</small>
                                     </div>
@@ -19414,7 +19414,8 @@
                                                         }
                                                     }
                                                 @endphp
-                                                <span class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span>
+                                                <span
+                                                    class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span>
                                             </div>
                                         </div>
 
@@ -19486,7 +19487,7 @@
                                                 @endif
 
                                                 <!-- PERBAIKAN: Tombol Aksi Untuk Status Pending -->
-                                                @if ($order->status == 'pending')
+                                                {{-- @if ($order->status == 'pending')
                                                     @php
                                                         // Standar Prismalink biasanya 60 Menit
                                                         $expiryTime = \Carbon\Carbon::parse($order->created_at)->addMinutes(60);
@@ -19494,7 +19495,7 @@
                                                         $paymentUrl = $order->payment ? $order->payment->transaction_id : '#';
                                                     @endphp
 
-                                                    @if(!$isExpired)
+                                                    @if (!$isExpired)
                                                         <div class="d-flex flex-column align-items-end gap-2">
                                                             <span class="badge bg-warning text-dark countdown-timer" data-expiry="{{ $expiryTime->timestamp * 1000 }}">
                                                                 <i class="far fa-clock"></i> <span class="time-left">Menghitung...</span>
@@ -19513,6 +19514,52 @@
                                                             <span class="badge bg-danger">Waktu Pembayaran Habis</span>
                                                             <button class="btn btn-outline-danger" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="cancelOrder('{{ $order->id }}')">
                                                                 <i class="fas fa-times me-1"></i> Batal & Buang
+                                                            </button>
+                                                        </div>
+                                                    @endif
+                                                @endif --}}
+
+                                                <!-- PERBAIKAN: Tombol Aksi Untuk Status Pending -->
+                                                @if ($order->status == 'pending')
+                                                    @php
+                                                        // Standar Prismalink biasanya 60 Menit
+                                                        $expiryTime = \Carbon\Carbon::parse(
+                                                            $order->created_at,
+                                                        )->addMinutes(60);
+                                                        $isExpired = now()->greaterThan($expiryTime);
+
+                                                        // PERUBAHAN DI SINI: Panggil URL pembayaran dari Session
+                                                        $paymentUrl = session('payment_url_' . $order->id) ?? '#';
+                                                    @endphp
+
+                                                    @if (!$isExpired)
+                                                        <div class="d-flex flex-column align-items-end gap-2">
+                                                            <span class="badge bg-warning text-dark countdown-timer"
+                                                                data-expiry="{{ $expiryTime->timestamp * 1000 }}">
+                                                                <i class="far fa-clock"></i> <span
+                                                                    class="time-left">Menghitung...</span>
+                                                            </span>
+                                                            <div class="d-flex gap-2">
+                                                                <button class="btn btn-outline-danger"
+                                                                    style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
+                                                                    onclick="cancelOrder('{{ $order->id }}')">
+                                                                    <i class="fas fa-times me-1"></i> Batal
+                                                                </button>
+                                                                <a href="{{ $paymentUrl }}"
+                                                                    class="btn-glamoire text-decoration-none"
+                                                                    style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
+                                                                    {{ $paymentUrl == '#' ? 'disabled onclick="event.preventDefault(); alert(\'URL Pembayaran sudah tidak tersedia.\');"' : '' }}>
+                                                                    <i class="fas fa-wallet me-1"></i> Bayar
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="d-flex flex-column align-items-end gap-2">
+                                                            <span class="badge bg-danger">Waktu Pembayaran Habis</span>
+                                                            <button class="btn btn-outline-danger"
+                                                                style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
+                                                                onclick="cancelOrder('{{ $order->id }}')">
+                                                                <i class="fas fa-times me-1"></i> Batalkan Pesanan
                                                             </button>
                                                         </div>
                                                     @endif
@@ -19606,9 +19653,13 @@
                                             $discountedPrice = $activePromo
                                                 ? $activePromo->pivot->discounted_price
                                                 : null;
-                                            $discountPercent = ($discountedPrice && $wp->regular_price > 0)
-                                                ? round((($wp->regular_price - $discountedPrice) / $wp->regular_price) * 100)
-                                                : 0;
+                                            $discountPercent =
+                                                $discountedPrice && $wp->regular_price > 0
+                                                    ? round(
+                                                        (($wp->regular_price - $discountedPrice) / $wp->regular_price) *
+                                                            100,
+                                                    )
+                                                    : 0;
                                         @endphp
                                         <div class="col-6 col-md-4 col-xl-3">
                                             <div class="wishlist-card"
@@ -19621,36 +19672,46 @@
                                                     </button>
 
                                                     @if ($discountPercent > 0)
-                                                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger" style="z-index: 2;">-{{ $discountPercent }}%</span>
+                                                        <span class="position-absolute top-0 start-0 m-2 badge bg-danger"
+                                                            style="z-index: 2;">-{{ $discountPercent }}%</span>
                                                     @endif
 
-                                                    <img src="{{ Storage::url($wp->main_image) }}" alt="{{ $wp->product_name }}">
+                                                    <img src="{{ Storage::url($wp->main_image) }}"
+                                                        alt="{{ $wp->product_name }}">
                                                 </div>
 
                                                 <div class="wishlist-info">
-                                                    <div class="wishlist-brand">{{ $wp->brand ? $wp->brand->name : 'Glamoire' }}</div>
+                                                    <div class="wishlist-brand">
+                                                        {{ $wp->brand ? $wp->brand->name : 'Glamoire' }}</div>
 
-                                                    <a href="/{{ $wp->product_code }}_product" class="wishlist-title">{{ $wp->product_name }}</a>
+                                                    <a href="/{{ $wp->product_code }}_product"
+                                                        class="wishlist-title">{{ $wp->product_name }}</a>
 
                                                     <div class="rating-box mb-2">
                                                         <i class="fas fa-star text-warning"></i>
-                                                        <span class="text-muted" style="font-size: 0.8rem;">{{ $wp->rating ?? '5.0' }}</span>
+                                                        <span class="text-muted"
+                                                            style="font-size: 0.8rem;">{{ $wp->rating ?? '5.0' }}</span>
                                                     </div>
 
                                                     <div class="wishlist-price-box">
                                                         @if ($wp->priceVariation !== null)
-                                                            <span class="wishlist-price-current">{{ $wp->priceVariation }}</span>
+                                                            <span
+                                                                class="wishlist-price-current">{{ $wp->priceVariation }}</span>
                                                         @else
                                                             @if ($discountedPrice && $discountedPrice < $wp->regular_price)
-                                                                <span class="wishlist-price-strike">Rp{{ number_format($wp->regular_price, 0, ',', '.') }}</span>
-                                                                <span class="wishlist-price-current text-danger">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                                <span
+                                                                    class="wishlist-price-strike">Rp{{ number_format($wp->regular_price, 0, ',', '.') }}</span>
+                                                                <span
+                                                                    class="wishlist-price-current text-danger">Rp{{ number_format($discountedPrice, 0, ',', '.') }}</span>
                                                             @else
-                                                                <span class="wishlist-price-current">Rp{{ number_format($wp->regular_price, 0, ',', '.') }}</span>
+                                                                <span
+                                                                    class="wishlist-price-current">Rp{{ number_format($wp->regular_price, 0, ',', '.') }}</span>
                                                             @endif
                                                         @endif
                                                     </div>
 
-                                                    <button class="wishlist-action" onclick="event.stopPropagation(); window.location.href = '/{{ $wp->product_code }}_product'">
+                                                    <button class="wishlist-action"
+                                                        onclick="event.stopPropagation(); window.location.href = '/{{ $wp->product_code }}_product'">
                                                         <i class="fas fa-shopping-bag"></i> Lihat Produk
                                                     </button>
                                                 </div>
@@ -19659,14 +19720,22 @@
                                     @endforeach
                                 </div>
                             @else
-                                <div class="dashboard-card mt-0 border-0" style="background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);">
+                                <div class="dashboard-card mt-0 border-0"
+                                    style="background: linear-gradient(145deg, #ffffff 0%, #f9fafb 100%);">
                                     <div class="empty-state-box py-5">
-                                        <div style="width: 100px; height: 100px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                                        <div
+                                            style="width: 100px; height: 100px; background: #FEF3C7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
                                             <i class="fas fa-heart" style="font-size: 3rem; color: #F59E0B;"></i>
                                         </div>
-                                        <h4 style="color: var(--glamoire-dark); font-family: 'The Seasons', serif; font-size: 1.8rem; font-weight: 700;">Daftar Favorit Kosong</h4>
-                                        <p style="color: var(--text-muted); font-size: 1rem; max-width: 400px; margin: 0 auto 2rem;">Kumpulkan produk-produk kecantikan impianmu di sini agar lebih mudah ditemukan nanti.</p>
-                                        <button class="btn-glamoire" style="padding: 0.8rem 2.5rem; font-size: 1rem;" onclick="location.href='/shop'">
+                                        <h4
+                                            style="color: var(--glamoire-dark); font-family: 'The Seasons', serif; font-size: 1.8rem; font-weight: 700;">
+                                            Daftar Favorit Kosong</h4>
+                                        <p
+                                            style="color: var(--text-muted); font-size: 1rem; max-width: 400px; margin: 0 auto 2rem;">
+                                            Kumpulkan produk-produk kecantikan impianmu di sini agar lebih mudah ditemukan
+                                            nanti.</p>
+                                        <button class="btn-glamoire" style="padding: 0.8rem 2.5rem; font-size: 1rem;"
+                                            onclick="location.href='/shop'">
                                             <i class="fas fa-search me-2"></i> Eksplor Produk
                                         </button>
                                     </div>
@@ -19991,7 +20060,8 @@
 
                 if (distance < 0) {
                     // Jika waktu habis, ubah tampilan dan sembunyikan tombol bayar
-                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html('<i class="fas fa-times-circle"></i> Kadaluarsa');
+                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html(
+                        '<i class="fas fa-times-circle"></i> Kadaluarsa');
                     $(this).closest('div.d-flex.flex-column').find('.btn-glamoire').hide();
                 } else {
                     // Jika waktu masih ada, hitung mundur
@@ -20085,15 +20155,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.', 'success').then(() => {
+                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.',
+                                    'success').then(() => {
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.', 'error');
+                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.',
+                                    'error');
                             }
                         },
                         error: function(xhr) {
-                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.', 'error');
+                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.',
+                                'error');
                         }
                     });
                 }

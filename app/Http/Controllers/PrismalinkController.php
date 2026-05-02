@@ -4033,7 +4033,6 @@ class PrismalinkController extends Controller
 
     public function submitPayment(Request $request)
     {
-        // PERBAIKAN: Ambil ID user langsung di dalam metode agar tidak null saat dipanggil via API/AJAX
         $this->id_user = auth()->id() ?? session('id_user');
 
         if ($request->condition !== "guest") {
@@ -4121,7 +4120,6 @@ class PrismalinkController extends Controller
                 'bank_id' => ''
             ];
         }
-        // KERANJANG -> BUY
         elseif ($request->condition == 'standard') {
             $body = [
                 'merchant_key_id' => $this->merchantKeyId,
@@ -4152,7 +4150,7 @@ class PrismalinkController extends Controller
                 ]),
                 'invoice_number' => "$invoiceCreate->no_invoice",
                 'integration_type' => '01',
-                'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'), // Waktu kadaluarsa (60 menit)
+                'validity' => now()->addMinutes(60)->format('Y-m-d H:i:s.v O'),
                 'external_id' => "$invoiceCreate->no_invoice",
                 'bank_id' => ''
             ];
@@ -4172,7 +4170,6 @@ class PrismalinkController extends Controller
 
         $status = $response->json();
 
-        // Validasi response prismalink
         if ($status && isset($status['response_code']) && $status['response_code'] == "PL000") {
             $data = $response->json();
 
@@ -4185,13 +4182,15 @@ class PrismalinkController extends Controller
                 $fullPaymentPageUrl = $paymentBaseUrl . $data['payment_page_url'];
                 $orderId = 'ORDER-' . time() . '-' . Str::random(5);
 
-                // PERBAIKAN: Sisipkan $fullPaymentPageUrl di parameter terakhir
-                $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products, $fullPaymentPageUrl);
+                $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products);
 
                 $this->order_data = $orderData;
 
-                // PANGGIL createNewOrder yang akan langsung menyimpan data ke tabel
-                $this->createNewOrder($this->order_data);
+                // BUAT ORDER DI DATABASE
+                $createdOrder = $this->createNewOrder($this->order_data);
+
+                // PERBAIKAN: Simpan URL ke session menggunakan ID order sebagai kuncinya
+                session()->put('payment_url_' . $createdOrder->id, $fullPaymentPageUrl);
 
                 $deadline = Carbon::parse($data['validity'] ?? now()->addMinutes(60));
                 $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
@@ -4254,7 +4253,7 @@ class PrismalinkController extends Controller
             'etd' => $orderData['etd'],
             'layanan' => $orderData['description'],
             'postal_code_customer' => $orderData['destinationPostalCode'],
-            'status' => 'pending', // Order dimulai dengan status pending
+            'status' => 'pending',
         ]);
 
         $this->order_id = $order->id;
@@ -4274,7 +4273,7 @@ class PrismalinkController extends Controller
         }
 
         foreach ($cartItems as $item) {
-            $item->bundle_price = null; // Default
+            $item->bundle_price = null;
             if ($item->product && $item->product->promos->where('status', 'Active')) {
                 foreach ($item->product->promos->where('status', 'Active') as $promo) {
                     if ($promo->tiers) {
@@ -4312,17 +4311,16 @@ class PrismalinkController extends Controller
             ]);
         }
 
-        // PERBAIKAN: Menyimpan link Prismalink ke dalam `transaction_id` agar User bisa membukanya kembali
+        // PERBAIKAN: Hilangkan data URL yang bikin database membludak
         $payment = Payment::create([
             'user_id'        => $this->id_user,
             'order_id'       => $order->id,
             'payment_method' => "Prismalink",
-            'transaction_id' => $orderData['paymentUrl'], // <- URL Pembayaran Disimpan Di Sini!
+            'transaction_id' => null, // Biarkan kosong/null
             'status'         => 'pending',
             'amount'         => $orderData['totalAmount'],
         ]);
 
-        // PERBAIKAN: Tautkan ID payment ke tabel Order
         $order->update(['payment_id' => $payment->id]);
 
         $useVoucherNewUser = VoucherNewUser::where('user_id', $this->id_user)->where('code', $orderData['voucherPromo'])->first();
@@ -4362,7 +4360,7 @@ class PrismalinkController extends Controller
                 }
             }
 
-            // Hapus isi Cart / Buynow agar tidak numpuk
+            // Hapus isi Cart / Buynow
             if ($this->condition == 'standard') {
                 $cartId = Cart::where('user_id', $this->id_user)->value('id');
                 Cart_item::where('cart_id', $cartId)->where('is_choose', true)->delete();
@@ -4376,8 +4374,7 @@ class PrismalinkController extends Controller
         return $order;
     }
 
-    // PERBAIKAN: Tambahkan argumen $paymentUrl di urutan terakhir
-    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode, $frontendProducts = [], $paymentUrl = null)
+    private function saveData($orderId, $totalAmount, $shippingAddressId, $shippingCost, $discountOngkir, $discountAmount, $totalItem, $totalItemPrice, $voucherPromo, $voucherOngkir, $destinationArea, $originArea, $courier, $etd, $description, $destinationPostalCode, $frontendProducts = [])
     {
         return [
             'orderId' => $orderId,
@@ -4396,8 +4393,7 @@ class PrismalinkController extends Controller
             'etd' => $etd,
             'description' => $description,
             'destinationPostalCode' => $destinationPostalCode,
-            'frontendProducts' => $frontendProducts,
-            'paymentUrl' => $paymentUrl // <- URL Ditambahkan ke dalam Array Data
+            'frontendProducts' => $frontendProducts
         ];
     }
 
@@ -4437,7 +4433,6 @@ class PrismalinkController extends Controller
             }
 
             if (!$aggregate) {
-                Log::error("FEFO Gagal: Produk tidak ditemukan. ID: $productId");
                 return;
             }
 
@@ -4448,7 +4443,6 @@ class PrismalinkController extends Controller
             $initialExpired = (!empty($rawExpired) && trim($rawExpired) !== '') ? trim($rawExpired) : '9999-12-31';
 
             if ($trueTotalStockBeforeOrder < $remainingNeeded) {
-                Log::error("FEFO Gagal: Stok tidak mencukupi untuk Product ID: $productId");
                 return;
             }
 
@@ -4492,8 +4486,6 @@ class PrismalinkController extends Controller
 
                 $remainingNeeded -= $deduct;
             }
-
-            Log::info("FEFO Detail Berhasil. Product: $productId, Varian: $variantId, Dipotong: $quantityNeeded");
         });
     }
 }
