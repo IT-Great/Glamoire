@@ -20553,8 +20553,11 @@
             $progress = 40;
         }
 
-        // Ambil Active Tab dari Session dengan aman
+        // PERBAIKAN: Ambil tab aktif (jika ada lemparan dari controller), jika tidak default ke profile
         $activeTab = session('activeTab', '#my-profile');
+
+        // LANGSUNG HAPUS memorinya. Jadi ketika halaman di-refresh, akan selalu balik ke Data Diri.
+        session()->forget('activeTab');
     @endphp
 
     <style>
@@ -22550,18 +22553,6 @@
     @endforeach
 
     <script>
-        $('.account-nav-tabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-            var tabId = $(e.target).attr('href');
-            $.ajax({
-                url: "{{ route('set.active.tab') }}",
-                type: 'POST',
-                data: {
-                    tab_id: tabId,
-                    _token: '{{ csrf_token() }}'
-                }
-            });
-        });
-
         function togglePassword(inputId, icon) {
             let input = document.getElementById(inputId);
             if (input.type === "password") {
