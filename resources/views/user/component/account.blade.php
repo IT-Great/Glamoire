@@ -20553,7 +20553,7 @@
             $progress = 40;
         }
 
-        // PERBAIKAN: Tangkap activeTab di satu variabel agar bersih dan mudah dibaca
+        // Ambil Active Tab dari Session dengan aman
         $activeTab = session('activeTab', '#my-profile');
     @endphp
 
