@@ -20552,6 +20552,9 @@
             $nextTier = 'Platinum';
             $progress = 40;
         }
+
+        // PERBAIKAN: Tangkap activeTab di satu variabel agar bersih dan mudah dibaca
+        $activeTab = session('activeTab', '#my-profile');
     @endphp
 
     <style>
@@ -21692,19 +21695,19 @@
                     </div>
 
                     <div class="nav nav-tabs account-nav-tabs" role="tablist" id="accountTabs">
-                        <a class="nav-link {{ empty(session('activeTab')) || session('activeTab') == '#my-profile' ? 'active' : '' }}"
+                        <a class="nav-link {{ $activeTab == '#my-profile' ? 'active' : '' }}"
                             data-bs-toggle="tab" data-bs-target="#my-profile" href="#my-profile" role="tab" aria-controls="my-profile">
                             <i class="far fa-user"></i> Data Diri
                         </a>
-                        <a class="nav-link {{ session('activeTab') == '#shipping-address' ? 'active' : '' }}"
+                        <a class="nav-link {{ $activeTab == '#shipping-address' ? 'active' : '' }}"
                             data-bs-toggle="tab" data-bs-target="#shipping-address" href="#shipping-address" role="tab" aria-controls="shipping-address">
                             <i class="fas fa-map-marker-alt"></i> Alamat Pengiriman
                         </a>
-                        <a class="nav-link {{ session('activeTab') == '#my-order' ? 'active' : '' }}"
+                        <a class="nav-link {{ $activeTab == '#my-order' ? 'active' : '' }}"
                             data-bs-toggle="tab" data-bs-target="#my-order" href="#my-order" role="tab" aria-controls="my-order">
                             <i class="fas fa-shopping-bag"></i> Riwayat Pesanan
                         </a>
-                        <a class="nav-link {{ session('activeTab') == '#my-wishlist' ? 'active' : '' }}"
+                        <a class="nav-link {{ $activeTab == '#my-wishlist' ? 'active' : '' }}"
                             data-bs-toggle="tab" data-bs-target="#my-wishlist" href="#my-wishlist" role="tab" aria-controls="my-wishlist">
                             <i class="far fa-heart"></i> Produk Favorit
                         </a>
@@ -21713,7 +21716,7 @@
 
                 <div class="account-content tab-content reveal-on-scroll" id="nav-tabContent" style="transition-delay: 0.2s;">
 
-                    <div class="tab-pane fade {{ empty(session('activeTab')) || session('activeTab') == '#my-profile' ? 'show active' : '' }}"
+                    <div class="tab-pane fade {{ $activeTab == '#my-profile' ? 'show active' : '' }}"
                         id="my-profile" role="tabpanel" aria-labelledby="my-profile-tab">
 
                         <div class="quick-stats-grid">
@@ -21850,7 +21853,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade {{ session('activeTab') == '#shipping-address' ? 'show active' : '' }}"
+                    <div class="tab-pane fade {{ $activeTab == '#shipping-address' ? 'show active' : '' }}"
                         id="shipping-address" role="tabpanel" aria-labelledby="shipping-address-tab">
                         <div class="dashboard-card">
                             <div class="dashboard-card-header">
@@ -21917,7 +21920,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade {{ session('activeTab') == '#my-order' ? 'show active' : '' }}"
+                    <div class="tab-pane fade {{ $activeTab == '#my-order' ? 'show active' : '' }}"
                         id="my-order" role="tabpanel" aria-labelledby="my-order-tab">
                         <div class="dashboard-card"
                             style="background: transparent; box-shadow: none; padding: 0; border: none;">
@@ -22014,7 +22017,8 @@
                                                         }
                                                     }
                                                 @endphp
-                                                <span class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span>
+                                                <span
+                                                    class="order-status-badge {{ $statusClass }}">{{ $statusText }}</span>
                                             </div>
                                         </div>
 
@@ -22173,7 +22177,7 @@
                                                                 'variant_id' => $item->product_variant_id,
                                                                 'qty' => $item->quantity,
                                                             ];
-                                                        })->toArray(); // Diubah ke array lalu di json_encode dengan htmlspecialchars
+                                                        })->toArray();
                                                     @endphp
 
                                                     <button class="btn-glamoire py-2 px-4 btn-beli-lagi"
@@ -22199,7 +22203,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade {{ session('activeTab') == '#my-wishlist' ? 'show active' : '' }}"
+                    <div class="tab-pane fade {{ $activeTab == '#my-wishlist' ? 'show active' : '' }}"
                         id="my-wishlist" role="tabpanel" aria-labelledby="my-wishlist-tab">
                         <div class="dashboard-card"
                             style="background: transparent; box-shadow: none; padding: 0; border: none;">
@@ -22546,26 +22550,15 @@
     @endforeach
 
     <script>
-        // --- PERBAIKAN: Fungsi Inisialisasi Tab Bootstrap ---
-        // Dengan cara ini, tab riwayat pesanan akan mau terbuka meskipun di-refresh
-        document.addEventListener('DOMContentLoaded', function() {
-            var activeTabHash = '{{ session("activeTab") ?? "#my-profile" }}';
-            var triggerEl = document.querySelector('.account-nav-tabs a[href="' + activeTabHash + '"]');
-            if (triggerEl) {
-                var tab = new bootstrap.Tab(triggerEl);
-                tab.show();
-            }
-
-            $('.account-nav-tabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
-                var tabId = $(e.target).attr('href');
-                $.ajax({
-                    url: "{{ route('set.active.tab') }}",
-                    type: 'POST',
-                    data: {
-                        tab_id: tabId,
-                        _token: '{{ csrf_token() }}'
-                    }
-                });
+        $('.account-nav-tabs a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+            var tabId = $(e.target).attr('href');
+            $.ajax({
+                url: "{{ route('set.active.tab') }}",
+                type: 'POST',
+                data: {
+                    tab_id: tabId,
+                    _token: '{{ csrf_token() }}'
+                }
             });
         });
 
