@@ -3801,95 +3801,77 @@
 
 <style>
     /* ==========================================
-       WORLD CLASS NAVBAR STYLING (REVISED)
+       GLAMOIRE PREMIUM NAVBAR STYLING
        ========================================== */
     :root {
-        --nav-bg-solid: #183018; /* Glamoire Dark Green */
-        --nav-bg-glass: rgba(24, 48, 24, 0.95); /* Sticky Glass Effect */
+        --nav-bg: #122212; /* Darker, solid elegant green */
         --nav-text: #FFFFFF;
         --nav-hover: #D4AF37; /* Glamoire Gold */
         --dropdown-bg: #FFFFFF;
         --dropdown-text: #1F2937;
-        --promo-bg: #F4F1EA; /* Soft Sand/Beige */
         --transition-speed: 0.3s;
     }
 
     /* ====== 1. TOP PROMO BANNER ====== */
     .top-promo-banner {
-        background: linear-gradient(270deg, #F4F1EA, #D4AF37, #F4F1EA);
-        background-size: 200% 200%;
-        animation: promoGradientFlow 4s ease infinite alternate;
-        color: var(--nav-bg-solid);
+        background-color: #F7F5F0; /* Solid elegant sand color */
+        color: var(--nav-bg);
         padding: 8px 0;
         text-align: center;
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 1px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 1.5px;
         position: relative;
-        z-index: 1020;
+        z-index: 1030;
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 15px;
-        box-shadow: inset 0 -1px 3px rgba(0,0,0,0.05);
-    }
-
-    @keyframes promoGradientFlow {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 100% 50%; }
-    }
-
-    .top-promo-banner p {
-        margin: 0;
         text-transform: uppercase;
-        font-weight: 800;
-        animation: textPromoFlow 4s ease infinite alternate;
     }
 
-    @keyframes textPromoFlow {
-        0% { color: #183018; text-shadow: 0 1px 1px rgba(255,255,255,0.8); }
-        100% { color: #FFFFFF; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-    }
-
-    .top-promo-banner .highlight { font-weight: 900; }
+    .top-promo-banner p { margin: 0; }
+    .top-promo-banner .highlight { font-weight: 700; color: #DC2626; }
     .top-promo-banner a {
         color: inherit;
         text-decoration: none;
         border-bottom: 1px solid currentColor;
-        padding-bottom: 1px;
+        font-weight: 600;
         transition: opacity var(--transition-speed);
-        font-weight: 700;
     }
-    .top-promo-banner a:hover { opacity: 0.7; }
+    .top-promo-banner a:hover { opacity: 0.6; }
 
-    /* ====== 2. MAIN NAVBAR (STICKY + GLASSMORPHISM) ====== */
+    /* ====== 2. MAIN NAVBAR ====== */
     .premium-navbar {
-        background: var(--nav-bg-glass);
-        backdrop-filter: blur(12px); /* UI/UX Note: Premium sticky feel */
-        -webkit-backdrop-filter: blur(12px);
+        background-color: var(--nav-bg);
         padding: 0;
         position: sticky;
         top: 0;
-        z-index: 1000;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
-        border-bottom: 1px solid rgba(255,255,255,0.05);
-        transition: padding 0.3s ease;
+        z-index: 1020;
+        transition: all 0.4s ease;
     }
 
-    .navbar-logo { padding: 1rem 0; display: flex; align-items: center; }
+    /* Efek Sticky Scroll */
+    .premium-navbar.scrolled {
+        background-color: rgba(18, 34, 18, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-logo { padding: 1.2rem 0; display: flex; align-items: center; }
     .navbar-logo img {
-        height: 32px; /* Slightly sleeker logo size */
+        height: 30px; /* Sedikit lebih kecil agar elegan */
         width: auto;
         transition: transform var(--transition-speed);
     }
-    .navbar-logo:hover img { transform: scale(1.02); }
+    .navbar-logo:hover img { opacity: 0.9; }
 
     /* Desktop Navigation Links */
     .nav-links-container {
         display: flex;
         align-items: stretch;
-        gap: 0.5rem; /* UI/UX Note: Spacing antar menu lebih lega */
-        margin: 0;
+        gap: 2.5rem; /* Spacing yang sangat lega khas Luxury Brand */
+        margin: 0 auto; /* Posisi di tengah (Center) */
         padding: 0;
         list-style: none;
         height: 100%;
@@ -3904,12 +3886,12 @@
     .nav-link-premium {
         color: var(--nav-text);
         text-decoration: none;
-        font-size: 0.85rem; /* UI/UX Note: Clean & Elegant */
-        font-weight: 400; /* Regular weight for premium aesthetic */
-        letter-spacing: 0.8px;
+        font-size: 0.8rem;
+        font-weight: 400; /* Font lebih tipis dan elegan */
+        letter-spacing: 1.5px;
         text-transform: uppercase;
         position: relative;
-        padding: 1.5rem 1.5rem; /* Larger padding for airy feel */
+        padding: 1.5rem 0;
         transition: color var(--transition-speed);
         cursor: pointer;
         display: flex;
@@ -3923,7 +3905,7 @@
         content: '';
         position: absolute;
         width: 0;
-        height: 2px; /* Thinner underline */
+        height: 2px;
         bottom: 0;
         left: 50%;
         background-color: var(--nav-hover);
@@ -3945,8 +3927,8 @@
         position: absolute;
         top: 100%;
         background-color: var(--dropdown-bg);
-        border-radius: 0 0 16px 16px;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease;
@@ -3956,7 +3938,6 @@
         border-top: none;
     }
 
-    /* SOLID BRIDGE */
     .nav-item-dropdown::before {
         content: '';
         position: absolute;
@@ -3980,7 +3961,7 @@
         }
     }
 
-    /* Mega Menu Layout (Shop) */
+    /* Mega Menu Layout */
     .mega-menu-content { display: flex; max-height: 60vh; }
     .mega-menu-sidebar {
         background-color: #F9FAFB;
@@ -3994,114 +3975,89 @@
         padding: 0.75rem 1.5rem;
         color: var(--dropdown-text);
         text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500; /* Lighter font */
+        font-size: 0.85rem;
+        font-weight: 500;
         transition: all 0.2s;
-        border-left: 2px solid transparent; /* Thinner border */
+        border-left: 3px solid transparent;
     }
     .mega-menu-tab:hover, .mega-menu-tab.active {
         background-color: #FFFFFF;
-        color: var(--nav-bg-solid);
-        border-left-color: var(--nav-bg-solid);
+        color: var(--nav-bg);
+        border-left-color: var(--nav-bg);
+        font-weight: 600;
     }
     .mega-menu-body {
         flex-grow: 1;
-        padding: 2rem;
+        padding: 1.5rem;
         overflow-y: auto;
         background: #FFFFFF;
     }
-    .mega-menu-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-    .mega-menu-item {
-        color: #6B7280; /* Lighter text for luxury feel */
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.2s;
-        display: flex;
-        align-items: center;
-    }
-    .mega-menu-item::before {
-        content: '—'; /* Changed to elegant dash */
-        color: #D1D5DB;
-        margin-right: 8px;
-        font-size: 0.8rem;
-    }
-    .mega-menu-item:hover { color: var(--nav-bg-solid); }
+    .mega-menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .mega-menu-item { color: #4B5563; text-decoration: none; font-size: 0.85rem; display: flex; align-items: center; transition: color 0.2s; }
+    .mega-menu-item::before { content: '•'; color: #D1D5DB; margin-right: 8px; font-size: 1.2rem; line-height: 1; }
+    .mega-menu-item:hover { color: var(--nav-bg); }
 
-    /* Simple Dropdown Layout (Brand) */
+    /* Simple Dropdown Layout */
     .simple-dropdown { padding: 1.5rem; }
-    .brand-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
+    .brand-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .brand-item {
-        border: 1px solid #F3F4F6;
+        border: 1px solid #E5E7EB;
         border-radius: 6px;
         padding: 8px 10px;
         text-align: center;
         color: var(--dropdown-text);
         text-decoration: none;
         font-size: 0.8rem;
-        font-weight: 400; /* Regular weight */
+        font-weight: 500;
         transition: all 0.3s;
     }
-    .brand-item:hover {
-        background-color: var(--nav-bg-solid);
-        color: #FFFFFF;
-        border-color: var(--nav-bg-solid);
-    }
+    .brand-item:hover { background-color: var(--nav-bg); color: #FFFFFF; border-color: var(--nav-bg); }
 
-    /* ====== 4. SEARCH BAR ====== */
-    .premium-search-container {
-        flex-grow: 1;
-        max-width: 350px; /* Made slightly smaller for elegance */
-        margin: 0 2rem;
-        position: relative;
-    }
-    .premium-search-input {
-        width: 100%;
-        background-color: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        color: #FFFFFF;
-        border-radius: 50px;
-        padding: 0.5rem 1rem 0.5rem 2.5rem;
-        font-size: 0.85rem;
-        transition: all var(--transition-speed);
-    }
-    .premium-search-input::placeholder { color: rgba(255, 255, 255, 0.7); font-weight: 300; }
-    .premium-search-input:focus {
-        background-color: #FFFFFF;
-        color: var(--dropdown-text);
-        outline: none;
-        border-color: #FFF;
-        box-shadow: 0 0 15px rgba(255,255,255,0.2);
-    }
-    .premium-search-input:focus::placeholder { color: #9CA3AF; }
-    .search-icon-nav {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: rgba(255, 255, 255, 0.7);
-        transition: color var(--transition-speed);
-        pointer-events: none;
-    }
-    .premium-search-input:focus + .search-icon-nav { color: var(--nav-bg-solid); }
-
-    /* ====== 5. ACTION ICONS ====== */
+    /* ====== 4. ACTIONS & SLEEK SEARCH ====== */
     .nav-actions {
         display: flex;
         align-items: center;
-        gap: 1.5rem;
+        gap: 1.2rem;
         height: 100%;
     }
+
+    /* Minimalist Search Bar */
+    .search-wrapper {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    .search-input-premium {
+        background: transparent;
+        border: none;
+        border-bottom: 1px solid rgba(255,255,255,0.4);
+        color: #FFF;
+        padding: 0.3rem 1.8rem 0.3rem 0;
+        width: 120px;
+        font-size: 0.8rem;
+        transition: all 0.4s ease;
+    }
+    .search-input-premium::placeholder { color: rgba(255,255,255,0.6); font-weight: 300; }
+    .search-input-premium:focus {
+        width: 180px;
+        outline: none;
+        border-bottom-color: var(--nav-hover);
+    }
+    .search-btn-icon {
+        position: absolute;
+        right: 0;
+        background: transparent;
+        border: none;
+        color: var(--nav-text);
+        cursor: pointer;
+        padding: 0;
+        transition: color var(--transition-speed);
+    }
+    .search-input-premium:focus + .search-btn-icon { color: var(--nav-hover); }
+
     .action-icon {
         color: var(--nav-text);
-        font-size: 1.25rem; /* UI/UX Note: Minimal outline size */
+        font-size: 1.1rem;
         position: relative;
         text-decoration: none;
         transition: color var(--transition-speed);
@@ -4116,31 +4072,31 @@
     .action-icon:hover { color: var(--nav-hover); }
     .cart-badge {
         position: absolute;
-        top: 15px;
+        top: 18px;
         right: -8px;
-        background-color: var(--nav-hover); /* Changed to Gold for premium feel */
-        color: var(--nav-bg-solid);
-        font-size: 0.65rem;
-        font-weight: 700;
-        height: 18px;
-        min-width: 18px;
+        background-color: var(--danger-main, #DC2626);
+        color: white;
+        font-size: 0.6rem;
+        font-weight: bold;
+        height: 16px;
+        min-width: 16px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 0 4px;
-        box-shadow: 0 0 0 2px var(--nav-bg-solid);
+        border: 2px solid var(--nav-bg);
     }
 
-    /* ====== 6. MOBILE RESPONSIVENESS ====== */
+    /* ====== 5. MOBILE RESPONSIVENESS ====== */
     .mobile-bottom-nav { display: none; }
 
     @media (max-width: 991px) {
-        .premium-navbar { padding: 0.5rem 0; backdrop-filter: blur(20px); }
+        .premium-navbar { padding: 0.5rem 0; }
         .action-icon { padding: 0; }
         .cart-badge { top: -8px; right: -8px; }
 
-        .premium-search-container, .desktop-nav-links { display: none; }
+        .search-wrapper, .desktop-nav-links { display: none; }
 
         .mobile-bottom-nav {
             display: flex;
@@ -4148,12 +4104,12 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
+            background: #FFFFFF;
+            box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.05);
             z-index: 1020;
             justify-content: space-around;
             padding: 0.5rem 0;
-            border-top: 1px solid rgba(0,0,0,0.05);
+            border-top: 1px solid #E5E7EB;
             padding-bottom: env(safe-area-inset-bottom, 0.5rem);
         }
 
@@ -4168,22 +4124,22 @@
             transition: color 0.3s;
         }
         .mobile-nav-item i { font-size: 1.2rem; }
-        .mobile-nav-item.active, .mobile-nav-item:hover { color: var(--nav-bg-solid); }
+        .mobile-nav-item.active, .mobile-nav-item:hover { color: var(--nav-bg); }
 
         .mobile-search-wrapper {
             background: white;
             padding: 10px 15px;
             position: sticky;
-            top: 55px; /* Adjust based on mobile nav height */
+            top: 55px;
             z-index: 999;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .mobile-search-input {
             width: 100%;
-            background: #F9FAFB;
-            border: 1px solid #E5E7EB;
-            border-radius: 50px;
-            padding: 8px 15px 8px 35px;
+            background: #F3F4F6;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 15px 10px 35px;
             font-size: 0.9rem;
         }
         .mobile-search-icon {
@@ -4196,50 +4152,29 @@
     }
 
     /* CUSTOM MOBILE CATEGORY MENU UI */
-    .mobile-cat-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+    .mobile-cat-list { list-style: none; padding: 0; margin: 0; }
     .mobile-cat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid #F3F4F6;
-        color: #1F2937;
-        font-weight: 500;
-        cursor: pointer;
-        background: #FFF;
-        transition: background 0.2s;
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 1rem 1.5rem; border-bottom: 1px solid #E5E7EB; color: #1F2937;
+        font-weight: 600; cursor: pointer; background: #FFF; transition: background 0.2s;
     }
-    .mobile-cat-header:active { background: #F9FAFB; }
-    .mobile-cat-header i { transition: transform 0.3s ease; color: #9CA3AF; font-size: 0.8rem;}
-    .mobile-cat-header.open i { transform: rotate(180deg); color: var(--nav-bg-solid); }
-    .mobile-cat-body {
-        display: none;
-        background: #FAFAFA;
-    }
+    .mobile-cat-header:active { background: #F3F4F6; }
+    .mobile-cat-header i { transition: transform 0.3s ease; color: #9CA3AF; }
+    .mobile-cat-header.open i { transform: rotate(180deg); color: var(--nav-bg); }
+    .mobile-cat-body { display: none; background: #F9FAFB; border-bottom: 1px solid #E5E7EB; }
     .mobile-subcat-link {
-        display: block;
-        padding: 0.75rem 1.5rem 0.75rem 2.5rem;
-        color: #6B7280;
-        text-decoration: none;
-        font-size: 0.9rem;
+        display: block; padding: 0.75rem 1.5rem 0.75rem 2.5rem; color: #4B5563;
+        text-decoration: none; border-bottom: 1px solid #F3F4F6; font-size: 0.9rem;
     }
-    .mobile-subcat-link:hover, .mobile-subcat-link:active { color: var(--nav-bg-solid); background: #F3F4F6; }
+    .mobile-subcat-link:last-child { border-bottom: none; }
+    .mobile-subcat-link:hover, .mobile-subcat-link:active { color: var(--nav-bg); background: #F3F4F6; }
 </style>
 
 <div class="top-promo-banner">
     <p><span class="highlight">UP TO 70% OFF</span> + VOUCHERS UP TO 550K. FREE SHIPPING NATIONWIDE!</p>
-    @if(session('id_user'))
-        <a href="/promotion">Shop Offers</a>
-    @else
-        <a href="#" class="require-login">Shop Offers</a>
-    @endif
 </div>
 
-<nav class="premium-navbar md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+<nav class="premium-navbar md:px-20 lg:px-24 xl:px-24 2xl:px-48" id="mainNavbar">
     <div class="container-fluid d-flex align-items-center justify-content-between h-100">
 
         <a href="/" class="navbar-logo">
@@ -4249,9 +4184,8 @@
         <ul class="nav-links-container desktop-nav-links">
             <li class="nav-item-dropdown">
                 <a href="{{ route('shop.all') }}" class="nav-link-premium">
-                    Shop <i class="fas fa-chevron-down ms-1" style="font-size:0.5rem; opacity:0.7;"></i>
+                    Shop <i class="far fa-chevron-down ms-1" style="font-size:0.6rem;"></i>
                 </a>
-
                 <div class="mega-menu center">
                     <div class="mega-menu-content">
                         <div class="mega-menu-sidebar custom-scroll">
@@ -4263,16 +4197,11 @@
                                 </a>
                             @endforeach
                         </div>
-
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="fw-normal mb-3 pb-2 border-bottom" style="color: var(--nav-bg-solid); font-family: 'The Seasons', serif;">{{ $category->name }}</h5>
-
-                                    @php
-                                        $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
-                                    @endphp
-
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    @php $subCategoriesInCategory = $subCategories->where('parent_id', $category->id); @endphp
                                     @if ($subCategoriesInCategory->isEmpty())
                                         <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
@@ -4284,9 +4213,8 @@
                                             @endforeach
                                         </div>
                                     @endif
-
                                     <div class="mt-4 pt-3 border-top">
-                                        <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark" style="font-size:0.85rem; font-weight: 500;">Lihat Semua {{ $category->name }}</a>
+                                        <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-none text-dark fw-semibold" style="font-size:0.85rem;">View All {{ $category->name }} <i class="far fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
                             @endforeach
@@ -4297,11 +4225,10 @@
 
             <li class="nav-item-dropdown">
                 <button class="nav-link-premium">
-                    Brand <i class="fas fa-chevron-down ms-1" style="font-size:0.5rem; opacity:0.7;"></i>
+                    Brand <i class="far fa-chevron-down ms-1" style="font-size:0.6rem;"></i>
                 </button>
-
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="fw-normal mb-3 border-bottom pb-2" style="font-family: 'The Seasons', serif;">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -4317,23 +4244,25 @@
             @else
                 <li class="nav-item-dropdown"><a href="#" class="nav-link-premium require-login">Offers</a></li>
             @endif
+
+            <li class="nav-item-dropdown"><a href="{{ route('user.events') }}" class="nav-link-premium">Events</a></li>
         </ul>
 
-        <div class="premium-search-container">
-            <form method="GET" action="{{ route('search.product') }}">
-                <i class="far fa-search search-icon-nav"></i>
-                <input type="text" name="product_search" class="premium-search-input" placeholder="Search for beauty...">
-            </form>
-        </div>
-
         <div class="nav-actions">
+            <div class="search-wrapper desktop-nav-links">
+                <form method="GET" action="{{ route('search.product') }}">
+                    <input type="text" name="product_search" class="search-input-premium" placeholder="Search...">
+                    <button type="submit" class="search-btn-icon"><i class="far fa-search"></i></button>
+                </form>
+            </div>
+
             <div class="nav-item-dropdown">
                 @if (session('id_user'))
-                    <a href="{{ route('account', ['user' => session('id_user')]) }}" class="action-icon" title="Account">
+                    <a href="{{ route('account', ['user' => session('id_user')]) }}" class="action-icon" title="Akun Saya">
                         <i class="far fa-user"></i>
                     </a>
                 @else
-                    <button class="action-icon" title="Account" data-bs-toggle="modal" data-bs-target="#loginUser1">
+                    <button class="action-icon" title="Akun Saya" data-bs-toggle="modal" data-bs-target="#loginUser1">
                         <i class="far fa-user"></i>
                     </button>
                 @endif
@@ -4341,22 +4270,22 @@
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
                         <div class="px-4 py-3 border-bottom mb-2 bg-light">
-                            <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
+                            <p class="mb-0 fs-7 text-muted">Welcome back,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-user-circle me-2"></i> Profil Saya</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> My Profile</a>
                         <div class="dropdown-divider my-2"></div>
-                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="far fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="far fa-sign-out-alt me-2"></i> Logout</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Sign In</button>
+                            <p class="text-muted fs-7 mb-0">New here? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Create Account</a></p>
                         </div>
                     @endif
                 </div>
             </div>
 
-            <a href="/cart" class="action-icon" title="Cart">
+            <a href="/cart" class="action-icon" title="Keranjang Belanja">
                 <i class="far fa-shopping-bag"></i>
                 <span class="cart-badge" id="total_cart_items">0</span>
             </a>
@@ -4368,14 +4297,14 @@
 <div class="mobile-search-wrapper d-lg-none">
     <form method="GET" action="{{ route('search.product') }}" class="position-relative">
         <i class="far fa-search mobile-search-icon"></i>
-        <input type="text" name="product_search" class="mobile-search-input" placeholder="Cari skincare, makeup...">
+        <input type="text" name="product_search" class="mobile-search-input" placeholder="Search for items...">
     </form>
 </div>
 
 <div class="mobile-bottom-nav d-lg-none">
     <a href="/" class="mobile-nav-item {{ Request::is('/') ? 'active' : '' }}">
         <i class="far fa-home"></i>
-        <span>Beranda</span>
+        <span>Home</span>
     </a>
 
     <a href="#" class="mobile-nav-item" data-bs-toggle="offcanvas" data-bs-target="#mobileCategoryMenu">
@@ -4395,6 +4324,11 @@
         </a>
     @endif
 
+    <a href="/newsletter" class="mobile-nav-item {{ Request::is('newsletter') ? 'active' : '' }}">
+        <i class="far fa-newspaper"></i>
+        <span>Journal</span>
+    </a>
+
     @if (session('id_user'))
         <a href="{{ route('account', ['user' => session('id_user')]) }}" class="mobile-nav-item">
             <i class="far fa-user"></i>
@@ -4410,12 +4344,11 @@
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
     <div class="offcanvas-header bg-dark text-white p-3">
-        <h5 class="offcanvas-title fw-normal" style="font-family: 'The Seasons', serif;" id="mobileCategoryMenuLabel">Menu Belanja</h5>
+        <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Shop Categories</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
     <div class="offcanvas-body p-0 custom-scroll" style="overflow-y: auto;">
-
         <ul class="mobile-cat-list">
             @foreach ($categories as $index => $category)
                 <li>
@@ -4424,13 +4357,10 @@
                         <i class="far fa-chevron-down"></i>
                     </div>
                     <div class="mobile-cat-body">
-                        @php
-                            $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
-                        @endphp
-
+                        @php $subCategoriesInCategory = $subCategories->where('parent_id', $category->id); @endphp
                         @if ($subCategoriesInCategory->isEmpty())
                             <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="mobile-subcat-link fw-bold">
-                                Lihat Semua {{ $category->name }}
+                                View All {{ $category->name }}
                             </a>
                         @else
                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -4438,8 +4368,8 @@
                                     {{ $subCategory->name }}
                                 </a>
                             @endforeach
-                            <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="mobile-subcat-link fw-bold" style="color: var(--nav-bg-solid);">
-                                Lihat Semua Kategori <i class="far fa-arrow-right ms-1"></i>
+                            <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="mobile-subcat-link fw-bold" style="color: var(--nav-bg);">
+                                View All {{ $category->name }} <i class="far fa-arrow-right ms-1"></i>
                             </a>
                         @endif
                     </div>
@@ -4451,7 +4381,7 @@
             <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
             <div class="d-flex flex-wrap gap-2">
                 @foreach ($brands->take(8) as $brand)
-                    <a href="/{{ $brand->name }}_brand" class="badge bg-white text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
+                    <a href="/{{ $brand->name }}_brand" class="badge bg-light text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
                 @endforeach
             </div>
         </div>
@@ -4459,6 +4389,16 @@
 </div>
 
 <script>
+    // JS for Sticky Navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('mainNavbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
     // JS for Mega Menu Hover Logic (Desktop)
     function switchMegaMenu(element, targetId) {
         document.querySelectorAll('.mega-menu-tab').forEach(tab => {
