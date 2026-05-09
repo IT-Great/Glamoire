@@ -10263,7 +10263,7 @@
     @endif
 
     <!-- 1. HERO SECTION -->
-    <div class="hero-carousel-wrapper reveal">
+    {{-- <div class="hero-carousel-wrapper reveal">
         <div class="swiper hero-swiper">
             <div class="swiper-wrapper">
                 @foreach ($data['promos'] as $promo)
@@ -10279,6 +10279,64 @@
                     @endif
                 @endforeach
             </div>
+            <div class="swiper-button-next d-none d-md-flex"></div>
+            <div class="swiper-button-prev d-none d-md-flex"></div>
+            <div class="swiper-pagination mb-3"></div>
+        </div>
+    </div> --}}
+
+    <!-- 1. HERO SECTION (Proportional & Premium Assets) -->
+    <div class="hero-carousel-wrapper reveal">
+        <style>
+            /* Sedikit penyesuaian agar tag picture tampil penuh menyesuaikan aspect-ratio */
+            .hero-swiper picture { width: 100%; height: 100%; display: block; }
+        </style>
+        <div class="swiper hero-swiper">
+            <div class="swiper-wrapper">
+
+                <!-- SLIDE 1: Premium Campaign (Dari Asset) -->
+                <div class="swiper-slide" onclick="window.location.href='/shop'">
+                    <picture>
+                        <!-- Gambar proporsional khusus HP (Saran ukuran: 1080 x 1350 px) -->
+                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-1.png') }}"> --}}
+                        <!-- Gambar proporsional khusus Desktop (Saran ukuran: 1920 x 820 px) -->
+                        <img src="{{ asset('images/banner-desktop-1.webp') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
+                    </picture>
+                </div>
+
+                <!-- SLIDE 2: Seasonal / Special Promo (Dari Asset) -->
+                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                    <picture>
+                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
+                        <img src="{{ asset('images/banner-desktop-2.webp') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
+                    </picture>
+                </div>
+
+                <!-- SLIDE 3: Seasonal / Special Promo (Dari Asset) -->
+                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                    <picture>
+                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
+                        <img src="{{ asset('images/banner-desktop-3.webp') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
+                    </picture>
+                </div>
+
+                <!-- SLIDE 4: Seasonal / Special Promo (Dari Asset) -->
+                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                    <picture>
+                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
+                        <img src="{{ asset('images/banner-desktop-4.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
+                    </picture>
+                </div>
+
+                <!-- SLIDE 3: Dynamic Promos (Tetap memanggil data dari database agar fitur Admin tidak mati) -->
+                {{-- @foreach ($data['promos'] as $promo)
+                    <div class="swiper-slide" onclick="window.location.href='/{{ $promo->promo_name }}-detail-promo'">
+                        <img src="{{ Storage::url($promo->image) }}" alt="{{ $promo->promo_name }}" loading="lazy">
+                    </div>
+                @endforeach --}}
+
+            </div>
+            <!-- Navigasi Slider -->
             <div class="swiper-button-next d-none d-md-flex"></div>
             <div class="swiper-button-prev d-none d-md-flex"></div>
             <div class="swiper-pagination mb-3"></div>
