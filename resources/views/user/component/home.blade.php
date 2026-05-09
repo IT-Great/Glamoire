@@ -10208,7 +10208,7 @@
         }
 
         /* --- PARALLAX CAMPAIGN DIVIDER --- */
-        .campaign-parallax {
+        /* .campaign-parallax {
             height: 70vh;
             min-height: 400px;
             width: 100%;
@@ -10218,12 +10218,10 @@
             justify-content: center;
             overflow: hidden;
             clip-path: inset(0);
-            /* Crucial for parallax effect */
         }
 
         .campaign-parallax video {
             position: fixed;
-            /* Parallax magic */
             top: 0;
             left: 0;
             width: 100%;
@@ -10276,6 +10274,61 @@
         .btn-campaign:hover {
             background: #FFF;
             color: var(--glamoire-dark);
+        } */
+
+        /* --- BRAND MESSAGE SECTION (UI/UX Clean Elegance) --- */
+        .brand-statement-section {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F4F7F4 100%);
+            padding: 8rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        .brand-statement-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            color: var(--glamoire-dark);
+            font-weight: 500;
+            line-height: 1.2;
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            text-shadow: none; /* Memastikan tidak ada shadow sesuai catatan UI/UX */
+        }
+        .brand-statement-text i {
+            font-style: italic;
+            color: var(--glamoire-gold);
+        }
+        .brand-statement-subtext {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+        .btn-clean-outline {
+            background: transparent;
+            color: var(--glamoire-dark);
+            border: 1px solid var(--glamoire-dark);
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .btn-clean-outline:hover {
+            background: var(--glamoire-dark);
+            color: #FFF;
         }
 
         /* --- Cinematic Flash Sale --- */
@@ -11617,7 +11670,7 @@
     </div> <!-- Close Container for full width parallax -->
 
     <!-- NEW: PARALLAX CAMPAIGN DIVIDER -->
-    <div class="campaign-parallax reveal">
+    {{-- <div class="campaign-parallax reveal">
         <!-- Using a placeholder luxury beauty video. Replace src with your actual campaign video url -->
         <video autoplay loop muted playsinline>
             <source
@@ -11630,7 +11683,18 @@
                 mentransformasi kecantikan sejati Anda.</p>
             <a href="/about" class="btn-campaign">Our Story</a>
         </div>
-    </div>
+    </div> --}}
+
+    <!-- BRAND MESSAGE SECTION (Revisi Quote Section) -->
+    <section class="brand-statement-section reveal">
+        <h2 class="brand-statement-text">
+            "Rooted in Nature,<br><i>Designed for Your Everyday Glow.</i>"
+        </h2>
+        <p class="brand-statement-subtext">
+            Memadukan kemurnian alam dengan inovasi sains. Glamoire menghadirkan perawatan kulit yang mentransformasi kecantikan sejati Anda.
+        </p>
+        <a href="/about" class="btn-clean-outline">Our Story</a>
+    </section>
 
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
 
