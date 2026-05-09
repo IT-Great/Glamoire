@@ -1151,7 +1151,7 @@
         }
 
         /* --- Editorial Newsletter Section --- */
-        .newsletter-premium {
+        /* .newsletter-premium {
             background: var(--glamoire-dark);
             border-radius: 40px;
             padding: 7rem 2rem;
@@ -1280,6 +1280,162 @@
                 padding: 1.2rem;
                 width: 100%;
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            }
+        } */
+
+        /* --- 11. EDITORIAL NEWSLETTER SECTION (UI/UX Revamp) --- */
+        .newsletter-premium {
+            background: var(--glamoire-dark);
+            border-radius: 24px; /* Sudut lebih modern, tidak terlalu membulat */
+            padding: 6rem 2rem;
+            text-align: center;
+            color: #FFF;
+            position: relative;
+            overflow: hidden;
+            /* Box-shadow tebal Dihapus sesuai instruksi UI/UX */
+            margin-top: 2rem;
+        }
+
+        .newsletter-premium::before {
+            content: '';
+            position: absolute;
+            left: -10%;
+            top: -50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+        }
+
+        .newsletter-premium::after {
+            content: '';
+            position: absolute;
+            right: -5%;
+            bottom: -30%;
+            width: 300px;
+            height: 300px;
+            background: url('{{ asset('images/pattern-right.png') }}') no-repeat center;
+            background-size: contain;
+            opacity: 0.05;
+            transform: rotate(-15deg);
+        }
+
+        .nl-title {
+            font-size: clamp(3rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--glamoire-gold);
+            position: relative;
+            z-index: 2;
+        }
+
+        .nl-desc {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto 1.5rem; /* Margin disesuaikan untuk list benefit */
+            line-height: 1.8;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Tambahan CSS Untuk Benefit List */
+        .nl-benefits {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nl-benefits span {
+            font-size: 0.9rem;
+            color: #FFF;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .nl-benefits span i {
+            color: var(--glamoire-gold);
+            font-size: 1.2rem;
+        }
+
+        .nl-form {
+            max-width: 650px; /* Form dibuat lebih lebar */
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .nl-input-group {
+            display: flex;
+            background: #FFF; /* Background solid, tanpa border & shadow */
+            border-radius: 50px;
+            padding: 0.4rem;
+        }
+
+        .nl-input {
+            border: none;
+            background: transparent;
+            padding: 1.2rem 2rem;
+            width: 100%;
+            font-size: 1.1rem; /* Text di dalam input lebih besar */
+            color: var(--glamoire-dark);
+            outline: none;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nl-input::placeholder {
+            color: #9CA3AF;
+        }
+
+        .nl-btn {
+            background: var(--glamoire-gold);
+            color: var(--glamoire-dark);
+            border: none;
+            padding: 0 3rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.95rem; /* Text button lebih besar */
+        }
+
+        .nl-btn:hover {
+            background: var(--glamoire-dark);
+            color: var(--glamoire-gold);
+        }
+
+        @media (max-width: 576px) {
+            .nl-benefits {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            .nl-input-group {
+                flex-direction: column;
+                background: transparent;
+                padding: 0;
+                gap: 12px;
+            }
+            .nl-input {
+                background: #FFF;
+                border-radius: 50px;
+                text-align: center;
+            }
+            .nl-btn {
+                padding: 1.2rem;
+                width: 100%;
             }
         }
 
@@ -2659,12 +2815,40 @@
         @endif
 
         <!-- 11. NEWSLETTER -->
-        <section class="section-padding pt-0 reveal">
+        {{-- <section class="section-padding pt-0 reveal">
             <div class="container-fluid p-0">
                 <div class="newsletter-premium">
                     <h2 class="nl-title">Stay Glamorous.</h2>
                     <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo
                         rahasia, dan jurnal kecantikan langsung di kotak masuk Anda.</p>
+
+                    <form id="subscribe-form" class="nl-form">
+                        @csrf
+                        <div class="nl-input-group">
+                            <input type="email" id="subscribe_email" class="nl-input"
+                                placeholder="Masukkan alamat email Anda..." required autocomplete="off">
+                            <button type="submit" id="subscribe-btn" class="nl-btn">Subscribe</button>
+                        </div>
+                        <div id="validationEmailSubscribe" class="text-danger mt-3 fw-semibold text-center"
+                            style="display: none; font-size:0.9rem;"></div>
+                    </form>
+                </div>
+            </div>
+        </section> --}}
+
+        <!-- 11. NEWSLETTER -->
+        <section class="section-padding pt-0 reveal">
+            <div class="container-fluid p-0">
+                <div class="newsletter-premium">
+                    <h2 class="nl-title">Stay Glamorous.</h2>
+                    <p class="nl-desc">Daftarkan email Anda untuk menerima pembaruan dari jurnal kecantikan kami langsung di kotak masuk Anda.</p>
+
+                    <!-- List Benefit Tambahan -->
+                    <div class="nl-benefits">
+                        <span><i class="bi bi-check2-circle"></i> Exclusive Promo</span>
+                        <span><i class="bi bi-check2-circle"></i> Early Access</span>
+                        <span><i class="bi bi-check2-circle"></i> Beauty Tips</span>
+                    </div>
 
                     <form id="subscribe-form" class="nl-form">
                         @csrf
