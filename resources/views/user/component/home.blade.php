@@ -10170,6 +10170,53 @@
             .nl-input { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; padding: 1.2rem; text-align: center;}
             .nl-btn { padding: 1.2rem; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.2);}
         }
+
+        /* --- 2. CORE MESSAGE SECTION (TRUST INDICATORS) --- */
+        .core-message-section {
+            background-color: #F4F7F4; /* Very soft green sesuai arahan UI/UX */
+            padding: 4.5rem 0;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+        .core-message-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            align-items: start;
+        }
+        .core-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+        .core-item:hover {
+            transform: translateY(-5px);
+        }
+        .core-icon {
+            font-size: 2.2rem;
+            /* Trik CSS membuat icon solid menjadi minimal outline style */
+            color: transparent;
+            -webkit-text-stroke: 1.2px var(--glamoire-dark);
+            opacity: 0.8;
+        }
+        .core-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--glamoire-dark);
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 991px) {
+            .core-message-grid { grid-template-columns: repeat(2, 1fr); gap: 3rem 2rem; }
+        }
+        @media (max-width: 576px) {
+            .core-message-section { padding: 3rem 0; }
+            .core-icon { font-size: 1.8rem; -webkit-text-stroke: 1px var(--glamoire-dark); }
+            .core-text { font-size: 0.85rem; }
+        }
     </style>
 
     <!-- Welcome Modal PERBAIKAN UKURAN (Tambahan scrollable & resize image) -->
@@ -10239,7 +10286,7 @@
     </div>
 
     <!-- 2. THE GLAMOIRE PROMISE (Scrolling Marquee) -->
-    <div class="glamoire-promise-bar reveal">
+    {{-- <div class="glamoire-promise-bar reveal">
         <div class="promise-track">
             <!-- Repeated for seamless loop -->
             <span class="promise-item"><i class="fas fa-leaf"></i> 100% Plant-Based</span>
@@ -10252,7 +10299,31 @@
             <span class="promise-item"><i class="fas fa-gem"></i> Guaranteed Authentic</span>
             <span class="promise-item"><i class="fas fa-paw"></i> Cruelty Free</span>
         </div>
-    </div>
+    </div> --}}
+
+    <!-- 2. CORE MESSAGE SECTION -->
+    <section class="core-message-section reveal">
+        <div class="container-fluid md:px-20 lg:px-24 xl:px-24 2xl:px-48">
+            <div class="core-message-grid">
+                <div class="core-item">
+                    <i class="fas fa-leaf core-icon"></i>
+                    <span class="core-text">Plant-Based<br>Ingredients</span>
+                </div>
+                <div class="core-item">
+                    <i class="fas fa-certificate core-icon"></i>
+                    <span class="core-text">BPOM<br>Certified</span>
+                </div>
+                <div class="core-item">
+                    <i class="fas fa-paw core-icon"></i>
+                    <span class="core-text">Cruelty-Free<br>Products</span>
+                </div>
+                <div class="core-item">
+                    <i class="fas fa-shield-alt core-icon"></i>
+                    <span class="core-text">Authentic<br>Products</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
 
