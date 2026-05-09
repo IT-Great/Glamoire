@@ -10300,7 +10300,7 @@
                         <!-- Gambar proporsional khusus HP (Saran ukuran: 1080 x 1350 px) -->
                         {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-1.png') }}"> --}}
                         <!-- Gambar proporsional khusus Desktop (Saran ukuran: 1920 x 820 px) -->
-                        <img src="{{ asset('images/banner-desktop-1.webp') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
+                        <img src="{{ asset('images/banner-desktop-1.jpg') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
                     </picture>
                 </div>
 
@@ -10308,7 +10308,7 @@
                 <div class="swiper-slide" onclick="window.location.href='/promotion'">
                     <picture>
                         {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
-                        <img src="{{ asset('images/banner-desktop-2.webp') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
+                        <img src="{{ asset('images/banner-desktop-2.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
                     </picture>
                 </div>
 
@@ -10316,7 +10316,7 @@
                 <div class="swiper-slide" onclick="window.location.href='/promotion'">
                     <picture>
                         {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
-                        <img src="{{ asset('images/banner-desktop-3.webp') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
+                        <img src="{{ asset('images/banner-desktop-3.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
                     </picture>
                 </div>
 
