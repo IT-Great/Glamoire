@@ -11371,7 +11371,7 @@
             </div>
         </section> --}}
 
-        <section class="section-padding reveal">
+        {{-- <section class="section-padding reveal">
             <div class="container-fluid p-0">
                 <div class="split-section-wrapper">
                     <div class="split-section-left">
@@ -11479,6 +11479,101 @@
                                                         @else
                                                             <span>Rp
                                                                 {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                        @endif
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="swiper-button-next d-none d-md-flex"></div>
+                            <div class="swiper-button-prev d-none d-md-flex"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> --}}
+
+        <!-- 3. TOP SELLING -->
+        <section class="section-padding reveal">
+            <div class="container-fluid p-0">
+                <div class="split-section-wrapper">
+                    <div class="split-section-left">
+                        <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
+                        <p class="section-desc">Koleksi mahakarya yang paling dicintai. Elevasi rutinitas kecantikan Anda dengan produk ikonis Glamoire.</p>
+                        <a href="/shop" class="link-gold">Shop The Collection <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="split-section-right">
+                        <div class="swiper top-selling-slider product-slider" style="padding-bottom: 3rem; padding-top: 1rem;">
+                            <div class="swiper-wrapper">
+                                @foreach ($data['topsell'] as $product)
+                                    @php
+                                        $activePromo = $product->promos->first();
+                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
+                                        $discountPercent = ($discountedPrice && $product->regular_price > 0) ? round((($product->regular_price - $discountedPrice) / $product->regular_price) * 100) : 0;
+                                        $inWishlist = collect($wishlist)->contains('product_id', $product->id);
+                                        $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
+                                    @endphp
+
+                                    <div class="swiper-slide h-auto">
+                                        <!-- Product Card Ideal Structure -->
+                                        <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
+
+                                            <!-- Product Image -->
+                                            <div class="lpc-visual {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
+                                                <!-- Maksimal 1 Badge -->
+                                                @if ($discountPercent > 0)
+                                                    <span class="lpc-minimal-badge">-{{ $discountPercent }}%</span>
+                                                @elseif ($product->is_gift ?? false)
+                                                    <span class="lpc-minimal-badge" style="background:#000; color:var(--glamoire-gold);">Gift</span>
+                                                @endif
+
+                                                <button class="lpc-wishlist-icon {{ $inWishlist ? 'active' : '' }}" onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
+                                                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
+                                                </button>
+
+                                                <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
+
+                                                <!-- CTA Button (Sederhana via hover) -->
+                                                <div class="lpc-simple-cta-layer">
+                                                    @if (session('id_user'))
+                                                        @if ($product->stock_quantity == 0)
+                                                            <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-clean-cta" style="background:var(--text-muted);">Notify Me</button>
+                                                        @else
+                                                            @if($inCart)
+                                                                <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-clean-cta" style="background:var(--success-main);">In Cart</button>
+                                                            @else
+                                                                <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-clean-cta">Add to Cart</button>
+                                                            @endif
+                                                        @endif
+                                                    @else
+                                                        <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-clean-cta">Login to Buy</button>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="lpc-details">
+                                                <!-- Product Name -->
+                                                <h3 class="lpc-clean-title">{{ $product->product_name }}</h3>
+
+                                                <!-- Short Benefit -->
+                                                <p class="lpc-clean-benefit">
+                                                    {{ $product->short_description ?? 'Formulated for your natural beauty and daily skin glow.' }}
+                                                </p>
+
+                                                <!-- Price (DIPERBAIKI: Menggunakan d-flex column agar tersusun vertikal & tanpa enter/spasi) -->
+                                                <div class="lpc-clean-price d-flex flex-column align-items-center justify-content-center mt-auto">
+                                                    @if ($product->priceVariation !== null)
+                                                        <span>{{ $product->priceVariation }}</span>
+                                                    @else
+                                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
+                                                            <span class="lpc-clean-price-strike" style="margin-right:0; margin-bottom:2px;">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
+                                                            <span class="lpc-clean-price-discount text-danger fw-bold">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
+                                                        @else
+                                                            <span class="fw-bold" style="color: var(--glamoire-dark);">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
                                                         @endif
                                                     @endif
                                                 </div>
