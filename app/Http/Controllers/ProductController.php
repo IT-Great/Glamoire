@@ -368,6 +368,20 @@ class ProductController extends Controller
                 ->take(10)
                 ->get();
 
+            // --- TAMBAHKAN LOGIKA FLASH SALE DISINI ---
+            $flashSaleProducts = Product::with('promos') // Load relasi jika dibutuhkan
+                ->where('is_flash_sale', 1)
+                ->whereNotNull('flash_sale_end')
+                ->where('flash_sale_end', '>', now()) // Hanya tampilkan yang belum expired
+                ->where('stock_quantity', '>', 0) // Jangan tampilkan yang habis
+                ->orderBy('flash_sale_end', 'asc')
+                ->take(8)
+                ->get();
+
+            // Cari waktu expired paling lama dari produk flash sale aktif untuk master timer
+            $flashSaleEndTime = $flashSaleProducts->max('flash_sale_end');
+            // ------------------------------------------
+
             $data = [
                 'topsell' => $topsell,
                 'new' => $new,
@@ -382,6 +396,8 @@ class ProductController extends Controller
                 'brands' => $brands, // ⬅️ tambahkan ini
                 'popupsBanner' => $popupsBanner, // ⬅️ tambahkan ini
                 'popups' => $popups, // ⬅️ tambahkan ini
+                'flashSaleProducts' => $flashSaleProducts, // ⬅️ TAMBAHKAN INI
+                'flashSaleEndTime' => $flashSaleEndTime,   // ⬅️ TAMBAHKAN INI
 
             ];
 
