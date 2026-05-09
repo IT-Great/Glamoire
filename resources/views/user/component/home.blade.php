@@ -10728,7 +10728,7 @@
         }
 
         /* --- Article Section (Editorial Vogue Style) --- */
-        .article-highlight {
+        /* .article-highlight {
             position: relative;
             border-radius: 30px;
             overflow: hidden;
@@ -10855,6 +10855,127 @@
                 width: 100%;
                 height: 200px;
             }
+        } */
+
+        /* --- 10. EDITORIAL JOURNAL SECTION (UI/UX Revamp) --- */
+        .editorial-article-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .editorial-img-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/5; /* Rasio gambar ala majalah/editorial */
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            background: var(--glamoire-sand);
+        }
+
+        .editorial-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .editorial-article-card:hover .editorial-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .editorial-category {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .editorial-content {
+            padding: 0 0.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .editorial-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .editorial-title {
+            font-family: 'Cormorant Garamond', 'The Seasons', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--text-main);
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s;
+        }
+
+        .editorial-article-card:hover .editorial-title {
+            color: var(--glamoire-gold);
+        }
+
+        .editorial-excerpt {
+            font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1.8rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .editorial-readmore {
+            margin-top: auto;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--glamoire-dark);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            display: inline-block;
+            align-self: flex-start;
+            padding-bottom: 4px;
+        }
+
+        .editorial-readmore::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--glamoire-dark);
+            transition: width 0.3s ease;
+        }
+
+        .editorial-article-card:hover .editorial-readmore::after {
+            width: 100%;
         }
 
         /* --- Editorial Newsletter Section --- */
@@ -12205,7 +12326,7 @@
         </section>
 
         <!-- 10. ARTICLES / JOURNAL -->
-        @if (count($data['articles']) > 0)
+        {{-- @if (count($data['articles']) > 0)
             <section class="section-padding pt-0 reveal">
                 <div class="container-fluid p-0">
                     <div class="full-section-header">
@@ -12248,6 +12369,61 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+        @endif --}}
+
+        <!-- 10. ARTICLES / JOURNAL -->
+        @if (count($data['articles']) > 0)
+            <section class="section-padding pt-0 reveal">
+                <div class="container-fluid p-0">
+
+                    <!-- Header dengan layout sejajar agar lebih editorial -->
+                    <div class="split-section-wrapper" style="align-items: flex-end; margin-bottom: 3rem;">
+                        <div class="split-section-left" style="flex: 1;">
+                            <h2 class="section-title">The Glamoire <br><span style="color:var(--glamoire-gold); font-style:italic;">Journal.</span></h2>
+                            <p class="section-desc mb-0">Eksplorasi tren kecantikan, edukasi skincare, dan wawasan plant-based beauty.</p>
+                        </div>
+                        <div class="split-section-right text-md-end">
+                            <a href="/newsletter" class="link-gold">Baca Semua Jurnal <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Grid 3 Kolom Sesuai Revisi UI/UX (Lebih lega dan tidak padat) -->
+                    <div class="row g-4">
+                        {{-- Dibatasi maksimal 3 artikel (take(3)) --}}
+                        @foreach ($data['articles']->take(3) as $article)
+                            <div class="col-12 col-md-6 col-lg-4">
+                                <div class="editorial-article-card"
+                                    onclick="window.location.href='/{{ $article->title }}_detailnewsletter'">
+
+                                    <div class="editorial-img-wrapper">
+                                        <span class="editorial-category">
+                                            {{ optional($article->categoryArticle)->name ?? 'Beauty & Lifestyle' }}
+                                        </span>
+                                        <img src="{{ $article->image ? Storage::url($article->image) : asset('images/no-image.png') }}"
+                                            alt="{{ $article->title }}">
+                                    </div>
+
+                                    <div class="editorial-content">
+                                        <div class="editorial-meta">
+                                            {{ \Carbon\Carbon::parse($article->created_at)->translatedFormat('d F Y') }}
+                                        </div>
+                                        <h3 class="editorial-title">{{ $article->title }}</h3>
+
+                                        <!-- Penambahan Short Excerpt menggunakan deskripsi / konten artikel -->
+                                        <p class="editorial-excerpt">
+                                            {{ \Illuminate\Support\Str::limit(strip_tags($article->description ?? $article->content ?? 'Pelajari lebih lanjut tentang wawasan perawatan kulit eksklusif dari Glamoire pada jurnal edisi kali ini.'), 120, '...') }}
+                                        </p>
+
+                                        <span class="editorial-readmore">Read Article</span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
                 </div>
             </section>
         @endif
