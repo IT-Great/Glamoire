@@ -10587,7 +10587,7 @@
         }
 
         /* --- Brand Directory --- */
-        .brand-card {
+        /* .brand-card {
             background: #FFF;
             border-radius: 50%;
             border: 1px solid #F3F4F6;
@@ -10629,6 +10629,60 @@
 
         .brand-card:hover .brand-logo-box img {
             filter: grayscale(0%);
+        } */
+
+        /* --- 7. BRAND DIRECTORY (UI/UX Revamp - Marquee Style) --- */
+        .brand-section-wrapper {
+            background-color: #FFF; /* Memberikan whitespace yang clean */
+            padding: 5rem 0;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            text-align: center;
+        }
+
+        .brand-section-header {
+            margin-bottom: 3.5rem;
+        }
+
+        .brand-section-header h2 {
+            font-size: clamp(2.5rem, 4vw, 3.5rem);
+            color: var(--glamoire-dark);
+            font-weight: 700;
+        }
+
+        .brand-card-clean {
+            background: transparent;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 120px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 16px;
+        }
+
+        /* Hover interaction sederhana sesuai catatan UI/UX */
+        .brand-card-clean:hover {
+            background: var(--glamoire-sand);
+            transform: translateY(-5px);
+        }
+
+        .brand-logo-clean {
+            max-width: 100%;
+            max-height: 65px; /* Menjaga ukuran logo tetap konsisten */
+            object-fit: contain;
+            transition: transform 0.3s ease;
+            /* Grayscale dihilangkan agar tampil dengan warna original */
+        }
+
+        .brand-card-clean:hover .brand-logo-clean {
+            transform: scale(1.08);
+        }
+
+        /* Trik agar Swiper berjalan mulus tanpa jeda (Efek Marquee) */
+        .brand-slider .swiper-wrapper {
+            transition-timing-function: linear !important;
         }
 
         /* --- Category Section --- */
@@ -12148,7 +12202,7 @@
         @endif
 
         <!-- 7. BRAND DIRECTORY -->
-        <section class="section-padding pt-0 reveal">
+        {{-- <section class="section-padding pt-0 reveal">
             <div class="container-fluid p-0">
                 <div class="split-section-wrapper" style="align-items: center;">
                     <div class="split-section-left">
@@ -12176,6 +12230,31 @@
                             <div class="swiper-button-next d-none d-md-flex"></div>
                             <div class="swiper-button-prev d-none d-md-flex"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section> --}}
+
+        <!-- 7. BRAND DIRECTORY -->
+        <section class="brand-section-wrapper reveal">
+            <div class="container-fluid p-0">
+                <div class="brand-section-header">
+                    <h2 class="section-title">The <span style="color:var(--glamoire-gold); font-style:italic;">Brands.</span></h2>
+                    <p class="section-desc mx-auto" style="max-width: 600px;">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk memenuhi standar Anda.</p>
+                </div>
+
+                <!-- Marquee Brand Slider -->
+                <div class="swiper brand-slider">
+                    <div class="swiper-wrapper align-items-center">
+                        @foreach ($data['brands'] as $brand)
+                            <div class="swiper-slide">
+                                <div class="brand-card-clean" onclick="window.location.href = '/{{ $brand->name }}_brand'">
+                                    <img class="brand-logo-clean"
+                                         src="{{ $brand->brand_logo ? Storage::url($brand->brand_logo) : asset('images/no-brand.png') }}"
+                                         alt="{{ $brand->name }}" loading="lazy">
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -12604,26 +12683,44 @@
                 }
             });
 
+            // new Swiper(".brand-slider", {
+            //     slidesPerView: 2.5,
+            //     spaceBetween: 20,
+            //     navigation: {
+            //         nextEl: ".brand-slider .swiper-button-next",
+            //         prevEl: ".brand-slider .swiper-button-prev"
+            //     },
+            //     breakpoints: {
+            //         576: {
+            //             slidesPerView: 3.5
+            //         },
+            //         768: {
+            //             slidesPerView: 4.5
+            //         },
+            //         992: {
+            //             slidesPerView: 5.5
+            //         },
+            //         1200: {
+            //             slidesPerView: 6.5
+            //         }
+            //     }
+            // });
+
             new Swiper(".brand-slider", {
-                slidesPerView: 2.5,
-                spaceBetween: 20,
-                navigation: {
-                    nextEl: ".brand-slider .swiper-button-next",
-                    prevEl: ".brand-slider .swiper-button-prev"
+                slidesPerView: 3,
+                spaceBetween: 30,
+                loop: true,
+                speed: 4000, // Kecepatan linear marquee
+                autoplay: {
+                    delay: 0,
+                    disableOnInteraction: false,
                 },
+                allowTouchMove: true, // Memungkinkan user untuk menggeser secara manual
                 breakpoints: {
-                    576: {
-                        slidesPerView: 3.5
-                    },
-                    768: {
-                        slidesPerView: 4.5
-                    },
-                    992: {
-                        slidesPerView: 5.5
-                    },
-                    1200: {
-                        slidesPerView: 6.5
-                    }
+                    576: { slidesPerView: 4, spaceBetween: 40 },
+                    768: { slidesPerView: 5, spaceBetween: 40 },
+                    992: { slidesPerView: 6, spaceBetween: 50 },
+                    1200: { slidesPerView: 7, spaceBetween: 50 }
                 }
             });
 
