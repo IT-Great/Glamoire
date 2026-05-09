@@ -10298,7 +10298,7 @@
                 <div class="swiper-slide" onclick="window.location.href='/shop'">
                     <picture>
                         <!-- Gambar proporsional khusus Desktop (Saran ukuran: 1920 x 820 px) -->
-                        <img src="{{ asset('images/glamoire-banner.jpg') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
+                        <img src="{{ asset('images/glamoirebanner.jpg') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
                     </picture>
                 </div>
 
