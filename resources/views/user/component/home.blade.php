@@ -11699,7 +11699,7 @@
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
 
         <!-- 5. FLASH SALE (Cinematic) -->
-        <section class="section-padding reveal">
+        {{-- <section class="section-padding reveal">
             <div class="container-fluid p-0">
                 <div class="flash-sale-wrapper">
                     <div class="row align-items-center">
@@ -11785,7 +11785,128 @@
                     </div>
                 </div>
             </div>
+        </section> --}}
+
+        <!-- 5. FLASH SALE (UI/UX Elegant & Realtime) -->
+        @if(isset($data['flashSaleProducts']) && count($data['flashSaleProducts']) > 0)
+        <section class="section-padding reveal">
+            <div class="container-fluid p-0">
+                <div class="flash-sale-wrapper" style="background-color: var(--glamoire-sand); padding: 5rem 0; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
+                    <!-- Data attribut untuk javascript timer -->
+                    <div class="row align-items-center" id="flash-sale-container" data-endtime="{{ $data['flashSaleEndTime'] }}">
+
+                        <!-- Header & Timer -->
+                        <div class="col-12 col-xl-3 flash-header ps-xl-5">
+                            <h2 class="flash-title" style="font-size: clamp(2.5rem, 4vw, 3.5rem); font-weight: 600; color: var(--glamoire-dark); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 15px;">
+                                Flash Sale.
+                            </h2>
+                            <p class="mb-0" style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6;">Penawaran eksklusif. Kesempatan terbatas untuk mengoleksi produk impian Anda.</p>
+
+                            <div class="timer-flex" style="display: flex; align-items: center; gap: 0.8rem; margin-top: 2rem;">
+                                <div class="timer-block" style="background: #FFF; border: 1px solid #E5E7EB; padding: 0.8rem 1rem; text-align: center; min-width: 70px;">
+                                    <div class="timer-val" id="fs-hours" style="font-size: 1.8rem; font-weight: 600; line-height: 1; color: var(--glamoire-dark); font-family: 'Plus Jakarta Sans', monospace;">00</div>
+                                    <div class="timer-lbl" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 5px;">Hours</div>
+                                </div>
+                                <span class="fs-4 text-muted">:</span>
+                                <div class="timer-block" style="background: #FFF; border: 1px solid #E5E7EB; padding: 0.8rem 1rem; text-align: center; min-width: 70px;">
+                                    <div class="timer-val" id="fs-mins" style="font-size: 1.8rem; font-weight: 600; line-height: 1; color: var(--glamoire-dark); font-family: 'Plus Jakarta Sans', monospace;">00</div>
+                                    <div class="timer-lbl" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 5px;">Mins</div>
+                                </div>
+                                <span class="fs-4 text-muted">:</span>
+                                <div class="timer-block" style="background: #FFF; border: 1px solid #E5E7EB; padding: 0.8rem 1rem; text-align: center; min-width: 70px;">
+                                    <div class="timer-val" id="fs-secs" style="font-size: 1.8rem; font-weight: 600; line-height: 1; color: var(--danger-main); font-family: 'Plus Jakarta Sans', monospace;">00</div>
+                                    <div class="timer-lbl" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-top: 5px;">Secs</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Slider (Maks 3.5 Card Desktop) -->
+                        <div class="col-12 col-xl-9 mt-5 mt-xl-0">
+                            <div class="swiper flash-sale-slider product-slider" style="padding-bottom: 2rem;">
+                                <div class="swiper-wrapper">
+                                    @foreach ($data['flashSaleProducts'] as $fsProduct)
+                                        @php
+                                            $discountPercent = round((($fsProduct->regular_price - $fsProduct->flash_sale_price) / $fsProduct->regular_price) * 100);
+                                            // Asumsi logika sisa stock (bisa disesuaikan dengan limit flash sale Anda)
+                                            $stockLeft = $fsProduct->stock_quantity;
+                                            // Simulasi bar progress: Anggap batas flash sale adalah 50 pcs (Ubah angka 50 sesuai logic bisnis Anda)
+                                            $stockPercent = ($stockLeft / 50) * 100;
+                                            if($stockPercent > 100) $stockPercent = 100;
+                                        @endphp
+                                        <div class="swiper-slide h-auto">
+                                            <div class="luxury-product-card" style="background: transparent; border: none; box-shadow: none;" onclick="window.location.href = '/{{ $fsProduct->product_code }}_product'">
+                                                <div class="lpc-visual" style="position: relative; aspect-ratio: 4/5; overflow: hidden; background: #FFF; border: 1px solid #E5E7EB;">
+                                                    <span class="lpc-minimal-badge" style="background: var(--danger-main); color: #FFF; position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; z-index: 2;">-{{ $discountPercent }}%</span>
+
+                                                    <img src="{{ Storage::url($fsProduct->main_image) }}" alt="{{ $fsProduct->product_name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;">
+                                                </div>
+
+                                                <div class="lpc-details" style="padding: 0.5rem;">
+                                                    <h3 class="lpc-clean-title" style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.3rem;">{{ $fsProduct->product_name }}</h3>
+
+                                                    <div class="lpc-clean-price d-flex flex-column align-items-start mt-2">
+                                                        <span class="lpc-clean-price-strike" style="font-size: 0.8rem; color: #9CA3AF; text-decoration: line-through;">Rp {{ number_format($fsProduct->regular_price, 0, ',', '.') }}</span>
+                                                        <span class="lpc-clean-price-discount fw-bold text-danger" style="font-size: 1.1rem;">Rp {{ number_format($fsProduct->flash_sale_price, 0, ',', '.') }}</span>
+                                                    </div>
+
+                                                    <!-- Elegant Stock Indicator -->
+                                                    <div class="w-100 mt-3">
+                                                        <div style="height: 4px; background: #E5E7EB; width: 100%; border-radius: 4px; overflow: hidden;">
+                                                            <div style="height: 100%; background: var(--glamoire-dark); width: {{ $stockPercent }}%;"></div>
+                                                        </div>
+                                                        <span style="font-size: 0.75rem; color: var(--danger-main); margin-top: 6px; font-weight: 600; display: block; font-family: 'Plus Jakarta Sans', sans-serif;">
+                                                            🔥 Tersisa {{ $stockLeft }} item
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <!-- Navigation -->
+                                <div class="swiper-button-next d-none d-md-flex" style="right: 10px;"></div>
+                                <div class="swiper-button-prev d-none d-md-flex" style="left: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+        <!-- Javascript Untuk Timer Flash Sale Realtime -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const fsContainer = document.getElementById('flash-sale-container');
+                if(!fsContainer) return;
+
+                const endTimeString = fsContainer.getAttribute('data-endtime');
+                if(!endTimeString) return;
+
+                const countDownDate = new Date(endTimeString).getTime();
+
+                const timerInterval = setInterval(function() {
+                    const now = new Date().getTime();
+                    const distance = countDownDate - now;
+
+                    if (distance < 0) {
+                        clearInterval(timerInterval);
+                        document.getElementById("fs-hours").innerHTML = "00";
+                        document.getElementById("fs-mins").innerHTML = "00";
+                        document.getElementById("fs-secs").innerHTML = "00";
+                        return;
+                    }
+
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    document.getElementById("fs-hours").innerHTML = hours < 10 ? "0" + hours : hours;
+                    document.getElementById("fs-mins").innerHTML = minutes < 10 ? "0" + minutes : minutes;
+                    document.getElementById("fs-secs").innerHTML = seconds < 10 ? "0" + seconds : seconds;
+                }, 1000);
+            });
+        </script>
+        @endif
 
         <!-- 6. PROMO EVENT -->
         @if ($data['promos']->count() > 0)

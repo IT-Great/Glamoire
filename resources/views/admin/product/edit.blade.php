@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
-    <link rel="stylesheet" href="{{asset('assets/vendors/summernote/summernote-lite.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/summernote/summernote-lite.min.css') }}">
 
     <style>
         .flatpickr-calendar {
@@ -521,7 +521,8 @@
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
         }
-         /* Summernote improvements */
+
+        /* Summernote improvements */
         .note-editor.note-frame {
             border-radius: 0.25rem;
         }
@@ -782,6 +783,52 @@
                                                             @endif
                                                         </div>
 
+                                                        <!-- KODE FLASH SALE UNTUK ADMIN -->
+                                                        <div class="form-group mb-4 mt-4 p-4"
+                                                            style="background-color: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px;">
+                                                            <h5 style="color: #d97706;"><i
+                                                                    class="fas fa-bolt me-2"></i> Pengaturan Flash Sale
+                                                            </h5>
+                                                            <p class="text-muted" style="font-size: 14px;">Aktifkan
+                                                                untuk memasukkan produk ini ke bagian Flash Sale di
+                                                                Homepage.</p>
+
+                                                            <div class="form-check form-switch mb-3">
+                                                                <!-- Untuk file create.blade.php: hilangkan pengecekan $product->is_flash_sale -->
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    id="is_flash_sale" name="is_flash_sale"
+                                                                    value="1"
+                                                                    {{ isset($product) && $product->is_flash_sale ? 'checked' : '' }}>
+                                                                <label class="form-check-label fw-bold"
+                                                                    for="is_flash_sale">Aktifkan Flash Sale</label>
+                                                            </div>
+
+                                                            <div id="flash_sale_settings"
+                                                                style="display: {{ isset($product) && $product->is_flash_sale ? 'block' : 'none' }};">
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <label>Harga Flash Sale <span
+                                                                                style="color: red">*</span></label>
+                                                                        <div class="input-group mt-2">
+                                                                            <span class="input-group-text">Rp.</span>
+                                                                            <input type="text" class="form-control"
+                                                                                name="flash_sale_price"
+                                                                                placeholder="x.xxx.xxx"
+                                                                                value="{{ isset($product) && $product->flash_sale_price ? number_format($product->flash_sale_price, 0, ',', '.') : '' }}">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6 mt-3 mt-md-0">
+                                                                        <label>Berakhir Pada <span
+                                                                                style="color: red">*</span></label>
+                                                                        <input type="datetime-local"
+                                                                            class="form-control mt-2"
+                                                                            name="flash_sale_end" id="flash_sale_end"
+                                                                            value="{{ isset($product) && $product->flash_sale_end ? $product->flash_sale_end : '' }}">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="form-group mb-4">
                                                             <label for="">Berat Produk</label>
                                                             <div class="input-group mt-2">
@@ -887,8 +934,7 @@
                                                                                 style="color: green;">Old
                                                                                 Image</span>
                                                                             <img src="{{ Storage::url($product->main_image) }}"
-                                                                                class="preview-image"
-                                                                                alt="Preview"
+                                                                                class="preview-image" alt="Preview"
                                                                                 onclick="openImageInNewTab('{{ Storage::url($product->main_image) }}')">
                                                                         </div>
                                                                     </div>
@@ -1225,8 +1271,8 @@
     <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
     <script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script><!-- summernote -->
-    <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js')}}"></script>
-    
+    <script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js') }}"></script>
+
     <script>
         // Pastikan Select2 dan dependencies lain sudah di-load sebelum script ini
         document.addEventListener('DOMContentLoaded', function() {
@@ -1840,7 +1886,7 @@
         });
     </script>
 
-    
+
 
     {{-- summernote --}}
     <script>
@@ -1861,6 +1907,17 @@
                     }));
                 }
             }
+        });
+    </script>
+    <script>
+        // Tambahkan script ini di bagian bawah halaman admin
+        document.getElementById('is_flash_sale').addEventListener('change', function() {
+            document.getElementById('flash_sale_settings').style.display = this.checked ? 'block' : 'none';
+        });
+        // Inisialisasi Flatpickr untuk datetime
+        flatpickr("#flash_sale_end", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i:S"
         });
     </script>
 

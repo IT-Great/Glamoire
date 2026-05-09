@@ -2,34 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use Carbon\Carbon;
-use App\Models\User;
-use App\Models\Cart;
-use App\Models\Brand;
-use App\Models\Promo;
-use App\Models\Popup;
-use App\Models\Article;
-use App\Models\Product;
-use App\Models\Partner;
-use App\Models\Wishlist;
-use App\Models\NotifyMe;
-use App\Models\Cart_item;
-use Illuminate\Http\Request;
-use App\Models\ProductStocks;
 use App\Mail\sendMailNotifyMe;
-
+use App\Models\Article;
+use App\Models\Brand;
+use App\Models\Cart;
+use App\Models\Cart_item;
 use App\Models\CategoryProduct;
+use App\Models\NotifyMe;
+use App\Models\Popup;
+use App\Models\Product;
+use App\Models\ProductStocks;
 use App\Models\ProductVariations;
+use App\Models\Promo;
+use App\Models\User;
+use App\Models\Wishlist;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-
-
-
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -92,17 +87,17 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } elseif ($variationPrices->count() == 0) {
                     $prod->priceVariation = null;
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
-            $new     = Product::with(['promos'  => function ($query) {
+            $new = Product::with(['promos' => function ($query) {
                 $query->select('promos.*', 'promo_products.discounted_price')
                     ->wherePivot('discounted_price', '>', 0)
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
@@ -115,13 +110,13 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $prodnew->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } elseif ($variationPrices->count() == 0) {
                     $prodnew->priceVariation = null;
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $prodnew->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
@@ -169,7 +164,6 @@ class ProductController extends Controller
                 ->limit(2)
                 ->get();
 
-
             $mainPromo = Promo::where('type', 'promo')
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [$date])
                 ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', -1), '%Y-%m-%d') >= ?", [$date])
@@ -190,7 +184,6 @@ class ProductController extends Controller
                 })
                 ->get();
 
-
             // banner promo
             $popupsBanner = Popup::where('is_active', true)
                 ->where(function ($query) {
@@ -201,16 +194,28 @@ class ProductController extends Controller
                 ->take(2)
                 ->get();
 
-
-
             $brands = Brand::orderBy('created_at', 'desc')
                 ->take(10)
                 ->get();
 
+            // --- TAMBAHKAN LOGIKA FLASH SALE DISINI ---
+            $flashSaleProducts = Product::with('promos') // Load relasi jika dibutuhkan
+                ->where('is_flash_sale', 1)
+                ->whereNotNull('flash_sale_end')
+                ->where('flash_sale_end', '>', now()) // Hanya tampilkan yang belum expired
+                ->where('stock_quantity', '>', 0) // Jangan tampilkan yang habis
+                ->orderBy('flash_sale_end', 'asc')
+                ->take(8)
+                ->get();
+
+            // Cari waktu expired paling lama dari produk flash sale aktif untuk master timer
+            $flashSaleEndTime = $flashSaleProducts->max('flash_sale_end');
+            // ------------------------------------------
+
             $data = [
-                'wishlist'  => $wishlist,
+                'wishlist' => $wishlist,
                 'cartItems' => $cartItems,
-                'promos'    => $promos,
+                'promos' => $promos,
                 'promoModal' => $promoModal,
                 'topsell' => $topsell,
                 'new' => $new,
@@ -222,6 +227,8 @@ class ProductController extends Controller
                 'brands' => $brands, // ⬅️ tambahkan ini
                 'popupsBanner' => $popupsBanner, // ⬅️ tambahkan ini
                 'popups' => $popups, // ⬅️ tambahkan ini
+                'flashSaleProducts' => $flashSaleProducts, // ⬅️ TAMBAHKAN INI
+                'flashSaleEndTime' => $flashSaleEndTime,   // ⬅️ TAMBAHKAN INI
 
             ];
 
@@ -237,11 +244,11 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $product->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $product->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
@@ -260,17 +267,17 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } elseif ($variationPrices->count() == 0) {
                     $prod->priceVariation = null;
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
-            $new = Product::with(['promos'  => function ($query) {
+            $new = Product::with(['promos' => function ($query) {
                 $query->select('promos.*', 'promo_products.discounted_price')
                     ->wherePivot('discounted_price', '>', 0)
                     ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
@@ -283,13 +290,13 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $prodnew->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } elseif ($variationPrices->count() == 0) {
                     $prodnew->priceVariation = null;
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prodnew->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $prodnew->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
@@ -348,7 +355,6 @@ class ProductController extends Controller
                 })
                 ->get();
 
-
             $popupsBanner = Popup::where('is_active', true)
                 ->where(function ($query) {
                     $query->where('display_type', 'like', '%banner%')
@@ -364,15 +370,15 @@ class ProductController extends Controller
 
             $data = [
                 'topsell' => $topsell,
-                'new'     => $new,
+                'new' => $new,
                 'product' => $product,
-                'promos'  => $promos,
-                'popup'   => $popupVoucherNewUser,
-                'popupslider'    => $popupslider, // ⬅️ kirim ke view
+                'promos' => $promos,
+                'popup' => $popupVoucherNewUser,
+                'popupslider' => $popupslider, // ⬅️ kirim ke view
                 'categories' => $categories, // TAMBAHKAN INI
                 'articles' => $articles, // TAMBAHKAN INI
-                'promosBanner'  => $promosBanner,  // Promo tipe diskon (sisi kiri)
-                'promosDiskon'  => $promosDiskon,  // Promo tipe diskon (sisi kiri)
+                'promosBanner' => $promosBanner,  // Promo tipe diskon (sisi kiri)
+                'promosDiskon' => $promosDiskon,  // Promo tipe diskon (sisi kiri)
                 'brands' => $brands, // ⬅️ tambahkan ini
                 'popupsBanner' => $popupsBanner, // ⬅️ tambahkan ini
                 'popups' => $popups, // ⬅️ tambahkan ini
@@ -387,7 +393,6 @@ class ProductController extends Controller
         // dd($data->whislist);
         // dd(count($data->whislist));
 
-
         // } catch (Exception $err) {
         //     return view('eror-403');
         // }
@@ -397,7 +402,7 @@ class ProductController extends Controller
     {
         try {
             $product = Product::where('product_code', $code)
-                ->with(['ratingAndReviews.user', 'promos'  => function ($query) {
+                ->with(['ratingAndReviews.user', 'promos' => function ($query) {
                     $query->select('promos.*', 'promo_products.discounted_price')
                         ->wherePivot('discounted_price', '>', 0)
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
@@ -415,7 +420,7 @@ class ProductController extends Controller
             $subCategories = CategoryProduct::where('parent_id', $getParent)->pluck('id')->toArray();
 
             $youlike = Product::whereIn('category_product_id', $subCategories)
-                ->with(['promos'  => function ($query) {
+                ->with(['promos' => function ($query) {
                     $query->select('promos.*', 'promo_products.discounted_price')
                         ->wherePivot('discounted_price', '>', 0)
                         ->whereRaw("STR_TO_DATE(SUBSTRING_INDEX(date_range, ' - ', 1), '%Y-%m-%d') <= ?", [Carbon::today()])
@@ -427,13 +432,13 @@ class ProductController extends Controller
 
                 if ($variationPrices->count() > 1) {
                     // Jika ada lebih dari satu harga unik, buat rentang harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                        . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                        .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
                 } elseif ($variationPrices->count() == 0) {
                     $prod->priceVariation = null;
                 } else {
                     // Jika semua harga variasi sama, cukup tampilkan satu harga
-                    $prod->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                    $prod->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
                 }
             }
 
@@ -459,16 +464,16 @@ class ProductController extends Controller
 
                     return view('user.component.detail', [
                         'averageRating' => $averageRating,
-                        'product'       => $product,
-                        'youlike'       => $youlike,
-                        'wishlists'     => $wishlists,
-                        'cartItems'     => $cartItems,
+                        'product' => $product,
+                        'youlike' => $youlike,
+                        'wishlists' => $wishlists,
+                        'cartItems' => $cartItems,
                     ]);
                 } else {
                     return view('user.component.detail', [
                         'averageRating' => $averageRating,
-                        'product'       => $product,
-                        'youlike'       => $youlike,
+                        'product' => $product,
+                        'youlike' => $youlike,
                     ]);
                 }
             }
@@ -497,7 +502,7 @@ class ProductController extends Controller
 
                     $product = $query->first();
 
-                    if (!$product) {
+                    if (! $product) {
                         abort(404);
                     }
 
@@ -512,13 +517,13 @@ class ProductController extends Controller
 
                     return view('user.component.detail-varian', [
                         'averageRating' => $averageRating,
-                        'product'       => $product,
-                        'youlike'       => $youlike,
-                        'wishlists'     => $wishlists,
-                        'cartItems'     => $cartItems,
-                        'firstVariant'  => $firstVariant,
-                        'variant'       => $checkVariant,
-                        'variantType'   => $variantType,
+                        'product' => $product,
+                        'youlike' => $youlike,
+                        'wishlists' => $wishlists,
+                        'cartItems' => $cartItems,
+                        'firstVariant' => $firstVariant,
+                        'variant' => $checkVariant,
+                        'variantType' => $variantType,
                     ]);
                 } else {
                     $query = Product::where('product_code', $code)
@@ -539,7 +544,7 @@ class ProductController extends Controller
 
                     $product = $query->first();
 
-                    if (!$product) {
+                    if (! $product) {
                         abort(404);
                     }
 
@@ -550,11 +555,11 @@ class ProductController extends Controller
 
                     return view('user.component.detail-varian', [
                         'averageRating' => $averageRating,
-                        'product'       => $product,
-                        'firstVariant'  => $firstVariant,
-                        'youlike'       => $youlike,
-                        'variant'       => $checkVariant,
-                        'variantType'   => $variantType,
+                        'product' => $product,
+                        'firstVariant' => $firstVariant,
+                        'youlike' => $youlike,
+                        'variant' => $checkVariant,
+                        'variantType' => $variantType,
                     ]);
                 }
             }
@@ -575,11 +580,11 @@ class ProductController extends Controller
         // dd($request);
 
         $products = Product::where(function ($query) use ($product_search) {
-            $query->where('product_name', 'like', '%' . $product_search . '%')
-                ->orWhere('description', 'like', '%' . $product_search . '%')
-                ->orWhere('information_product', 'like', '%' . $product_search . '%');
+            $query->where('product_name', 'like', '%'.$product_search.'%')
+                ->orWhere('description', 'like', '%'.$product_search.'%')
+                ->orWhere('information_product', 'like', '%'.$product_search.'%');
         })
-            ->with(['promos'  => function ($query) {
+            ->with(['promos' => function ($query) {
                 $query->select('promos.*', 'promo_products.discounted_price')
                     ->wherePivot('discounted_price', '>', 0);
             }])
@@ -612,7 +617,7 @@ class ProductController extends Controller
         switch ($request->sort) {
             case 'latest':
                 $products->orderBy('created_at', 'desc');
-                $sort = "Terbaru";
+                $sort = 'Terbaru';
                 break;
             case 'popular':
                 // Assuming you have a 'popularity' field
@@ -620,11 +625,11 @@ class ProductController extends Controller
                 break;
             case 'high_price':
                 $products->orderBy('regular_price', 'desc');
-                $sort = "Harga Tertinggi";
+                $sort = 'Harga Tertinggi';
                 break;
             case 'low_price':
                 $products->orderBy('regular_price', 'asc');
-                $sort = "Harga Terendah";
+                $sort = 'Harga Terendah';
                 break;
         }
 
@@ -635,16 +640,15 @@ class ProductController extends Controller
 
             if ($variationPrices->count() > 1) {
                 // Jika ada lebih dari satu harga unik, buat rentang harga
-                $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.')
-                    . ' - Rp' . number_format($variationPrices->last(), 0, ',', '.');
+                $product->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.')
+                    .' - Rp'.number_format($variationPrices->last(), 0, ',', '.');
             } elseif ($variationPrices->count() == 0) {
                 $product->priceVariation = null;
             } else {
                 // Jika semua harga variasi sama, cukup tampilkan satu harga
-                $product->priceVariation = 'Rp' . number_format($variationPrices->first(), 0, ',', '.');
+                $product->priceVariation = 'Rp'.number_format($variationPrices->first(), 0, ',', '.');
             }
         }
-
 
         $userId = session('id_user');
 
@@ -656,17 +660,17 @@ class ProductController extends Controller
 
             if (count($products) !== 0) {
                 $data = [
-                    'products'    => $products,
-                    'keyword'     => $product_search,
-                    'count'       => count($products),
-                    'wishlists'   => $wishlists,
-                    'cartItems'   => $cartItems,
-                    'brands'      => $brands,
-                    'brand'       => $brandName,
-                    'minPrice'    => $minPrice,
-                    'maxPrice'    => $maxPrice,
-                    'rating'      => $rating,
-                    'sort'        => $sort,
+                    'products' => $products,
+                    'keyword' => $product_search,
+                    'count' => count($products),
+                    'wishlists' => $wishlists,
+                    'cartItems' => $cartItems,
+                    'brands' => $brands,
+                    'brand' => $brandName,
+                    'minPrice' => $minPrice,
+                    'maxPrice' => $maxPrice,
+                    'rating' => $rating,
+                    'sort' => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $data); // Return results to a view
@@ -674,17 +678,17 @@ class ProductController extends Controller
                 $products = [
                     'products' => [],
                     'keyword' => $product_search,
-                    'count'   => 0,
-                    'brand'   => $request->brand,
+                    'count' => 0,
+                    'brand' => $request->brand,
                     'min_price' => $request->min_price,
                     'max_price' => $request->max_price,
                     'rating' => $request->rating,
-                    'brands'      => $brands,
-                    'brand'       => $brandName,
-                    'minPrice'    => $minPrice,
-                    'maxPrice'    => $maxPrice,
-                    'rating'      => $rating,
-                    'sort'        => $sort,
+                    'brands' => $brands,
+                    'brand' => $brandName,
+                    'minPrice' => $minPrice,
+                    'maxPrice' => $maxPrice,
+                    'rating' => $rating,
+                    'sort' => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $products);
@@ -694,15 +698,15 @@ class ProductController extends Controller
 
             if (count($products) !== 0) {
                 $data = [
-                    'products'    => $products,
-                    'keyword'     => $product_search,
-                    'count'       => count($products),
-                    'brands'      => $brands,
-                    'brand'       => $brandName,
-                    'minPrice'    => $minPrice,
-                    'maxPrice'    => $maxPrice,
-                    'rating'      => $rating,
-                    'sort'        => $sort,
+                    'products' => $products,
+                    'keyword' => $product_search,
+                    'count' => count($products),
+                    'brands' => $brands,
+                    'brand' => $brandName,
+                    'minPrice' => $minPrice,
+                    'maxPrice' => $maxPrice,
+                    'rating' => $rating,
+                    'sort' => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $data); // Return results to a view
@@ -710,17 +714,17 @@ class ProductController extends Controller
                 $products = [
                     'products' => [],
                     'keyword' => $product_search,
-                    'count'   => 0,
-                    'brand'   => $request->brand,
+                    'count' => 0,
+                    'brand' => $request->brand,
                     'min_price' => $request->min_price,
                     'max_price' => $request->max_price,
                     'rating' => $request->rating,
-                    'brands'      => $brands,
-                    'brand'       => $brandName,
-                    'minPrice'    => $minPrice,
-                    'maxPrice'    => $maxPrice,
-                    'rating'      => $rating,
-                    'sort'        => $sort,
+                    'brands' => $brands,
+                    'brand' => $brandName,
+                    'minPrice' => $minPrice,
+                    'maxPrice' => $maxPrice,
+                    'rating' => $rating,
+                    'sort' => $sort,
                 ];
 
                 return view('user.component.search')->with('data', $products);
@@ -730,8 +734,8 @@ class ProductController extends Controller
 
     public function notify($id)
     {
-        $product  = Product::where('id', $id)->first();
-        $emails   = NotifyMe::where('product_id', $id)
+        $product = Product::where('id', $id)->first();
+        $emails = NotifyMe::where('product_id', $id)
             ->where('status', 0)
             ->get();
 
@@ -741,9 +745,9 @@ class ProductController extends Controller
                 $email_target = $email->email;
 
                 $data = [
-                    'fullname'     => $fullName,
+                    'fullname' => $fullName,
                     'product_name' => $product->product_name,
-                    'product_link' => url("{$this->url}/{$product->product_code}_product")
+                    'product_link' => url("{$this->url}/{$product->product_code}_product"),
                 ];
 
                 Mail::to($email_target)->send(new sendMailNotifyMe($data));
@@ -756,13 +760,13 @@ class ProductController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Berhasil mengirimkan notifikasi broooo'
+                'message' => 'Berhasil mengirimkan notifikasi broooo',
             ]);
         }
 
         return response()->json([
             'success' => false,
-            'message' => 'Tidak ada email yang tersimpan'
+            'message' => 'Tidak ada email yang tersimpan',
         ]);
     }
 
@@ -781,7 +785,6 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function createProductAdmin()
     {
         $options = CategoryProduct::whereHas('parent', function ($query) {
@@ -789,7 +792,6 @@ class ProductController extends Controller
         })->get();
 
         $categories = CategoryProduct::whereNull('parent_id')->get(); // Mengambil semua category utama
-
 
         $subcategories = CategoryProduct::whereNotNull('parent_id')->get();
 
@@ -799,30 +801,28 @@ class ProductController extends Controller
             'options' => $options,
             'subcategories' => $subcategories,
             'categories' => $categories,
-            'brands' => $brands
+            'brands' => $brands,
         ]);
     }
-
-
 
     // IMAGE CREATE PRODUCT
     public function uploadTempMainImage(Request $request)
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imageName = 'temp_main_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imageName = 'temp_main_'.time().'_'.uniqid().'.'.$image->getClientOriginalExtension();
                 $path = $image->storeAs('temp_images', $imageName, 'public');
 
                 // Simpan info ke session
                 $mainImageData = [
                     'path' => $path,
-                    'url' => asset('storage/' . $path),
-                    'name' => $image->getClientOriginalName()
+                    'url' => asset('storage/'.$path),
+                    'name' => $image->getClientOriginalName(),
                 ];
 
                 session(['uploaded_temp_main_image' => $mainImageData]);
@@ -832,20 +832,20 @@ class ProductController extends Controller
                 return response()->json([
                     'success' => true,
                     'path' => $path,
-                    'url' => asset('storage/' . $path)
+                    'url' => asset('storage/'.$path),
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'No image uploaded'
+                'message' => 'No image uploaded',
             ], 400);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error uploading temp main image', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -869,12 +869,12 @@ class ProductController extends Controller
             session()->forget('uploaded_temp_main_image');
 
             return response()->json(['success' => true]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error deleting temp main image', ['error' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -883,38 +883,38 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                $imageName = 'temp_' . time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $imageName = 'temp_'.time().'_'.uniqid().'.'.$image->getClientOriginalExtension();
                 $path = $image->storeAs('temp_images', $imageName, 'public');
 
                 // Simpan info ke session
                 $uploadedImages = session('uploaded_temp_images', []);
                 $uploadedImages[] = [
                     'path' => $path,
-                    'url' => asset('storage/' . $path),
-                    'name' => $image->getClientOriginalName()
+                    'url' => asset('storage/'.$path),
+                    'name' => $image->getClientOriginalName(),
                 ];
                 session(['uploaded_temp_images' => $uploadedImages]);
 
                 return response()->json([
                     'success' => true,
                     'path' => $path,
-                    'url' => asset('storage/' . $path)
+                    'url' => asset('storage/'.$path),
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'No image uploaded'
+                'message' => 'No image uploaded',
             ], 400);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -941,10 +941,10 @@ class ProductController extends Controller
             session(['uploaded_temp_images' => array_values($uploadedImages)]);
 
             return response()->json(['success' => true]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -991,7 +991,7 @@ class ProductController extends Controller
                     // Pindahkan dari temp ke folder permanent
                     $fileName = basename($tempPath);
                     $newFileName = str_replace('temp_main_', '', $fileName);
-                    $newPath = 'product_images/' . $newFileName;
+                    $newPath = 'product_images/'.$newFileName;
 
                     // Copy file ke folder permanent
                     Storage::disk('public')->copy($tempPath, $newPath);
@@ -1002,7 +1002,7 @@ class ProductController extends Controller
 
                     Log::info('Main image moved successfully', [
                         'from' => $tempPath,
-                        'to' => $newPath
+                        'to' => $newPath,
                     ]);
                 } else {
                     Log::error('Temp main image not found', ['path' => $tempPath]);
@@ -1017,7 +1017,7 @@ class ProductController extends Controller
                         // Pindahkan dari temp ke folder permanent
                         $fileName = basename($tempPath);
                         $newFileName = str_replace('temp_', '', $fileName);
-                        $newPath = 'product_images/' . $newFileName;
+                        $newPath = 'product_images/'.$newFileName;
 
                         // Copy file
                         Storage::disk('public')->copy($tempPath, $newPath);
@@ -1028,7 +1028,7 @@ class ProductController extends Controller
 
                         Log::info('Multiple image moved', [
                             'from' => $tempPath,
-                            'to' => $newPath
+                            'to' => $newPath,
                         ]);
                     }
                 }
@@ -1038,7 +1038,7 @@ class ProductController extends Controller
             $videoPath = null;
             if ($request->hasFile('video')) {
                 $video = $request->file('video');
-                $videoName = time() . '_' . $video->getClientOriginalName();
+                $videoName = time().'_'.$video->getClientOriginalName();
                 $videoPath = $video->storeAs('product_videos', $videoName, 'public');
             }
 
@@ -1092,17 +1092,17 @@ class ProductController extends Controller
             $maxNumber = 0;
 
             // Query untuk mendapatkan nomor tertinggi
-            $lastProduct = Product::where('product_code', 'LIKE', $brandCode . '%')
+            $lastProduct = Product::where('product_code', 'LIKE', $brandCode.'%')
                 ->selectRaw('MAX(CAST(SUBSTRING(product_code, ?) AS UNSIGNED)) as max_number', [strlen($brandCode) + 1])
                 ->first();
 
             if ($lastProduct && $lastProduct->max_number) {
-                $maxNumber = (int)$lastProduct->max_number;
+                $maxNumber = (int) $lastProduct->max_number;
             }
 
             Log::info('Finding next product code', [
                 'brand_code' => $brandCode,
-                'current_max_number' => $maxNumber
+                'current_max_number' => $maxNumber,
             ]);
 
             // Coba generate product code mulai dari maxNumber + 1
@@ -1111,41 +1111,40 @@ class ProductController extends Controller
 
             for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
                 $tryNumber = $maxNumber + $attempt;
-                $tryCode = $brandCode . str_pad($tryNumber, 4, '0', STR_PAD_LEFT);
+                $tryCode = $brandCode.str_pad($tryNumber, 4, '0', STR_PAD_LEFT);
 
                 // Check apakah code ini sudah digunakan
                 $exists = Product::where('product_code', $tryCode)->exists();
 
-                if (!$exists) {
+                if (! $exists) {
                     $productCode = $tryCode;
                     Log::info('Found available product code', [
                         'product_code' => $productCode,
                         'attempt' => $attempt,
-                        'sequence_number' => $tryNumber
+                        'sequence_number' => $tryNumber,
                     ]);
                     break;
                 } else {
                     Log::debug('Product code already exists, trying next', [
                         'tried_code' => $tryCode,
-                        'attempt' => $attempt
+                        'attempt' => $attempt,
                     ]);
                 }
             }
 
-            if (!$productCode) {
+            if (! $productCode) {
                 Log::error('Failed to generate unique product code', [
                     'brand_code' => $brandCode,
                     'max_attempts' => $maxAttempts,
-                    'last_max_number' => $maxNumber
+                    'last_max_number' => $maxNumber,
                 ]);
-                throw new \Exception('Failed to generate unique product code. Please contact administrator.');
+                throw new Exception('Failed to generate unique product code. Please contact administrator.');
             }
 
             Log::info('Successfully generated product code', [
                 'brand_code' => $brandCode,
-                'product_code' => $productCode
+                'product_code' => $productCode,
             ]);
-
 
             // Simpan produk ke database
             $product = Product::create([
@@ -1165,6 +1164,9 @@ class ProductController extends Controller
                 'color' => $request->color,
                 'color_text' => $request->color_text,
                 'dimensions' => json_encode($dimensions),
+                'is_flash_sale' => $request->has('is_flash_sale') ? 1 : 0,
+                'flash_sale_price' => $request->flash_sale_price ? str_replace(['Rp. ', '.'], '', $request->flash_sale_price) : null,
+                'flash_sale_end' => $request->flash_sale_end,
             ]);
 
             // Handle variants
@@ -1177,8 +1179,8 @@ class ProductController extends Controller
                             $variantImage = null;
 
                             if ($useVariantImage && $request->hasFile("variant_images.$typeIndex.$valueIndex")) {
-                                $variantImageFile = $request->file("variant_images")[$typeIndex][$valueIndex];
-                                $variantImageName = time() . '_' . $variantImageFile->getClientOriginalName();
+                                $variantImageFile = $request->file('variant_images')[$typeIndex][$valueIndex];
+                                $variantImageName = time().'_'.$variantImageFile->getClientOriginalName();
                                 $variantImage = $variantImageFile->storeAs('product_images', $variantImageName, 'public');
                             }
 
@@ -1207,7 +1209,7 @@ class ProductController extends Controller
 
             return redirect()->route('index-product-admin')
                 ->with('success', 'Product created successfully!');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             Log::warning('Validation failed', ['errors' => $e->errors()]);
 
             // Return dengan withInput() untuk mempertahankan data
@@ -1215,14 +1217,14 @@ class ProductController extends Controller
             return redirect()->back()
                 ->withErrors($e->errors())
                 ->withInput();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error creating product', [
                 'exception' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()->back()
-                ->withErrors(['error' => 'An error occurred while creating the product: ' . $e->getMessage()])
+                ->withErrors(['error' => 'An error occurred while creating the product: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -1233,7 +1235,7 @@ class ProductController extends Controller
         $brands = Brand::all();
         $product = Product::with('productVariations')->find($id);
 
-        if (!$product) {
+        if (! $product) {
             return redirect()->route('index-product-admin')->with('error', 'Product not found');
         }
 
@@ -1244,10 +1246,9 @@ class ProductController extends Controller
         return view('admin.product.detail', [
             'categories' => $categories,
             'brands' => $brands,
-            'product' => $product
+            'product' => $product,
         ]);
     }
-
 
     public function editProductAdmin($id)
     {
@@ -1261,7 +1262,7 @@ class ProductController extends Controller
 
         $subcategories = CategoryProduct::whereNotNull('parent_id')->get();
 
-        if (!$product) {
+        if (! $product) {
             return redirect()->route('index-product-admin')->with('error', 'Product not found');
         }
 
@@ -1290,7 +1291,7 @@ class ProductController extends Controller
                 'stock' => $variant->variant_stock,
                 'weight' => $variant->weight_variant,
                 'use_variant_image' => $variant->use_variant_image,
-                'variant_expired' => $variant->variant_expired // Ganti ke variant_expired
+                'variant_expired' => $variant->variant_expired, // Ganti ke variant_expired
             ];
         })->values()->all();
 
@@ -1300,10 +1301,9 @@ class ProductController extends Controller
             'product' => $product,
             'subcategories' => $subcategories,
             'options' => $options,
-            'variants' => $variants
+            'variants' => $variants,
         ]);
     }
-
 
     public function updateProductAdmin(Request $request, $id)
     {
@@ -1311,7 +1311,7 @@ class ProductController extends Controller
             // Temukan produk berdasarkan ID
             $product = Product::with('productVariations')->find($id);
 
-            if (!$product) {
+            if (! $product) {
                 return redirect()->route('admin.product.index')->with('error', 'Product not found');
             }
 
@@ -1350,13 +1350,13 @@ class ProductController extends Controller
             // Handle Main Image Upload (Single Image)
             if ($request->hasFile('main_image')) {
                 // Hapus gambar lama jika ada
-                if (!empty($product->main_image) && file_exists(public_path($product->main_image))) {
+                if (! empty($product->main_image) && file_exists(public_path($product->main_image))) {
                     unlink(public_path($product->main_image));
                 }
 
                 // Simpan gambar baru
                 $mainImage = $request->file('main_image');
-                $mainImageName = time() . '_' . $mainImage->getClientOriginalName();
+                $mainImageName = time().'_'.$mainImage->getClientOriginalName();
                 $mainImagePath = $mainImage->storeAs('product_images', $mainImageName, 'public');
                 $product->main_image = $mainImagePath;
             }
@@ -1364,7 +1364,7 @@ class ProductController extends Controller
             // Handle Product Gallery Upload (Multiple Images)
             if ($request->hasFile('images')) {
                 // Hapus gambar lama jika ada
-                if (!empty($product->images)) {
+                if (! empty($product->images)) {
                     $existingImages = json_decode($product->images, true);
 
                     // Hapus gambar lama
@@ -1378,7 +1378,7 @@ class ProductController extends Controller
                 // Simpan gambar baru
                 $newImages = [];
                 foreach ($request->file('images') as $image) {
-                    $imageName = time() . '_' . $image->getClientOriginalName();
+                    $imageName = time().'_'.$image->getClientOriginalName();
                     $imagePath = $image->storeAs('product_images', $imageName, 'public');
                     $newImages[] = $imagePath;
                 }
@@ -1389,19 +1389,23 @@ class ProductController extends Controller
             // Handle Video Upload
             if ($request->hasFile('video')) {
                 // Hapus video lama jika ada
-                if (!empty($product->video) && file_exists(public_path($product->video))) {
+                if (! empty($product->video) && file_exists(public_path($product->video))) {
                     unlink(public_path($product->video));
                 }
 
                 // Simpan video baru
                 $video = $request->file('video');
-                $videoName = time() . '_' . $video->getClientOriginalName();
+                $videoName = time().'_'.$video->getClientOriginalName();
                 $videoPath = $video->storeAs('product_videos', $videoName, 'public');
                 $product->video = $videoPath;
             }
 
             // Update informasi produk lainnya
             $product->product_name = $validatedData['product_name'];
+            // Tambahkan 3 baris ini di dalam array create() atau proses update() Anda:
+            $product->is_flash_sale = $validatedData['is_flash_sale'];
+            $product->flash_sale_price = $validatedData['flash_sale_price'];
+            $product->flash_sale_end = $validatedData['flash_sale_end'];
             $product->category_product_id = $validatedData['category_product_id'];
             $product->brand_id = $validatedData['brand_id'];
             $product->description = $validatedData['description'];
@@ -1499,7 +1503,6 @@ class ProductController extends Controller
             //                         ? $request->new_variant_expired[$typeIndex][$valueIndex]
             //                         : null;
 
-
             //                     ProductVariations::create([
             //                         'product_id' => $product->id,
             //                         'variant_type' => $variantType,
@@ -1523,7 +1526,6 @@ class ProductController extends Controller
             //     }
             // }
 
-
             // Handle variant updates dengan pendekatan baru
             if ($request->has('variant_type') && $request->has('variant_values')) {
                 // Hapus semua variant lama jika tipe variant berubah
@@ -1542,7 +1544,7 @@ class ProductController extends Controller
                         $variantImage = null;
                         if ($useVariantImage && isset($request->file('new_variant_images')[0][$index])) {
                             $variantImageFile = $request->file('new_variant_images')[0][$index];
-                            $variantImageName = time() . '_new_' . $variantImageFile->getClientOriginalName();
+                            $variantImageName = time().'_new_'.$variantImageFile->getClientOriginalName();
                             $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
                         }
 
@@ -1576,18 +1578,18 @@ class ProductController extends Controller
                                         $variantImageFile = $request->file('variant_images')[$index];
 
                                         // Delete old image if exists
-                                        if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
-                                            Storage::delete('public/' . $variant->variant_image);
+                                        if ($variant->variant_image && Storage::exists('public/'.$variant->variant_image)) {
+                                            Storage::delete('public/'.$variant->variant_image);
                                         }
 
-                                        $variantImageName = time() . '_' . $variantId . '_' . $variantImageFile->getClientOriginalName();
+                                        $variantImageName = time().'_'.$variantId.'_'.$variantImageFile->getClientOriginalName();
                                         $variantImage = $variantImageFile->storeAs('product_variant_images', $variantImageName, 'public');
                                     }
                                     // Jika tidak ada file baru, gunakan gambar yang sudah ada (tidak perlu diubah)
                                 } else {
                                     // User unchecked use_variant_image, remove the image
-                                    if ($variant->variant_image && Storage::exists('public/' . $variant->variant_image)) {
-                                        Storage::delete('public/' . $variant->variant_image);
+                                    if ($variant->variant_image && Storage::exists('public/'.$variant->variant_image)) {
+                                        Storage::delete('public/'.$variant->variant_image);
                                     }
                                     $variantImage = null;
                                 }
@@ -1610,9 +1612,10 @@ class ProductController extends Controller
             $product->save();
 
             return redirect()->route('index-product-admin')->with('success', 'Product updated successfully');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Error updating product', ['exception' => $e->getMessage()]);
-            return redirect()->route('index-product-admin')->with('error', 'An error occurred while updating the product: ' . $e->getMessage());
+
+            return redirect()->route('index-product-admin')->with('error', 'An error occurred while updating the product: '.$e->getMessage());
         }
     }
 
@@ -1629,10 +1632,10 @@ class ProductController extends Controller
 
             if ($totalStock === 0) {
                 $outOfStockCount++;
-                Log::info("Added to out of stock");
+                Log::info('Added to out of stock');
             } elseif ($totalStock <= 15) {
                 $lowStockCount++;
-                Log::info("Added to low stock");
+                Log::info('Added to low stock');
             }
 
             // Check variants
@@ -1654,10 +1657,9 @@ class ProductController extends Controller
         return response()->json([
             'totalAlerts' => $totalAlerts,
             'lowStockCount' => $lowStockCount,
-            'outOfStockCount' => $outOfStockCount
+            'outOfStockCount' => $outOfStockCount,
         ]);
     }
-
 
     // modif by claude
     public function indexStockProductAdmin()
@@ -1677,7 +1679,7 @@ class ProductController extends Controller
                 $query->where('quantity', '>', 0)
                     ->orderBy('date_expired', 'desc')
                     ->take(2);
-            }
+            },
         ])
             ->orderBy('created_at', 'desc')
             ->paginate(100);
@@ -1686,7 +1688,6 @@ class ProductController extends Controller
             'products' => $products,
         ]);
     }
-
 
     public function outOfStockProductAdmin()
     {
@@ -1953,10 +1954,12 @@ class ProductController extends Controller
             }
 
             DB::commit();
+
             return response()->json(['message' => 'Stock updated successfully']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollback();
-            return response()->json(['message' => 'Error updating stock: ' . $e->getMessage()], 500);
+
+            return response()->json(['message' => 'Error updating stock: '.$e->getMessage()], 500);
         }
     }
 
@@ -1971,7 +1974,7 @@ class ProductController extends Controller
             ->get();
 
         return response()->json([
-            'mainProduct' => $mainProductStocks
+            'mainProduct' => $mainProductStocks,
         ]);
     }
 
@@ -2021,7 +2024,7 @@ class ProductController extends Controller
 
         return response()->json([
             'variantStocks' => $variantStocks,
-            'variant_expired' => $variant->variant_expired
+            'variant_expired' => $variant->variant_expired,
         ]);
     }
 
@@ -2029,50 +2032,50 @@ class ProductController extends Controller
     {
         $product = Product::find($id);
 
-        if (!$product) {
+        if (! $product) {
             return response()->json([
                 'success' => false,
-                'message' => 'Product not found.'
+                'message' => 'Product not found.',
             ]);
         }
 
         // Hapus gambar utama dari storage (jika ada)
-        if (!empty($product->main_image)) {
-            $mainImagePath = 'product_images/' . basename($product->main_image);
+        if (! empty($product->main_image)) {
+            $mainImagePath = 'product_images/'.basename($product->main_image);
             if (Storage::disk('public')->exists($mainImagePath)) {
-                Log::info('Deleting main image: ' . $mainImagePath);
+                Log::info('Deleting main image: '.$mainImagePath);
                 Storage::disk('public')->delete($mainImagePath);
             } else {
-                Log::info('Main image not found: ' . $mainImagePath);
+                Log::info('Main image not found: '.$mainImagePath);
             }
         }
 
         // Hapus multiple images (jika ada)
-        if (!empty($product->images)) {
+        if (! empty($product->images)) {
             // Decode JSON string to an array
             $images = json_decode($product->images, true);
 
             if (is_array($images)) {
                 foreach ($images as $image) {
-                    $imagePath = 'product_images/' . basename($image);
+                    $imagePath = 'product_images/'.basename($image);
                     if (Storage::disk('public')->exists($imagePath)) {
-                        Log::info('Deleting image: ' . $imagePath);
+                        Log::info('Deleting image: '.$imagePath);
                         Storage::disk('public')->delete($imagePath);
                     } else {
-                        Log::info('Image not found: ' . $imagePath);
+                        Log::info('Image not found: '.$imagePath);
                     }
                 }
             }
         }
 
         // Hapus video dari storage (jika ada)
-        if (!empty($product->video)) {
-            $videoPath = 'product_videos/' . basename($product->video);
+        if (! empty($product->video)) {
+            $videoPath = 'product_videos/'.basename($product->video);
             if (Storage::disk('public')->exists($videoPath)) {
-                Log::info('Deleting video: ' . $videoPath);
+                Log::info('Deleting video: '.$videoPath);
                 Storage::disk('public')->delete($videoPath);
             } else {
-                Log::info('Video not found: ' . $videoPath);
+                Log::info('Video not found: '.$videoPath);
             }
         }
 
@@ -2081,25 +2084,22 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Product deleted successfully.'
+            'message' => 'Product deleted successfully.',
         ]);
     }
-
-
-
 
     public function storeVariantType(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:255|unique:variant_types,code'
+            'code' => 'required|string|max:255|unique:variant_types,code',
         ]);
 
         $variantType = ProductVariations::create($validated);
 
         return response()->json([
             'success' => true,
-            'data' => $variantType
+            'data' => $variantType,
         ]);
     }
 
@@ -2107,14 +2107,14 @@ class ProductController extends Controller
     {
         $validated = $request->validate([
             'value' => 'required|string|max:255',
-            'variant_type_id' => 'required|exists:variant_types,id'
+            'variant_type_id' => 'required|exists:variant_types,id',
         ]);
 
         $variantValue = ProductVariations::create($validated);
 
         return response()->json([
             'success' => true,
-            'data' => $variantValue
+            'data' => $variantValue,
         ]);
     }
 }
