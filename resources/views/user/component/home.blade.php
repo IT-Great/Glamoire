@@ -12182,7 +12182,7 @@
         </section>
 
         <!-- 8. RECOMMENDED (COCOK UNTUK KAMU) -->
-        <section class="section-padding pt-0 reveal">
+        {{-- <section class="section-padding pt-0 reveal">
             <div class="container-fluid p-0">
                 <div class="full-section-header">
                     <h2>Curated For You</h2>
@@ -12288,7 +12288,7 @@
                     <div class="swiper-button-prev d-none d-md-flex"></div>
                 </div>
             </div>
-        </section>
+        </section> --}}
 
         <!-- 9. CATEGORIES -->
         <section class="section-padding pt-0 reveal">
