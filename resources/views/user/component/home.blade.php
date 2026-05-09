@@ -12351,29 +12351,56 @@
                 }
             });
 
+            // new Swiper(".flash-sale-slider", {
+            //     slidesPerView: 1.5,
+            //     spaceBetween: 20,
+            //     navigation: {
+            //         nextEl: ".flash-sale-slider .swiper-button-next",
+            //         prevEl: ".flash-sale-slider .swiper-button-prev"
+            //     },
+            //     breakpoints: {
+            //         576: {
+            //             slidesPerView: 2.2,
+            //             spaceBetween: 24
+            //         },
+            //         768: {
+            //             slidesPerView: 2.5,
+            //             spaceBetween: 24
+            //         },
+            //         992: {
+            //             slidesPerView: 3.5,
+            //             spaceBetween: 20
+            //         },
+            //         1200: {
+            //             slidesPerView: 4.5,
+            //             spaceBetween: 24
+            //         }
+            //     }
+            // });
+
             new Swiper(".flash-sale-slider", {
                 slidesPerView: 1.5,
-                spaceBetween: 20,
+                spaceBetween: 16,
                 navigation: {
                     nextEl: ".flash-sale-slider .swiper-button-next",
                     prevEl: ".flash-sale-slider .swiper-button-prev"
                 },
                 breakpoints: {
                     576: {
-                        slidesPerView: 2.2,
-                        spaceBetween: 24
+                        slidesPerView: 2,
+                        spaceBetween: 20
                     },
                     768: {
                         slidesPerView: 2.5,
                         spaceBetween: 24
                     },
                     992: {
-                        slidesPerView: 3.5,
-                        spaceBetween: 20
+                        slidesPerView: 3,
+                        spaceBetween: 24
                     },
                     1200: {
-                        slidesPerView: 4.5,
-                        spaceBetween: 24
+                        slidesPerView: 3, /* <-- UBAH KE 3 AGAR CARD BESAR DAN PREMIUM */
+                        spaceBetween: 30
                     }
                 }
             });
