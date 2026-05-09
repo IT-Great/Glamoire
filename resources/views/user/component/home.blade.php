@@ -10332,7 +10332,7 @@
         }
 
         /* --- Cinematic Flash Sale --- */
-        .flash-sale-wrapper {
+        /* .flash-sale-wrapper {
             background: linear-gradient(145deg, #050A05 0%, #183018 100%);
             border-radius: 40px;
             padding: 5rem 4rem;
@@ -10406,6 +10406,80 @@
             .flash-sale-wrapper {
                 padding: 3rem 1.5rem;
                 border-radius: 24px;
+            }
+
+            .flash-header {
+                text-align: center;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 3rem;
+            }
+        } */
+
+        /* --- Elegant Flash Sale (UI/UX Revision) --- */
+        .flash-sale-wrapper {
+            background-color: var(--glamoire-sand);
+            padding: 5rem 0;
+            border-top: 1px solid #E5E7EB;
+            border-bottom: 1px solid #E5E7EB;
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .flash-header {
+            position: relative;
+            z-index: 2;
+        }
+
+        .flash-title {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-flex {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        .timer-block {
+            background: #FFF;
+            border: 1px solid #E5E7EB;
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            min-width: 85px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .timer-val {
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1;
+            color: var(--glamoire-dark);
+            font-family: 'Poppins', monospace;
+        }
+
+        .timer-lbl {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        @media (max-width: 991px) {
+            .flash-sale-wrapper {
+                padding: 3rem 0;
             }
 
             .flash-header {
