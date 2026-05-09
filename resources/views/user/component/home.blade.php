@@ -10297,36 +10297,31 @@
                 <!-- SLIDE 1: Premium Campaign (Dari Asset) -->
                 <div class="swiper-slide" onclick="window.location.href='/shop'">
                     <picture>
-                        <!-- Gambar proporsional khusus HP (Saran ukuran: 1080 x 1350 px) -->
-                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-1.png') }}"> --}}
                         <!-- Gambar proporsional khusus Desktop (Saran ukuran: 1920 x 820 px) -->
-                        <img src="{{ asset('images/banner-desktop-1.jpg') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
+                        <img src="{{ asset('images/glamoire-banner.jpg') }}" alt="Discover Glamoire Cosmetics" loading="lazy">
                     </picture>
                 </div>
 
                 <!-- SLIDE 2: Seasonal / Special Promo (Dari Asset) -->
-                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                {{-- <div class="swiper-slide" onclick="window.location.href='/promotion'">
                     <picture>
-                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
                         <img src="{{ asset('images/banner-desktop-2.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
                     </picture>
-                </div>
+                </div> --}}
 
                 <!-- SLIDE 3: Seasonal / Special Promo (Dari Asset) -->
-                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                {{-- <div class="swiper-slide" onclick="window.location.href='/promotion'">
                     <picture>
-                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
                         <img src="{{ asset('images/banner-desktop-3.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
                     </picture>
-                </div>
+                </div> --}}
 
                 <!-- SLIDE 4: Seasonal / Special Promo (Dari Asset) -->
-                <div class="swiper-slide" onclick="window.location.href='/promotion'">
+                {{-- <div class="swiper-slide" onclick="window.location.href='/promotion'">
                     <picture>
-                        {{-- <source media="(max-width: 768px)" srcset="{{ asset('images/banner-mobile-2.png') }}"> --}}
                         <img src="{{ asset('images/banner-desktop-4.jpg') }}" alt="New Arrival Plant-Based Skincare" loading="lazy">
                     </picture>
-                </div>
+                </div> --}}
 
                 <!-- SLIDE 3: Dynamic Promos (Tetap memanggil data dari database agar fitur Admin tidak mati) -->
                 {{-- @foreach ($data['promos'] as $promo)
