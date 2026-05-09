@@ -1403,9 +1403,6 @@ class ProductController extends Controller
             // Update informasi produk lainnya
             $product->product_name = $validatedData['product_name'];
             // Tambahkan 3 baris ini di dalam array create() atau proses update() Anda:
-            $product->is_flash_sale = $validatedData['is_flash_sale'];
-            $product->flash_sale_price = $validatedData['flash_sale_price'];
-            $product->flash_sale_end = $validatedData['flash_sale_end'];
             $product->category_product_id = $validatedData['category_product_id'];
             $product->brand_id = $validatedData['brand_id'];
             $product->description = $validatedData['description'];
@@ -1414,6 +1411,11 @@ class ProductController extends Controller
             $product->weight_product = $validatedData['weight_product'];
             $product->date_expired = $request->date_expired;
             $product->regular_price = $regularPrice; // Simpan harga dalam format angka
+
+            // PERBAIKAN: Ambil langsung dari $request dan handle Checkbox dengan benar
+            $product->is_flash_sale = $request->has('is_flash_sale') ? 1 : 0;
+            $product->flash_sale_price = $request->flash_sale_price ? str_replace(['Rp. ', '.'], '', $request->flash_sale_price) : null;
+            $product->flash_sale_end = $request->flash_sale_end;
 
             // Simpan data dimensi sebagai array JSON jika diperlukan
             if ($request->has('length') && $request->has('width') && $request->has('height')) {
