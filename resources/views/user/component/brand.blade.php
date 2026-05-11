@@ -64,7 +64,7 @@
         }
 
         /* --- Brand Hero Section --- */
-        .brand-hero {
+        /* .brand-hero {
             background: #FAFAFA;
             border-radius: 20px;
             padding: 3rem 2rem;
@@ -126,6 +126,77 @@
 
             .brand-info h1 {
                 font-size: 2.2rem;
+            }
+        } */
+
+        /* --- Brand Hero Section (Upgraded for Seamless Elegance) --- */
+        .brand-hero {
+            background: transparent; /* Transparan agar menyatu sempurna dengan background halaman */
+            padding: 2rem 1.5rem 4rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 3rem;
+            border: none; /* Hapus border kotak yang kaku */
+            box-shadow: none; /* Hapus shadow */
+            border-bottom: 1px solid var(--border-color); /* Gunakan garis bawah tipis sebagai pemisah elegan */
+            border-radius: 0;
+        }
+
+        .brand-logo-wrapper {
+            flex: 0 0 240px; /* Ukuran diperbesar sedikit agar lebih proporsional */
+            height: 240px;
+            background: transparent; /* Hapus background putih */
+            border-radius: 0; /* Bebaskan dari paksaan bentuk lingkaran */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        .brand-logo-wrapper img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Trik Magis: Menghilangkan background putih pada logo JPG agar terlihat seperti PNG transparan */
+            mix-blend-mode: multiply;
+        }
+
+        .brand-info h1 {
+            font-family: 'The Seasons', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--glamoire-dark);
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .brand-info p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 750px;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .brand-hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+                padding: 1rem 0 3rem 0;
+            }
+
+            .brand-logo-wrapper {
+                flex: 0 0 180px;
+                height: 180px;
+                margin: 0 auto;
+            }
+
+            .brand-info h1 {
+                font-size: 2.5rem;
             }
         }
 
@@ -721,7 +792,7 @@
         }
     </style>
 
-    <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-4 pb-5">
+    <div class="pt-4 pb-5 md:px-20 lg:px-24 xl:px-24 2xl:px-48">
 
         <div class="container-fluid">
             <div class="premium-breadcrumb">
@@ -749,8 +820,8 @@
             @endforeach
         </div>
 
-        <div class="container-fluid px-0">
-            <nav class="nav premium-tabs px-3" id="nav-tab" role="tablist">
+        <div class="px-0 container-fluid">
+            <nav class="px-3 nav premium-tabs" id="nav-tab" role="tablist">
                 <button class="nav-link active" id="tab-beranda" data-bs-toggle="tab" data-bs-target="#beranda"
                     type="button" role="tab">Eksplor Brand</button>
                 <button class="nav-link" id="tab-allproduct" data-bs-toggle="tab" data-bs-target="#allproduct" type="button"
@@ -759,13 +830,13 @@
 
             <div class="tab-content">
 
-                <div class="tab-pane fade show active px-3" id="beranda" role="tabpanel">
+                <div class="px-3 tab-pane fade show active" id="beranda" role="tabpanel">
 
                     @if (count($brandVouchers) !== 0)
                         <div class="brand-voucher-wrapper">
                             <h2 class="section-title-elegant"><i class="fas fa-ticket-alt text-warning"></i> Voucher Spesial
                                 {{ $brandName }}</h2>
-                            <div class="swiper mySwiperVoucher pb-4">
+                            <div class="pb-4 swiper mySwiperVoucher">
                                 <div class="swiper-wrapper">
                                     @foreach ($brandVouchers as $voucher)
                                         <div class="swiper-slide">
@@ -784,7 +855,7 @@
                     <div class="mt-5">
                         <h2 class="section-title-elegant"><i class="fas fa-star text-warning"></i> Koleksi Terbaru</h2>
                         @if (count($newest) > 0)
-                            <div class="swiper mySwiperNewest pb-2">
+                            <div class="pb-2 swiper mySwiperNewest">
                                 <div class="swiper-wrapper">
                                     @foreach ($newest as $product)
                                         @php
@@ -796,7 +867,7 @@
                                             $inCart = session('id_user') ? collect($cartItems ?? [])->contains('product_id', $product->id) : false;
                                         @endphp
 
-                                        <div class="swiper-slide h-auto">
+                                        <div class="h-auto swiper-slide">
                                             <div class="premium-product-card"
                                                 onclick="window.location.href = '/{{ $product->product_code }}_product'">
                                                 <div class="card-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
@@ -877,7 +948,7 @@
                         <h2 class="section-title-elegant"><i class="fas fa-fire text-danger"></i> Terlaris dari
                             {{ $brandName }}</h2>
                         @if (count($top) > 0)
-                            <div class="swiper mySwiperTop pb-2">
+                            <div class="pb-2 swiper mySwiperTop">
                                 <div class="swiper-wrapper">
                                     @foreach ($top as $product)
                                         @php
@@ -888,7 +959,7 @@
                                             $inCart = session('id_user') ? collect($cartItems ?? [])->contains('product_id', $product->id) : false;
                                         @endphp
 
-                                        <div class="swiper-slide h-auto">
+                                        <div class="h-auto swiper-slide">
                                             <div class="premium-product-card"
                                                 onclick="window.location.href = '/{{ $product->product_code }}_product'">
                                                 <div class="card-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
@@ -973,7 +1044,7 @@
                             id="form-filter-product">
                             <input type="hidden" name="sort" id="sort-input" value="{{ request('sort') }}">
 
-                            <div class="filter-group-container px-3">
+                            <div class="px-3 filter-group-container">
                                 <div class="filter-left">
                                     <span class="text-muted fw-bold me-2" style="font-size: 0.85rem;"><i
                                             class="fas fa-filter"></i> Filter:</span>
@@ -1037,7 +1108,7 @@
 
                                     @if(request('min_price') != null || request('sort') != null || request('rating') != 'all')
                                         <button type="button"
-                                            class="filter-pill text-danger border-0 bg-transparent shadow-none px-2"
+                                            class="px-2 bg-transparent border-0 shadow-none filter-pill text-danger"
                                             onclick="window.location.href='{{ route('detail.brand.user', ['nameBrand' => $brandName]) }}'"
                                             style="text-decoration: underline;">
                                             Reset
@@ -1065,15 +1136,15 @@
                         </form>
                     </div>
 
-                    <div class="row px-3" id="skeletonLoader">
+                    <div class="px-3 row" id="skeletonLoader">
                         @for ($i = 0; $i < 8; $i++)
-                            <div class="col-6 col-md-4 col-lg-3 mb-4">
+                            <div class="mb-4 col-6 col-md-4 col-lg-3">
                                 <div class="skeleton-card">
                                     <div class="skeleton-img"></div>
                                     <div class="skeleton-body">
                                         <div class="skeleton-line w-50"></div>
                                         <div class="skeleton-line h-title w-100"></div>
-                                        <div class="skeleton-line w-80 mt-auto"></div>
+                                        <div class="mt-auto skeleton-line w-80"></div>
                                     </div>
                                 </div>
                             </div>
@@ -1082,7 +1153,7 @@
 
                     <div id="productList" style="display: none;" class="px-3">
                         @if (isset($brands->first()->products) && count($brands->first()->products) !== 0)
-                            <div class="row g-3 g-lg-4 mb-5">
+                            <div class="mb-5 row g-3 g-lg-4">
                                 @foreach ($brands->first()->products as $product)
                                     @php
                                         $activePromo = $product->promos->first();
@@ -1191,12 +1262,12 @@
             <h5 class="offcanvas-title fw-bold text-dark">Filter Produk</h5>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
-        <div class="offcanvas-body pb-5 mb-5 custom-scroll">
+        <div class="pb-5 mb-5 offcanvas-body custom-scroll">
             <form action="{{ route('detail.brand.user', ['nameBrand' => $brandName]) }}" method="GET"
                 id="form-filter-product-mobile">
 
                 <div class="mb-4">
-                    <h6 class="fw-bold mb-3">Urutkan</h6>
+                    <h6 class="mb-3 fw-bold">Urutkan</h6>
                     <select name="sort" class="form-select rounded-pill">
                         <option value="" {{ request('sort') == null ? 'selected' : '' }}>Rekomendasi</option>
                         <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
@@ -1208,7 +1279,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <h6 class="fw-bold mb-3">Rentang Harga</h6>
+                    <h6 class="mb-3 fw-bold">Rentang Harga</h6>
                     <div class="row g-2">
                         <div class="col-6">
                             <label class="form-label text-muted fs-7">Terendah</label>
@@ -1223,7 +1294,7 @@
                     </div>
                 </div>
 
-                <div class="position-fixed bottom-0 start-0 w-100 p-3 bg-white border-top d-flex gap-2 z-3"
+                <div class="bottom-0 gap-2 p-3 bg-white position-fixed start-0 w-100 border-top d-flex z-3"
                     style="box-shadow: 0 -4px 10px rgba(0,0,0,0.05);">
                     <button type="button" class="btn-reset-filter"
                         onclick="window.location.href='{{ route('detail.brand.user', ['nameBrand' => $brandName]) }}'">Reset</button>
@@ -1237,26 +1308,26 @@
         <div class="modal fade" id="voucher-{{$voucher->id}}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="border-radius: 16px; overflow: hidden; border: none;">
-                    <div class="modal-header bg-dark text-white border-0" style="padding: 1.25rem 1.5rem;">
-                        <h5 class="modal-title fw-bold m-0" style="font-family: 'Poppins', sans-serif;"><i
+                    <div class="text-white border-0 modal-header bg-dark" style="padding: 1.25rem 1.5rem;">
+                        <h5 class="m-0 modal-title fw-bold" style="font-family: 'Poppins', sans-serif;"><i
                                 class="fas fa-ticket-alt text-warning me-2"></i> {{ $voucher->promo_name }}</h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                     </div>
-                    <div class="modal-body p-0">
+                    <div class="p-0 modal-body">
                         <img src="{{ Storage::url($voucher->image) }}" class="w-100"
                             style="aspect-ratio: 16/9; object-fit:cover;" alt="Voucher">
                         <div class="p-4">
-                            <div class="text-center mb-3 pb-3 border-bottom">
-                                <h3 class="text-danger fw-bold mb-1">
+                            <div class="pb-3 mb-3 text-center border-bottom">
+                                <h3 class="mb-1 text-danger fw-bold">
                                     @if ($voucher->discount <= 100) Diskon {{ $voucher->discount }}% @else Potongan
                                     Rp{{ number_format($voucher->discount, 0, ',', '.') }} @endif
                                 </h3>
                                 <span class="text-muted fs-7">Gunakan saat checkout</span>
                             </div>
-                            <p class="text-muted fs-7 text-justify mb-3">{{ $voucher->description }}</p>
-                            <h6 class="fw-bold text-dark mb-2"><i class="fas fa-list-ul me-1"></i> Syarat & Ketentuan:</h6>
-                            <ul class="text-muted fs-7 ps-3 m-0" style="line-height: 1.6;">
+                            <p class="mb-3 text-justify text-muted fs-7">{{ $voucher->description }}</p>
+                            <h6 class="mb-2 fw-bold text-dark"><i class="fas fa-list-ul me-1"></i> Syarat & Ketentuan:</h6>
+                            <ul class="m-0 text-muted fs-7 ps-3" style="line-height: 1.6;">
                                 <li>Maksimal pembelian <strong class="text-dark">{{ $voucher->max_quantity_buyer }}
                                         item</strong>.</li>
                                 <li>Min. transaksi Rp<strong
