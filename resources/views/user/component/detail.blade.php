@@ -1225,7 +1225,7 @@
                 }
 
                 .product-main-title {
-                    font-family: 'bold', serif;
+                    font-family: 'Poppins', sans-serif; /* Mengembalikan ke font standar yang bersih */
                     font-size: 2.2rem;
                     font-weight: 700;
                     color: var(--text-main);
