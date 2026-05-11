@@ -1225,7 +1225,7 @@
                 }
 
                 .product-main-title {
-                    font-family: 'Playfair Display', serif;
+                    font-family: 'bold', serif;
                     font-size: 2.2rem;
                     font-weight: 700;
                     color: var(--text-main);
@@ -1950,7 +1950,7 @@
                 <div class="pt-4 mt-5 mb-5 container-fluid border-top">
                     <div class="px-2 mb-4 d-flex justify-content-between align-items-end">
                         <h2 class="m-0"
-                            style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
+                            style="font-family: 'bold', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
                             Mungkin Anda Suka</h2>
                     </div>
 
