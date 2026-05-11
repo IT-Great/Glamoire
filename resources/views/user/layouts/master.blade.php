@@ -474,12 +474,12 @@
                         </button>
                     </form>
 
-                    <div class="social-login mt-4">
-                        <div class="social-divider text-center my-2">
+                    <div class="mt-4 social-login">
+                        <div class="my-2 text-center social-divider">
                             <span>ATAU LANJUTKAN DENGAN</span>
                         </div>
 
-                        <div class="social-buttons d-flex gap-2 justify-content-center">
+                        <div class="gap-2 social-buttons d-flex justify-content-center">
                             <a href="{{ url('/auth/google') }}" class="btn btn-social google text-decoration-none">
                                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google"
                                     style="height:20px; vertical-align:middle; margin-right:8px;">
@@ -488,19 +488,19 @@
                         </div>
                     </div>
 
-                    <div class="text-start mt-3">
+                    <div class="mt-3 text-start">
                         <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#forgot"
                             data-bs-dismiss="modal" style="color: #183018; font-weight: bold">Lupa Kata Sandi?</a>
                     </div>
 
-                    <p class="text-center mt-3 text-muted">
+                    <p class="mt-3 text-center text-muted">
                         Belum punya akun?
                         <a href="#" class="ms-1 switch-to-register" data-bs-toggle="modal"
                             data-bs-target="#registerUser1" data-bs-dismiss="modal"
                             style="color: #183018; font-weight: bold">Daftar Sekarang</a>
                     </p>
 
-                    <div class="terms-text mt-3 text-center text-muted text-sm">
+                    <div class="mt-3 text-sm text-center terms-text text-muted">
                         Dengan menekan button "Masuk" atau Google, saya menyatakan bahwa saya telah membaca dan
                         menyetujui
                         <a href="#" class="terms-link" style="color: #183018; font-weight: bold">Syarat &
@@ -551,7 +551,7 @@
                                 style="display: none;"></div>
                         </div>
 
-                        <div class="benefits text-center mb-4">
+                        <div class="mb-4 text-center benefits">
                             <h3>Buat Akun</h3>
                             <p>
                                 Anda dapat melacak pesanan, mengedit info pengiriman, mendapatkan penawaran eksklusif,
@@ -575,7 +575,7 @@
                         </button>
                     </form>
 
-                    <div class="text-center mt-3">
+                    <div class="mt-3 text-center">
                         <span>Sudah Memiliki Akun? </span>
                         <a href="#" class="switch-to-login" data-bs-toggle="modal"
                             data-bs-target="#loginUser1" data-bs-dismiss="modal"
@@ -639,7 +639,7 @@
                         </button>
                     </form>
 
-                    <div class="text-center mt-3">
+                    <div class="mt-3 text-center">
                         <span>Sudah ingat akunmu? </span>
                         <a href="#" class="switch-to-login" data-bs-toggle="modal"
                             data-bs-target="#loginUser1" data-bs-dismiss="modal"
@@ -668,21 +668,21 @@
 
     @if (!Request::is('cart') && !Request::is('checkout') && !Request::is('buy-now'))
         <a href="#" class="btn back-to-top text-[8px]" style="background-color: #183018"><i
-                class="fa fa-angle-double-up text-white"></i></a>
+                class="text-white fa fa-angle-double-up"></i></a>
     @endif
 
     @if (
         !Request::is('cart') &&
             !Request::is('checkout') &&
             !Request::is('account') &&
-            !Request::is('shop') &&
+            !Request::routeIs('shop') &&
             !Request::is('detail') &&
             !Request::routeIs('detail.product') &&
             !Request::routeIs('buy.now') &&
             !Request::routeIs('invoice.user') &&
             !Request::routeIs('shop.category') &&
             !Request::routeIs('shop.category.sub') &&
-            !Request::is('search'))
+            !Request::routeIs('search'))
         @include('user.layouts.footer')
     @endif
 
