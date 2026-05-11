@@ -1721,7 +1721,7 @@
                         <div class="col-lg-7">
                             <div class="product-brand-title">
                                 <a href="/{{ $product->brand->name }}_brand"
-                                    class="font-bold text-black text-muted hover:text-dark">
+                                    class="font-bold text-black hover:text-dark">
                                     {{ $product->brand->name }}
                                 </a>
 
