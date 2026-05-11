@@ -1781,6 +1781,166 @@
         .lpc-clean-price-discount {
             color: var(--danger-main);
         }
+
+        /* ==========================================
+           MOBILE RESPONSIVENESS UPGRADE (UI/UX)
+           ========================================== */
+
+        /* Perbaikan untuk Tablet & Mobile (Max 768px) */
+        @media (max-width: 768px) {
+            /* Kurangi padding section agar tidak terlalu kosong di HP */
+            .section-padding {
+                padding: 3.5rem 0 !important;
+            }
+
+            .full-section-header {
+                margin-bottom: 2rem;
+            }
+
+            .split-section-wrapper {
+                gap: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 2.2rem;
+            }
+
+            /* Sesuaikan tinggi Journal / Artikel di mobile agar tidak menutupi 1 layar penuh */
+            .article-highlight {
+                height: 380px;
+                border-radius: 20px;
+            }
+
+            .article-overlay {
+                padding: 2rem;
+            }
+
+            .article-overlay h3 {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Perbaikan Khusus untuk Layar HP Kecil (Max 576px) */
+        @media (max-width: 576px) {
+            /* 1. Trust Badges: Jadikan grid 2x2 agar lebih rapi dari pada berjejer panjang ke bawah */
+            .trust-bar {
+                padding: 1.2rem;
+                gap: 1rem;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .trust-item {
+                min-width: unset;
+                gap: 0.5rem;
+            }
+
+            .trust-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+
+            .trust-text h4 {
+                font-size: 0.85rem;
+            }
+
+            .trust-text p {
+                font-size: 0.75rem;
+            }
+
+            /* 2. Flash Sale Timer: Perkecil kotak timer agar tidak bertabrakan */
+            .timer-block {
+                padding: 0.6rem 0.8rem;
+                min-width: 60px;
+                border-radius: 8px;
+            }
+
+            .timer-val {
+                font-size: 1.4rem;
+            }
+
+            .timer-lbl {
+                font-size: 0.6rem;
+            }
+
+            /* 3. Campaign Banners: Kurangi padding teks dan ukuran judul */
+            .banner-content {
+                padding: 1.5rem;
+            }
+
+            .banner-title {
+                font-size: 1.4rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .banner-subtitle {
+                font-size: 0.85rem;
+                margin-bottom: 1rem;
+                -webkit-line-clamp: 2; /* Batasi teks agar tidak kepanjangan */
+            }
+
+            .btn-banner-cta {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.75rem;
+            }
+
+            /* 4. Categories: Perkecil lingkaran thumbnail dan padding */
+            .cat-card-premium {
+                padding: 1.5rem 0.8rem;
+                border-radius: 16px;
+            }
+
+            .cat-img-wrapper, .cat-icon-wrapper {
+                width: 70px;
+                height: 70px;
+                margin-bottom: 1rem;
+            }
+
+            .cat-icon-wrapper {
+                font-size: 1.5rem;
+            }
+
+            .cat-name {
+                font-size: 0.85rem;
+            }
+
+            /* 5. Newsletter: Sesuaikan form dan padding */
+            .newsletter-premium {
+                padding: 3rem 1.2rem;
+                border-radius: 20px;
+            }
+
+            .nl-title {
+                font-size: 2rem;
+            }
+
+            .nl-desc {
+                font-size: 0.9rem;
+                margin-bottom: 2rem;
+            }
+
+            .nl-benefits {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .nl-benefits span {
+                font-size: 0.8rem;
+            }
+
+            .nl-input {
+                padding: 1rem;
+                font-size: 0.95rem;
+            }
+
+            .nl-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 
     <!-- Welcome Modal PERBAIKAN UKURAN (Tambahan scrollable & resize image) -->
@@ -1962,222 +2122,6 @@
     </section>
 
     <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48">
-
-        <!-- 3. TOP SELLING -->
-        {{-- <section class="section-padding reveal">
-            <div class="p-0 container-fluid">
-                <div class="split-section-wrapper">
-                    <div class="split-section-left">
-                        <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
-                        <p class="section-desc">Koleksi mahakarya yang paling dicintai. Elevasi rutinitas kecantikan Anda dengan produk ikonis Glamoire.</p>
-                        <a href="/shop" class="link-gold">Shop The Collection <i class="fas fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="split-section-right">
-                        <div class="swiper top-selling-slider product-slider" style="padding-bottom: 3rem; padding-top: 1rem;">
-                            <div class="swiper-wrapper">
-                                @foreach ($data['topsell'] as $product)
-                                    @php
-                                        $activePromo = $product->promos->first();
-                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                        $discountPercent = ($discountedPrice && $product->regular_price > 0) ? round((($product->regular_price - $discountedPrice) / $product->regular_price) * 100) : 0;
-                                        $inWishlist = collect($wishlist)->contains('product_id', $product->id);
-                                        $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
-                                    @endphp
-
-                                    <div class="h-auto swiper-slide">
-                                        <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
-                                            <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
-                                                @if ($product->is_gift ?? false)
-                                                    <span class="lpc-badge badge-gift"><i class="fas fa-gift me-1"></i> Gift</span>
-                                                @elseif ($discountPercent > 0)
-                                                    <span class="lpc-badge badge-discount">-{{ $discountPercent }}%</span>
-                                                @endif
-
-                                                <button class="lpc-wishlist {{ $inWishlist ? 'active' : '' }}" onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
-                                                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
-                                                </button>
-
-                                                <img src="{{ Storage::url($product->main_image) }}" alt="{{ $product->product_name }}">
-
-                                                <div class="lpc-action-area">
-                                                    @if (session('id_user'))
-                                                        @if ($product->stock_quantity == 0)
-                                                            <button onclick="event.stopPropagation(); notifyMe({{ $product->id }})" class="btn-lpc-action btn-lpc-notify">
-                                                                <i class="fas fa-bell"></i> Notify Me
-                                                            </button>
-                                                        @else
-                                                            @if ($inCart)
-                                                                <button onclick="event.stopPropagation(); window.location.href='/cart'" class="btn-lpc-action btn-lpc-added">
-                                                                    <i class="fas fa-check"></i> In Cart
-                                                                </button>
-                                                            @else
-                                                                <button onclick="event.stopPropagation(); addToCart({{ $product->id }})" class="btn-lpc-action btn-lpc-add">
-                                                                    <i class="fas fa-shopping-bag"></i> Add to Cart
-                                                                </button>
-                                                            @endif
-                                                        @endif
-                                                    @else
-                                                        <button onclick="event.stopPropagation();" data-bs-toggle="modal" data-bs-target="#loginUser1" class="btn-lpc-action btn-lpc-add">
-                                                            Login to Buy
-                                                        </button>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="lpc-info">
-                                                <div class="lpc-brand">{{ $product->brand ? $product->brand->name : 'Glamoire' }}</div>
-                                                <a href="/{{ $product->product_code }}_product" class="lpc-title">{{ $product->product_name }}</a>
-                                                <div class="lpc-price-box">
-                                                    @if ($product->priceVariation !== null)
-                                                        <span class="lpc-price-current">{{ $product->priceVariation }}</span>
-                                                    @else
-                                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                            <span class="lpc-price-strike">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                                            <span class="lpc-price-current lpc-price-discounted">Rp {{ number_format($discountedPrice, 0, ',', '.') }}</span>
-                                                        @else
-                                                            <span class="lpc-price-current">Rp {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                                        @endif
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="swiper-button-next d-none d-md-flex"></div>
-                            <div class="swiper-button-prev d-none d-md-flex"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> --}}
-
-        {{-- <section class="section-padding reveal">
-            <div class="p-0 container-fluid">
-                <div class="split-section-wrapper">
-                    <div class="split-section-left">
-                        <h2 class="section-title">Best<br><span
-                                style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
-                        <p class="section-desc">Koleksi mahakarya yang paling dicintai. Elevasi rutinitas kecantikan Anda
-                            dengan produk ikonis Glamoire.</p>
-                        <a href="/shop" class="link-gold">Shop The Collection <i class="fas fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="split-section-right">
-                        <div class="swiper top-selling-slider product-slider"
-                            style="padding-bottom: 3rem; padding-top: 1rem;">
-                            <div class="swiper-wrapper">
-                                @foreach ($data['topsell'] as $product)
-                                    @php
-                                        $activePromo = $product->promos->first();
-                                        $discountedPrice = $activePromo ? $activePromo->pivot->discounted_price : null;
-                                        $discountPercent =
-                                            $discountedPrice && $product->regular_price > 0
-                                                ? round(
-                                                    (($product->regular_price - $discountedPrice) /
-                                                        $product->regular_price) *
-                                                        100,
-                                                )
-                                                : 0;
-                                        $inWishlist = collect($wishlist)->contains('product_id', $product->id);
-                                        $inCart = isset($cartItems)
-                                            ? collect($cartItems)->contains('product_id', $product->id)
-                                            : false;
-                                    @endphp
-
-                                    <div class="h-auto swiper-slide">
-                                        <!-- Product Card Ideal Structure -->
-                                        <div class="luxury-product-card"
-                                            onclick="window.location.href = '/{{ $product->product_code }}_product'">
-
-                                            <!-- Product Image -->
-                                            <div
-                                                class="lpc-visual {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
-                                                <!-- Maksimal 1 Badge -->
-                                                @if ($discountPercent > 0)
-                                                    <span class="lpc-minimal-badge">-{{ $discountPercent }}%</span>
-                                                @elseif ($product->is_gift ?? false)
-                                                    <span class="lpc-minimal-badge"
-                                                        style="background:#000; color:var(--glamoire-gold);">Gift</span>
-                                                @endif
-
-                                                <button class="lpc-wishlist-icon {{ $inWishlist ? 'active' : '' }}"
-                                                    onclick="event.stopPropagation(); {{ $inWishlist ? 'removeFromWishlist(' . $product->id . ')' : 'addToWishlist(' . $product->id . ')' }}">
-                                                    <i class="{{ $inWishlist ? 'fas' : 'far' }} fa-heart"></i>
-                                                </button>
-
-                                                <img src="{{ Storage::url($product->main_image) }}"
-                                                    alt="{{ $product->product_name }}">
-
-                                                <!-- CTA Button (Sederhana via hover) -->
-                                                <div class="lpc-simple-cta-layer">
-                                                    @if (session('id_user'))
-                                                        @if ($product->stock_quantity == 0)
-                                                            <button
-                                                                onclick="event.stopPropagation(); notifyMe({{ $product->id }})"
-                                                                class="btn-clean-cta"
-                                                                style="background:var(--text-muted);">Notify Me</button>
-                                                        @else
-                                                            @if ($inCart)
-                                                                <button
-                                                                    onclick="event.stopPropagation(); window.location.href='/cart'"
-                                                                    class="btn-clean-cta"
-                                                                    style="background:var(--success-main);">In
-                                                                    Cart</button>
-                                                            @else
-                                                                <button
-                                                                    onclick="event.stopPropagation(); addToCart({{ $product->id }})"
-                                                                    class="btn-clean-cta">Add to Cart</button>
-                                                            @endif
-                                                        @endif
-                                                    @else
-                                                        <button onclick="event.stopPropagation();" data-bs-toggle="modal"
-                                                            data-bs-target="#loginUser1" class="btn-clean-cta">Login to
-                                                            Buy</button>
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                            <div class="lpc-details">
-                                                <!-- Product Name -->
-                                                <h3 class="lpc-clean-title">{{ $product->product_name }}</h3>
-
-                                                <!-- Short Benefit -->
-                                                <p class="lpc-clean-benefit">
-                                                    {{ $product->short_description ?? 'Formulated for your natural beauty and daily skin glow.' }}
-                                                </p>
-
-                                                <!-- Price -->
-                                                <div class="lpc-clean-price">
-                                                    @if ($product->priceVariation !== null)
-                                                        <span>{{ $product->priceVariation }}</span>
-                                                    @else
-                                                        @if ($discountedPrice && $discountedPrice < $product->regular_price)
-                                                            <span class="lpc-clean-price-strike">Rp
-                                                                {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                                            <span class="lpc-clean-price-discount">Rp
-                                                                {{ number_format($discountedPrice, 0, ',', '.') }}</span>
-                                                        @else
-                                                            <span>Rp
-                                                                {{ number_format($product->regular_price, 0, ',', '.') }}</span>
-                                                        @endif
-                                                    @endif
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="swiper-button-next d-none d-md-flex"></div>
-                            <div class="swiper-button-prev d-none d-md-flex"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> --}}
-
         <!-- 3. TOP SELLING -->
         <section class="section-padding reveal">
             <div class="p-0 container-fluid">
@@ -2274,28 +2218,6 @@
         </section>
 
         <!-- 4. BANNER PROMO GRID -->
-        {{-- @if (count($data['popupsBanner']) > 0)
-            <section class="pt-0 section-padding reveal">
-                <div class="p-0 container-fluid">
-                    <div class="row g-4">
-                        @foreach ($data['popupsBanner'] as $index => $popup)
-                            <div class="col-12 col-md-6">
-                                <div class="promo-grid-banner">
-                                    @if ($popup->media_type === 'image')
-                                        <img src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}">
-                                    @elseif ($popup->media_type === 'video')
-                                        <video autoplay loop muted playsinline>
-                                            <source src="{{ Storage::url($popup->media_popup) }}" type="video/mp4">
-                                        </video>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-            </section>
-        @endif --}}
-
         @if (count($data['popupsBanner']) > 0)
             <section class="pt-0 section-padding reveal">
                 <div class="p-0 container-fluid">
@@ -2617,40 +2539,6 @@
         @endif
 
         <!-- 7. BRAND DIRECTORY -->
-        {{-- <section class="pt-0 section-padding reveal">
-            <div class="p-0 container-fluid">
-                <div class="split-section-wrapper" style="align-items: center;">
-                    <div class="split-section-left">
-                        <h2 class="section-title" style="font-size: 3.5rem;">The <br><span
-                                style="color:var(--glamoire-gold); font-style:italic;">Brands.</span></h2>
-                        <p class="section-desc">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk
-                            memenuhi standar Anda.</p>
-                    </div>
-                    <div class="split-section-right">
-                        <div class="swiper brand-slider product-slider"
-                            style="padding-top: 1.5rem; padding-bottom: 2.5rem;">
-                            <div class="swiper-wrapper">
-                                @foreach ($data['brands'] as $brand)
-                                    <div class="h-auto pb-3 swiper-slide">
-                                        <div class="brand-card"
-                                            onclick="window.location.href = '/{{ $brand->name }}_brand'">
-                                            <div class="brand-logo-box">
-                                                <img src="{{ $brand->brand_logo ? Storage::url($brand->brand_logo) : asset('images/no-brand.png') }}"
-                                                    alt="{{ $brand->name }}">
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                            <div class="swiper-button-next d-none d-md-flex"></div>
-                            <div class="swiper-button-prev d-none d-md-flex"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> --}}
-
-        <!-- 7. BRAND DIRECTORY -->
         <section class="brand-section-wrapper reveal">
             <div class="p-0 container-fluid">
                 <div class="brand-section-header">
@@ -2785,41 +2673,6 @@
         </section> --}}
 
         <!-- 9. CATEGORIES -->
-        {{-- <section class="pt-0 section-padding reveal">
-            <div class="p-0 container-fluid">
-                <div class="mb-5 full-section-header">
-                    <h2>Shop by Category</h2>
-                </div>
-
-                <div class="category-grid">
-                    @foreach ($data['categories']->sortByDesc('created_at')->take(6) as $index => $category)
-                        @php
-                            // Premium muted colors for luxury feel
-                            $iconColors = ['#D4AF37', '#607D8B', '#9CA3AF', '#1E3B1E', '#D97706', '#4B5563'];
-                            $icons = [
-                                'bi-stars',
-                                'bi-droplet-half',
-                                'bi-magic',
-                                'bi-flower1',
-                                'bi-palette',
-                                'bi-suit-heart',
-                            ];
-                            $iconColor = $iconColors[$index % 6];
-                            $iconClass = $icons[$index % 6];
-                        @endphp
-                        <div class="cat-card-premium" onclick="window.location.href='/belanja-{{ $category->name }}'">
-                            <div class="cat-icon-wrapper"
-                                style="color: {{ $iconColor }}; box-shadow: inset 0 0 0 1px {{ $iconColor }}40;">
-                                <i class="bi {{ $iconClass }}"></i>
-                            </div>
-                            <h3 class="cat-name">{{ $category->name }}</h3>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-        </section> --}}
-
-        <!-- 9. CATEGORIES -->
         <section class="pt-0 section-padding reveal">
             <div class="p-0 container-fluid">
                 <div class="mb-5 full-section-header">
@@ -2851,54 +2704,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- 10. ARTICLES / JOURNAL -->
-        {{-- @if (count($data['articles']) > 0)
-            <section class="pt-0 section-padding reveal">
-                <div class="p-0 container-fluid">
-                    <div class="full-section-header">
-                        <h2>The Glamoire Journal</h2>
-                        <a href="/newsletter" class="mx-auto mt-2 link-gold">Baca Semua Jurnal <i
-                                class="fas fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="row g-4">
-                        <div class="col-12 col-lg-7">
-                            <div class="article-highlight"
-                                onclick="window.location.href='/{{ $data['articles'][0]->title }}_detailnewsletter'">
-                                <img src="{{ $data['articles'][0]->image ? Storage::url($data['articles'][0]->image) : asset('images/no-image.png') }}"
-                                    alt="{{ $data['articles'][0]->title }}">
-                                <div class="article-overlay">
-                                    <p>{{ optional($data['articles'][0]->categoryArticle)->name ?? 'Beauty & Lifestyle' }}
-                                    </p>
-                                    <h3>{{ $data['articles'][0]->title }}</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-12 col-lg-5">
-                            <div class="gap-4 d-flex flex-column h-100 justify-content-between">
-                                @foreach ($data['articles']->skip(1)->take(3) as $article)
-                                    <div class="article-list-item"
-                                        onclick="window.location.href='/{{ $article->title }}_detailnewsletter'">
-                                        <div class="article-list-img">
-                                            <img src="{{ $article->image ? Storage::url($article->image) : asset('images/no-image.png') }}"
-                                                alt="{{ $article->title }}">
-                                        </div>
-                                        <div class="article-list-content">
-                                            <div class="mb-2 meta">
-                                                {{ optional($article->categoryArticle)->name ?? 'Tips' }} •
-                                                {{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}</div>
-                                            <h4>{{ $article->title }}</h4>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        @endif --}}
 
         <!-- 10. ARTICLES / JOURNAL -->
         @if (count($data['articles']) > 0)
@@ -2954,28 +2759,6 @@
                 </div>
             </section>
         @endif
-
-        <!-- 11. NEWSLETTER -->
-        {{-- <section class="pt-0 section-padding reveal">
-            <div class="p-0 container-fluid">
-                <div class="newsletter-premium">
-                    <h2 class="nl-title">Stay Glamorous.</h2>
-                    <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo
-                        rahasia, dan jurnal kecantikan langsung di kotak masuk Anda.</p>
-
-                    <form id="subscribe-form" class="nl-form">
-                        @csrf
-                        <div class="nl-input-group">
-                            <input type="email" id="subscribe_email" class="nl-input"
-                                placeholder="Masukkan alamat email Anda..." required autocomplete="off">
-                            <button type="submit" id="subscribe-btn" class="nl-btn">Subscribe</button>
-                        </div>
-                        <div id="validationEmailSubscribe" class="mt-3 text-center text-danger fw-semibold"
-                            style="display: none; font-size:0.9rem;"></div>
-                    </form>
-                </div>
-            </div>
-        </section> --}}
 
         <!-- 11. NEWSLETTER -->
         <section class="pt-0 section-padding reveal">
