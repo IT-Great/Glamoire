@@ -711,7 +711,7 @@
         }
 
         /* --- Promo Grid Banners --- */
-        .promo-grid-banner {
+        /* .promo-grid-banner {
             border-radius: 30px;
             overflow: hidden;
             position: relative;
@@ -743,6 +743,112 @@
         .promo-grid-banner:hover video {
             opacity: 1;
             transform: scale(1.08);
+        } */
+
+        /* --- 4. PROMO GRID BANNERS (Storytelling / Campaign Revamp) --- */
+        .promo-grid-banner {
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 4/3; /* Rasio yang lebih baik untuk mobile agar teks muat */
+            display: block;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transition: var(--transition-bounce);
+            cursor: pointer;
+            background: var(--glamoire-dark);
+            text-align: left;
+        }
+
+        @media (min-width: 992px) {
+            .promo-grid-banner {
+                aspect-ratio: 16/9; /* Kembali ke landscape untuk desktop */
+            }
+        }
+
+        .promo-grid-banner:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .promo-grid-banner img,
+        .promo-grid-banner video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.5s ease;
+            z-index: 1;
+        }
+
+        .promo-grid-banner:hover img,
+        .promo-grid-banner:hover video {
+            transform: scale(1.05);
+        }
+
+        /* Overlay Gradasi Hitam Transparan Agar Teks Terbaca */
+        .banner-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+            z-index: 2;
+        }
+
+        .banner-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2.5rem;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .banner-title {
+            font-family: 'Cormorant Garamond', 'The Seasons', serif;
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #FFF;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 0.8rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .banner-subtitle {
+            font-family: 'Plus Jakarta Sans', 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            margin-bottom: 1.5rem;
+            max-width: 90%;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .btn-banner-cta {
+            background: #FFF;
+            color: var(--glamoire-dark);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+
+        .promo-grid-banner:hover .btn-banner-cta {
+            background: var(--glamoire-gold);
+            color: var(--glamoire-dark);
         }
 
         /* --- Event Cards --- */
@@ -1680,26 +1786,26 @@
     <!-- Welcome Modal PERBAIKAN UKURAN (Tambahan scrollable & resize image) -->
     @if (!session('id_user') && $data['popups']->isNotEmpty())
         <div class="modal fade" id="firstUser" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable mx-auto" style="max-width: 500px;">
-                <div class="modal-content border-0 overflow-hidden"
+            <div class="mx-auto modal-dialog modal-dialog-centered modal-dialog-scrollable" style="max-width: 500px;">
+                <div class="overflow-hidden border-0 modal-content"
                     style="border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);">
-                    <div class="modal-body p-0 position-relative">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3"
+                    <div class="p-0 modal-body position-relative">
+                        <button type="button" class="top-0 m-3 btn-close position-absolute end-0 z-3"
                             data-bs-dismiss="modal"
                             style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></button>
                         @if ($data['popups'][0]->media_type === 'image')
-                            <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="w-100 h-auto"
+                            <img src="{{ Storage::url($data['popups'][0]->media_popup) }}" class="h-auto w-100"
                                 style="object-fit: cover; max-height: 280px;">
                         @endif
                         <div class="p-4 text-center" style="background: var(--glamoire-dark); color: white;">
-                            <h3 class="fw-bold mb-2"
+                            <h3 class="mb-2 fw-bold"
                                 style="font-family: 'The Seasons', serif; color: var(--glamoire-gold); font-size: 1.7rem;">
                                 {{ $data['popups'][0]->name ?? 'Welcome to Glamoire' }}</h3>
                             <p class="mb-3 opacity-85"
                                 style="font-size: 0.9rem; line-height: 1.5; color: rgba(255,255,255,0.8);">
                                 {{ $data['popups'][0]->description ?? 'Dapatkan penawaran eksklusif khusus pendaftaran pertama Anda hari ini.' }}
                             </p>
-                            <a href="/login" class="btn btn-light rounded-pill px-4 py-2 fw-bold w-100"
+                            <a href="/login" class="px-4 py-2 btn btn-light rounded-pill fw-bold w-100"
                                 style="font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s;"
                                 onmouseover="this.style.background='var(--glamoire-gold)'; this.style.color='var(--glamoire-dark)';"
                                 onmouseout="this.style.background='white'; this.style.color='black';">Daftar & Klaim
@@ -1714,16 +1820,16 @@
     <!-- Promo Modal PERBAIKAN UKURAN -->
     @if (session('id_user') && $data['promoModal'] !== null)
         <div class="modal fade" id="promoModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-centered mx-auto">
-                <div class="modal-content border-0 bg-transparent" style="max-width: 600px;">
-                    <div class="modal-body p-0 position-relative text-center">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3 z-3"
+            <div class="mx-auto modal-dialog modal-lg modal-dialog-centered">
+                <div class="bg-transparent border-0 modal-content" style="max-width: 600px;">
+                    <div class="p-0 text-center modal-body position-relative">
+                        <button type="button" class="top-0 m-3 btn-close position-absolute end-0 z-3"
                             data-bs-dismiss="modal"
                             style="background-color: white; border-radius: 50%; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3);"></button>
                         <a href="/{{ $data['promoModal']->promo_name }}-detail-promo">
                             <img src="{{ Storage::url($data['promoModal']->image) }}"
                                 alt="{{ $data['promoModal']->promo_name }}"
-                                class="img-fluid rounded-4 shadow-lg cursor-pointer"
+                                class="shadow-lg cursor-pointer img-fluid rounded-4"
                                 style="max-height: 80vh; object-fit: contain; transition: transform 0.4s;"
                                 onmouseover="this.style.transform='scale(1.02)'"
                                 onmouseout="this.style.transform='scale(1)'">
@@ -1753,7 +1859,7 @@
             </div>
             <div class="swiper-button-next d-none d-md-flex"></div>
             <div class="swiper-button-prev d-none d-md-flex"></div>
-            <div class="swiper-pagination mb-3"></div>
+            <div class="mb-3 swiper-pagination"></div>
         </div>
     </div> --}}
 
@@ -1811,7 +1917,7 @@
             <!-- Navigasi Slider -->
             <div class="swiper-button-next d-none d-md-flex"></div>
             <div class="swiper-button-prev d-none d-md-flex"></div>
-            <div class="swiper-pagination mb-3"></div>
+            <div class="mb-3 swiper-pagination"></div>
         </div>
     </div>
 
@@ -1859,7 +1965,7 @@
 
         <!-- 3. TOP SELLING -->
         {{-- <section class="section-padding reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="split-section-wrapper">
                     <div class="split-section-left">
                         <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
@@ -1879,7 +1985,7 @@
                                         $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
                                     @endphp
 
-                                    <div class="swiper-slide h-auto">
+                                    <div class="h-auto swiper-slide">
                                         <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
                                             <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
                                                 @if ($product->is_gift ?? false)
@@ -1948,7 +2054,7 @@
         </section> --}}
 
         {{-- <section class="section-padding reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="split-section-wrapper">
                     <div class="split-section-left">
                         <h2 class="section-title">Best<br><span
@@ -1980,7 +2086,7 @@
                                             : false;
                                     @endphp
 
-                                    <div class="swiper-slide h-auto">
+                                    <div class="h-auto swiper-slide">
                                         <!-- Product Card Ideal Structure -->
                                         <div class="luxury-product-card"
                                             onclick="window.location.href = '/{{ $product->product_code }}_product'">
@@ -2074,7 +2180,7 @@
 
         <!-- 3. TOP SELLING -->
         <section class="section-padding reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="split-section-wrapper">
                     <div class="split-section-left">
                         <h2 class="section-title">Best<br><span style="color: var(--glamoire-gold); font-style:italic;">Sellers.</span></h2>
@@ -2094,7 +2200,7 @@
                                         $inCart = isset($cartItems) ? collect($cartItems)->contains('product_id', $product->id) : false;
                                     @endphp
 
-                                    <div class="swiper-slide h-auto">
+                                    <div class="h-auto swiper-slide">
                                         <!-- Product Card Ideal Structure -->
                                         <div class="luxury-product-card" onclick="window.location.href = '/{{ $product->product_code }}_product'">
 
@@ -2141,7 +2247,7 @@
                                                 </p>
 
                                                 <!-- Price (DIPERBAIKI: Menggunakan d-flex column agar tersusun vertikal & tanpa enter/spasi) -->
-                                                <div class="lpc-clean-price d-flex flex-column align-items-center justify-content-center mt-auto">
+                                                <div class="mt-auto lpc-clean-price d-flex flex-column align-items-center justify-content-center">
                                                     @if ($product->priceVariation !== null)
                                                         <span>{{ $product->priceVariation }}</span>
                                                     @else
@@ -2168,9 +2274,9 @@
         </section>
 
         <!-- 4. BANNER PROMO GRID -->
-        @if (count($data['popupsBanner']) > 0)
-            <section class="section-padding pt-0 reveal">
-                <div class="container-fluid p-0">
+        {{-- @if (count($data['popupsBanner']) > 0)
+            <section class="pt-0 section-padding reveal">
+                <div class="p-0 container-fluid">
                     <div class="row g-4">
                         @foreach ($data['popupsBanner'] as $index => $popup)
                             <div class="col-12 col-md-6">
@@ -2182,6 +2288,41 @@
                                             <source src="{{ Storage::url($popup->media_popup) }}" type="video/mp4">
                                         </video>
                                     @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @endif --}}
+
+        @if (count($data['popupsBanner']) > 0)
+            <section class="pt-0 section-padding reveal">
+                <div class="p-0 container-fluid">
+                    <div class="mb-5 full-section-header">
+                        <h2>Our Campaigns</h2>
+                    </div>
+
+                    <div class="row g-4">
+                        @foreach ($data['popupsBanner'] as $index => $popup)
+                            <div class="col-12 col-md-6">
+                                <div class="promo-grid-banner" onclick="window.location.href='/shop'">
+
+                                    @if ($popup->media_type === 'image')
+                                        <img src="{{ Storage::url($popup->media_popup) }}" alt="{{ $popup->name }}">
+                                    @elseif ($popup->media_type === 'video')
+                                        <video autoplay loop muted playsinline>
+                                            <source src="{{ Storage::url($popup->media_popup) }}" type="video/mp4">
+                                        </video>
+                                    @endif
+
+                                    <div class="banner-overlay"></div>
+                                    <div class="banner-content">
+                                        <h3 class="banner-title">{{ $popup->name ?? 'Beauty That Respects Nature.' }}</h3>
+                                        <p class="banner-subtitle">{{ $popup->description ?? 'Your skin deserves gentle ingredients. Minimal ingredients, maximum confidence.' }}</p>
+                                        <button class="btn-banner-cta">Explore Campaign <i class="fas fa-arrow-right"></i></button>
+                                    </div>
+
                                 </div>
                             </div>
                         @endforeach
@@ -2223,7 +2364,7 @@
 
         <!-- 5. FLASH SALE (Cinematic) -->
         {{-- <section class="section-padding reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="flash-sale-wrapper">
                     <div class="row align-items-center">
                         <div class="col-12 col-xl-4 flash-header">
@@ -2249,8 +2390,8 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-xl-8 mt-5 mt-xl-0">
-                            <div class="swiper flash-sale-slider product-slider pb-0"
+                        <div class="mt-5 col-12 col-xl-8 mt-xl-0">
+                            <div class="pb-0 swiper flash-sale-slider product-slider"
                                 style="padding-top: 1rem; padding-bottom: 2rem;">
                                 <div class="swiper-wrapper">
                                     @foreach ($data['new']->take(6) as $product)
@@ -2265,7 +2406,7 @@
                                                     100,
                                             );
                                         @endphp
-                                        <div class="swiper-slide h-auto">
+                                        <div class="h-auto swiper-slide">
                                             <div class="luxury-product-card"
                                                 onclick="window.location.href = '/{{ $product->product_code }}_product'">
                                                 <div
@@ -2276,9 +2417,9 @@
                                                         alt="{{ $product->product_name }}">
 
                                                     <!-- Stock Progress Bar -->
-                                                    <div class="position-absolute bottom-0 start-0 w-100 px-4 pb-4 z-3">
+                                                    <div class="bottom-0 px-4 pb-4 position-absolute start-0 w-100 z-3">
                                                         <div
-                                                            class="d-flex justify-content-between align-items-center mb-2">
+                                                            class="mb-2 d-flex justify-content-between align-items-center">
                                                             <span class="text-danger fw-bold"
                                                                 style="font-size: 0.75rem; background: rgba(255,255,255,0.95); padding: 4px 12px; border-radius: 50px; box-shadow:0 4px 10px rgba(0,0,0,0.1);">Hampir
                                                                 Habis!</span>
@@ -2290,7 +2431,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="lpc-info pb-4 text-center">
+                                                <div class="pb-4 text-center lpc-info">
                                                     <div class="lpc-price-box">
                                                         <span class="lpc-price-strike" style="font-size:0.95rem;">Rp
                                                             {{ number_format($product->regular_price, 0, ',', '.') }}</span>
@@ -2313,7 +2454,7 @@
         <!-- 5. FLASH SALE (UI/UX Elegant & Realtime) -->
         @if(isset($data['flashSaleProducts']) && count($data['flashSaleProducts']) > 0)
         <section class="section-padding reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="flash-sale-wrapper" style="background-color: var(--glamoire-sand); padding: 5rem 0; border-top: 1px solid #E5E7EB; border-bottom: 1px solid #E5E7EB;">
                     <!-- Data attribut untuk javascript timer -->
                     <div class="row align-items-center" id="flash-sale-container" data-endtime="{{ $data['flashSaleEndTime'] }}">
@@ -2344,7 +2485,7 @@
                         </div>
 
                         <!-- Product Slider (Maks 3.5 Card Desktop) -->
-                        <div class="col-12 col-xl-9 mt-5 mt-xl-0">
+                        <div class="mt-5 col-12 col-xl-9 mt-xl-0">
                             <div class="swiper flash-sale-slider product-slider" style="padding-bottom: 2rem;">
                                 <div class="swiper-wrapper">
                                     @foreach ($data['flashSaleProducts'] as $fsProduct)
@@ -2356,7 +2497,7 @@
                                             $stockPercent = ($stockLeft / 50) * 100;
                                             if($stockPercent > 100) $stockPercent = 100;
                                         @endphp
-                                        <div class="swiper-slide h-auto">
+                                        <div class="h-auto swiper-slide">
                                             <div class="luxury-product-card" style="background: transparent; border: none; box-shadow: none;" onclick="window.location.href = '/{{ $fsProduct->product_code }}_product'">
                                                 <div class="lpc-visual" style="position: relative; aspect-ratio: 4/5; overflow: hidden; background: #FFF; border: 1px solid #E5E7EB;">
                                                     <span class="lpc-minimal-badge" style="background: var(--danger-main); color: #FFF; position: absolute; top: 12px; left: 12px; font-size: 0.7rem; font-weight: 600; padding: 4px 10px; z-index: 2;">-{{ $discountPercent }}%</span>
@@ -2367,13 +2508,13 @@
                                                 <div class="lpc-details" style="padding: 0.5rem;">
                                                     <h3 class="lpc-clean-title" style="font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.3rem;">{{ $fsProduct->product_name }}</h3>
 
-                                                    <div class="lpc-clean-price d-flex flex-column align-items-start mt-2">
+                                                    <div class="mt-2 lpc-clean-price d-flex flex-column align-items-start">
                                                         <span class="lpc-clean-price-strike" style="font-size: 0.8rem; color: #9CA3AF; text-decoration: line-through;">Rp {{ number_format($fsProduct->regular_price, 0, ',', '.') }}</span>
                                                         <span class="lpc-clean-price-discount fw-bold text-danger" style="font-size: 1.1rem;">Rp {{ number_format($fsProduct->flash_sale_price, 0, ',', '.') }}</span>
                                                     </div>
 
                                                     <!-- Elegant Stock Indicator -->
-                                                    <div class="w-100 mt-3">
+                                                    <div class="mt-3 w-100">
                                                         <div style="height: 4px; background: #E5E7EB; width: 100%; border-radius: 4px; overflow: hidden;">
                                                             <div style="height: 100%; background: var(--glamoire-dark); width: {{ $stockPercent }}%;"></div>
                                                         </div>
@@ -2433,8 +2574,8 @@
 
         <!-- 6. PROMO EVENT -->
         @if ($data['promos']->count() > 0)
-            <section class="section-padding pt-0 reveal">
-                <div class="container-fluid p-0">
+            <section class="pt-0 section-padding reveal">
+                <div class="p-0 container-fluid">
                     <div class="full-section-header">
                         <h2>Exclusive Offers</h2>
                         <p>Dapatkan voucher dan penawaran spesial untuk melengkapi ritual kecantikan harian Anda.</p>
@@ -2444,7 +2585,7 @@
                         style="padding-top: 1rem; padding-bottom: 3rem;">
                         <div class="swiper-wrapper">
                             @foreach ($data['promos']->sortByDesc('created_at') as $promo)
-                                <div class="swiper-slide h-auto">
+                                <div class="h-auto swiper-slide">
                                     <div class="promo-event-card"
                                         onclick="window.location.href='/{{ $promo->promo_name }}-detail-promo'">
                                         <img class="promo-event-img"
@@ -2461,7 +2602,7 @@
                                                     {{ \Carbon\Carbon::parse($promo->end_date)->translatedFormat('d M Y') }}
                                                 @endif
                                             </div>
-                                            <span class="btn-lpc-action btn-lpc-add mt-auto px-5 w-auto">Eksplor
+                                            <span class="w-auto px-5 mt-auto btn-lpc-action btn-lpc-add">Eksplor
                                                 Penawaran</span>
                                         </div>
                                     </div>
@@ -2476,8 +2617,8 @@
         @endif
 
         <!-- 7. BRAND DIRECTORY -->
-        {{-- <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
+        {{-- <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
                 <div class="split-section-wrapper" style="align-items: center;">
                     <div class="split-section-left">
                         <h2 class="section-title" style="font-size: 3.5rem;">The <br><span
@@ -2490,7 +2631,7 @@
                             style="padding-top: 1.5rem; padding-bottom: 2.5rem;">
                             <div class="swiper-wrapper">
                                 @foreach ($data['brands'] as $brand)
-                                    <div class="swiper-slide h-auto pb-3">
+                                    <div class="h-auto pb-3 swiper-slide">
                                         <div class="brand-card"
                                             onclick="window.location.href = '/{{ $brand->name }}_brand'">
                                             <div class="brand-logo-box">
@@ -2511,10 +2652,10 @@
 
         <!-- 7. BRAND DIRECTORY -->
         <section class="brand-section-wrapper reveal">
-            <div class="container-fluid p-0">
+            <div class="p-0 container-fluid">
                 <div class="brand-section-header">
                     <h2 class="section-title">The <span style="color:var(--glamoire-gold); font-style:italic;">Brands.</span></h2>
-                    <p class="section-desc mx-auto" style="max-width: 600px;">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk memenuhi standar Anda.</p>
+                    <p class="mx-auto section-desc" style="max-width: 600px;">Koleksi eksklusif dari merek kecantikan ternama yang dikurasi khusus untuk memenuhi standar Anda.</p>
                 </div>
 
                 <!-- Marquee Brand Slider -->
@@ -2535,8 +2676,8 @@
         </section>
 
         <!-- 8. RECOMMENDED (COCOK UNTUK KAMU) -->
-        {{-- <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
+        {{-- <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
                 <div class="full-section-header">
                     <h2>Curated For You</h2>
                     <p>Rekomendasi personal berdasarkan preferensi dan gaya kecantikan elegan Anda.</p>
@@ -2561,7 +2702,7 @@
                                     : false;
                             @endphp
 
-                            <div class="swiper-slide h-auto">
+                            <div class="h-auto swiper-slide">
                                 <div class="luxury-product-card"
                                     onclick="window.location.href = '/{{ $product->product_code }}_product'">
                                     <div class="lpc-img-box {{ $product->stock_quantity == 0 ? 'dark-overlay' : '' }}">
@@ -2644,9 +2785,9 @@
         </section> --}}
 
         <!-- 9. CATEGORIES -->
-        {{-- <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
-                <div class="full-section-header mb-5">
+        {{-- <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
+                <div class="mb-5 full-section-header">
                     <h2>Shop by Category</h2>
                 </div>
 
@@ -2679,9 +2820,9 @@
         </section> --}}
 
         <!-- 9. CATEGORIES -->
-        <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
-                <div class="full-section-header mb-5">
+        <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
+                <div class="mb-5 full-section-header">
                     <h2>Shop by Category</h2>
                 </div>
 
@@ -2713,11 +2854,11 @@
 
         <!-- 10. ARTICLES / JOURNAL -->
         {{-- @if (count($data['articles']) > 0)
-            <section class="section-padding pt-0 reveal">
-                <div class="container-fluid p-0">
+            <section class="pt-0 section-padding reveal">
+                <div class="p-0 container-fluid">
                     <div class="full-section-header">
                         <h2>The Glamoire Journal</h2>
-                        <a href="/newsletter" class="link-gold mx-auto mt-2">Baca Semua Jurnal <i
+                        <a href="/newsletter" class="mx-auto mt-2 link-gold">Baca Semua Jurnal <i
                                 class="fas fa-arrow-right"></i></a>
                     </div>
 
@@ -2736,7 +2877,7 @@
                         </div>
 
                         <div class="col-12 col-lg-5">
-                            <div class="d-flex flex-column gap-4 h-100 justify-content-between">
+                            <div class="gap-4 d-flex flex-column h-100 justify-content-between">
                                 @foreach ($data['articles']->skip(1)->take(3) as $article)
                                     <div class="article-list-item"
                                         onclick="window.location.href='/{{ $article->title }}_detailnewsletter'">
@@ -2745,7 +2886,7 @@
                                                 alt="{{ $article->title }}">
                                         </div>
                                         <div class="article-list-content">
-                                            <div class="meta mb-2">
+                                            <div class="mb-2 meta">
                                                 {{ optional($article->categoryArticle)->name ?? 'Tips' }} •
                                                 {{ \Carbon\Carbon::parse($article->created_at)->format('M d, Y') }}</div>
                                             <h4>{{ $article->title }}</h4>
@@ -2761,14 +2902,14 @@
 
         <!-- 10. ARTICLES / JOURNAL -->
         @if (count($data['articles']) > 0)
-            <section class="section-padding pt-0 reveal">
-                <div class="container-fluid p-0">
+            <section class="pt-0 section-padding reveal">
+                <div class="p-0 container-fluid">
 
                     <!-- Header dengan layout sejajar agar lebih editorial -->
                     <div class="split-section-wrapper" style="align-items: flex-end; margin-bottom: 3rem;">
                         <div class="split-section-left" style="flex: 1;">
                             <h2 class="section-title">The Glamoire <br><span style="color:var(--glamoire-gold); font-style:italic;">Journal.</span></h2>
-                            <p class="section-desc mb-0">Eksplorasi tren kecantikan, edukasi skincare, dan wawasan plant-based beauty.</p>
+                            <p class="mb-0 section-desc">Eksplorasi tren kecantikan, edukasi skincare, dan wawasan plant-based beauty.</p>
                         </div>
                         <div class="split-section-right text-md-end">
                             <a href="/newsletter" class="link-gold">Baca Semua Jurnal <i class="fas fa-arrow-right"></i></a>
@@ -2815,8 +2956,8 @@
         @endif
 
         <!-- 11. NEWSLETTER -->
-        {{-- <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
+        {{-- <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
                 <div class="newsletter-premium">
                     <h2 class="nl-title">Stay Glamorous.</h2>
                     <p class="nl-desc">Daftarkan email Anda untuk menerima akses eksklusif ke rilis produk baru, promo
@@ -2829,7 +2970,7 @@
                                 placeholder="Masukkan alamat email Anda..." required autocomplete="off">
                             <button type="submit" id="subscribe-btn" class="nl-btn">Subscribe</button>
                         </div>
-                        <div id="validationEmailSubscribe" class="text-danger mt-3 fw-semibold text-center"
+                        <div id="validationEmailSubscribe" class="mt-3 text-center text-danger fw-semibold"
                             style="display: none; font-size:0.9rem;"></div>
                     </form>
                 </div>
@@ -2837,8 +2978,8 @@
         </section> --}}
 
         <!-- 11. NEWSLETTER -->
-        <section class="section-padding pt-0 reveal">
-            <div class="container-fluid p-0">
+        <section class="pt-0 section-padding reveal">
+            <div class="p-0 container-fluid">
                 <div class="newsletter-premium">
                     <h2 class="nl-title">Stay Glamorous.</h2>
                     <p class="nl-desc">Daftarkan email Anda untuk menerima pembaruan dari jurnal kecantikan kami langsung di kotak masuk Anda.</p>
@@ -2857,7 +2998,7 @@
                                 placeholder="Masukkan alamat email Anda..." required autocomplete="off">
                             <button type="submit" id="subscribe-btn" class="nl-btn">Subscribe</button>
                         </div>
-                        <div id="validationEmailSubscribe" class="text-danger mt-3 fw-semibold text-center"
+                        <div id="validationEmailSubscribe" class="mt-3 text-center text-danger fw-semibold"
                             style="display: none; font-size:0.9rem;"></div>
                     </form>
                 </div>
