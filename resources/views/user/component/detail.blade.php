@@ -474,7 +474,7 @@
                 }
             </style>
 
-            <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-4">
+            <div class="pt-4 md:px-20 lg:px-24 xl:px-24 2xl:px-48">
                 <div class="container-fluid">
                     <div class="premium-breadcrumb">
                         <a href="/"><i class="fas fa-home me-1"></i> Beranda</a>
@@ -485,13 +485,13 @@
                     </div>
                 </div>
 
-                <div class="container-fluid mb-5">
+                <div class="mb-5 container-fluid">
                     <div class="row g-4 g-lg-5">
 
                         <div class="col-lg-5">
                             <div class="gallery-container">
                                 <div style="--swiper-navigation-color: var(--glamoire-dark); --swiper-pagination-color: var(--glamoire-dark)"
-                                    class="swiper mySwiperShow main-image-wrapper shadow-sm">
+                                    class="shadow-sm swiper mySwiperShow main-image-wrapper">
                                     <div class="swiper-wrapper">
                                         @if (!empty($product->main_image))
                                             <div class="swiper-slide">
@@ -509,7 +509,7 @@
                                         @endif
 
                                         @if (!empty($product->video))
-                                            <div class="swiper-slide position-relative bg-black">
+                                            <div class="bg-black swiper-slide position-relative">
                                                 <video id="mainVideo" controls controlsList="nodownload noplaybackrate">
                                                     <source src="{{ Storage::url($product->video) }}" type="video/mp4">
                                                 </video>
@@ -520,7 +520,7 @@
                                     <div class="swiper-button-prev d-none d-md-flex"></div>
                                 </div>
 
-                                <div class="swiper mySwiperProduct pb-2">
+                                <div class="pb-2 swiper mySwiperProduct">
                                     <div class="swiper-wrapper">
                                         @if (!empty($product->main_image))
                                             <div class="swiper-slide" style="width: 20%;">
@@ -650,7 +650,7 @@
 
                             @if ($product->stock_quantity == 0)
                                 <div
-                                    class="alert alert-danger bg-danger text-white border-0 d-flex align-items-center justify-content-between p-3 rounded-3 mt-4 mb-4">
+                                    class="p-3 mt-4 mb-4 text-white border-0 alert alert-danger bg-danger d-flex align-items-center justify-content-between rounded-3">
                                     <div>
                                         <i class="fas fa-exclamation-circle me-2"></i> Maaf, produk ini sedang kosong.
                                     </div>
@@ -675,7 +675,7 @@
                                         @php $inCart = collect($cartItems)->contains('product_id', $product->id); @endphp
 
                                         @if ($inCart)
-                                            <button onclick="window.location.href='/cart'" class="btn-buy-premium w-auto flex-grow-1"
+                                            <button onclick="window.location.href='/cart'" class="w-auto btn-buy-premium flex-grow-1"
                                                 style="background:#10B981; border-color:#10B981;">
                                                 <i class="fas fa-check-circle fs-5"></i> Cek Keranjang
                                             </button>
@@ -693,14 +693,14 @@
                                         </button>
                                     @endif
                                 </div>
-                                <p id="quantity-warning-{{$product->id}}" class="text-danger fs-7 d-none mb-3"><i
+                                <p id="quantity-warning-{{$product->id}}" class="mb-3 text-danger fs-7 d-none"><i
                                         class="fas fa-info-circle"></i> Batas maksimal stok terpenuhi</p>
                             @endif
 
                         </div>
                     </div>
 
-                    <div class="row mt-5" id="ulasan-section">
+                    <div class="mt-5 row" id="ulasan-section">
                         <div class="col-12">
                             <nav class="nav premium-tabs" id="nav-tab" role="tablist">
                                 <button class="nav-link active" id="tab-deskripsi" data-bs-toggle="tab" data-bs-target="#deskripsi"
@@ -711,7 +711,7 @@
                                     role="tab">Ulasan Pembeli ({{ $product->rating_and_reviews_count }})</button>
                             </nav>
 
-                            <div class="tab-content tab-content-box p-2">
+                            <div class="p-2 tab-content tab-content-box">
                                 <div class="tab-pane fade show active" id="deskripsi" role="tabpanel">
                                     {!! $product->description !!}
                                 </div>
@@ -726,8 +726,8 @@
                                             <div class="col-lg-8">
                                                 @foreach ($product->ratingAndReviews as $review)
                                                     <div class="review-card">
-                                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                                            <div class="d-flex align-items-center gap-2">
+                                                        <div class="mb-2 d-flex justify-content-between align-items-start">
+                                                            <div class="gap-2 d-flex align-items-center">
                                                                 <div
                                                                     style="width:35px; height:35px; background:var(--glamoire-sand); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--glamoire-dark);">
                                                                     {{ substr($review->user->fullname, 0, 1) }}
@@ -749,7 +749,7 @@
 
                                                         <div class="review-text">{{ $review->description }}</div>
 
-                                                        <div class="review-media d-flex gap-2 mt-3 flex-wrap">
+                                                        <div class="flex-wrap gap-2 mt-3 review-media d-flex">
                                                             @if ($review->video !== null)
                                                                 <div class="position-relative">
                                                                     <video class="hover:cursor-pointer"
@@ -773,8 +773,8 @@
                                             </div>
                                         </div>
                                     @else
-                                        <div class="text-center py-5 text-muted">
-                                            <i class="far fa-comment-dots fs-1 mb-3 opacity-50"></i>
+                                        <div class="py-5 text-center text-muted">
+                                            <i class="mb-3 opacity-50 far fa-comment-dots fs-1"></i>
                                             <p>Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan ulasan!</p>
                                         </div>
                                     @endif
@@ -783,15 +783,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid mb-5 mt-5 pt-4 border-top">
-                    <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+                <div class="pt-4 mt-5 mb-5 container-fluid border-top">
+                    <div class="px-2 mb-4 d-flex justify-content-between align-items-end">
                         <h2 class="m-0"
                             style="font-family: 'The Seasons', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
                             Mungkin Anda Suka</h2>
                     </div>
 
                     <div class="swiper mySwiperDetail">
-                        <div class="swiper-wrapper pb-4">
+                        <div class="pb-4 swiper-wrapper">
                             @if (session('id_user'))
                                 @foreach ($youlike as $yl)
                                     @php
@@ -800,7 +800,7 @@
             $discountPercentYL = ($discountedPriceYL && $yl->regular_price > 0) ? round((($yl->regular_price - $discountedPriceYL) / $yl->regular_price) * 100) : 0;
             $inWishlistYL = collect($wishlists)->contains('product_id', $yl->id);
                                     @endphp
-                                    <div class="swiper-slide h-auto">
+                                    <div class="h-auto swiper-slide">
                                         <div class="premium-product-card-small"
                                             onclick="window.location.href = '/{{ $yl->product_code }}_product'">
                                             <div class="card-img-box {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}">
@@ -815,8 +815,8 @@
                                                 <img src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                             </div>
 
-                                            <div class="card-info p-3">
-                                                <div class="rating-box mb-1"><i class="fas fa-star"></i>
+                                            <div class="p-3 card-info">
+                                                <div class="mb-1 rating-box"><i class="fas fa-star"></i>
                                                     <span>{{ $yl->rating ?? '5.0' }}</span></div>
                                                 <a href="/{{ $yl->product_code }}_product"
                                                     class="product-name fs-6">{{ $yl->product_name }}</a>
@@ -854,12 +854,12 @@
 
             <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content bg-transparent border-0">
-                        <div class="modal-body p-0 position-relative text-center">
-                            <button type="button" id="btn-close-fullscreen" class="btn-close position-absolute top-0 end-0 m-3 z-3"
+                    <div class="bg-transparent border-0 modal-content">
+                        <div class="p-0 text-center modal-body position-relative">
+                            <button type="button" id="btn-close-fullscreen" class="top-0 m-3 btn-close position-absolute end-0 z-3"
                                 data-bs-dismiss="modal"
                                 style="background-color: white; border-radius: 50%; padding: 0.5rem;"></button>
-                            <div id="modalContent" class="shadow-lg rounded-4 overflow-hidden"></div>
+                            <div id="modalContent" class="overflow-hidden shadow-lg rounded-4"></div>
                         </div>
                     </div>
                 </div>
@@ -867,7 +867,7 @@
 
             @if ($product->stock_quantity > 0)
                 <div class="d-lg-none fixed-bottom mobile-buy-nav">
-                    <div class="d-flex gap-2">
+                    <div class="gap-2 d-flex">
                         @if (session('id_user'))
                             @php $inCartMobile = collect($cartItems)->contains('product_id', $product->id); @endphp
                             @if($inCartMobile)
@@ -1225,7 +1225,7 @@
                 }
 
                 .product-main-title {
-                    font-family: 'The Seasons', serif;
+                    font-family: 'Playfair Display', serif;
                     font-size: 2.2rem;
                     font-weight: 700;
                     color: var(--text-main);
@@ -1638,7 +1638,7 @@
                 .btn-wishlist:hover, .btn-wishlist.active { color: var(--danger-main); }
             </style>
 
-            <div class="md:px-20 lg:px-24 xl:px-24 2xl:px-48 pt-4">
+            <div class="pt-4 md:px-20 lg:px-24 xl:px-24 2xl:px-48">
                 <div class="container-fluid">
                     <div class="premium-breadcrumb">
                         <a href="/"><i class="fas fa-home me-1"></i> Beranda</a>
@@ -1649,13 +1649,13 @@
                     </div>
                 </div>
 
-                <div class="container-fluid mb-5">
+                <div class="mb-5 container-fluid">
                     <div class="row g-4 g-lg-5">
 
                         <div class="col-lg-5">
                             <div class="gallery-container">
                                 <div style="--swiper-navigation-color: var(--glamoire-dark); --swiper-pagination-color: var(--glamoire-dark)"
-                                    class="swiper mySwiperShow main-image-wrapper shadow-sm">
+                                    class="shadow-sm swiper mySwiperShow main-image-wrapper">
                                     <div class="swiper-wrapper">
                                         @if (!empty($product->main_image))
                                             <div class="swiper-slide">
@@ -1673,7 +1673,7 @@
                                         @endif
 
                                         @if (!empty($product->video))
-                                            <div class="swiper-slide position-relative bg-black">
+                                            <div class="bg-black swiper-slide position-relative">
                                                 <video id="mainVideo" controls controlsList="nodownload noplaybackrate">
                                                     <source src="{{ Storage::url($product->video) }}" type="video/mp4">
                                                 </video>
@@ -1684,7 +1684,7 @@
                                     <div class="swiper-button-prev d-none d-md-flex"></div>
                                 </div>
 
-                                <div class="swiper mySwiperProduct pb-2">
+                                <div class="pb-2 swiper mySwiperProduct">
                                     <div class="swiper-wrapper">
                                         @if (!empty($product->main_image))
                                             <div class="swiper-slide" style="width: 20%;">
@@ -1814,7 +1814,7 @@
 
                             @if ($product->stock_quantity == 0)
                                 <div
-                                    class="alert alert-danger bg-danger text-white border-0 d-flex align-items-center justify-content-between p-3 rounded-3 mt-4 mb-4">
+                                    class="p-3 mt-4 mb-4 text-white border-0 alert alert-danger bg-danger d-flex align-items-center justify-content-between rounded-3">
                                     <div>
                                         <i class="fas fa-exclamation-circle me-2"></i> Maaf, produk ini sedang kosong.
                                     </div>
@@ -1839,7 +1839,7 @@
                                         @php $inCart = collect($cartItems)->contains('product_id', $product->id); @endphp
 
                                         @if ($inCart)
-                                            <button onclick="window.location.href='/cart'" class="btn-buy-premium w-auto flex-grow-1"
+                                            <button onclick="window.location.href='/cart'" class="w-auto btn-buy-premium flex-grow-1"
                                                 style="background:#10B981; border-color:#10B981;">
                                                 <i class="fas fa-check-circle fs-5"></i> Cek Keranjang
                                             </button>
@@ -1857,14 +1857,14 @@
                                         </button>
                                     @endif
                                 </div>
-                                <p id="quantity-warning-{{$product->id}}" class="text-danger fs-7 d-none mb-3"><i
+                                <p id="quantity-warning-{{$product->id}}" class="mb-3 text-danger fs-7 d-none"><i
                                         class="fas fa-info-circle"></i> Batas maksimal stok terpenuhi</p>
                             @endif
 
                         </div>
                     </div>
 
-                    <div class="row mt-5" id="ulasan-section">
+                    <div class="mt-5 row" id="ulasan-section">
                         <div class="col-12">
                             <nav class="nav premium-tabs" id="nav-tab" role="tablist">
                                 <button class="nav-link active" id="tab-deskripsi" data-bs-toggle="tab" data-bs-target="#deskripsi"
@@ -1875,7 +1875,7 @@
                                     role="tab">Ulasan Pembeli ({{ $product->rating_and_reviews_count }})</button>
                             </nav>
 
-                            <div class="tab-content tab-content-box p-2">
+                            <div class="p-2 tab-content tab-content-box">
                                 <div class="tab-pane fade show active" id="deskripsi" role="tabpanel">
                                     {!! $product->description !!}
                                 </div>
@@ -1890,8 +1890,8 @@
                                             <div class="col-lg-8">
                                                 @foreach ($product->ratingAndReviews as $review)
                                                     <div class="review-card">
-                                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                                            <div class="d-flex align-items-center gap-2">
+                                                        <div class="mb-2 d-flex justify-content-between align-items-start">
+                                                            <div class="gap-2 d-flex align-items-center">
                                                                 <div
                                                                     style="width:35px; height:35px; background:var(--glamoire-sand); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; color:var(--glamoire-dark);">
                                                                     {{ substr($review->user->fullname, 0, 1) }}
@@ -1913,7 +1913,7 @@
 
                                                         <div class="review-text">{{ $review->description }}</div>
 
-                                                        <div class="review-media d-flex gap-2 mt-3 flex-wrap">
+                                                        <div class="flex-wrap gap-2 mt-3 review-media d-flex">
                                                             @if ($review->video !== null)
                                                                 <div class="position-relative">
                                                                     <video class="hover:cursor-pointer"
@@ -1937,8 +1937,8 @@
                                             </div>
                                         </div>
                                     @else
-                                        <div class="text-center py-5 text-muted">
-                                            <i class="far fa-comment-dots fs-1 mb-3 opacity-50"></i>
+                                        <div class="py-5 text-center text-muted">
+                                            <i class="mb-3 opacity-50 far fa-comment-dots fs-1"></i>
                                             <p>Belum ada ulasan untuk produk ini. Jadilah yang pertama memberikan ulasan!</p>
                                         </div>
                                     @endif
@@ -1947,15 +1947,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="container-fluid mb-5 mt-5 pt-4 border-top">
-                    <div class="d-flex justify-content-between align-items-end mb-4 px-2">
+                <div class="pt-4 mt-5 mb-5 container-fluid border-top">
+                    <div class="px-2 mb-4 d-flex justify-content-between align-items-end">
                         <h2 class="m-0"
-                            style="font-family: 'The Seasons', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
+                            style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight:700; color:var(--glamoire-dark);">
                             Mungkin Anda Suka</h2>
                     </div>
 
                     <div class="swiper mySwiperDetail">
-                        <div class="swiper-wrapper pb-4">
+                        <div class="pb-4 swiper-wrapper">
                                 @foreach ($youlike as $yl)
                                     @php
             $activePromoYL = $yl->promos->first();
@@ -1963,7 +1963,7 @@
             $discountPercentYL = ($discountedPriceYL && $yl->regular_price > 0) ? round((($yl->regular_price - $discountedPriceYL) / $yl->regular_price) * 100) : 0;
             $inWishlistYL = session('id_user') ? collect($wishlists ?? [])->contains('product_id', $yl->id) : false;
                                     @endphp
-                                    <div class="swiper-slide h-auto">
+                                    <div class="h-auto swiper-slide">
                                         <div class="premium-product-card-small"
                                             onclick="window.location.href = '/{{ $yl->product_code }}_product'">
                                             <div class="card-img-box {{ $yl->stock_quantity == 0 ? 'dark-overlay' : '' }}">
@@ -1978,13 +1978,13 @@
                                                 <img src="{{ Storage::url($yl->main_image) }}" alt="{{ $yl->product_name }}">
                                             </div>
 
-                                            <div class="card-info p-3">
-                                                <div class="rating-box mb-1"><i class="fas fa-star"></i>
+                                            <div class="p-3 card-info">
+                                                <div class="mb-1 rating-box"><i class="fas fa-star"></i>
                                                     <span>{{ $yl->rating ?? '5.0' }}</span></div>
                                                 <a href="/{{ $yl->product_code }}_product"
                                                     class="product-name-clamp">{{ $yl->product_name }}</a>
 
-                                                <div class="price-box mt-2">
+                                                <div class="mt-2 price-box">
                                                     @if ($yl->priceVariation !== null)
                                                         <span class="price-current fs-6">{{ $yl->priceVariation }}</span>
                                                     @else
@@ -2016,12 +2016,12 @@
 
             <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content bg-transparent border-0">
-                        <div class="modal-body p-0 position-relative text-center">
-                            <button type="button" id="btn-close-fullscreen" class="btn-close position-absolute top-0 end-0 m-3 z-3"
+                    <div class="bg-transparent border-0 modal-content">
+                        <div class="p-0 text-center modal-body position-relative">
+                            <button type="button" id="btn-close-fullscreen" class="top-0 m-3 btn-close position-absolute end-0 z-3"
                                 data-bs-dismiss="modal"
                                 style="background-color: white; border-radius: 50%; padding: 0.5rem;"></button>
-                            <div id="modalContent" class="shadow-lg rounded-4 overflow-hidden"></div>
+                            <div id="modalContent" class="overflow-hidden shadow-lg rounded-4"></div>
                         </div>
                     </div>
                 </div>
@@ -2029,7 +2029,7 @@
 
             @if ($product->stock_quantity > 0)
                 <div class="d-lg-none fixed-bottom mobile-buy-nav">
-                    <div class="d-flex gap-2">
+                    <div class="gap-2 d-flex">
                         @if (session('id_user'))
                             @php $inCartMobile = collect($cartItems)->contains('product_id', $product->id); @endphp
                             @if($inCartMobile)
