@@ -330,7 +330,7 @@
         }
         .luxury-product-card:hover { transform: none; box-shadow: none; }
 
-        .lpc-visual {
+        /* .lpc-visual {
             position: relative; width: 100%;
             aspect-ratio: 4 / 5;
             background-color: var(--glamoire-sand);
@@ -346,7 +346,29 @@
             object-fit: cover;
             transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .luxury-product-card:hover .lpc-visual img { transform: scale(1.05); }
+        .luxury-product-card:hover .lpc-visual img { transform: scale(1.05); } */
+
+        .lpc-visual {
+            position: relative; width: 100%;
+            aspect-ratio: 4 / 5;
+            background-color: #FFF; /* [FIX] Diubah menjadi putih murni agar menyatu dengan gambar produk */
+            overflow: hidden; margin-bottom: 1.25rem;
+        }
+
+        @media (max-width: 575px) {
+            .lpc-visual { aspect-ratio: 3 / 4; margin-bottom: 0.8rem; }
+        }
+
+        .lpc-visual img {
+            width: 100%; height: 100%;
+            object-fit: contain; /* [FIX] Diubah dari cover menjadi contain agar gambar utuh tidak terpotong */
+            padding: 0.5rem; /* [FIX] Tambahan whitespace agar teks gambar tidak menabrak garis border kotak */
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .luxury-product-card:hover .lpc-visual img {
+            transform: scale(1.05);
+        }
 
         /* Minimal Badge & Wishlist */
         .lpc-minimal-badge {
