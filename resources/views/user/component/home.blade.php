@@ -446,33 +446,30 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            padding: 0 0.5rem;
-            /* Memberikan whitespace */
+            padding: 0.8rem 0.5rem 0.5rem; /* Tambahkan padding top untuk jarak dari gambar */
         }
 
         .lpc-clean-title {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 0.5rem; /* Tambah jarak bawah agar lega */
-            line-height: 1.3;
-
-            /* KUNCI PERBAIKAN: Batasi teks agar tidak menabrak card */
+            margin-bottom: 0.5rem; /* Perbesar margin bottom */
+            line-height: 1.4;
+            /* Ubah menjadi 2 baris agar nama produk yang panjang tidak bertabrakan */
             display: -webkit-box;
-            -webkit-line-clamp: 2; /* Maksimal 2 baris, sisanya jadi titik-titik (...) */
+            -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            text-overflow: ellipsis;
-            min-height: 2.6em; /* Paksa semua card punya tinggi judul yang sama */
+            min-height: 3.22rem; /* Menjaga tinggi konsisten walau hanya 1 baris */
         }
 
         .lpc-clean-benefit {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             color: var(--text-muted);
-            margin-bottom: auto; /* Dorong elemen di bawahnya (harga) ke dasar card */
-            line-height: 1.4;
+            margin-bottom: 1.2rem; /* Beri jarak lebih ke harga */
+            line-height: 1.5;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -480,30 +477,33 @@
         }
 
         .lpc-clean-price {
-            /* Hapus margin-top: auto; di sini karena sudah ditangani oleh lpc-clean-benefit */
+            margin-top: auto;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 1.15rem; /* Sedikit diperbesar */
+            font-weight: 700; /* Dibuat lebih tebal untuk hirarki */
             color: var(--glamoire-dark);
-            margin-bottom: 0.5rem; /* Beri jarak dengan tepi bawah card */
         }
 
         .lpc-clean-price-strike {
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: #9CA3AF;
             text-decoration: line-through;
-            font-weight: 400;
+            font-weight: 500; /* Sedikit ditebalkan dari 400 */
         }
 
         .lpc-clean-price-discount {
             color: var(--danger-main);
         }
 
-        /* Sembunyikan benefit di mobile agar card tidak terlalu panjang (Sudah Anda buat sebelumnya) */
+        /* [FIX] Sembunyikan benefit di mobile agar card tidak terlalu panjang */
         @media (max-width: 575px) {
             .lpc-clean-benefit { display: none !important; }
-            .lpc-clean-title { font-size: 0.95rem; min-height: 2.6em; }
-            .lpc-clean-price { font-size: 0.9rem; }
+            .lpc-clean-title {
+                font-size: 1.05rem;
+                min-height: 2.94rem; /* Sesuaikan dengan font-size baru */
+            }
+            .lpc-clean-price { font-size: 1rem; }
+            .lpc-details { padding-top: 0.5rem; }
         }
 
         /* ============================================================
