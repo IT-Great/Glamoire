@@ -348,7 +348,7 @@
         }
         .luxury-product-card:hover .lpc-visual img { transform: scale(1.05); }
 
-        .lpc-minimal-badge {
+        /* .lpc-minimal-badge {
             position: absolute; top: 12px; left: 12px;
             background: var(--glamoire-dark); color: #FFF;
             font-size: 0.7rem; font-weight: 600;
@@ -361,7 +361,39 @@
             z-index: 2; background: none; border: none;
             transition: color 0.3s; cursor: pointer;
         }
-        .lpc-wishlist-icon:hover, .lpc-wishlist-icon.active { color: var(--danger-main); }
+        .lpc-wishlist-icon:hover, .lpc-wishlist-icon.active { color: var(--danger-main); } */
+
+        /* Minimal Badge & Wishlist */
+        .lpc-minimal-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px; /* DIPINDAH KE KANAN agar tidak menutupi teks gambar */
+            background: var(--glamoire-dark);
+            color: #FFF;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
+
+        .lpc-wishlist-icon {
+            position: absolute;
+            top: 12px;
+            left: 12px; /* DIPINDAH KE KIRI bertukar tempat dengan badge */
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            z-index: 2;
+            background: none;
+            border: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .lpc-wishlist-icon:hover, .lpc-wishlist-icon.active {
+            color: var(--danger-main);
+        }
 
         .lpc-simple-cta-layer {
             position: absolute; bottom: 0; left: 0;
