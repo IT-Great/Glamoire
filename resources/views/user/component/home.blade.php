@@ -1637,7 +1637,7 @@
             // --- FLASH SALE SLIDER ---
             new Swiper(".flash-sale-slider", {
                 slidesPerView: 1.6,
-                spaceBetween: 8,
+                spaceBetween: 12,
                 grabCursor: true,
                 navigation: {
                     nextEl: ".flash-sale-slider .swiper-button-next",
@@ -1647,8 +1647,8 @@
                     400:  { slidesPerView: 2,    spaceBetween: 12 },
                     576:  { slidesPerView: 2.2,  spaceBetween: 16 },
                     768:  { slidesPerView: 2.5,  spaceBetween: 20 },
-                    992:  { slidesPerView: 3,    spaceBetween: 22 },
-                    1200: { slidesPerView: 3,    spaceBetween: 26 }
+                    992:  { slidesPerView: 3,    spaceBetween: 16 },
+                    1200: { slidesPerView: 3,    spaceBetween: 20 }
                 }
             });
 
