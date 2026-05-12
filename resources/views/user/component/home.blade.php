@@ -1637,7 +1637,7 @@
             // --- FLASH SALE SLIDER ---
             new Swiper(".flash-sale-slider", {
                 slidesPerView: 1.6,
-                spaceBetween: 12,
+                spaceBetween: 8,
                 grabCursor: true,
                 navigation: {
                     nextEl: ".flash-sale-slider .swiper-button-next",
