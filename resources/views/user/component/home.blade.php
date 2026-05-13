@@ -2633,6 +2633,78 @@
             }
             .nl-btn { width: 100%; padding: 1rem; border-radius: 50px; font-size: 0.9rem; }
         }
+
+        /* ============================================================
+           2. CORE MESSAGE SECTION (HORIZONTAL ELEGANT)
+        ============================================================ */
+        .core-message-section {
+            background-color: var(--glamoire-light); /* Lebih clean menyatu dengan background */
+            padding: 5rem 0;
+            border-top: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+        }
+
+        .core-message-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* Memaksa 4 item sejajar ke samping (horizontal) */
+            gap: 2rem;
+            align-items: start;
+            justify-content: center;
+        }
+
+        .core-item {
+            display: flex;
+            flex-direction: column; /* Membuat ikon di atas dan teks di bawah */
+            align-items: center;
+            text-align: center;
+            gap: 1.2rem;
+            transition: transform 0.4s ease;
+            cursor: default;
+        }
+
+        .core-item:hover {
+            transform: translateY(-8px); /* Efek mengambang elegan saat di-hover */
+        }
+
+        .core-icon {
+            font-size: 1.8rem;
+            color: var(--glamoire-gold); /* Warna ikon gold premium */
+            background-color: var(--glamoire-sand); /* Lingkaran latar belakang */
+            width: 75px;
+            height: 75px;
+            border-radius: 50%; /* Membentuk lingkaran sempurna */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 0 1px rgba(212,175,55,0.2);
+            transition: all 0.4s ease;
+        }
+
+        .core-item:hover .core-icon {
+            background-color: var(--glamoire-dark);
+            color: #FFF;
+        }
+
+        .core-text {
+            font-size: 0.95rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            color: var(--glamoire-dark);
+            line-height: 1.5;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsivitas: Turun ke 2 kolom jika di layar tablet / HP */
+        @media (max-width: 991px) {
+            .core-message-grid { grid-template-columns: repeat(2, 1fr); gap: 3rem 2rem; }
+        }
+
+        @media (max-width: 575px) {
+            .core-message-section { padding: 3.5rem 0; }
+            .core-message-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
+            .core-icon { width: 60px; height: 60px; font-size: 1.4rem; }
+            .core-text { font-size: 0.85rem; }
+        }
     </style>
 
     <!-- ============================================================
@@ -2730,7 +2802,7 @@
     <!-- ============================================================
          2. CORE MESSAGE SECTION
     ============================================================ -->
-    <section class="core-message-section reveal">
+    {{-- <section class="core-message-section reveal">
         <div class="px-3 container-fluid px-md-4 px-lg-5">
             <div class="core-message-grid">
                 <div class="core-item">
@@ -2749,6 +2821,34 @@
                     <i class="fas fa-shield-alt core-icon"></i>
                     <span class="core-text">100% Authentic<br>Products</span>
                 </div>
+            </div>
+        </div>
+    </section> --}}
+
+    <section class="core-message-section reveal">
+        <div class="px-3 container-fluid px-md-4 px-lg-5">
+            <div class="core-message-grid">
+
+                <div class="core-item">
+                    <div class="core-icon"><i class="fas fa-leaf"></i></div>
+                    <span class="core-text">Plant-Based<br>Ingredients</span>
+                </div>
+
+                <div class="core-item">
+                    <div class="core-icon"><i class="fas fa-certificate"></i></div>
+                    <span class="core-text">BPOM<br>Certified</span>
+                </div>
+
+                <div class="core-item">
+                    <div class="core-icon"><i class="fas fa-paw"></i></div>
+                    <span class="core-text">Cruelty-Free<br>Beauty</span>
+                </div>
+
+                <div class="core-item">
+                    <div class="core-icon"><i class="fas fa-shield-alt"></i></div>
+                    <span class="core-text">100% Authentic<br>Products</span>
+                </div>
+
             </div>
         </div>
     </section>
