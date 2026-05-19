@@ -826,7 +826,7 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             ]);
 
             if ($request->hasFile('image')) {
@@ -899,7 +899,7 @@ class ProductController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             ]);
 
             if ($request->hasFile('image')) {
@@ -1336,9 +1336,9 @@ class ProductController extends Controller
                 'product_name' => 'required|string|max:255',
                 'stock_quantity' => 'required',
                 'regular_price' => 'required',
-                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'main_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 'images' => 'nullable|array|max:6',
-                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 'video' => 'nullable|mimes:mp4,avi,mov|max:5048',
                 'weight_product' => 'required',
                 'description' => 'required',
