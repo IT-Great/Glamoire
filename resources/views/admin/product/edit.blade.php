@@ -1095,6 +1095,7 @@
                                                                             <th>Stok</th>
                                                                             <th>Berat (grams)</th>
                                                                             <th>Tanggal Kadaluarsa</th>
+                                                                            <th class="text-center">Aksi</th> </tr>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody id="variant-table-body">
@@ -1301,6 +1302,62 @@
 
             // Initialize existing variants
             initializeExistingVariants(variants);
+
+            // ==========================================
+            // LOGIKA HAPUS VARIAN (AJAX)
+            // ==========================================
+            $(document).on('click', '.btn-delete-variant', function(e) {
+                e.preventDefault();
+                let variantId = $(this).data('id');
+                let row = $(this).closest('tr');
+
+                // Jika variantId kosong, berarti ini adalah baris varian baru yang belum di-save ke DB
+                if(!variantId) {
+                    row.remove();
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Hapus Varian Ini?',
+                    text: "Tindakan ini akan menghapus varian secara permanen beserta data stoknya!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/delete-product-variant-admin/' + variantId,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    // Hapus baris dari tabel
+                                    row.fadeOut(300, function() { $(this).remove(); });
+
+                                    Swal.fire({
+                                        toast: true,
+                                        position: 'top-end',
+                                        icon: 'success',
+                                        title: response.message,
+                                        showConfirmButton: false,
+                                        timer: 3000
+                                    });
+                                } else {
+                                    Swal.fire('Gagal!', response.message, 'error');
+                                }
+                            },
+                            error: function(xhr) {
+                                Swal.fire('Error!', xhr.responseJSON?.message || 'Terjadi kesalahan sistem.', 'error');
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 

@@ -2135,4 +2135,53 @@ class ProductController extends Controller
             'data' => $variantValue,
         ]);
     }
+
+    /**
+     * Hapus Varian Produk (AJAX)
+     * Route: DELETE /delete-product-variant-admin/{id}
+     */
+    public function deleteProductVariantAdmin($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $variant = ProductVariations::find($id);
+
+            if (!$variant) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Varian tidak ditemukan.'
+                ], 404);
+            }
+
+            // Hapus gambar varian dari storage (jika ada)
+            if ($variant->variant_image && Storage::disk('public')->exists($variant->variant_image)) {
+                Storage::disk('public')->delete($variant->variant_image);
+            }
+
+            // Hapus data stok yang terikat dengan varian ini
+            ProductStocks::where('variation_id', $id)->delete();
+
+            // Hapus dari keranjang user agar tidak terjadi error relasi
+            Cart_item::where('product_variant_id', $id)->delete();
+
+            // Hapus data varian utama
+            $variant->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Varian produk berhasil dihapus secara permanen.'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error deleting product variant: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan sistem saat menghapus varian: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

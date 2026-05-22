@@ -730,4 +730,6 @@ Route::middleware(['auth', 'role:gudang,admin,superadmin'])->group(function () {
     Route::post('/store-product-variant', [ProductController::class, 'storeProductVariantAdmin'])->name('store-product-variant-admin');
     Route::get('/edit-product-variant/{id}', [ProductController::class, 'editProductVariantAdmin'])->name('edit-product-variant-admin');
     Route::put('/update/product-variant/{id}', [ProductController::class, 'updateProductVariantAdmin'])->name('update-product-variant-admin');
+
+    Route::delete('/delete-product-variant-admin/{id}', [ProductController::class, 'deleteProductVariantAdmin'])->name('delete-product-variant-admin');
 });
