@@ -19446,7 +19446,7 @@
                                             @foreach ($order->items as $item)
                                                 <!-- PERBAIKAN: Mengganti inline ternary yang rentan rusak menjadi struktur blade if-else yang bersih -->
                                                 <div class="order-item-row"
-                                                    @if($item->product_variant_id)
+                                                    @if ($item->product_variant_id)
                                                         onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
                                                     @else
                                                         onclick="detailProduct('{{ $item->product->product_code }}')"
@@ -19509,7 +19509,7 @@
                                                                 </button>
 
                                                                 <!-- PERBAIKAN: Menghindari inline HTML attribut injection untuk payment URL -->
-                                                                @if($paymentUrl == '#')
+                                                                @if ($paymentUrl == '#')
                                                                     <button type="button" class="btn btn-secondary" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="Swal.fire('Oops', 'URL Pembayaran sudah tidak tersedia.', 'error')">
                                                                         <i class="fas fa-wallet me-1"></i> Bayar
                                                                     </button>
@@ -21500,12 +21500,12 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
             cursor: pointer;
         }
 
         .wishlist-card:hover {
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
             transform: translateY(-5px);
             border-color: var(--glamoire-gold);
         }
@@ -21537,7 +21537,7 @@
             right: 12px;
             width: 34px;
             height: 34px;
-            background: rgba(255,255,255,0.95);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(4px);
             border-radius: 50%;
             display: flex;
@@ -21550,7 +21550,7 @@
             transition: var(--transition-smooth);
             opacity: 0;
             transform: scale(0.8);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .wishlist-card:hover .wishlist-remove-btn {
@@ -21698,29 +21698,31 @@
                     </div>
 
                     <div class="nav nav-tabs account-nav-tabs" role="tablist" id="accountTabs">
-                        <a class="nav-link {{ $activeTab == '#my-profile' ? 'active' : '' }}"
-                            data-bs-toggle="tab" data-bs-target="#my-profile" href="#my-profile" role="tab" aria-controls="my-profile">
+                        <a class="nav-link {{ $activeTab == '#my-profile' ? 'active' : '' }}" data-bs-toggle="tab"
+                            data-bs-target="#my-profile" href="#my-profile" role="tab" aria-controls="my-profile">
                             <i class="far fa-user"></i> Data Diri
                         </a>
-                        <a class="nav-link {{ $activeTab == '#shipping-address' ? 'active' : '' }}"
-                            data-bs-toggle="tab" data-bs-target="#shipping-address" href="#shipping-address" role="tab" aria-controls="shipping-address">
+                        <a class="nav-link {{ $activeTab == '#shipping-address' ? 'active' : '' }}" data-bs-toggle="tab"
+                            data-bs-target="#shipping-address" href="#shipping-address" role="tab"
+                            aria-controls="shipping-address">
                             <i class="fas fa-map-marker-alt"></i> Alamat Pengiriman
                         </a>
-                        <a class="nav-link {{ $activeTab == '#my-order' ? 'active' : '' }}"
-                            data-bs-toggle="tab" data-bs-target="#my-order" href="#my-order" role="tab" aria-controls="my-order">
+                        <a class="nav-link {{ $activeTab == '#my-order' ? 'active' : '' }}" data-bs-toggle="tab"
+                            data-bs-target="#my-order" href="#my-order" role="tab" aria-controls="my-order">
                             <i class="fas fa-shopping-bag"></i> Riwayat Pesanan
                         </a>
-                        <a class="nav-link {{ $activeTab == '#my-wishlist' ? 'active' : '' }}"
-                            data-bs-toggle="tab" data-bs-target="#my-wishlist" href="#my-wishlist" role="tab" aria-controls="my-wishlist">
+                        <a class="nav-link {{ $activeTab == '#my-wishlist' ? 'active' : '' }}" data-bs-toggle="tab"
+                            data-bs-target="#my-wishlist" href="#my-wishlist" role="tab" aria-controls="my-wishlist">
                             <i class="far fa-heart"></i> Produk Favorit
                         </a>
                     </div>
                 </div>
 
-                <div class="account-content tab-content reveal-on-scroll" id="nav-tabContent" style="transition-delay: 0.2s;">
+                <div class="account-content tab-content reveal-on-scroll" id="nav-tabContent"
+                    style="transition-delay: 0.2s;">
 
-                    <div class="tab-pane fade {{ $activeTab == '#my-profile' ? 'show active' : '' }}"
-                        id="my-profile" role="tabpanel" aria-labelledby="my-profile-tab">
+                    <div class="tab-pane fade {{ $activeTab == '#my-profile' ? 'show active' : '' }}" id="my-profile"
+                        role="tabpanel" aria-labelledby="my-profile-tab">
 
                         <div class="quick-stats-grid">
                             <div class="stat-item">
@@ -21799,8 +21801,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-control" value="{{ $profile->email }}" disabled
-                                            readonly style="background-color: #F3F4F6;">
+                                        <input type="email" class="form-control" value="{{ $profile->email }}"
+                                            disabled readonly style="background-color: #F3F4F6;">
                                         <small class="text-muted" style="font-size: 0.75rem;"><i
                                                 class="fas fa-lock me-1"></i> Email tidak dapat diubah</small>
                                     </div>
@@ -21923,8 +21925,8 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade {{ $activeTab == '#my-order' ? 'show active' : '' }}"
-                        id="my-order" role="tabpanel" aria-labelledby="my-order-tab">
+                    <div class="tab-pane fade {{ $activeTab == '#my-order' ? 'show active' : '' }}" id="my-order"
+                        role="tabpanel" aria-labelledby="my-order-tab">
                         <div class="dashboard-card"
                             style="background: transparent; box-shadow: none; padding: 0; border: none;">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22049,10 +22051,10 @@
                                             </div>
                                         @endif
 
-                                        <div class="order-body">
+                                        {{-- <div class="order-body">
                                             @foreach ($order->items as $item)
                                                 <div class="order-item-row"
-                                                    @if($item->product_variant_id)
+                                                    @if ($item->product_variant_id)
                                                         onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
                                                     @else
                                                         onclick="detailProduct('{{ $item->product->product_code }}')"
@@ -22082,6 +22084,68 @@
                                                     </div>
                                                 </div>
                                             @endforeach
+                                        </div> --}}
+
+                                        <div class="order-body">
+                                            @foreach ($order->items as $item)
+                                                @if ($item->product)
+                                                    {{-- [FIX] Pastikan produk masih ada di database --}}
+                                                    <div class="order-item-row"
+                                                        @if ($item->product_variant_id && $item->productVariant) onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
+                @else
+                    onclick="detailProduct('{{ $item->product->product_code }}')" @endif>
+
+                                                        <img class="order-item-img"
+                                                            src="{{ Storage::url($item->product_variant_id && $item->productVariant ? $item->productVariant->variant_image : $item->product->main_image) }}"
+                                                            alt="Product Image">
+
+                                                        <div class="order-item-info">
+                                                            <div class="order-item-brand">
+                                                                {{ $item->product->brand->name ?? 'Glamoire' }}
+                                                            </div>
+                                                            <div class="order-item-name">
+                                                                {{ $item->product->product_name }}</div>
+
+                                                            @if ($item->product_variant_id && $item->productVariant)
+                                                                <div class="order-item-variant">Varian:
+                                                                    {{ $item->productVariant->variant_value }}
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="order-item-qty">{{ $item->quantity }} x
+                                                                Rp{{ number_format($item->price, 0, ',', '.') }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="order-item-price">
+                                                            <span>Total Harga Item</span>
+                                                            <strong>Rp{{ number_format($item->subtotal, 0, ',', '.') }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    {{-- Fallback jika produk sudah dihapus Admin --}}
+                                                    <div class="order-item-row"
+                                                        style="cursor: not-allowed; opacity: 0.7;">
+                                                        <div
+                                                            class="order-item-img d-flex align-items-center justify-content-center bg-light">
+                                                            <i class="fas fa-box-open text-muted fs-3"></i>
+                                                        </div>
+
+                                                        <div class="order-item-info">
+                                                            <div class="order-item-brand text-danger">Produk Dihapus</div>
+                                                            <div class="order-item-name text-muted"><em>Produk ini sudah
+                                                                    tidak tersedia di katalog</em></div>
+                                                            <div class="order-item-qty mt-2">{{ $item->quantity }} x
+                                                                Rp{{ number_format($item->price, 0, ',', '.') }}</div>
+                                                        </div>
+
+                                                        <div class="order-item-price">
+                                                            <span>Total Harga Item</span>
+                                                            <strong>Rp{{ number_format($item->subtotal, 0, ',', '.') }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
                                         </div>
 
                                         <div class="order-footer">
@@ -22099,27 +22163,37 @@
 
                                                 @if ($order->status == 'pending')
                                                     @php
-                                                        $expiryTime = \Carbon\Carbon::parse($order->created_at)->addMinutes(60);
+                                                        $expiryTime = \Carbon\Carbon::parse(
+                                                            $order->created_at,
+                                                        )->addMinutes(60);
                                                         $isExpired = now()->greaterThan($expiryTime);
                                                         $paymentUrl = session('payment_url_' . $order->id) ?? '#';
                                                     @endphp
 
                                                     @if (!$isExpired)
                                                         <div class="d-flex flex-column align-items-end gap-2">
-                                                            <span class="badge bg-warning text-dark countdown-timer" data-expiry="{{ $expiryTime->timestamp * 1000 }}">
-                                                                <i class="far fa-clock"></i> <span class="time-left">Menghitung...</span>
+                                                            <span class="badge bg-warning text-dark countdown-timer"
+                                                                data-expiry="{{ $expiryTime->timestamp * 1000 }}">
+                                                                <i class="far fa-clock"></i> <span
+                                                                    class="time-left">Menghitung...</span>
                                                             </span>
                                                             <div class="d-flex gap-2">
-                                                                <button class="btn btn-outline-danger" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="cancelOrder('{{ $order->id }}')">
+                                                                <button class="btn btn-outline-danger"
+                                                                    style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
+                                                                    onclick="cancelOrder('{{ $order->id }}')">
                                                                     <i class="fas fa-times me-1"></i> Batal
                                                                 </button>
 
-                                                                @if($paymentUrl == '#')
-                                                                    <button type="button" class="btn btn-secondary" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;" onclick="Swal.fire('Oops', 'URL Pembayaran sudah tidak tersedia.', 'error')">
+                                                                @if ($paymentUrl == '#')
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;"
+                                                                        onclick="Swal.fire('Oops', 'URL Pembayaran sudah tidak tersedia.', 'error')">
                                                                         <i class="fas fa-wallet me-1"></i> Bayar
                                                                     </button>
                                                                 @else
-                                                                    <a href="{{ $paymentUrl }}" class="btn-glamoire text-decoration-none" style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;">
+                                                                    <a href="{{ $paymentUrl }}"
+                                                                        class="btn-glamoire text-decoration-none"
+                                                                        style="border-radius: 50px; font-weight: 600; font-size: 0.85rem; padding: 0.6rem 1.5rem;">
                                                                         <i class="fas fa-wallet me-1"></i> Bayar
                                                                     </a>
                                                                 @endif
@@ -22174,13 +22248,15 @@
                                                     @endif
 
                                                     @php
-                                                        $orderItemsPayload = $order->items->map(function ($item) {
-                                                            return [
-                                                                'id' => $item->product_id,
-                                                                'variant_id' => $item->product_variant_id,
-                                                                'qty' => $item->quantity,
-                                                            ];
-                                                        })->toArray();
+                                                        $orderItemsPayload = $order->items
+                                                            ->map(function ($item) {
+                                                                return [
+                                                                    'id' => $item->product_id,
+                                                                    'variant_id' => $item->product_variant_id,
+                                                                    'qty' => $item->quantity,
+                                                                ];
+                                                            })
+                                                            ->toArray();
                                                     @endphp
 
                                                     <button class="btn-glamoire py-2 px-4 btn-beli-lagi"
@@ -22206,8 +22282,8 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane fade {{ $activeTab == '#my-wishlist' ? 'show active' : '' }}"
-                        id="my-wishlist" role="tabpanel" aria-labelledby="my-wishlist-tab">
+                    <div class="tab-pane fade {{ $activeTab == '#my-wishlist' ? 'show active' : '' }}" id="my-wishlist"
+                        role="tabpanel" aria-labelledby="my-wishlist-tab">
                         <div class="dashboard-card"
                             style="background: transparent; box-shadow: none; padding: 0; border: none;">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22627,7 +22703,8 @@
                 let distance = expiry - now;
 
                 if (distance < 0) {
-                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html('<i class="fas fa-times-circle"></i> Kadaluarsa');
+                    $(this).removeClass('bg-warning text-dark').addClass('bg-danger text-white').html(
+                        '<i class="fas fa-times-circle"></i> Kadaluarsa');
                     $(this).closest('div.d-flex.flex-column').find('.btn-glamoire').hide();
                 } else {
                     let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
@@ -22717,15 +22794,18 @@
                         },
                         success: function(response) {
                             if (response.success) {
-                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.', 'success').then(() => {
+                                Swal.fire('Berhasil!', response.message || 'Pesanan telah dibatalkan.',
+                                    'success').then(() => {
                                     location.reload();
                                 });
                             } else {
-                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.', 'error');
+                                Swal.fire('Gagal!', response.message || 'Gagal membatalkan pesanan.',
+                                    'error');
                             }
                         },
                         error: function(xhr) {
-                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.', 'error');
+                            Swal.fire('Error!', 'Terjadi kesalahan sistem saat membatalkan pesanan.',
+                                'error');
                         }
                     });
                 }
