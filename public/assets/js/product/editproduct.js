@@ -1920,6 +1920,506 @@
 // });
 
 // Data default untuk opsi varian
+// const variantOptions = {
+//     warna: ["Merah", "Hijau", "Biru", "Ungu", "Putih", "Kuning", "Pink", "Hitam", "Orange", "Coklat"],
+//     ukuran: ["Small", "Medium", "Large", "Extra Large"],
+//     aroma: ["Mint", "Rosemary", "Lavender", "Pandan", "Lemon"],
+//     rasa: ["Vanilla", "Coklat", "Strawberry", "Matcha"],
+//     bahan: ["Katun", "Sutra", "Kulit", "Plastik", "Kayu", "Besi", "Alumunium"],
+//     tekstur: ["Halus", "Kasar", "Creamy", "Bubuk", "Cair", "Keras"],
+//     desain: ["Polos", "Garis", "Bunga", "Geometris"],
+//     durabilitas: ["Tahan Air", "Anti Tumpah", "Tahan Panas", "Tahan Dingin"],
+//     fungsionalitas: ["Standar", "Menengah", "Pro"],
+// };
+
+// function initializeSelect2WithAddOption(selectElement) {
+//     $(selectElement).select2({
+//         tags: true,
+//         tokenSeparators: [",", " "],
+//         width: "100%",
+//     });
+// }
+
+// function initializeSelect2(selectElement, options = {}) {
+//     $(selectElement).select2({
+//         tags: true,
+//         tokenSeparators: [",", " "],
+//         width: "100%",
+//         closeOnSelect: false,
+//         ...options,
+//     });
+// }
+
+// function initializeDatePickers() {
+//     flatpickr(".datepicker2", {
+//         enableTime: false,
+//         dateFormat: "Y-m-d",
+//         time_24hr: true,
+//         minuteIncrement: 1,
+//     });
+// }
+
+// function initializeImageUpload() {
+//     $(".variant-image-upload").off("change").on("change", function (event) {
+//         const file = event.target.files[0];
+//         const reader = new FileReader();
+//         const imgPreview = $("<img>")
+//             .addClass("img-thumbnail mt-2")
+//             .css("max-width", "100px");
+
+//         $(this).next("img").remove();
+//         $(this).after(imgPreview);
+
+//         reader.onload = function (e) {
+//             imgPreview.attr("src", e.target.result).show();
+//         };
+
+//         if (file) {
+//             reader.readAsDataURL(file);
+//         }
+//     });
+// }
+
+// function initializeImageToggle() {
+//     $(".use-variant-image").off("change").on("change", function () {
+//         const imageUploadArea = $(this).closest("td").find(".variant-images");
+//         if (this.checked) {
+//             imageUploadArea.show();
+//         } else {
+//             imageUploadArea.hide();
+//             const fileInput = imageUploadArea.find('input[type="file"]');
+//             fileInput.val("");
+//             imageUploadArea.find("img.img-thumbnail:not(.existing-image-preview img)").remove();
+//         }
+//     });
+// }
+
+// function updateVariantValues(selectElement) {
+//     if (!selectElement) return; // Mencegah error null
+
+//     const selectedVariantType = selectElement.value;
+//     const variantValuesSelect = selectElement.closest(".variant-type").querySelector(".variant-values select");
+
+//     if(!variantValuesSelect) return;
+
+//     variantValuesSelect.innerHTML = "";
+//     const options = variantOptions[selectedVariantType] || [];
+
+//     options.forEach((option) => {
+//         const newOption = document.createElement("option");
+//         newOption.value = option;
+//         newOption.textContent = option;
+//         variantValuesSelect.appendChild(newOption);
+//     });
+
+//     initializeSelect2(variantValuesSelect);
+//     if(typeof window.updateVariantTable === 'function') {
+//         window.updateVariantTable();
+//     }
+// }
+
+// function addNewVariantType() {
+//     const variantContainer = document.getElementById("variant-container");
+//     const addVariantTypeBtn = document.getElementById("addVariantType");
+
+//     if(!variantContainer) return;
+
+//     let variantTypes = document.querySelectorAll(".variant-type").length;
+
+//     if (variantTypes < 2) {
+//         variantTypes++;
+//         const newVariantType = document.createElement("div");
+//         newVariantType.className = "variant-type mb-4 p-3 border rounded";
+//         newVariantType.innerHTML = `
+//             <label>Variant Type ${variantTypes}</label>
+//             <div class="d-flex align-items-center">
+//                 <select class="select2-variant-type form-select me-2" name="variant_type[]">
+//                     <option value="warna">Color</option>
+//                     <option value="aroma">Scent</option>
+//                     <option value="rasa">Flavor</option>
+//                     <option value="ukuran">Size</option>
+//                     <option value="desain">Design</option>
+//                 </select>
+//             </div>
+//             <small class="text-muted">Pilih jenis varian atau tambahkan yang baru jika Anda tidak menemukan opsi yang sesuai.</small>
+
+//             <div class="variant-values">
+//             <label class="form-label mt-4">Variant Values</label>
+//                 <select class="select2 form-select multiple-remove" name="variant_values[${variantTypes - 1}][]" multiple="multiple"></select>
+//             </div>
+//             <small class="text-muted">Select variant values or add new ones if you don't find suitable options.</small>
+//         `;
+//         variantContainer.appendChild(newVariantType);
+
+//         const newVariantTypeSelect = newVariantType.querySelector(".select2-variant-type");
+//         const newVariantValuesSelect = newVariantType.querySelector(".variant-values select");
+
+//         initializeSelect2(newVariantTypeSelect, {
+//             tags: true,
+//             createTag: function (params) {
+//                 return {
+//                     id: params.term,
+//                     text: params.term,
+//                     newOption: true,
+//                 };
+//             },
+//             closeOnSelect: true,
+//         });
+
+//         initializeSelect2(newVariantValuesSelect, {
+//             tags: true,
+//             tokenSeparators: [",", " "],
+//         });
+
+//         updateVariantValues(newVariantTypeSelect);
+
+//         if (addVariantTypeBtn && variantTypes >= 2) {
+//             addVariantTypeBtn.disabled = true;
+//             addVariantTypeBtn.classList.add("disabled");
+//         }
+//     }
+// }
+
+// function updateVariantTableWithExistingData(variants) {
+//     const variantTableBody = document.getElementById("variant-table-body");
+//     if(!variantTableBody) return;
+
+//     variantTableBody.innerHTML = "";
+
+//     variants.forEach((variant, index) => {
+//         const row = document.createElement("tr");
+//         const previewId = `variant-image-preview-${index}`;
+//         row.innerHTML = `
+//             <td>
+//                 <div class="form-check form-switch">
+//                     <input class="form-check-input use-variant-image" type="checkbox"
+//                            id="useVariantImage${index}"
+//                            name="use_variant_image[${index}]"
+//                            value="1"
+//                            ${variant.image ? "checked" : ""}>
+//                     <label class="form-check-label" for="useVariantImage${index}">Use image</label>
+//                 </div>
+//                 <div class="variant-images mt-2" style="display: ${variant.image ? "block" : "none"}">
+//                     <div class="existing-image-preview mb-2">
+//                         ${variant.image ? `<img src="${variant.image}" id="${previewId}" class="img-thumbnail" style="max-width: 100px;" alt="Variant image">` : ""}
+//                     </div>
+//                     <div class="new-image-upload">
+//                         <input type="file" class="form-control variant-image-upload" name="variant_images[${index}]" data-preview="${previewId}" accept="image/*">
+//                         <small class="text-muted">Leave empty to keep existing</small>
+//                     </div>
+//                 </div>
+//             </td>
+//             <td class="align-middle">${variant.type}: ${variant.value}</td>
+//             <td class="align-middle">
+//                 <input type="number" class="form-control" name="variant_price[${index}]" placeholder="Price" min="0" step="0.01" value="${variant.price}">
+//             </td>
+//             <td class="align-middle">
+//                 <input type="number" class="form-control" name="variant_stock[${index}]" placeholder="Stock" min="0" value="${variant.stock}">
+//             </td>
+//             <td class="align-middle">
+//                 <input type="number" class="form-control" name="variant_weight[${index}]" placeholder="Weight" min="0" value="${variant.weight}">
+//             </td>
+//             <td class="align-middle">
+//                 <div class="input-group">
+//                     <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+//                     <input type="text" class="form-control datepicker2" name="variant_expired[${index}]" placeholder="Masukan Expired" value="${variant.variant_expired || ""}">
+//                 </div>
+//             </td>
+//             <td class="text-center align-middle">
+//                 <button type="button" class="btn btn-sm btn-danger btn-delete-variant" data-id="${variant.id}" title="Hapus Varian">
+//                     <i class="bi bi-trash"></i>
+//                 </button>
+//             </td>
+//             <input type="hidden" name="variant_ids[]" value="${variant.id}">
+//         `;
+//         variantTableBody.appendChild(row);
+//     });
+
+//     initializeDatePickers();
+//     initializeImageUpload();
+//     initializeImageToggle();
+// }
+
+// function initializeExistingVariants(variants) {
+//     const variantContainer = document.getElementById("variant-container");
+//     const addVariantTypeBtn = document.getElementById("addVariantType");
+//     let variantTypes = 0;
+
+//     if (!variants || variants.length === 0) {
+//         addNewVariantType();
+//         return;
+//     }
+
+//     const variantsByType = variants.reduce((acc, variant) => {
+//         if (!acc[variant.type]) {
+//             acc[variant.type] = [];
+//         }
+//         acc[variant.type].push(variant);
+//         return acc;
+//     }, {});
+
+//     Object.entries(variantsByType).forEach(([type, typeVariants], typeIndex) => {
+//         variantTypes++;
+
+//         const variantTypeDiv = document.createElement("div");
+//         variantTypeDiv.className = "variant-type mb-4 p-3 border rounded";
+
+//         const values = [...new Set(typeVariants.map((v) => v.value))];
+
+//         variantTypeDiv.innerHTML = `
+//         <label>Variant Type ${variantTypes}</label>
+//         <div class="d-flex align-items-center">
+//             <select class="select2-variant-type form-select me-2" name="variant_type[]">
+//                 <option value="warna" ${type === "warna" ? "selected" : ""}>Color</option>
+//                 <option value="aroma" ${type === "aroma" ? "selected" : ""}>Scent</option>
+//                 <option value="rasa" ${type === "rasa" ? "selected" : ""}>Flavor</option>
+//                 <option value="ukuran" ${type === "ukuran" ? "selected" : ""}>Size</option>
+//                 <option value="desain" ${type === "desain" ? "selected" : ""}>Desain</option>
+//                 <option value="durabilitas" ${type === "durabilitas" ? "selected" : ""}>Durabilitas</option>
+//                 <option value="fungsionalitas" ${type === "fungsionalitas" ? "selected" : ""}>Fungsionalitas</option>
+//                 <option value="tekstur" ${type === "tekstur" ? "selected" : ""}>Tekstur</option>
+//                 <option value="bahan" ${type === "bahan" ? "selected" : ""}>Bahan</option>
+//                 ${
+//                     !["warna", "aroma", "rasa", "ukuran", "desain", "durabilitas", "fungsionalitas", "tekstur", "bahan"].includes(type)
+//                         ? `<option value="${type}" selected>${type}</option>`
+//                         : ""
+//                 }
+//             </select>
+//         </div>
+//         <small class="text-muted">Pilih jenis varian atau tambahkan yang baru.</small>
+
+//         <div class="variant-values">
+//         <label class="form-label mt-4">Variant Values</label>
+//             <select class="select2 form-select multiple-remove" name="variant_values[${typeIndex}][]" multiple="multiple">
+//                 ${values.map((value) => `<option value="${value}" selected>${value}</option>`).join("")}
+//             </select>
+//         </div>
+//         <small class="text-muted">Pilih nilai varian atau tambahkan yang baru.</small>
+//         `;
+
+//         variantContainer.appendChild(variantTypeDiv);
+
+//         const variantTypeSelect = variantTypeDiv.querySelector(".select2-variant-type");
+//         const variantValuesSelect = variantTypeDiv.querySelector(".variant-values select");
+
+//         initializeSelect2(variantTypeSelect, {
+//             tags: true,
+//             createTag: function (params) {
+//                 return { id: params.term, text: params.term, newOption: true };
+//             },
+//             closeOnSelect: true,
+//         });
+
+//         initializeSelect2(variantValuesSelect, {
+//             tags: true,
+//             tokenSeparators: [",", " "],
+//         });
+//     });
+
+//     if (addVariantTypeBtn && variantTypes >= 2) {
+//         addVariantTypeBtn.disabled = true;
+//         addVariantTypeBtn.classList.add("disabled");
+//     }
+
+//     updateVariantTableWithExistingData(variants);
+// }
+
+
+// // Document ready function
+// document.addEventListener("DOMContentLoaded", function () {
+
+//     // DEFINISI updateVariantTable
+//     const variantTableBody = document.getElementById("variant-table-body");
+//     const stockQuantityInput = document.querySelector('input[name="stock_quantity"]');
+//     const regularPriceInput = document.querySelector('input[name="regular_price"]');
+//     const weightProductInput = document.querySelector('input[name="weight_product"]');
+
+//     window.updateVariantTable = function() {
+//         if(!variantTableBody) return;
+
+//         variantTableBody.innerHTML = "";
+//         const stockQuantity = stockQuantityInput ? stockQuantityInput.value : '';
+//         const regularPrice = regularPriceInput ? regularPriceInput.value : '';
+//         const weightProduct = weightProductInput ? weightProductInput.value : '';
+
+//         document.querySelectorAll(".variant-type").forEach((variantType, typeIndex) => {
+//             const typeSelect = variantType.querySelector('select[name="variant_type[]"]');
+//             const valuesSelect = variantType.querySelector('select[name^="variant_values"]');
+
+//             if(!typeSelect || !valuesSelect) return;
+
+//             const selectedType = typeSelect.value;
+//             const selectedValues = Array.from(valuesSelect.selectedOptions).map((option) => option.value);
+
+//             selectedValues.forEach((value, valueIndex) => {
+//                 const row = document.createElement("tr");
+//                 row.innerHTML = `
+//                 <td>
+//                     <div class="form-check form-switch">
+//                         <input class="form-check-input use-variant-image" type="checkbox" id="useVariantImage${typeIndex}${valueIndex}" name="use_variant_image[${typeIndex}][${valueIndex}]" value="1">
+//                         <label class="form-check-label" for="useVariantImage${typeIndex}${valueIndex}">Use image</label>
+//                     </div>
+//                     <div class="variant-images mt-2" style="display: none;">
+//                         <input type="file" class="form-control variant-image-upload" name="variant_images[${typeIndex}][${valueIndex}]" accept="image/*">
+//                     </div>
+//                 </td>
+//                 <td class="align-middle">${selectedType}: ${value}</td>
+//                 <td class="align-middle"><input type="number" class="form-control" name="variant_price[${typeIndex}][${valueIndex}]" placeholder="Price" min="0" step="0.01" value="${regularPrice}"></td>
+//                 <td class="align-middle"><input type="number" class="form-control" name="variant_stock[${typeIndex}][${valueIndex}]" placeholder="Stock" min="0" value="${stockQuantity}"></td>
+//                 <td class="align-middle"><input type="number" class="form-control" name="variant_weight[${typeIndex}][${valueIndex}]" placeholder="Weight" min="0" value="${weightProduct}"></td>
+//                 <td class="align-middle">
+//                     <div class="input-group">
+//                         <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+//                         <input type="text" class="form-control datepicker2" name="new_variant_expired[${typeIndex}][${valueIndex}]" placeholder="Expired Produk">
+//                     </div>
+//                 </td>
+//                 <td class="text-center align-middle">
+//                     <button type="button" class="btn btn-sm btn-danger btn-delete-variant" data-id="" title="Batal Tambah">
+//                         <i class="bi bi-x-circle"></i>
+//                     </button>
+//                 </td>
+//                 `;
+//                 variantTableBody.appendChild(row);
+//             });
+//         });
+
+//         initializeDatePickers();
+//         initializeImageUpload();
+//         initializeImageToggle();
+//     };
+
+//     if(stockQuantityInput) stockQuantityInput.addEventListener("input", window.updateVariantTable);
+//     if(regularPriceInput) regularPriceInput.addEventListener("input", window.updateVariantTable);
+//     if(weightProductInput) weightProductInput.addEventListener("input", window.updateVariantTable);
+
+//     // Initialize existing data if available
+//     if (typeof variants !== "undefined") {
+//         if (variants && variants.length > 0) {
+//             initializeExistingVariants(variants);
+//         } else {
+//             addNewVariantType();
+//         }
+//     }
+
+//     initializeSelect2WithAddOption(".select2-add-option");
+//     initializeSelect2(".select2-variant-type", { tags: false, closeOnSelect: true });
+//     initializeImageUpload();
+//     initializeImageToggle();
+
+//     const addVariantTypeBtn = document.getElementById("addVariantType");
+//     if(addVariantTypeBtn) {
+//         addVariantTypeBtn.addEventListener("click", addNewVariantType);
+//     }
+
+//     $(document).on("change", ".select2-variant-type", function () {
+//         updateVariantValues(this);
+//     });
+
+//     $(document).on("change", ".variant-values select", function () {
+//         if(typeof window.updateVariantTable === 'function') {
+//             window.updateVariantTable();
+//         }
+//     });
+
+//     // AJAX DELETE VARIANT LOGIC
+//     $(document).on('click', '.btn-delete-variant', function(e) {
+//         e.preventDefault();
+//         let variantId = $(this).data('id');
+//         let row = $(this).closest('tr');
+
+//         // Jika baris baru (belum disimpan)
+//         if(!variantId) {
+//             row.remove();
+//             return;
+//         }
+
+//         Swal.fire({
+//             title: 'Hapus Varian Ini?',
+//             text: "Tindakan ini akan menghapus varian secara permanen beserta data stoknya!",
+//             icon: 'warning',
+//             showCancelButton: true,
+//             confirmButtonColor: '#ef4444',
+//             cancelButtonColor: '#6b7280',
+//             confirmButtonText: 'Ya, Hapus!',
+//             cancelButtonText: 'Batal'
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 // Pastikan Anda mem-pass csrf token dari header meta atau menggunakan cara global
+//                 let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+//                                 || document.querySelector('input[name="_token"]')?.value;
+
+//                 $.ajax({
+//                     url: '/delete-product-variant-admin/' + variantId,
+//                     type: 'DELETE',
+//                     data: {
+//                         _token: csrfToken
+//                     },
+//                     success: function(response) {
+//                         if (response.success) {
+//                             row.fadeOut(300, function() { $(this).remove(); });
+//                             Swal.fire({
+//                                 toast: true, position: 'top-end', icon: 'success',
+//                                 title: response.message, showConfirmButton: false, timer: 3000
+//                             });
+//                         } else {
+//                             Swal.fire('Gagal!', response.message, 'error');
+//                         }
+//                     },
+//                     error: function(xhr) {
+//                         Swal.fire('Error!', xhr.responseJSON?.message || 'Terjadi kesalahan sistem.', 'error');
+//                     }
+//                 });
+//             }
+//         });
+//     });
+
+// });
+
+// // === FUNCTION UPLOAD SINGLE MAIN IMAGE ===
+// function readURLSingle(input) {
+//     if (input.files && input.files[0]) {
+//         const reader = new FileReader();
+//         reader.onload = function (e) {
+//             const singleUploadContent = document.getElementById("single-file-upload-content");
+//             const existingNewImage = singleUploadContent.querySelector(".new-image-container");
+//             if (existingNewImage) existingNewImage.remove();
+
+//             const newImageContainer = document.createElement("div");
+//             newImageContainer.className = "image-preview-container new-image-container";
+//             const previewBox = document.createElement("div");
+//             previewBox.className = "image-preview-box";
+
+//             const imgLabel = document.createElement("span");
+//             imgLabel.className = "preview-label";
+//             imgLabel.innerText = "New Image";
+//             imgLabel.style.color = "blue";
+
+//             const img = document.createElement("img");
+//             img.className = "preview-image";
+//             img.src = e.target.result;
+
+//             const closeButton = document.createElement("div");
+//             closeButton.className = "upload__img-close";
+//             closeButton.onclick = function () {
+//                 newImageContainer.remove();
+//                 document.querySelector('input[name="main_image"]').value = "";
+//             };
+
+//             previewBox.appendChild(imgLabel);
+//             previewBox.appendChild(img);
+//             previewBox.appendChild(closeButton);
+//             newImageContainer.appendChild(previewBox);
+//             singleUploadContent.insertBefore(newImageContainer, singleUploadContent.firstChild);
+//         };
+//         reader.readAsDataURL(input.files[0]);
+//     }
+// }
+
+// function openImageInNewTab(imageUrl) {
+//     window.open(imageUrl, "_blank");
+// }
+
+// Data default untuk opsi varian
 const variantOptions = {
     warna: ["Merah", "Hijau", "Biru", "Ungu", "Putih", "Kuning", "Pink", "Hitam", "Orange", "Coklat"],
     ukuran: ["Small", "Medium", "Large", "Extra Large"],
@@ -1998,9 +2498,11 @@ function updateVariantValues(selectElement) {
     if (!selectElement) return; // Mencegah error null
 
     const selectedVariantType = selectElement.value;
-    const variantValuesSelect = selectElement.closest(".variant-type").querySelector(".variant-values select");
+    const variantTypeDiv = selectElement.closest(".variant-type");
+    if (!variantTypeDiv) return;
 
-    if(!variantValuesSelect) return;
+    const variantValuesSelect = variantTypeDiv.querySelector(".variant-values select");
+    if (!variantValuesSelect) return;
 
     variantValuesSelect.innerHTML = "";
     const options = variantOptions[selectedVariantType] || [];
@@ -2224,11 +2726,9 @@ function initializeExistingVariants(variants) {
     updateVariantTableWithExistingData(variants);
 }
 
-
 // Document ready function
 document.addEventListener("DOMContentLoaded", function () {
 
-    // DEFINISI updateVariantTable
     const variantTableBody = document.getElementById("variant-table-body");
     const stockQuantityInput = document.querySelector('input[name="stock_quantity"]');
     const regularPriceInput = document.querySelector('input[name="regular_price"]');
@@ -2292,10 +2792,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if(regularPriceInput) regularPriceInput.addEventListener("input", window.updateVariantTable);
     if(weightProductInput) weightProductInput.addEventListener("input", window.updateVariantTable);
 
-    // Initialize existing data if available
-    if (typeof variants !== "undefined") {
-        if (variants && variants.length > 0) {
-            initializeExistingVariants(variants);
+    // Initialize existing data (menggunakan object window.productData yang dilempar dari blade)
+    if (typeof productData !== "undefined" && productData.variants) {
+        if (productData.variants.length > 0) {
+            initializeExistingVariants(productData.variants);
         } else {
             addNewVariantType();
         }
@@ -2344,16 +2844,9 @@ document.addEventListener("DOMContentLoaded", function () {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Pastikan Anda mem-pass csrf token dari header meta atau menggunakan cara global
-                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-                                || document.querySelector('input[name="_token"]')?.value;
-
                 $.ajax({
                     url: '/delete-product-variant-admin/' + variantId,
                     type: 'DELETE',
-                    data: {
-                        _token: csrfToken
-                    },
                     success: function(response) {
                         if (response.success) {
                             row.fadeOut(300, function() { $(this).remove(); });

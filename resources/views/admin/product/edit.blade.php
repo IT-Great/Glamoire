@@ -1260,7 +1260,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
-    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+    {{-- <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('assets/js/product/editproduct.js') }}"></script>
@@ -1361,7 +1361,6 @@
         });
     </script>
 
-    {{-- handle add category --}}
     <script>
         // handle category
         $(document).ready(function() {
@@ -1546,7 +1545,6 @@
         });
     </script>
 
-    {{-- handle add brand --}}
     <script>
         // handle brand
         $(document).ready(function() {
@@ -1943,9 +1941,6 @@
         });
     </script>
 
-
-
-    {{-- summernote --}}
     <script>
         $('.summernote').summernote({
             tabsize: 2,
@@ -1976,7 +1971,207 @@
             enableTime: true,
             dateFormat: "Y-m-d H:i:S"
         });
-    </script>
+    </script> --}}
+
+    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+<script src="[https://cdn.jsdelivr.net/npm/sweetalert2@11](https://cdn.jsdelivr.net/npm/sweetalert2@11)"></script>
+<script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.all.min.js') }}"></script>
+<script src="[https://cdn.jsdelivr.net/npm/flatpickr](https://cdn.jsdelivr.net/npm/flatpickr)"></script>
+<script src="[https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js](https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js)"></script>
+
+<script src="{{ asset('assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
+<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+
+<script src="{{ asset('assets/vendors/toastify/toastify.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}"></script>
+
+<script src="{{ asset('assets/vendors/summernote/summernote-lite.min.js') }}"></script>
+
+<script>
+    const productData = {
+        variants: @json($variants)
+    };
+    // Set up CSRF token for AJAX globally
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        }
+    });
+</script>
+
+<script src="{{ asset('assets/js/product/editproduct.js') }}"></script>
+
+{{-- handle add category & brand (Dipindahkan jadi satu script agar rapi) --}}
+<script>
+    $(document).ready(function() {
+        // Function to clear errors
+        function clearErrors() {
+            $('.is-invalid').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+            $('.error-message').remove();
+        }
+
+        function showErrors(errors, prefix = '') {
+            clearErrors();
+            Object.keys(errors).forEach(function(field) {
+                const element = $(`#${prefix}${field.charAt(0).toUpperCase() + field.slice(1)}`);
+                if(element.length) {
+                    const errorMessage = errors[field][0];
+                    element.addClass('is-invalid');
+                    element.after(`<div class="invalid-feedback error-message">${errorMessage}</div>`);
+                }
+            });
+
+            const firstError = Object.values(errors)[0][0];
+            Swal.fire({
+                toast: true, position: 'top-end', showConfirmButton: false, timer: 4000,
+                icon: 'error', title: `Error: ${firstError}`
+            });
+        }
+
+        // ================= CATEGORY LOGIC =================
+        $('.select2-category-modal').select2({
+            width: '100%', dropdownParent: $('#addSubcategoryModal')
+        });
+
+        $('.select2-basic-category').select2({
+            width: '100%', dropdownAutoWidth: true, placeholder: "Select a subcategory",
+            allowClear: true, tags: true,
+            createTag: function(params) {
+                return { id: params.term, text: params.term, newOption: true }
+            },
+            templateResult: function(data) {
+                var $result = $("<span></span>");
+                $result.text(data.text);
+                if (data.newOption) { $result.append(" <em>(Press Enter to Add New)</em>"); }
+                return $result;
+            }
+        }).on('select2:select', function(e) {
+            if (e.params.data.newOption) {
+                $('.select2-basic-category').val(null).trigger('change');
+                $('#categorySelect').val('').trigger('change');
+                $('#newSubcategoryName').val(e.params.data.text);
+                clearErrors();
+                $('#addSubcategoryModal').modal('show');
+            }
+        });
+
+        $('#saveNewSubcategory').click(function() {
+            clearErrors();
+            var categoryId = $('#categorySelect').val();
+            var subcategoryName = $('#newSubcategoryName').val();
+
+            if (!categoryId || !subcategoryName) {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Isi semua field!' });
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('create-category-product') }}', method: 'POST',
+                data: { name: subcategoryName, parent_id: categoryId },
+                success: function(response) {
+                    if (response.success) {
+                        var newOption = new Option(subcategoryName, response.data.id, true, true);
+                        $('.select2-basic-category').append(newOption).trigger('change');
+                        $('#addSubcategoryModal').modal('hide');
+                        $('#categorySelect').val('').trigger('change');
+                        $('#newSubcategoryName').val('');
+                        clearErrors();
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Subcategory added!' });
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) showErrors(xhr.responseJSON.errors, 'new');
+                }
+            });
+        });
+
+        // ================= BRAND LOGIC =================
+        $('.select2-basic-brand').select2({
+            width: '100%', dropdownAutoWidth: true, placeholder: "Select a Brand",
+            allowClear: true, tags: true,
+            createTag: function(params) {
+                return { id: params.term, text: params.term, newOption: true }
+            },
+            templateResult: function(data) {
+                var $result = $("<span></span>");
+                $result.text(data.text);
+                if (data.newOption) { $result.append(" <em>(Press Enter to Add New)</em>"); }
+                return $result;
+            }
+        }).on('select2:select', function(e) {
+            if (e.params.data.newOption) {
+                $('.select2-basic-brand').val(null).trigger('change');
+                $('#brandForm')[0].reset();
+                $('#newBrandName').val(e.params.data.text);
+                $('#imagePreview').hide();
+                clearErrors();
+                $('#addBrandModal').modal('show');
+            }
+        });
+
+        $('#newBrandLogo').change(function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#preview').attr('src', e.target.result);
+                    $('#imagePreview').show();
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        $('#saveNewBrand').click(function() {
+            clearErrors();
+            var formData = new FormData();
+            formData.append('name', $('#newBrandName').val());
+            formData.append('description', $('#newBrandDescription').val());
+            formData.append('brand_logo', $('#newBrandLogo')[0].files[0]);
+
+            if (!$('#newBrandName').val() || !$('#newBrandDescription').val() || !$('#newBrandLogo')[0].files[0]) {
+                Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Isi semua field!' });
+                return;
+            }
+
+            $.ajax({
+                url: '{{ route('store-brand-admin') }}', method: 'POST',
+                data: formData, processData: false, contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        var newOption = new Option($('#newBrandName').val(), response.data.id, true, true);
+                        $('.select2-basic-brand').append(newOption).trigger('change');
+                        $('#addBrandModal').modal('hide');
+                        $('#brandForm')[0].reset();
+                        $('#imagePreview').hide();
+                        clearErrors();
+                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Brand added!' });
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) showErrors(xhr.responseJSON.errors, 'new');
+                }
+            });
+        });
+
+        // ================= GENERAL SETTINGS =================
+        @if ($errors->any())
+            Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Error: {{ $errors->first() }}' });
+        @endif
+
+        $('.summernote').summernote({ tabsize: 2, height: 200 });
+
+        // Flash sale logic
+        const flashSaleCheckbox = document.getElementById('is_flash_sale');
+        if(flashSaleCheckbox) {
+            flashSaleCheckbox.addEventListener('change', function() {
+                document.getElementById('flash_sale_settings').style.display = this.checked ? 'block' : 'none';
+            });
+        }
+
+        flatpickr("#flash_sale_end", { enableTime: true, dateFormat: "Y-m-d H:i:S" });
+    });
+</script>
 
 </body>
 
