@@ -22086,10 +22086,9 @@
                                             @endforeach
                                         </div> --}}
 
-                                        <div class="order-body">
+                                        {{-- <div class="order-body">
                                             @foreach ($order->items as $item)
                                                 @if ($item->product)
-                                                    {{-- [FIX] Pastikan produk masih ada di database --}}
                                                     <div class="order-item-row"
                                                         @if ($item->product_variant_id && $item->productVariant) onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
                 @else
@@ -22123,11 +22122,84 @@
                                                         </div>
                                                     </div>
                                                 @else
-                                                    {{-- Fallback jika produk sudah dihapus Admin --}}
                                                     <div class="order-item-row"
                                                         style="cursor: not-allowed; opacity: 0.7;">
                                                         <div
                                                             class="order-item-img d-flex align-items-center justify-content-center bg-light">
+                                                            <i class="fas fa-box-open text-muted fs-3"></i>
+                                                        </div>
+
+                                                        <div class="order-item-info">
+                                                            <div class="order-item-brand text-danger">Produk Dihapus</div>
+                                                            <div class="order-item-name text-muted"><em>Produk ini sudah
+                                                                    tidak tersedia di katalog</em></div>
+                                                            <div class="order-item-qty mt-2">{{ $item->quantity }} x
+                                                                Rp{{ number_format($item->price, 0, ',', '.') }}</div>
+                                                        </div>
+
+                                                        <div class="order-item-price">
+                                                            <span>Total Harga Item</span>
+                                                            <strong>Rp{{ number_format($item->subtotal, 0, ',', '.') }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </div> --}}
+
+                                        <div class="order-body">
+                                            @foreach ($order->items as $item)
+                                                @if ($item->product)
+                                                    {{-- [FIX] Pastikan produk masih ada di database --}}
+                                                    <div class="order-item-row"
+                                                        @if ($item->product_variant_id && $item->productVariant) onclick="detailProductVariant('{{ $item->product->product_code }}', '{{ $item->productVariant->sku }}')"
+                @else
+                    onclick="detailProduct('{{ $item->product->product_code }}')" @endif>
+
+                                                        {{-- [FIX] Logika Gambar yang disempurnakan --}}
+                                                        @php
+                                                            $imageUrl = $item->product->main_image; // Default ke gambar utama
+                                                            if (
+                                                                $item->product_variant_id &&
+                                                                $item->productVariant &&
+                                                                !empty($item->productVariant->variant_image)
+                                                            ) {
+                                                                $imageUrl = $item->productVariant->variant_image; // Gunakan gambar varian HANYA jika isinya tidak kosong
+                                                            }
+                                                        @endphp
+
+                                                        <img class="order-item-img" src="{{ Storage::url($imageUrl) }}"
+                                                            alt="Product Image">
+
+                                                        <div class="order-item-info">
+                                                            <div class="order-item-brand">
+                                                                {{ $item->product->brand->name ?? 'Glamoire' }}
+                                                            </div>
+                                                            <div class="order-item-name">
+                                                                {{ $item->product->product_name }}
+                                                            </div>
+
+                                                            @if ($item->product_variant_id && $item->productVariant)
+                                                                <div class="order-item-variant">Varian:
+                                                                    {{ $item->productVariant->variant_value }}
+                                                                </div>
+                                                            @endif
+
+                                                            <div class="order-item-qty">{{ $item->quantity }} x
+                                                                Rp{{ number_format($item->price, 0, ',', '.') }}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="order-item-price">
+                                                            <span>Total Harga Item</span>
+                                                            <strong>Rp{{ number_format($item->subtotal, 0, ',', '.') }}</strong>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    {{-- Fallback jika produk sudah dihapus Admin --}}
+                                                    <div class="order-item-row"
+                                                        style="cursor: not-allowed; opacity: 0.7;">
+                                                        <div class="order-item-img d-flex align-items-center justify-content-center bg-light"
+                                                            style="border: 1px solid var(--border-color);">
                                                             <i class="fas fa-box-open text-muted fs-3"></i>
                                                         </div>
 
