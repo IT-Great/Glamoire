@@ -163,6 +163,7 @@ use App\Models\Product;
 use App\Models\ProductVariations;
 use App\Models\Promo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB; // Tambahkan facade DB jika diperlukan nanti
 
 class DashboardController extends Controller
@@ -268,6 +269,83 @@ class DashboardController extends Controller
         return response()->json([
             'categories' => $salesData->pluck('date'),
             'data' => $salesData->pluck('total'),
+        ]);
+    }
+
+    /**
+     * Mendapatkan data Pemasukan Mingguan (7 hari terakhir)
+     */
+    public function getWeeklyIncome()
+    {
+        $startDate = Carbon::today()->subDays(6); // 7 hari termasuk hari ini
+        $endDate = Carbon::today();
+
+        // Query pendapatan per hari dari order yang 'completed'
+        $incomes = Order::select(
+                DB::raw('DATE(order_date) as date'),
+                DB::raw('SUM(total_amount) as total')
+            )
+            ->whereBetween('order_date', [$startDate->startOfDay(), $endDate->endOfDay()])
+            ->where('status', 'completed')
+            ->groupBy('date')
+            ->orderBy('date', 'ASC')
+            ->get()
+            ->keyBy('date'); // Jadikan tanggal sebagai key array
+
+        $categories = [];
+        $data = [];
+
+        // Looping 7 hari terakhir agar tanggal yang kosong (0 penjualan) tetap tampil
+        for ($i = 0; $i < 7; $i++) {
+            $dateStr = $startDate->copy()->addDays($i)->format('Y-m-d');
+            $dayName = $startDate->copy()->addDays($i)->translatedFormat('l'); // Nama hari (Senin, Selasa, dll)
+
+            $categories[] = $dayName;
+
+            // Jika ada data di tanggal tersebut ambil totalnya, jika tidak 0
+            $data[] = isset($incomes[$dateStr]) ? $incomes[$dateStr]->total : 0;
+        }
+
+        return response()->json([
+            'categories' => $categories,
+            'data' => $data
+        ]);
+    }
+
+    /**
+     * Mendapatkan Performa Promo/Diskon
+     * Asumsi: Promo memiliki relasi dengan order atau kita bandingkan data order yang menggunakan promo vs tidak
+     */
+    public function getPromoPerformance(Request $request)
+    {
+        // Default 14 hari terakhir untuk chart
+        $startDate = Carbon::today()->subDays(13);
+        $endDate = Carbon::today();
+
+        $categories = [];
+        $salesData = [];
+        $buyersData = [];
+
+        for ($i = 0; $i < 14; $i++) {
+            $dateStr = $startDate->copy()->addDays($i)->format('Y-m-d');
+            $displayDate = $startDate->copy()->addDays($i)->format('d/m');
+            $categories[] = $displayDate;
+
+            // Hitung total penjualan HANYA dari order yang menggunakan voucher/promo di hari tersebut
+            // Asumsi: tabel orders memiliki kolom 'promo_id' atau 'voucher_id' atau 'discount_amount' > 0
+            $dailyPromoOrders = Order::whereDate('order_date', $dateStr)
+                ->where('status', 'completed')
+                ->whereNotNull('promo_id') // Sesuaikan dengan nama kolom promo/voucher Anda di DB
+                ->get();
+
+            $salesData[] = $dailyPromoOrders->sum('total_amount');
+            $buyersData[] = $dailyPromoOrders->unique('user_id')->count(); // Hitung unique buyer
+        }
+
+        return response()->json([
+            'categories' => $categories,
+            'salesData' => $salesData,
+            'buyersData' => $buyersData
         ]);
     }
 }

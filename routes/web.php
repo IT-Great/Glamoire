@@ -354,7 +354,7 @@ Route::post('/admin/settings', [AuthenticateController::class, 'updateSettings']
 // Route::middleware('auth')->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 Route::middleware(['auth', 'role:admin,superadmin,accounting,gudang'])->get('/dashboard', [DashboardController::class, 'indexDashboard'])->name('dashboard');
 
-Route::post('/order/cancel/{id}', [App\Http\Controllers\OrderController::class, 'cancelOrder'])->name('order.cancel');
+Route::post('/order/cancel/{id}', [OrderController::class, 'cancelOrder'])->name('order.cancel');
 
 Route::get('/events', [EventController::class, 'indexUser'])->name('user.events');
 
@@ -364,6 +364,9 @@ Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallb
 
 Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/dashboard/get-sales-data', [DashboardController::class, 'getSalesData']);
+
+    Route::get('/dashboard/get-weekly-income', [DashboardController::class, 'getWeeklyIncome'])->name('dashboard.weekly-income');
+    Route::get('/dashboard/get-promo-performance', [DashboardController::class, 'getPromoPerformance'])->name('dashboard.promo-performance');
 
     // product
     Route::get('/product-admin', [ProductController::class, 'indexProductAdmin'])->name('index-product-admin');

@@ -1707,37 +1707,81 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     // Dummy data for the chart
+        //     const dates = ['01/11', '02/11', '03/11', '04/11', '05/11', '06/11', '07/11',
+        //         '08/11', '09/11', '10/11', '11/11', '12/11', '13/11', '14/11'
+        //     ];
+
+        //     const salesData = [65000, 55000, 72000, 58000, 52000, 62000, 48000,
+        //         58000, 63000, 60000, 55000, 65000, 70000, 52000
+        //     ];
+
+        //     const buyersData = [15, 16, 15, 17, 14, 13, 16, 18, 17, 18, 15, 14, 19, 16];
+
+        //     const ctx = document.getElementById('discountPerformanceChart').getContext('2d');
+
+        //     new Chart(ctx, {
+        //         type: 'line',
+        //         data: {
+        //             labels: dates,
+        //             datasets: [{
+        //                     label: 'Sale',
+        //                     data: salesData,
+        //                     borderColor: 'rgb(75, 192, 192)',
+        //                     tension: 0.1,
+        //                     fill: false
+        //                 },
+        //                 {
+        //                     label: 'Buyers',
+        //                     data: buyersData,
+        //                     borderColor: 'rgb(54, 162, 235)',
+        //                     tension: 0.1,
+        //                     fill: false
+        //                 }
+        //             ]
+        //         },
+        //         options: {
+        //             responsive: true,
+        //             maintainAspectRatio: false,
+        //             scales: {
+        //                 y: {
+        //                     beginAtZero: true
+        //                 }
+        //             },
+        //             plugins: {
+        //                 legend: {
+        //                     position: 'bottom'
+        //                 }
+        //             }
+        //         }
+        //     });
+        // });
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Dummy data for the chart
-            const dates = ['01/11', '02/11', '03/11', '04/11', '05/11', '06/11', '07/11',
-                '08/11', '09/11', '10/11', '11/11', '12/11', '13/11', '14/11'
-            ];
-
-            const salesData = [65000, 55000, 72000, 58000, 52000, 62000, 48000,
-                58000, 63000, 60000, 55000, 65000, 70000, 52000
-            ];
-
-            const buyersData = [15, 16, 15, 17, 14, 13, 16, 18, 17, 18, 15, 14, 19, 16];
-
-            const ctx = document.getElementById('discountPerformanceChart').getContext('2d');
-
-            new Chart(ctx, {
+            // ==========================================
+            // 1. CHART PERFORMA PAKET DISKON (Chart.js)
+            // ==========================================
+            const ctxPromo = document.getElementById('discountPerformanceChart').getContext('2d');
+            let promoChart = new Chart(ctxPromo, {
                 type: 'line',
                 data: {
-                    labels: dates,
-                    datasets: [{
-                            label: 'Sale',
-                            data: salesData,
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Sale (Rp)',
+                            data: [],
                             borderColor: 'rgb(75, 192, 192)',
                             tension: 0.1,
                             fill: false
                         },
                         {
-                            label: 'Buyers',
-                            data: buyersData,
+                            label: 'Buyers (Orang)',
+                            data: [],
                             borderColor: 'rgb(54, 162, 235)',
                             tension: 0.1,
-                            fill: false
+                            fill: false,
+                            yAxisID: 'y1', // Beda aksis agar grafiknya proporsional
                         }
                     ]
                 },
@@ -1746,16 +1790,108 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            beginAtZero: true
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            beginAtZero: true,
+                            title: { display: true, text: 'Penjualan (Rp)' }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            beginAtZero: true,
+                            title: { display: true, text: 'Jumlah Pembeli' },
+                            grid: { drawOnChartArea: false }
                         }
                     },
                     plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
+                        legend: { position: 'bottom' }
                     }
                 }
             });
+
+            // Fetch data dari database
+            fetch("{{ route('dashboard.promo-performance') }}")
+                .then(response => response.json())
+                .then(data => {
+                    promoChart.data.labels = data.categories;
+                    promoChart.data.datasets[0].data = data.salesData;
+                    promoChart.data.datasets[1].data = data.buyersData;
+                    promoChart.update();
+                })
+                .catch(error => console.error('Error fetching promo data:', error));
+
+            // ==========================================
+            // 2. CHART PEMASUKAN MINGGUAN (ApexCharts)
+            // ==========================================
+            var weeklyOptions = {
+                series: [{
+                    name: 'Pemasukan',
+                    data: [] // Akan diisi data riil
+                }],
+                chart: {
+                    height: 350,
+                    type: 'bar',
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        endingShape: 'rounded'
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    categories: [], // Akan diisi Hari (Senin, Selasa, dll)
+                },
+                yaxis: {
+                    title: {
+                        text: 'Pemasukan (Rp)'
+                    },
+                    labels: {
+                        formatter: function(val) {
+                            return "Rp " + val.toLocaleString('id-ID');
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return "Rp " + val.toLocaleString('id-ID');
+                        }
+                    }
+                }
+            };
+
+            var weeklyChart = new ApexCharts(document.querySelector("#weeklyIncomeChart"), weeklyOptions);
+            weeklyChart.render();
+
+            // Fetch data dari database
+            fetch("{{ route('dashboard.weekly-income') }}")
+                .then(response => response.json())
+                .then(data => {
+                    weeklyChart.updateOptions({
+                        xaxis: {
+                            categories: data.categories
+                        },
+                        series: [{
+                            name: 'Pemasukan',
+                            data: data.data
+                        }]
+                    });
+                })
+                .catch(error => console.error('Error fetching weekly income data:', error));
         });
     </script>
 
