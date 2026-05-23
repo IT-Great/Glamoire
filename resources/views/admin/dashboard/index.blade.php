@@ -1321,7 +1321,8 @@
                     <div class="col-12">
                         <div class="page-title">
                             <h3>Dashboard</h3>
-                            <p>Kelola dan pantau seluruh data produk, stok, promo, dan performa penjualan produk pada sistem
+                            <p>Kelola dan pantau seluruh data produk, stok, promo, dan performa penjualan produk pada
+                                sistem
                                 ini.</p>
                         </div>
                     </div>
@@ -1813,6 +1814,58 @@
             }
         }
 
+        // Function to load real sales data via AJAX
+        function loadSalesData(startDate, endDate, brandId = '') {
+            $.ajax({
+                url: "{{ url('/dashboard/get-sales-data') }}",
+                method: 'GET',
+                data: {
+                    start_date: startDate,
+                    end_date: endDate,
+                    brand_id: brandId
+                },
+                success: function(response) {
+                    // Update chart dengan data dari database
+                    salesChart.updateOptions({
+                        series: [{
+                            name: 'Penjualan (Rp)',
+                            data: response.data
+                        }],
+                        xaxis: {
+                            categories: response.categories
+                        }
+                    });
+                },
+                error: function(err) {
+                    console.error("Gagal mengambil data sales", err);
+                }
+            });
+        }
+
+        // Inisialisasi Chart (Gunakan ApexCharts untuk konsistensi)
+        var options = {
+            chart: {
+                type: 'line',
+                height: 350
+            },
+            series: [{
+                name: 'Penjualan',
+                data: []
+            }],
+            xaxis: {
+                categories: []
+            }
+        };
+        salesChart = new ApexCharts(document.querySelector("#chart-sales-information"), options);
+        salesChart.render();
+
+        // Load data saat pertama kali halaman dibuka
+        $(document).ready(function() {
+            let startDate = moment().subtract(3, 'months').format('YYYY-MM-DD');
+            let endDate = moment().format('YYYY-MM-DD');
+            loadSalesData(startDate, endDate);
+        });
+
         function exportToCSV() {
             let dates = $('#filter-date-range').data('daterangepicker');
             let startDate = dates.startDate.format('YYYY-MM-DD');
@@ -1847,7 +1900,9 @@
             ];
 
             let csv = csvContent.map(row => row.join(',')).join('\n');
-            let blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            let blob = new Blob([csv], {
+                type: 'text/csv;charset=utf-8;'
+            });
             let url = URL.createObjectURL(blob);
             let link = document.createElement("a");
             link.setAttribute("href", url);
@@ -1870,7 +1925,8 @@
                     format: 'YYYY-MM-DD'
                 }
             }, function(start, end) {
-                console.log('Date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+                console.log('Date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format(
+                    'YYYY-MM-DD'));
             });
         });
 
@@ -1917,6 +1973,11 @@
             yaxis: {
                 title: {
                     text: 'Pemasukan (Rp)'
+                },
+                labels: {
+                    formatter: function(val) {
+                        return "Rp " + val.toLocaleString('id-ID');
+                    }
                 }
             },
             fill: {

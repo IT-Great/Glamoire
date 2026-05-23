@@ -157,7 +157,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Order;
 use App\Models\Product;
@@ -213,36 +212,62 @@ class DashboardController extends Controller
         ));
     }
 
+    // public function getSalesData(Request $request)
+    // {
+    //     // Ambil input dari request atau set default
+    //     $startDate = $request->input('start_date', now()->subMonths(3)->format('Y-m-d')); // Default 3 bulan terakhir
+    //     $endDate = $request->input('end_date', now()->format('Y-m-d')); // Default hari ini
+    //     $brandId = $request->input('brand_id'); // Brand yang dipilih, default semua brand
+
+    //     // Data dummy untuk 3 bulan terakhir
+    //     $categories = [];
+    //     $salesData = [];
+
+    //     // Menggunakan CarbonPeriod untuk menghasilkan rentang tanggal
+    //     $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+
+    //     foreach ($period as $date) {
+    //         $categories[] = $date->format('Y-m-d');
+    //         $salesData[] = rand(50, 200); // Data acak penjualan antara 50 sampai 200
+    //     }
+
+    //     // Simulasi brand filtering, jika brand dipilih
+    //     if ($brandId) {
+    //         // Jika ada filter brand, ubah sedikit data dummy (misal untuk brand tertentu)
+    //         $salesData = array_map(function ($value) {
+    //             return $value * rand(1, 2); // Kalikan dengan nilai acak untuk variasi data
+    //         }, $salesData);
+    //     }
+
+    //     return response()->json([
+    //         'categories' => $categories, // Kategori berupa tanggal
+    //         'data' => $salesData         // Data penjualan untuk setiap tanggal
+    //     ]);
+    // }
+
     public function getSalesData(Request $request)
     {
-        // Ambil input dari request atau set default
-        $startDate = $request->input('start_date', now()->subMonths(3)->format('Y-m-d')); // Default 3 bulan terakhir
-        $endDate = $request->input('end_date', now()->format('Y-m-d')); // Default hari ini
-        $brandId = $request->input('brand_id'); // Brand yang dipilih, default semua brand
+        $startDate = $request->input('start_date', now()->subMonths(3)->format('Y-m-d'));
+        $endDate = $request->input('end_date', now()->format('Y-m-d'));
+        $brandId = $request->input('brand_id');
 
-        // Data dummy untuk 3 bulan terakhir
-        $categories = [];
-        $salesData = [];
+        $query = Order::query()
+            ->select(DB::raw('DATE(order_date) as date'), DB::raw('SUM(total_amount) as total'))
+            ->whereBetween('order_date', [$startDate, $endDate])
+            ->where('status', 'completed');
 
-        // Menggunakan CarbonPeriod untuk menghasilkan rentang tanggal
-        $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
-
-        foreach ($period as $date) {
-            $categories[] = $date->format('Y-m-d');
-            $salesData[] = rand(50, 200); // Data acak penjualan antara 50 sampai 200
-        }
-
-        // Simulasi brand filtering, jika brand dipilih
+        // Jika filter brand dipilih (opsional: asumsi order memiliki relasi orderItems -> product -> brand)
         if ($brandId) {
-            // Jika ada filter brand, ubah sedikit data dummy (misal untuk brand tertentu)
-            $salesData = array_map(function ($value) {
-                return $value * rand(1, 2); // Kalikan dengan nilai acak untuk variasi data
-            }, $salesData);
+            $query->whereHas('orderItems.product', function ($q) use ($brandId) {
+                $q->where('brand_id', $brandId);
+            });
         }
+
+        $salesData = $query->groupBy('date')->orderBy('date', 'ASC')->get();
 
         return response()->json([
-            'categories' => $categories, // Kategori berupa tanggal
-            'data' => $salesData         // Data penjualan untuk setiap tanggal
+            'categories' => $salesData->pluck('date'),
+            'data' => $salesData->pluck('total'),
         ]);
     }
 }
