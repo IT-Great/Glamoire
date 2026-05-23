@@ -417,7 +417,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="product-details">
+                                        {{-- <div class="product-details">
                                             @foreach ($order->orderItems as $item)
                                                 <div class="d-flex gap-3 mb-3">
                                                     <img src="{{ Storage::url($item->product->main_image) }}"
@@ -442,6 +442,57 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            @endforeach
+                                        </div> --}}
+                                        <div class="product-details">
+                                            @foreach ($order->orderItems as $item)
+                                                @if ($item->product)
+                                                    {{-- Tampilan jika produk masih ada di database --}}
+                                                    <div class="d-flex gap-3 mb-3">
+                                                        <img src="{{ Storage::url($item->product->main_image) }}"
+                                                            alt="{{ $item->product->product_name }}"
+                                                            onclick="openImageInNewTab('{{ Storage::url($item->product->main_image) }}')"
+                                                            loading="lazy">
+                                                        <div class="product-info">
+                                                            <div class="product-name">
+                                                                {{ $item->product->product_name }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-box me-1"></i>
+                                                                Qty: {{ $item->quantity }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-upc me-1"></i>
+                                                                {{ $item->product->product_code }}
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-tag me-1"></i>
+                                                                {{ $item->product->categoryProduct->name ?? 'Uncategorized' }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    {{-- Fallback jika produk sudah dihapus oleh Admin --}}
+                                                    <div class="d-flex gap-3 mb-3" style="opacity: 0.6;">
+                                                        <div class="bg-light d-flex align-items-center justify-content-center rounded"
+                                                            style="width: 60px; height: 60px; border: 1px solid #ddd;">
+                                                            <i class="bi bi-box-seam text-muted fs-4"></i>
+                                                        </div>
+                                                        <div class="product-info">
+                                                            <div class="product-name text-danger"
+                                                                style="font-weight: 600;">
+                                                                [Produk Telah Dihapus]
+                                                            </div>
+                                                            <div class="product-meta text-muted mb-1">
+                                                                <em>Data produk ini sudah tidak ada di katalog.</em>
+                                                            </div>
+                                                            <div class="product-meta">
+                                                                <i class="bi bi-box me-1"></i>
+                                                                Qty: {{ $item->quantity }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             @endforeach
                                         </div>
                                     </td>
@@ -506,13 +557,13 @@
                 if (result.isConfirmed) {
                     // Kirim AJAX request untuk update status
                     fetch(`/orders/${orderId}/complete`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                'content'),
-                            'Content-Type': 'application/json'
-                        }
-                    })
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content'),
+                                'Content-Type': 'application/json'
+                            }
+                        })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
