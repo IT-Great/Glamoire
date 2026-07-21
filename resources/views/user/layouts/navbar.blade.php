@@ -504,14 +504,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -522,7 +522,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">Lihat Semua {{ $category->name }} <i class="fas fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -537,13 +537,13 @@
                     Brand <i class="fas fa-chevron-down ms-1" style="font-size:0.6rem;"></i>
                 </button>
                 <div class="mega-menu simple-dropdown" style="left: 0; transform: translateX(-20%) translateY(15px);">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
                         @endforeach
                     </div>
-                    <div class="pt-2 mt-3 text-center">
+                    <div class="text-center mt-3 pt-2">
                         <a href="/brands" class="text-decoration-underline text-dark" style="font-size: 0.85rem;">Lihat Semua Merek</a>
                     </div>
                 </div>
@@ -579,18 +579,18 @@
 
                 <div class="mega-menu" style="min-width: 200px; left: auto; right: 0; transform: translateX(0) translateY(15px); padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <a href="/orders" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="fas fa-box me-2"></i> Pesanan Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <a href="/orders" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="fas fa-box me-2"></i> Pesanan Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -626,7 +626,7 @@
     <a href="/cart" class="mobile-nav-item position-relative {{ Request::is('cart') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag"></i>
         <span>Keranjang</span>
-        <span class="top-0 position-absolute start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
+        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
     </a>
 
     @if (session('id_user'))
@@ -643,45 +643,45 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Belanja</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="p-0 offcanvas-body">
+    <div class="offcanvas-body p-0">
         <div class="accordion accordion-flush" id="accordionCategories">
             @foreach ($categories as $index => $category)
-                <div class="border-0 accordion-item border-bottom">
+                <div class="accordion-item border-0 border-bottom">
                     <h2 class="accordion-header">
-                        <button class="shadow-none accordion-button collapsed fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
+                        <button class="accordion-button collapsed fw-semibold text-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
                             {{ strtoupper($category->name) }}
                         </button>
                     </h2>
                     <div id="collapseCat{{ $category->id }}" class="accordion-collapse collapse" data-bs-parent="#accordionCategories">
-                        <div class="py-2 accordion-body bg-light">
+                        <div class="accordion-body bg-light py-2">
                             @php
                                 $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                             @endphp
 
                             @if ($subCategoriesInCategory->isEmpty())
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 d-block text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
                             @else
                                 @foreach ($subCategoriesInCategory as $subCategory)
-                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="py-2 d-block text-decoration-none text-dark border-bottom border-light">
+                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="d-block py-2 text-decoration-none text-dark border-bottom border-light">
                                         {{ $subCategory->name }}
                                     </a>
                                 @endforeach
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 mt-2 d-block text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="text-sm fas fa-arrow-right ms-1"></i></a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 mt-2 text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="fas fa-arrow-right ms-1 text-sm"></i></a>
                             @endif
                         </div>
                     </div>
                 </div>
             @endforeach
 
-            <div class="p-3 mt-3 bg-light">
-                <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
-                <div class="flex-wrap gap-2 d-flex">
+            <div class="p-3 bg-light mt-3">
+                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
+                <div class="d-flex flex-wrap gap-2">
                     @foreach ($brands->take(6) as $brand)
-                        <a href="/{{ $brand->name }}_brand" class="p-2 bg-white border badge text-dark text-decoration-none">{{ $brand->name }}</a>
+                        <a href="/{{ $brand->name }}_brand" class="badge bg-white text-dark border p-2 text-decoration-none">{{ $brand->name }}</a>
                     @endforeach
                 </div>
             </div>
@@ -1252,14 +1252,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -1270,7 +1270,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">Lihat Semua {{ $category->name }} <i class="fas fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -1285,7 +1285,7 @@
                     Brand <i class="fas fa-chevron-down ms-1" style="font-size:0.6rem;"></i>
                 </button>
                 <div class="mega-menu simple-dropdown" style="left: 0; transform: translateX(-20%) translateY(15px);">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -1329,17 +1329,17 @@
 
                 <div class="mega-menu" style="min-width: 200px; left: auto; right: 0; transform: translateX(0) translateY(15px); padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -1382,7 +1382,7 @@
     <a href="/cart" class="mobile-nav-item position-relative {{ Request::is('cart') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag"></i>
         <span>Keranjang</span>
-        <span class="top-0 position-absolute start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
+        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
     </a>
 
     @if (session('id_user'))
@@ -1399,45 +1399,45 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Belanja</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-    <div class="p-0 offcanvas-body">
+    <div class="offcanvas-body p-0">
         <div class="accordion accordion-flush" id="accordionCategories">
             @foreach ($categories as $index => $category)
-                <div class="border-0 accordion-item border-bottom">
+                <div class="accordion-item border-0 border-bottom">
                     <h2 class="accordion-header">
-                        <button class="shadow-none accordion-button collapsed fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
+                        <button class="accordion-button collapsed fw-semibold text-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
                             {{ strtoupper($category->name) }}
                         </button>
                     </h2>
                     <div id="collapseCat{{ $category->id }}" class="accordion-collapse collapse" data-bs-parent="#accordionCategories">
-                        <div class="py-2 accordion-body bg-light">
+                        <div class="accordion-body bg-light py-2">
                             @php
                                 $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                             @endphp
 
                             @if ($subCategoriesInCategory->isEmpty())
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 d-block text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
                             @else
                                 @foreach ($subCategoriesInCategory as $subCategory)
-                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="py-2 d-block text-decoration-none text-dark border-bottom border-light">
+                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="d-block py-2 text-decoration-none text-dark border-bottom border-light">
                                         {{ $subCategory->name }}
                                     </a>
                                 @endforeach
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 mt-2 d-block text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="text-sm fas fa-arrow-right ms-1"></i></a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 mt-2 text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="fas fa-arrow-right ms-1 text-sm"></i></a>
                             @endif
                         </div>
                     </div>
                 </div>
             @endforeach
 
-            <div class="p-3 mt-3 bg-light">
-                <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
-                <div class="flex-wrap gap-2 d-flex">
+            <div class="p-3 bg-light mt-3">
+                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
+                <div class="d-flex flex-wrap gap-2">
                     @foreach ($brands->take(6) as $brand)
-                        <a href="/{{ $brand->name }}_brand" class="p-2 bg-white border badge text-dark text-decoration-none">{{ $brand->name }}</a>
+                        <a href="/{{ $brand->name }}_brand" class="badge bg-white text-dark border p-2 text-decoration-none">{{ $brand->name }}</a>
                     @endforeach
                 </div>
             </div>
@@ -2024,14 +2024,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -2042,7 +2042,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">Lihat Semua {{ $category->name }} <i class="fas fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -2058,7 +2058,7 @@
                 </button>
 
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -2102,17 +2102,17 @@
 
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -2155,7 +2155,7 @@
     <a href="/cart" class="mobile-nav-item position-relative {{ Request::is('cart') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag"></i>
         <span>Keranjang</span>
-        <span class="top-0 position-absolute start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
+        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
     </a>
 
     @if (session('id_user'))
@@ -2172,47 +2172,47 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Belanja</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
-    <div class="p-0 offcanvas-body" style="overflow-y: auto;">
+    <div class="offcanvas-body p-0" style="overflow-y: auto;">
 
         <div class="accordion accordion-flush" id="accordionCategories">
             @foreach ($categories as $index => $category)
-                <div class="border-0 accordion-item border-bottom">
+                <div class="accordion-item border-0 border-bottom">
                     <h2 class="accordion-header">
-                        <button class="shadow-none accordion-button collapsed fw-semibold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
+                        <button class="accordion-button collapsed fw-semibold text-dark shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCat{{ $category->id }}">
                             {{ strtoupper($category->name) }}
                         </button>
                     </h2>
                     <div id="collapseCat{{ $category->id }}" class="accordion-collapse collapse">
-                        <div class="py-2 accordion-body bg-light">
+                        <div class="accordion-body bg-light py-2">
                             @php
                                 $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                             @endphp
 
                             @if ($subCategoriesInCategory->isEmpty())
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 d-block text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 text-decoration-none text-muted">Lihat semua {{ $category->name }}</a>
                             @else
                                 @foreach ($subCategoriesInCategory as $subCategory)
-                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="py-2 d-block text-decoration-none text-dark border-bottom border-light">
+                                    <a href="{{ route('shop.category.sub', ['category' => $category->name, 'subcategory' => $subCategory->name]) }}" class="d-block py-2 text-decoration-none text-dark border-bottom border-light">
                                         {{ $subCategory->name }}
                                     </a>
                                 @endforeach
-                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="py-2 mt-2 d-block text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="text-sm fas fa-arrow-right ms-1"></i></a>
+                                <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="d-block py-2 mt-2 text-decoration-none fw-bold" style="color: var(--nav-bg);">Lihat Semua <i class="fas fa-arrow-right ms-1 text-sm"></i></a>
                             @endif
                         </div>
                     </div>
                 </div>
             @endforeach
 
-            <div class="p-3 mt-3 bg-light">
-                <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
-                <div class="flex-wrap gap-2 d-flex">
+            <div class="p-3 bg-light mt-3">
+                <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem;">Top Brands</h6>
+                <div class="d-flex flex-wrap gap-2">
                     @foreach ($brands->take(6) as $brand)
-                        <a href="/{{ $brand->name }}_brand" class="p-2 bg-white border badge text-dark text-decoration-none">{{ $brand->name }}</a>
+                        <a href="/{{ $brand->name }}_brand" class="badge bg-white text-dark border p-2 text-decoration-none">{{ $brand->name }}</a>
                     @endforeach
                 </div>
             </div>
@@ -2772,14 +2772,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -2790,7 +2790,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">Lihat Semua {{ $category->name }} <i class="fas fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -2806,7 +2806,7 @@
                 </button>
 
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -2850,17 +2850,17 @@
 
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -2903,7 +2903,7 @@
     <a href="/cart" class="mobile-nav-item position-relative {{ Request::is('cart') ? 'active' : '' }}">
         <i class="fas fa-shopping-bag"></i>
         <span>Keranjang</span>
-        <span class="top-0 position-absolute start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
+        <span class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 2px 4px;">0</span>
     </a>
 
     @if (session('id_user'))
@@ -2920,12 +2920,12 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="p-3 text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white p-3">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Menu Belanja</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
-    <div class="p-0 offcanvas-body custom-scroll" style="overflow-y: auto;">
+    <div class="offcanvas-body p-0 custom-scroll" style="overflow-y: auto;">
 
         <ul class="mobile-cat-list">
             @foreach ($categories as $index => $category)
@@ -2959,10 +2959,10 @@
         </ul>
 
         <div class="p-4 mt-2">
-            <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
-            <div class="flex-wrap gap-2 d-flex">
+            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
+            <div class="d-flex flex-wrap gap-2">
                 @foreach ($brands->take(8) as $brand)
-                    <a href="/{{ $brand->name }}_brand" class="p-2 border badge bg-light text-dark text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
+                    <a href="/{{ $brand->name }}_brand" class="badge bg-light text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
                 @endforeach
             </div>
         </div>
@@ -3524,14 +3524,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -3542,7 +3542,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">Lihat Semua {{ $category->name }} <i class="fas fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -3558,7 +3558,7 @@
                 </button>
 
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -3605,17 +3605,17 @@
 
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -3676,12 +3676,12 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="p-3 text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white p-3">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Menu Belanja</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
-    <div class="p-0 offcanvas-body custom-scroll" style="overflow-y: auto;">
+    <div class="offcanvas-body p-0 custom-scroll" style="overflow-y: auto;">
 
         <ul class="mobile-cat-list">
             @foreach ($categories as $index => $category)
@@ -3715,10 +3715,10 @@
         </ul>
 
         <div class="p-4 mt-2">
-            <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
-            <div class="flex-wrap gap-2 d-flex">
+            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
+            <div class="d-flex flex-wrap gap-2">
                 @foreach ($brands->take(8) as $brand)
-                    <a href="/{{ $brand->name }}_brand" class="p-2 border badge bg-light text-dark text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
+                    <a href="/{{ $brand->name }}_brand" class="badge bg-light text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
                 @endforeach
             </div>
         </div>
@@ -4282,14 +4282,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -4300,7 +4300,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">View All {{ $category->name }} <i class="far fa-arrow-right ms-1"></i></a>
                                     </div>
                                 </div>
@@ -4316,7 +4316,7 @@
                 </button>
 
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -4355,17 +4355,17 @@
 
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="far fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="far fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -4424,12 +4424,12 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="p-3 text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white p-3">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Shop Categories</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
-    <div class="p-0 offcanvas-body custom-scroll" style="overflow-y: auto;">
+    <div class="offcanvas-body p-0 custom-scroll" style="overflow-y: auto;">
 
         <ul class="mobile-cat-list">
             @foreach ($categories as $index => $category)
@@ -4463,10 +4463,10 @@
         </ul>
 
         <div class="p-4 mt-2">
-            <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
-            <div class="flex-wrap gap-2 d-flex">
+            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
+            <div class="d-flex flex-wrap gap-2">
                 @foreach ($brands->take(8) as $brand)
-                    <a href="/{{ $brand->name }}_brand" class="p-2 border badge bg-light text-dark text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
+                    <a href="/{{ $brand->name }}_brand" class="badge bg-light text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
                 @endforeach
             </div>
         </div>
@@ -5010,7 +5010,7 @@
         <ul class="nav-links-container desktop-nav-links">
             <li class="nav-item-dropdown">
                 <a href="{{ route('shop.all') }}" class="nav-link-premium">
-                    Sho <i class="fas fa-chevron-down ms-1" style="font-size:0.6rem; opacity: 0.8;"></i>
+                    Shop <i class="fas fa-chevron-down ms-1" style="font-size:0.6rem; opacity: 0.8;"></i>
                 </a>
 
                 <div class="mega-menu center">
@@ -5028,14 +5028,14 @@
                         <div class="mega-menu-body custom-scroll">
                             @foreach ($categories as $index => $category)
                                 <div id="cat-{{ $category->id }}" class="mega-menu-pane" style="display: {{ $index == 0 ? 'block' : 'none' }};">
-                                    <h5 class="pb-2 mb-3 fw-bold border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
+                                    <h5 class="fw-bold mb-3 pb-2 border-bottom" style="color: var(--nav-bg);">{{ $category->name }}</h5>
 
                                     @php
                                         $subCategoriesInCategory = $subCategories->where('parent_id', $category->id);
                                     @endphp
 
                                     @if ($subCategoriesInCategory->isEmpty())
-                                        <p class="text-sm text-muted">Lihat semua produk di kategori ini.</p>
+                                        <p class="text-muted text-sm">Lihat semua produk di kategori ini.</p>
                                     @else
                                         <div class="mega-menu-grid">
                                             @foreach ($subCategoriesInCategory as $subCategory)
@@ -5046,7 +5046,7 @@
                                         </div>
                                     @endif
 
-                                    <div class="pt-3 mt-4 border-top">
+                                    <div class="mt-4 pt-3 border-top">
                                         <a href="{{ route('shop.category', ['category' => $category->name]) }}" class="text-decoration-underline text-dark fw-semibold" style="font-size:0.85rem;">View All {{ $category->name }} <i class="fas fa-arrow-right ms-1" style="font-size: 0.75rem;"></i></a>
                                     </div>
                                 </div>
@@ -5062,7 +5062,7 @@
                 </button>
 
                 <div class="mega-menu left simple-dropdown">
-                    <h6 class="pb-2 mb-3 fw-bold border-bottom">Jelajahi Merek</h6>
+                    <h6 class="fw-bold mb-3 border-bottom pb-2">Jelajahi Merek</h6>
                     <div class="brand-grid">
                         @foreach ($brands->take(10) as $brand)
                             <a href="/{{ $brand->name }}_brand" class="brand-item">{{ $brand->name }}</a>
@@ -5101,17 +5101,17 @@
 
                 <div class="mega-menu right" style="padding: 0.5rem 0;">
                     @if (session('id_user'))
-                        <div class="px-4 py-3 mb-2 border-bottom bg-light">
+                        <div class="px-4 py-3 border-bottom mb-2 bg-light">
                             <p class="mb-0 fs-7 text-muted">Selamat datang,</p>
                             <p class="mb-0 fw-bold text-dark">{{ session('username') ?? 'Pelanggan' }}</p>
                         </div>
-                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="px-4 py-2 text-sm dropdown-item text-dark"><i class="far fa-id-card me-2"></i> Profil Saya</a>
-                        <div class="my-2 dropdown-divider"></div>
-                        <a href="#" id="logout-link-desktop" class="px-4 py-2 text-sm dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
+                        <a href="{{ route('account', ['user' => session('id_user')]) }}" class="dropdown-item py-2 px-4 text-dark text-sm"><i class="far fa-id-card me-2"></i> Profil Saya</a>
+                        <div class="dropdown-divider my-2"></div>
+                        <a href="#" id="logout-link-desktop" class="dropdown-item py-2 px-4 text-danger text-sm"><i class="fas fa-sign-out-alt me-2"></i> Keluar</a>
                     @else
                         <div class="p-3 text-center">
-                            <button class="mb-2 btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
-                            <p class="mb-0 text-muted fs-7">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
+                            <button class="btn btn-dark w-100 mb-2" data-bs-toggle="modal" data-bs-target="#loginUser1">Masuk</button>
+                            <p class="text-muted fs-7 mb-0">Belum punya akun? <a href="#" data-bs-toggle="modal" data-bs-target="#registerUser1" class="text-dark fw-bold">Daftar</a></p>
                         </div>
                     @endif
                 </div>
@@ -5170,12 +5170,12 @@
 </div>
 
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileCategoryMenu" aria-labelledby="mobileCategoryMenuLabel">
-    <div class="p-3 text-white offcanvas-header bg-dark">
+    <div class="offcanvas-header bg-dark text-white p-3">
         <h5 class="offcanvas-title fw-bold" id="mobileCategoryMenuLabel">Shop Categories</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
 
-    <div class="p-0 offcanvas-body custom-scroll" style="overflow-y: auto;">
+    <div class="offcanvas-body p-0 custom-scroll" style="overflow-y: auto;">
 
         <ul class="mobile-cat-list">
             @foreach ($categories as $index => $category)
@@ -5209,10 +5209,10 @@
         </ul>
 
         <div class="p-4 mt-2">
-            <h6 class="mb-3 fw-bold text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
-            <div class="flex-wrap gap-2 d-flex">
+            <h6 class="fw-bold mb-3 text-muted text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Top Brands</h6>
+            <div class="d-flex flex-wrap gap-2">
                 @foreach ($brands->take(8) as $brand)
-                    <a href="/{{ $brand->name }}_brand" class="p-2 border badge bg-light text-dark text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
+                    <a href="/{{ $brand->name }}_brand" class="badge bg-light text-dark border p-2 text-decoration-none" style="font-weight: 500;">{{ $brand->name }}</a>
                 @endforeach
             </div>
         </div>
