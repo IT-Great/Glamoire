@@ -3,8 +3,8 @@
 
     <style>
         /* ==========================================
-           WORLD CLASS CHECKOUT STYLING
-           ========================================== */
+               WORLD CLASS CHECKOUT STYLING
+               ========================================== */
         :root {
             --glamoire-dark: #183018;
             --glamoire-light: #F9FAFB;
@@ -449,6 +449,21 @@
         <div class="container-fluid px-0 px-md-3">
             <div class="checkout-container">
 
+                <!-- TAMBAHAN NOTIFIKASI SANDBOX -->
+                <div class="alert alert-warning d-flex align-items-center p-3 rounded-3 mb-4 mx-md-3 border-0"
+                    style="background-color: #FEF3C7; color: #92400E; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);">
+                    <i class="fas fa-info-circle me-3 fs-3"></i>
+                    <div>
+                        <strong class="d-block mb-1" style="font-family: 'Poppins', sans-serif;">Pemberitahuan
+                            Sistem</strong>
+                        <span style="font-size: 0.9rem; line-height: 1.5;">
+                            Fitur pembayaran masih dalam proses pembuatan, sehingga semua proses pembayaran yang dilakukan
+                            saat ini masih berupa simulasi (Sandbox) dan menggunakan uang palsu.
+                        </span>
+                    </div>
+                </div>
+                <!-- END TAMBAHAN NOTIFIKASI SANDBOX -->
+
                 <div class="checkout-main-section">
 
                     <div class="checkout-card">
@@ -472,7 +487,8 @@
                                         <p>{{ ucwords(strtolower($checkout_address->subdistrict)) }},
                                             {{ ucwords(strtolower($checkout_address->district)) }},
                                             {{ ucwords(strtolower($checkout_address->regency)) }},
-                                            {{ ucwords(strtolower($checkout_address->province)) }}</p>
+                                            {{ ucwords(strtolower($checkout_address->province)) }}
+                                        </p>
                                     </div>
                                     <button type="button" class="btn-change-address" data-bs-toggle="modal"
                                         data-bs-target="#change_address">
@@ -683,7 +699,8 @@
                                 <p class="text-muted m-0 fs-7 lh-sm mt-1">
                                     {{ $address->address }}<br>{{ ucwords(strtolower($address->subdistrict)) }},
                                     {{ ucwords(strtolower($address->district)) }}, {{ ucwords(strtolower($address->regency)) }},
-                                    {{ ucwords(strtolower($address->province)) }}</p>
+                                    {{ ucwords(strtolower($address->province)) }}
+                                </p>
 
                                 @if (!$address->is_use)
                                     <button type="button" class="btn btn-dark w-100 mt-3 rounded-pill py-1 fs-7 fw-bold"
