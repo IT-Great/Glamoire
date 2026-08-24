@@ -2233,49 +2233,107 @@ class UserController extends Controller
         }
     }
 
+    // public function userOrders(Request $request)
+    // {
+    //     $userId = session('id_user') ?? auth()->id();
+
+    //     // Inisiasi kueri dasar
+    //     $query = Order::with(['invoice', 'items.product.brand', 'items.productVariant'])
+    //         ->where('user_id', $userId);
+
+    //     // Filter berdasarkan status dari Tab
+    //     if ($request->filled('status')) {
+    //         $status = $request->status;
+
+    //         if ($status == 'returned') {
+    //             // Gabungkan status retur & fail/dispose
+    //             $query->where(function ($q) {
+    //                 $q
+    //                     ->whereIn('status', ['returned', 'failed', 'disposed'])
+    //                     ->orWhereNotNull('return_status');
+    //             });
+    //         } else {
+    //             $query->where('status', $status)->whereNull('return_status');
+    //         }
+    //     }
+
+    //     // Pencarian berdasarkan No. Invoice atau Nama Produk
+    //     if ($request->filled('search')) {
+    //         $search = $request->search;
+    //         $query->where(function ($q) use ($search) {
+    //             // Pencarian di tabel Invoice
+    //             $q
+    //                 ->whereHas('invoice', function ($qInvoice) use ($search) {
+    //                     $qInvoice->where('no_invoice', 'LIKE', '%' . $search . '%');
+    //                 })
+    //                 // ATAU Pencarian di nama produk
+    //                 ->orWhereHas('items.product', function ($qProduct) use ($search) {
+    //                     $qProduct->where('product_name', 'LIKE', '%' . $search . '%');
+    //                 });
+    //         });
+    //     }
+
+    //     // Ambil data dengan Pagination (10 data per halaman)
+    //     $orders = $query->orderBy('created_at', 'DESC')->paginate(10);
+
+    //     return view('user.order', compact('orders'));
+    // }
+
     public function userOrders(Request $request)
     {
-        $userId = session('id_user') ?? auth()->id();
+        try {
+            $userId = session('id_user') ?? auth()->id();
 
-        // Inisiasi kueri dasar
-        $query = Order::with(['invoice', 'items.product.brand', 'items.productVariant'])
-            ->where('user_id', $userId);
+            // 1. Ambil data profile agar master layout tidak error
+            $profile = \App\Models\User::find($userId);
 
-        // Filter berdasarkan status dari Tab
-        if ($request->filled('status')) {
-            $status = $request->status;
-
-            if ($status == 'returned') {
-                // Gabungkan status retur & fail/dispose
-                $query->where(function ($q) {
-                    $q
-                        ->whereIn('status', ['returned', 'failed', 'disposed'])
-                        ->orWhereNotNull('return_status');
-                });
-            } else {
-                $query->where('status', $status)->whereNull('return_status');
+            if (!$profile) {
+                return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
             }
-        }
 
-        // Pencarian berdasarkan No. Invoice atau Nama Produk
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                // Pencarian di tabel Invoice
-                $q
-                    ->whereHas('invoice', function ($qInvoice) use ($search) {
-                        $qInvoice->where('no_invoice', 'LIKE', '%' . $search . '%');
-                    })
-                    // ATAU Pencarian di nama produk
-                    ->orWhereHas('items.product', function ($qProduct) use ($search) {
-                        $qProduct->where('product_name', 'LIKE', '%' . $search . '%');
+            // 2. Inisiasi kueri dasar
+            $query = \App\Models\Order::with(['invoice', 'items.product.brand', 'items.productVariant'])
+                ->where('user_id', $userId);
+
+            // Filter berdasarkan status
+            if ($request->filled('status')) {
+                $status = $request->status;
+
+                if ($status == 'returned') {
+                    $query->where(function ($q) {
+                        $q
+                            ->whereIn('status', ['returned', 'failed', 'disposed'])
+                            ->orWhereNotNull('return_status');
                     });
-            });
+                } else {
+                    $query->where('status', $status)->whereNull('return_status');
+                }
+            }
+
+            // Pencarian
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q
+                        ->whereHas('invoice', function ($qInvoice) use ($search) {
+                            $qInvoice->where('no_invoice', 'LIKE', '%' . $search . '%');
+                        })
+                        ->orWhereHas('items.product', function ($qProduct) use ($search) {
+                            $qProduct->where('product_name', 'LIKE', '%' . $search . '%');
+                        });
+                });
+            }
+
+            $orders = $query->orderBy('created_at', 'DESC')->paginate(10);
+
+            // 3. Passing $orders DAN $profile
+            return view('user.order', compact('orders', 'profile'));
+        } catch (\Exception $e) {
+            // [TIPS DEBUGGING]
+            // Buka komentar dd() di bawah ini untuk melihat pesan error asli jika masih gagal
+            // dd($e->getMessage(), $e->getLine(), $e->getFile());
+
+            return redirect('/')->with('error', 'Terjadi kesalahan sistem saat memuat pesanan.');
         }
-
-        // Ambil data dengan Pagination (10 data per halaman)
-        $orders = $query->orderBy('created_at', 'DESC')->paginate(10);
-
-        return view('user.order', compact('orders'));
     }
 }
