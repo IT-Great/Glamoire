@@ -21711,7 +21711,7 @@
                             data-bs-target="#my-order" href="#my-order" role="tab" aria-controls="my-order">
                             <i class="fas fa-shopping-bag"></i> Riwayat Pesanan
                         </a> --}}
-                        <a class="nav-link" href="{{ route('user.orders') }}">
+                        <a class="nav-link" href="{{ route('user.order') }}">
                             <i class="fas fa-shopping-bag"></i> Riwayat Pesanan
                         </a>
                         <a class="nav-link {{ $activeTab == '#my-wishlist' ? 'active' : '' }}" data-bs-toggle="tab"
