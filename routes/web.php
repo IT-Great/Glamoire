@@ -192,6 +192,7 @@ Route::post('/voucher-new-user', [FormController::class, 'voucherNewUser'])->nam
 
 // ACCOUNT
 // Route::get('/{user}_account', [UserController::class, 'account'])->name('account');
+Route::get('/user/orders', [UserController::class, 'userOrders'])->name('user.orders');
 Route::put('/edit-account', [UserController::class, 'updateProfile'])->name('edit.account');
 Route::post('/account/update-password', [UserController::class, 'updatePassword'])->name('update.password');
 Route::post('/add-shipping-address', [UserController::class, 'actionAddShippingAddress'])->name('add.shipping.address');
@@ -565,7 +566,6 @@ Route::middleware(['auth', 'role:admin,superadmin'])->group(function () {
     Route::get('/user-admin-detail/{id}', [UserController::class, 'detailUserAdmin'])->name('detail-user-admin');
     Route::get('/user-admin-password', [UserController::class, 'passwordUserAdmin'])->name('password-user-admin');
     Route::post('/user-admin-password/change', [UserController::class, 'changePasswordUserAdmin'])->name('change-password-user-admin');
-    Route::get('/user/orders', [UserController::class, 'userOrders'])->name('user.orders');
 
     // TENTANG KAMI
     Route::get('/aboutus-admin', [AboutusController::class, 'indexAboutusAdmin'])->name('index-aboutus-admin');
