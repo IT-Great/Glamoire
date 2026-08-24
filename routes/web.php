@@ -56,10 +56,6 @@ Route::get('/callback-backend-create-new-order', [PrismalinkController::class, '
 // Ubah yang tadinya mengarah ke PrismalinkController@submitPayment
 Route::post('/payment/submit', [XenditController::class, 'submitPayment']);
 
-// Tambahkan Endpoint untuk Webhook Xendit
-// (Pastikan endpoint ini di-exclude dari CSRF Middleware di App\Http\Middleware\VerifyCsrfToken)
-Route::post('/xendit/webhook', [XenditController::class, 'webhook']);
-
 // BITESHIP ROUTE WEBHOOK
 Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback']);
 
