@@ -1,47 +1,48 @@
 <?php
 
-use App\Http\Controllers\AboutusController;
-use App\Http\Controllers\AffiliateController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\AuthenticateController;
-use App\Http\Controllers\BiteshipController;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ChartofAccountController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ContactusController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DokuPaymentController;
-use App\Http\Controllers\EventController;
-use App\Http\Controllers\FaqController;
-use App\Http\Controllers\FinancialController;
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\GoogleController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\JournalController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PasswordResetController;
-use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\PopupController;
-use App\Http\Controllers\PrismalinkController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\PromoController;
-use App\Http\Controllers\RatingAndReviewController;
-use App\Http\Controllers\ShopController;
-use App\Http\Controllers\StockExportImportController;
-use App\Http\Controllers\SubscribeController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserController;
+use App\Models\User;
 use App\Models\AboutUs;
 use App\Models\NotifyMe;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FaqController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\ShopController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PopupController;
+use App\Http\Controllers\PromoController;
+use App\Http\Controllers\XenditController;
+use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\AboutusController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BiteshipController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AffiliateController;
+use App\Http\Controllers\ContactusController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FinancialController;
+use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\PrismalinkController;
+use App\Http\Controllers\DokuPaymentController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\AuthenticateController;
+use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\ChartofAccountController;
+use App\Http\Controllers\RatingAndReviewController;
+use App\Http\Controllers\StockExportImportController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 // PRISMALINK ROUTE
 Route::get('/views-payment/submit', [PrismalinkController::class, 'viewsSubmitPayment'])->name('views-payment.submit');
@@ -51,6 +52,13 @@ Route::get('/callback-payment', [PrismalinkController::class, 'callback'])->name
 Route::get('/callback-backend-create-new-order', [PrismalinkController::class, 'callbackCreateOrder']);
 // Route::post('/initiate-prismalink-payment', [PrismalinkController::class, 'initiatePayment'])->name('prismalink.initiate');
 // Route::match(['get', 'post'], '/prismalink-callback', [PrismalinkController::class, 'callback'])->name('prismalink.callback');
+
+// Ubah yang tadinya mengarah ke PrismalinkController@submitPayment
+Route::post('/payment/submit', [XenditController::class, 'submitPayment']);
+
+// Tambahkan Endpoint untuk Webhook Xendit
+// (Pastikan endpoint ini di-exclude dari CSRF Middleware di App\Http\Middleware\VerifyCsrfToken)
+Route::post('/xendit/webhook', [XenditController::class, 'webhook']);
 
 // BITESHIP ROUTE WEBHOOK
 Route::post('/callback-glamoire-with-biteship', [BiteshipController::class, 'callback']);
