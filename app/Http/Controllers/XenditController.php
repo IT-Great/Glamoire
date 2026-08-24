@@ -42,24 +42,120 @@ class XenditController extends Controller
         $this->secretKey = config('services.xendit.secret_key');
     }
 
+    // public function submitPayment(Request $request)
+    // {
+    //     $this->id_user = auth()->id() ?? session('id_user');
+
+    //     if ($request->condition !== "guest") {
+    //         $cartId = Cart::where('user_id', $this->id_user)->value('id');
+    //         $cartItems = Cart_item::where('cart_id', $cartId)
+    //             ->where('is_choose', true)
+    //             ->leftJoin('products', 'cart_items.product_id', '=', 'products.id')
+    //             ->select(
+    //                 'cart_items.product_id as item_code',
+    //                 'cart_items.quantity as quantity',
+    //                 'cart_items.price as total',
+    //                 'products.product_name as item_title'
+    //             )
+    //             ->get()
+    //             ->toArray();
+    //     }
+
+    //     $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
+
+    //     if ($lastInvoice) {
+    //         $lastNoInvoice = (int) substr($lastInvoice, strrpos($lastInvoice, '/') + 1);
+    //         $invoiceNumber = $lastNoInvoice + 1;
+    //     } else {
+    //         $invoiceNumber = 1;
+    //     }
+
+    //     $day = date('d');
+    //     $month = date('m');
+    //     $year = date('Y');
+    //     $formattedInvoice = sprintf('INV/%s%s%s/GLM/%s', $day, $month, $year, $invoiceNumber);
+
+    //     // plink_ref_no di-reuse untuk menyimpan ID Invoice dari Xendit agar tidak perlu migrasi database
+    //     $invoiceCreate = Invoice::create([
+    //         'no_invoice' => $formattedInvoice,
+    //         'plink_ref_no' => null,
+    //     ]);
+
+    //     $user = User::find($this->id_user);
+    //     $username = session('username') ?? ($user->name ?? 'Guest');
+    //     $handphone = $user->handphone ?? '080000000000';
+    //     $email = $user->email ?? 'customer@glamoire.co.id';
+    //     $this->condition = $request->condition;
+
+    //     if ($request->condition == 'buynow') {
+    //         session(['productBuyNow' => $request->products]);
+    //     }
+
+    //     // Format nomor HP ke standar internasional untuk Xendit
+    //     $formattedPhone = str_starts_with($handphone, '0') ? '+62' . substr($handphone, 1) : '+' . ltrim($handphone, '+');
+    //     $amount = (int) ($request->total_amount == 0 ? 1 : $request->total_amount);
+
+    //     // --- PAYLOAD XENDIT ---
+    //     $payload = [
+    //         'external_id' => $formattedInvoice,
+    //         'payer_email' => $email,
+    //         'description' => 'Pembayaran Pesanan Glamoire - ' . $formattedInvoice,
+    //         'amount' => $amount,
+    //         'invoice_duration' => 3600, // Waktu kadaluarsa (1 jam)
+    //         'customer' => [
+    //             'given_names' => $username,
+    //             'mobile_number' => $formattedPhone,
+    //         ],
+    //         // Xendit akan otomatis mengarahkan user kembali ke web setelah sukses/gagal
+    //         'success_redirect_url' => route('payment.success', ['invoice' => $formattedInvoice]),
+    //         'failure_redirect_url' => route('payment.failed', ['invoice' => $formattedInvoice]),
+    //         'currency' => 'IDR',
+    //     ];
+
+    //     // --- HIT XENDIT API ---
+    //     $response = Http::withBasicAuth($this->secretKey, '')
+    //         ->post('https://api.xendit.co/v2/invoices', $payload);
+
+    //     $data = $response->json();
+
+    //     if ($response->successful() && isset($data['invoice_url'])) {
+
+    //         $this->merchant_ref_no = $invoiceCreate->no_invoice;
+    //         $this->xendit_id = $data['id']; // Simpan ID Invoice Xendit
+
+    //         $orderId = 'ORDER-' . time() . '-' . Str::random(5);
+
+    //         $orderData = $this->saveData($orderId, $request->total_amount, $request->shipping_address_id, $request->shipping_cost, $request->discount_ongkir, $request->discount_amount, $request->total_item, $request->total_item_price, $request->voucher_promo, $request->voucher_ongkir, $request->destinationArea, $request->originArea, $request->courier, $request->etd, $request->description, $request->destinationPostalCode, $request->products ?? []);
+
+    //         $this->order_data = $orderData;
+
+    //         // BUAT ORDER DI DATABASE
+    //         $createdOrder = $this->createNewOrder($this->order_data);
+
+    //         session()->put('payment_url_' . $createdOrder->id, $data['invoice_url']);
+
+    //         // Format deadline sesuai timezone Jakarta
+    //         $deadline = Carbon::parse($data['expiry_date'])->timezone('Asia/Jakarta');
+    //         $formattedDeadline = $deadline->translatedFormat('l, d F Y - H:i') . ' WIB';
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'payment_url' => $data['invoice_url'],
+    //             'deadline' => $formattedDeadline,
+    //         ]);
+    //     } else {
+    //         Log::error('Xendit Request Failed', [
+    //             'status' => $response->status(),
+    //             'body' => $response->body(),
+    //         ]);
+
+    //         return response()->json(['success' => false, 'message' => 'Gagal membuat tagihan: ' . ($data['message'] ?? 'Hubungi Admin')]);
+    //     }
+    // }
+
     public function submitPayment(Request $request)
     {
         $this->id_user = auth()->id() ?? session('id_user');
-
-        if ($request->condition !== "guest") {
-            $cartId = Cart::where('user_id', $this->id_user)->value('id');
-            $cartItems = Cart_item::where('cart_id', $cartId)
-                ->where('is_choose', true)
-                ->leftJoin('products', 'cart_items.product_id', '=', 'products.id')
-                ->select(
-                    'cart_items.product_id as item_code',
-                    'cart_items.quantity as quantity',
-                    'cart_items.price as total',
-                    'products.product_name as item_title'
-                )
-                ->get()
-                ->toArray();
-        }
 
         $lastInvoice = Invoice::orderBy('id', 'desc')->value('no_invoice');
 
@@ -91,22 +187,99 @@ class XenditController extends Controller
             session(['productBuyNow' => $request->products]);
         }
 
+        // ===================================================================
+        // 1. MENGAMBIL DATA ITEM UNTUK XENDIT INVOICE UI
+        // ===================================================================
+        $xenditItems = [];
+        $sumItems = 0; // Total harga barang original (tanpa diskon)
+
+        if ($this->condition == 'standard') {
+            $cartId = Cart::where('user_id', $this->id_user)->value('id');
+            $cartItemsDb = Cart_item::where('cart_id', $cartId)
+                ->where('is_choose', true)
+                ->with('product')
+                ->get();
+        } elseif ($this->condition == 'buynow') {
+            $cartItemsDb = Buynow::where('user_id', $this->id_user)
+                ->where('is_buy', false)
+                ->with('product')
+                ->get();
+        }
+
+        foreach ($cartItemsDb as $item) {
+            $productName = $item->product->product_name ?? 'Produk Glamoire';
+            $qty = (int) $item->quantity;
+            $price = (int) $item->price;
+
+            $xenditItems[] = [
+                'name'     => $productName,
+                'quantity' => $qty,
+                'price'    => $price,
+            ];
+
+            // Hitung subtotal original untuk validasi matematis Xendit
+            $sumItems += ($qty * $price);
+        }
+
+        // ===================================================================
+        // 2. MENYUSUN BIAYA & DISKON (FEES) UNTUK XENDIT INVOICE UI
+        // ===================================================================
+        $xenditFees = [];
+
+        // Ongkos Kirim
+        if ($request->shipping_cost > 0) {
+            $xenditFees[] = [
+                'type'  => 'Ongkos Kirim',
+                'value' => (int) $request->shipping_cost,
+            ];
+        }
+
+        // Diskon Ongkos Kirim (Voucher Ongkir)
+        if ($request->discount_ongkir > 0) {
+            $xenditFees[] = [
+                'type'  => 'Diskon Ongkir',
+                'value' => - (int) $request->discount_ongkir, // Nilai minus
+            ];
+        }
+
+        // Diskon Pembelian (Voucher Promo)
+        if ($request->discount_amount > 0) {
+            $xenditFees[] = [
+                'type'  => 'Diskon Promo',
+                'value' => - (int) $request->discount_amount, // Nilai minus
+            ];
+        }
+
+        // Diskon Bundle/Tier (Kalkulasi perbedaan harga original vs total belanja)
+        $totalItemPriceFromRequest = (int) $request->total_item_price;
+        $totalDiscountItems = $sumItems - $totalItemPriceFromRequest;
+
+        if ($totalDiscountItems > 0) {
+            $xenditFees[] = [
+                'type'  => 'Diskon Grosir/Bundle',
+                'value' => - (int) $totalDiscountItems, // Nilai minus
+            ];
+        }
+
         // Format nomor HP ke standar internasional untuk Xendit
         $formattedPhone = str_starts_with($handphone, '0') ? '+62' . substr($handphone, 1) : '+' . ltrim($handphone, '+');
         $amount = (int) ($request->total_amount == 0 ? 1 : $request->total_amount);
 
-        // --- PAYLOAD XENDIT ---
+        // ===================================================================
+        // 3. PAYLOAD XENDIT
+        // ===================================================================
         $payload = [
             'external_id' => $formattedInvoice,
             'payer_email' => $email,
             'description' => 'Pembayaran Pesanan Glamoire - ' . $formattedInvoice,
-            'amount' => $amount,
+            'amount' => $amount, // Nilai ini sudah pasti balance dengan Items + Fees
             'invoice_duration' => 3600, // Waktu kadaluarsa (1 jam)
             'customer' => [
                 'given_names' => $username,
                 'mobile_number' => $formattedPhone,
             ],
-            // Xendit akan otomatis mengarahkan user kembali ke web setelah sukses/gagal
+            'items' => $xenditItems, // <- Ditambahkan ke payload
+            'fees'  => $xenditFees,  // <- Ditambahkan ke payload
             'success_redirect_url' => route('payment.success', ['invoice' => $formattedInvoice]),
             'failure_redirect_url' => route('payment.failed', ['invoice' => $formattedInvoice]),
             'currency' => 'IDR',
