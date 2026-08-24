@@ -447,6 +447,18 @@
         </div>
 
         <div class="container-fluid px-0 px-md-3">
+            <!-- TAMBAHAN NOTIFIKASI SANDBOX -->
+            <div class="alert alert-warning d-flex align-items-center p-3 rounded-3 mb-4 mx-md-3 border-0"
+                 style="background-color: #FEF3C7; color: #92400E; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);">
+                <i class="fas fa-info-circle me-3 fs-3"></i>
+                <div>
+                    <strong class="d-block mb-1" style="font-family: 'Poppins', sans-serif;">Pemberitahuan Sistem</strong>
+                    <span style="font-size: 0.9rem; line-height: 1.5;">
+                        Fitur pembayaran masih dalam proses pembuatan, sehingga semua proses pembayaran yang dilakukan saat ini masih berupa simulasi (Sandbox) dan menggunakan uang palsu.
+                    </span>
+                </div>
+            </div>
+            <!-- END TAMBAHAN NOTIFIKASI SANDBOX -->
             <div class="checkout-container">
 
                 <div class="checkout-main-section">
