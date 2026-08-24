@@ -12,7 +12,7 @@
                 diproses.</p>
 
             <div class="d-flex flex-column gap-3">
-                <a href="/account" class="btn text-white py-2 fw-bold"
+                <a href="/user/orders" class="btn text-white py-2 fw-bold"
                     style="background-color: #183018; border-radius: 50px;">
                     <i class="fas fa-box-open me-1"></i> Lihat Pesanan Saya
                 </a>
