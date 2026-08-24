@@ -2326,7 +2326,6 @@ class UserController extends Controller
 
             // $orders = $query->orderBy('created_at', 'DESC')->paginate(10);
 
-            // Ambil value dari parameter URL 'per_page', jika tidak ada maka default ke 10
             $perPage = $request->input('per_page', 10);
 
             $orders = $query->orderBy('created_at', 'DESC')->paginate($perPage);
